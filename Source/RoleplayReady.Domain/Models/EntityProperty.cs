@@ -1,7 +1,19 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public abstract record EntityProperty
+public interface IEntityProperty : IHasValue
 {
-    public required string Name { get; init; }
-    public required GameSystem GameSystem { get; init; }
+    Property Property { get; init; }
 }
+
+public class EntityProperty<TValue> : IEntityProperty, IHasValue<TValue>
+{
+    public required Property Property { get; init; }
+
+    public TValue? Value { get; set; }
+
+    object? IHasValue.Value
+    {
+        get => Value;
+        set => Value = (TValue?)value;
+    }
+};

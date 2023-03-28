@@ -2,9 +2,10 @@
 
 public record Entry
 {
+    public required EntryType Type { get; init; }
     public required string Title { get; init; }
-    public required string Content { get; init; }
+    public required string Text { get; init; }
 
-    public required DateTime Timestamp { get; init; } // Key
+    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
     public bool IsDeleted { get; init; }
 }

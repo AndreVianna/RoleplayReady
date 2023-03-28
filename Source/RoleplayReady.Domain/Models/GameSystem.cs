@@ -1,6 +1,6 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record GameSystem
+public abstract record GameSystem
 {
     public required int Id { get; init; }
     public required string Name { get; init; }
@@ -10,4 +10,7 @@ public record GameSystem
 
     public DateTime Timestamp { get; init; } = DateTime.UtcNow;
     public bool IsDeleted { get; init; }
+
+    public IList<Modifier> Modifiers { get; init; } = new List<Modifier>();
+    public IList<Property> Properties { get; init; } = new List<Property>();
 }

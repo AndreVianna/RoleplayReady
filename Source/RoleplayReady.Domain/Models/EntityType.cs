@@ -3,6 +3,6 @@
 public enum EntityType
 {
     Character,
-    NonPlayerCharacter,
-    Monster,
+    NPC,
+    Creature,
 }
