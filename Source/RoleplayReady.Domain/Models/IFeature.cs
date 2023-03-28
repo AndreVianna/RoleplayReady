@@ -1,8 +1,8 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public interface IProperty
+public interface IFeature
 {
-    System System { get; }
+    GameSystem System { get; }
     string Name { get; }
     string Description { get; }
 }

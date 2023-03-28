@@ -2,7 +2,7 @@
 
 public record Modifier
 {
-    public required System System { get; init; }
+    public required GameSystem System { get; init; }
     public required string Name { get; init; }
     public string Description { get; init; } = string.Empty;
     public Func<Entity, bool> IsApplicable { get; init; } = _ => true;

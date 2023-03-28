@@ -12,30 +12,30 @@ public static partial class DnD5eDefinitions
             IsApplicable = _ => true,
             Apply = e =>
             {
-                e.Properties.Add(CreateElementProperty<string>(e, "Size"));
-                e.Properties.Add(CreateElementProperty<int>(e, "Strength"));
-                e.Properties.Add(CreateElementProperty<int>(e, "Dexterity"));
-                e.Properties.Add(CreateElementProperty<int>(e, "Constitution"));
-                e.Properties.Add(CreateElementProperty<int>(e, "Intelligence"));
-                e.Properties.Add(CreateElementProperty<int>(e, "Wisdom"));
-                e.Properties.Add(CreateElementProperty<int>(e, "Charisma"));
-                e.Properties.Add(CreateElementProperty<int>(e, "ProficiencyBonus"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "SavingThrowProficiencies"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "SkillProficiencies"));
-                e.Properties.Add(CreateElementProperty<string>(e, "PassivePerception"));
-                e.Properties.Add(CreateElementProperty<string>(e, "PassiveInsight"));
-                e.Properties.Add(CreateElementProperty<int>(e, "MaximumHitPoints"));
-                e.Properties.Add(CreateElementProperty<int>(e, "CurrentHitPoints"));
-                e.Properties.Add(CreateElementProperty<int>(e, "TemporaryHitPoints"));
-                e.Properties.Add(CreateElementProperty<int>(e, "ArmorClass"));
-                e.Properties.Add(CreateElementProperty<Dictionary<string, int>>(e, "Moviments"));
-                e.Properties.Add(CreateElementProperty<string>(e, "Alignment"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Languages"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Senses"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Resistances"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Immunities"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Vulnerabilities"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Traits"));
+                e.Features.Add(CreateElementProperty<string>(e, "Size"));
+                e.Features.Add(CreateElementProperty<int>(e, "Strength"));
+                e.Features.Add(CreateElementProperty<int>(e, "Dexterity"));
+                e.Features.Add(CreateElementProperty<int>(e, "Constitution"));
+                e.Features.Add(CreateElementProperty<int>(e, "Intelligence"));
+                e.Features.Add(CreateElementProperty<int>(e, "Wisdom"));
+                e.Features.Add(CreateElementProperty<int>(e, "Charisma"));
+                e.Features.Add(CreateElementProperty<int>(e, "ProficiencyBonus"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "SavingThrowProficiencies"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "SkillProficiencies"));
+                e.Features.Add(CreateElementProperty<string>(e, "PassivePerception"));
+                e.Features.Add(CreateElementProperty<string>(e, "PassiveInsight"));
+                e.Features.Add(CreateElementProperty<int>(e, "MaximumHitPoints"));
+                e.Features.Add(CreateElementProperty<int>(e, "CurrentHitPoints"));
+                e.Features.Add(CreateElementProperty<int>(e, "TemporaryHitPoints"));
+                e.Features.Add(CreateElementProperty<int>(e, "ArmorClass"));
+                e.Features.Add(CreateElementProperty<Dictionary<string, int>>(e, "Moviments"));
+                e.Features.Add(CreateElementProperty<string>(e, "Alignment"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Languages"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Senses"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Resistances"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Immunities"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Vulnerabilities"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Traits"));
                 return e;
             },
             Validations = new List<ElementValidation>
@@ -88,11 +88,11 @@ public static partial class DnD5eDefinitions
             IsApplicable = e => e.Type.Name == "Creature",
             Apply = e =>
             {
-                e.Properties.Add(CreateElementProperty<string>(e, "CreatureType"));
-                e.Properties.Add(CreateElementProperty<int>(e, "ChallengeRating"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Actions"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "LegendaryActions"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "LairActions"));
+                e.Features.Add(CreateElementProperty<string>(e, "CreatureType"));
+                e.Features.Add(CreateElementProperty<int>(e, "ChallengeRating"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Actions"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "LegendaryActions"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "LairActions"));
                 return e;
             },
             Validations = new List<ElementValidation>
@@ -107,14 +107,14 @@ public static partial class DnD5eDefinitions
             IsApplicable = e => e.Type.Name == "NonPlayerCharacter",
             Apply = e =>
             {
-                e.Properties.Add(CreateElementProperty<string>(e, "NPCType"));
-                e.Properties.Add(CreateElementProperty<string>(e, "Race"));
-                e.Properties.Add(CreateElementProperty<Class[]>(e, "Classes"));
-                e.Properties.Add(CreateElementProperty<string>(e, "Background"));
-                e.Properties.Add(CreateElementProperty<int>(e, "ChallengeRating"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Actions"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "LegendaryActions"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "LairActions"));
+                e.Features.Add(CreateElementProperty<string>(e, "NPCType"));
+                e.Features.Add(CreateElementProperty<string>(e, "Race"));
+                e.Features.Add(CreateElementProperty<Class[]>(e, "Classes"));
+                e.Features.Add(CreateElementProperty<string>(e, "Background"));
+                e.Features.Add(CreateElementProperty<int>(e, "ChallengeRating"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Actions"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "LegendaryActions"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "LairActions"));
                 return e;
             },
             Validations = new List<ElementValidation>
@@ -131,24 +131,24 @@ public static partial class DnD5eDefinitions
             IsApplicable = e => e.Type.Name == "Character",
             Apply = e =>
             {
-                e.Properties.Add(CreateElementProperty<string>(e, "Race"));
-                e.Properties.Add(CreateElementProperty<Class[]>(e, "Classes"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Archetypes"));
-                e.Properties.Add(CreateElementProperty<string>(e, "Background"));
-                e.Properties.Add(CreateElementProperty<Dictionary<string, int>>(e, "AbilityCharges"));
-                e.Properties.Add(CreateElementProperty<string[]>(e, "Feats"));
-                e.Properties.Add(CreateElementProperty<Dictionary<string, int>>(e, "Currency"));
-                e.Properties.Add(CreateElementProperty<bool>(e, "Inspiration"));
-                e.Properties.Add(CreateElementProperty<int>(e, "ExhaustionLevel"));
-                e.Properties.Add(CreateElementProperty<int>(e, "CarryingCapacity"));
-                e.Properties.Add(CreateElementProperty<int>(e, "CurrentCarryingWeight"));
-                e.Properties.Add(CreateElementProperty<string>(e, "EyeColor"));
-                e.Properties.Add(CreateElementProperty<string>(e, "Gender"));
-                e.Properties.Add(CreateElementProperty<decimal>(e, "Height"));
-                e.Properties.Add(CreateElementProperty<decimal>(e, "Weight"));
-                e.Properties.Add(CreateElementProperty<string>(e, "HairColor"));
-                e.Properties.Add(CreateElementProperty<string>(e, "SkinColor"));
-                e.Properties.Add(CreateElementProperty<string>(e, "Appearance"));
+                e.Features.Add(CreateElementProperty<string>(e, "Race"));
+                e.Features.Add(CreateElementProperty<Class[]>(e, "Classes"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Archetypes"));
+                e.Features.Add(CreateElementProperty<string>(e, "Background"));
+                e.Features.Add(CreateElementProperty<Dictionary<string, int>>(e, "AbilityCharges"));
+                e.Features.Add(CreateElementProperty<string[]>(e, "Feats"));
+                e.Features.Add(CreateElementProperty<Dictionary<string, int>>(e, "Currency"));
+                e.Features.Add(CreateElementProperty<bool>(e, "Inspiration"));
+                e.Features.Add(CreateElementProperty<int>(e, "ExhaustionLevel"));
+                e.Features.Add(CreateElementProperty<int>(e, "CarryingCapacity"));
+                e.Features.Add(CreateElementProperty<int>(e, "CurrentCarryingWeight"));
+                e.Features.Add(CreateElementProperty<string>(e, "EyeColor"));
+                e.Features.Add(CreateElementProperty<string>(e, "Gender"));
+                e.Features.Add(CreateElementProperty<decimal>(e, "Height"));
+                e.Features.Add(CreateElementProperty<decimal>(e, "Weight"));
+                e.Features.Add(CreateElementProperty<string>(e, "HairColor"));
+                e.Features.Add(CreateElementProperty<string>(e, "SkinColor"));
+                e.Features.Add(CreateElementProperty<string>(e, "Appearance"));
 
                 return e;
             },

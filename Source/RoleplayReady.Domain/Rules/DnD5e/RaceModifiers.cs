@@ -14,7 +14,7 @@ public static partial class DnD5eDefinitions
             {
                 var race = GetElementProperty<string>(e, "Race");
                 race.Value = "Elf";
-                e.Properties.Add(CreateElementProperty<string>(e, "Subrace"));
+                e.Features.Add(CreateElementProperty<string>(e, "Subrace"));
                 return e;
             },
             Validations = Array.Empty<ElementValidation>()

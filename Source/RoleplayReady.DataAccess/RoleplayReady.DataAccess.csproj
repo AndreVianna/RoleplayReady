@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RoleplayReady.Domain\RoleplayReady.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

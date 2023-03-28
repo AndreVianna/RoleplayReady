@@ -2,12 +2,12 @@
 
 public static class DefinitionsHelper
 {
-    public static ElementProperty<T?> GetElementProperty<T>(Element element, string name) =>
-        element.Properties.OfType<ElementProperty<T?>>().First(p => p.Name == name);
+    public static ElementFeature<T?> GetElementProperty<T>(Element element, string name) =>
+        element.Features.OfType<ElementFeature<T?>>().First(p => p.Name == name);
 
-    public static ElementProperty<T?> CreateElementProperty<T>(Element element, string name)
+    public static ElementFeature<T?> CreateElementProperty<T>(Element element, string name)
     {
-        var property = element.System.Properties.First(p => p.Name == name);
+        var property = element.System.Features.First(p => p.Name == name);
         return new()
         {
             System = property.System,
@@ -16,10 +16,10 @@ public static class DefinitionsHelper
         };
     }
 
-    public static void AddProperty<T>(this Models.System system, string name) =>
-        system.Properties.Add(new Property<T?>
+    public static void AddProperty<T>(this Models.GameSystem gameSystem, string name) =>
+        gameSystem.Features.Add(new Feature<T?>
         {
-            System = system,
+            System = gameSystem,
             Name = name,
             Description = string.Empty
         });

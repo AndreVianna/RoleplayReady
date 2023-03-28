@@ -1,7 +1,7 @@
 ﻿namespace RoleplayReady.Domain.Rules.DnD5e;
 
 // ReSharper disable once InconsistentNaming - Dnd5e is the official name of the system.
-public record DnD5e : Models.System
+public record DnD5e : Models.GameSystem
 {
     public DnD5e()
     {

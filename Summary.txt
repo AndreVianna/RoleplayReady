@@ -31,10 +31,42 @@ The project names are:
 
 The GitHub repo has been created, and the initial solution and projects were set up in a local Source folder. The projects were created using dotnet CLI commands, and the changes have been committed to the GitHub repo.
 
-We have been working on the Domain project where the core business logic resides.
+We strated working on the working on the Domain project where the core business logic resides.
 We have created a GameEntity record that represents various types of entities in a tabletop RPG, such as Characters, NPCs, and Monsters. It has the following properties: Id, GameSystem, OwnerId, EntityType, Name, Timestamp, IsDeleted, Properties, Items, Spells, Modifiers, and Entries.
 We have created an EntityType enum with the values: Character, NonPlayerCharacter, and Monster.
 We have designed an EntityProperty hierarchy with a base abstract record EntityProperty and a generic record EntityProperty<TValue>. The base record has Name and GameSystem properties, and the generic record implements an interface IHasValue<TValue> with InitialValue and CurrentValue properties.
 The Modifier class will be responsible for applying constraints, bonuses, penalties, and/or conditions to the EntityProperty values of a GameEntity. Each Modifier will be associated with a specific EntityProperty or a set of EntityProperties, and it will modify their CurrentValue based on the rules defined within the Modifier.
 We have placeholder records for Item, Spell, and Modifier classes, which will be expanded later.
 We have created an Entry record to represent various types of entries, such as backstory, acquaintances, enemies, notes, and events.
+
+After that we strated working on the Modifers class.
+We started with an initial code block that defines a SetGameSystemModifiers method and adds an InitializeMonster modifier. The original code included a set of basic properties and validations for the Monster entity.
+We refined and expanded the list of properties for the Monster entity, including additional properties from the DnD 5e core rules. This resulted in multiple iterations of the property list for the Monster entity.
+We identified the shared properties among Monsters, NPCs, and Characters, and moved them to a separate list that could be applied to all entity types. We then created separate lists for the properties exclusive to Monsters and NPCs.
+We discussed the possibility of Monsters having Spellcasting Abilities, Spell Slots, and Spells Known. Consequently, we updated the Monster property list to include these attributes.
+We identified the properties exclusive to Characters and refined the property list for the Character entity. This included updating the properties to better represent the DnD 5e rules, such as handling multiclassing with a Class record.
+We considered additional properties for Characters, like Carrying Weight and personal traits. However, these properties were not added to the code, as they are more suitable for a more detailed character sheet.
+Throughout the conversation, we have been updating the code to better represent the properties and structure of Monsters, NPCs, and Characters in the context of the DnD 5e system.
+
+
+List of races:
+Dragonborn => Standard
+Dwarf => Template
+Hill Dwarf => Closed
+Mountain Dwarf => Closed
+Elf => Template
+High Elf => Closed
+Wood Elf => Closed
+Dark Elf (Drow) => Closed
+Gnome => Template
+Forest Gnome => Closed
+Rock Gnome => Closed
+Half-Elf => Standard
+Half-Elf (Variant) => Standard
+Half-Orc => Standard
+Halfling => Template
+Lightfoot => Closed
+Stout => Closed
+Human => Standard
+Human (Variant) => Standard
+Tiefling => Standard
