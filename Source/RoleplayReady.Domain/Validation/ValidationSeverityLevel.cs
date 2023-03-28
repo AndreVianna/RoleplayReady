@@ -1,4 +1,4 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿namespace RoleplayReady.Domain.Validation;
 
 public enum ValidationSeverityLevel
 {

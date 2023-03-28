@@ -1,4 +1,4 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿namespace RoleplayReady.Domain.Validation;
 
 public readonly struct ValidationResult
 {
@@ -23,17 +23,13 @@ public readonly struct ValidationResult
     private ValidationResult AddErrors(IEnumerable<ValidationError?>? errors)
     {
         var validationErrors = errors as ValidationError?[] ?? errors?.ToArray() ?? Array.Empty<ValidationError?>();
-        if (validationErrors.Length == 0)
-        {
-            throw new ArgumentException("The error collection cannot be null or empty.", nameof(errors));
-        }
-
-        if (validationErrors.Any(e => e is null))
-        {
-            throw new ArgumentException("The error collection cannot contain null elements.", nameof(errors));
-        }
-
-        return new(_validationResult.IsT1 ? _validationResult.AsT1.Errors.Concat(validationErrors) : validationErrors);
+        return validationErrors.Length == 0
+            ? throw new ArgumentException("The error collection cannot be null or empty.", nameof(errors))
+            : validationErrors.Any(e => e is null)
+                ? throw new ArgumentException("The error collection cannot contain null elements.", nameof(errors))
+                : new(_validationResult.IsT1
+                    ? _validationResult.AsT1.Errors.Concat(validationErrors)
+                    : validationErrors);
     }
 
     private ValidationResult AddError(ValidationError? error) => AddErrors(new[] { error ?? throw new ArgumentException("The error cannot be null.", nameof(error)) });

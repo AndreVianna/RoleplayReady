@@ -2,23 +2,23 @@
 
 public static class GameSystemEngine
 {
-    private static GameEntity CreateEntity<T>(this T system, string ownerId, EntityType entityType, string name) where T : GameSystem
+    private static Entity CreateEntity<T>(this T system, string ownerId, ElementType elementType, string name) where T : Models.System
     {
-        var entity = new GameEntity
+        var entity = new Entity
         {
             Name = name,
             OwnerId = ownerId,
             System = system,
-            Type = entityType,
+            Type = elementType,
         };
         var modifier = system.Modifiers.First(i => i.Name == "SetEntity");
         if (modifier.IsApplicable(entity)) entity.Modifiers.Add(modifier);
-        modifier = system.Modifiers.First(i => i.Name == $"Set{entityType}");
+        modifier = system.Modifiers.First(i => i.Name == $"Set{elementType}");
         if (modifier.IsApplicable(entity)) entity.Modifiers.Add(modifier);
         return entity;
     }
 
-    public static GameEntity ChooseRace<T>(this T system, GameEntity entity, string race) where T : GameSystem
+    public static Entity ChooseRace<T>(this T system, Entity entity, string race) where T : Models.System
     {
         switch (race)
         {

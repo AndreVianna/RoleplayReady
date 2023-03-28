@@ -1,84 +1,86 @@
 ﻿namespace RoleplayReady.Domain.Rules.DnD5e;
 
+// ReSharper disable once InconsistentNaming - Dnd5e is the official name of the system.
 public static partial class DnD5eDefinitions
 {
     public static void AddRaceModifiers(this DnD5e system)
     {
         system.Modifiers.Add(new Modifier
         {
-            GameSystem = system,
+            System = system,
             Name = "SetElfRace",
-            IsApplicable = e => e.Type == EntityType.Character,
+            IsApplicable = e => e.Type.Name == "Character",
             Apply = e =>
             {
-                var race = GetEntityProperty<string>(e, "Race");
+                var race = GetElementProperty<string>(e, "Race");
                 race.Value = "Elf";
-                e.Properties.Add(CreateEntityProperty<string>(e, "Subrace"));
+                e.Properties.Add(CreateElementProperty<string>(e, "Subrace"));
                 return e;
             },
-            Validations = Array.Empty<Validation>()
+            Validations = Array.Empty<ElementValidation>()
         });
         system.Modifiers.Add(new Modifier
         {
-            GameSystem = system,
+            System = system,
             Name = "SetElfAbilityScoreChange",
             IsApplicable = e =>
             {
-                var race = GetEntityProperty<string>(e, "Race").Value;
-                var dexterity = GetEntityProperty<int?>(e, "Dexterity").Value;
+                var race = GetElementProperty<string>(e, "Race").Value;
+                var dexterity = GetElementProperty<int?>(e, "Dexterity").Value;
                 return race == "Elf" && dexterity != null;
             },
             Apply = e =>
             {
-                var dexterity = GetEntityProperty<int?>(e, "Dexterity");
+                var dexterity = GetElementProperty<int?>(e, "Dexterity");
                 dexterity.Value += 2;
                 return e;
             },
-            Validations = Array.Empty<Validation>()
+            Validations = Array.Empty<ElementValidation>()
         });
         system.Modifiers.Add(new Modifier
         {
-            GameSystem = system,
+            System = system,
             Name = "SetElfSpeed",
             IsApplicable = e =>
             {
-                var race = GetEntityProperty<string>(e, "Race").Value;
+                var race = GetElementProperty<string>(e, "Race").Value;
                 return race == "Elf";
             },
             Apply = e =>
             {
-                e.Properties.OfType<EntityProperty<Dictionary<string, int>>>().First(p => p.Property.Name == "Movements").Value!["Move"] = 30;
+                var movements = GetElementProperty<Dictionary<string, int>>(e, "Movements").Value!;
+                movements["Move"] = 30;
                 return e;
             },
-            Validations = Array.Empty<Validation>()
+            Validations = Array.Empty<ElementValidation>()
         });
         system.Modifiers.Add(new Modifier
         {
-            GameSystem = system,
+            System = system,
             Name = "SetElfLifespan",
             IsApplicable = e =>
             {
-                var race = GetEntityProperty<string>(e, "Race").Value;
+                var race = GetElementProperty<string>(e, "Race").Value;
                 return race == "Elf";
             },
-            Validations = new List<Validation>
+            Validations = new List<ElementValidation>
             {
-                new Validation
+                new ElementValidation
                 {
                     Severity = ValidationSeverityLevel.Hint,
                     Validate = e =>
                     {
-                        var age = GetEntityProperty<int?>(e, "Age").Value;
+                        var age = GetElementProperty<int?>(e, "Age").Value;
                         return age is > 750;
                     },
                     Message = "Elves should live only up to 750 years. Please, consider changing your age.",
                 },
-                new Validation
+                new ElementValidation
                 {
                     Severity = ValidationSeverityLevel.Hint,
                     Validate = e =>
                     {
-                        var age = GetEntityProperty<int?>(e, "Age").Value;
+                        var age = GetElementProperty<int?>(e, "Age").Value;
                         return age is < 100;
                     },
                     Message = "Elves only mature at the age of 100 years. Please, consider changing your age.",
@@ -87,11 +89,11 @@ public static partial class DnD5eDefinitions
         });
         system.Modifiers.Add(new Modifier
         {
-            GameSystem = system,
+            System = system,
             Name = "SetElfTrance",
             IsApplicable = e =>
             {
-                var race = GetEntityProperty<string>(e, "Race").Value;
+                var race = GetElementProperty<string>(e, "Race").Value;
                 return race == "Elf";
             },
             Apply = e =>
@@ -104,27 +106,27 @@ public static partial class DnD5eDefinitions
                 });
                 return e;
             },
-            Validations = Array.Empty<Validation>()
+            Validations = Array.Empty<ElementValidation>()
         });
         system.Modifiers.Add(new Modifier
         {
-            GameSystem = system,
+            System = system,
             Name = "AddElfSubrace",
             IsApplicable = e =>
             {
-                var race = GetEntityProperty<string>(e, "Race").Value;
+                var race = GetElementProperty<string>(e, "Race").Value;
                 return race == "Elf";
             },
             Apply = e => e,
-            Validations = new List<Validation>
+            Validations = new List<ElementValidation>
             {
-                new Validation
+                new ElementValidation
                 {
                     Severity = ValidationSeverityLevel.Error,
                     Validate = e =>
                     {
                         var allowedSubraces = new[] { "High Elf", "Wood Elf", "Dark Elf (Drow)" };
-                        var subrace = GetEntityProperty<string>(e, "Subrace").Value;
+                        var subrace = GetElementProperty<string>(e, "Subrace").Value;
                         return allowedSubraces.Contains(subrace);
                     },
                     Message = "Subrace not set.",
