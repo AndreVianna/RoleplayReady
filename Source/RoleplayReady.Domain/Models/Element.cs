@@ -2,10 +2,10 @@
 
 public record Element
 {
+    // System, OwnerId, and Name must be unique.
     public required System System { get; init; }
     public required string OwnerId { get; init; }
     public required string Name { get; init; }
-    // System, OwnerId, and Name must be unique.
 
     public required ElementType Type { get; init; }
 

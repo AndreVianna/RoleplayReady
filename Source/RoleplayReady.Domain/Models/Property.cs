@@ -8,10 +8,3 @@ public record Property<TValue> : IProperty
     public required string Description { get; init; }
     public Type Type => typeof(TValue);
 }
-
-public interface IProperty
-{
-    System System { get; }
-    string Name { get; }
-    string Description { get; }
-}
