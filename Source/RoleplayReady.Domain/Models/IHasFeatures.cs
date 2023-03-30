@@ -1,6 +1,5 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public interface IHasFeatures
-{
-    IList<Feature> Features { get; init; }
+public interface IHasFeatures {
+    IList<Feature> Features { get; }
 }

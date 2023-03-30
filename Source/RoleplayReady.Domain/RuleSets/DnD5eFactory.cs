@@ -30,11 +30,11 @@ public static partial class DnD5eFactory {
             ("Equipment", "Represents items, weapons, armor, and other gear that characters can acquire and use throughout their adventures."),
             // ReSharper restore StringLiteralTypo
         };
-        foreach (var elementType in elementTypes) {
+        foreach (var (name, description) in elementTypes) {
             dnd5e.ElementTypes.Add(new() {
                 RuleSet = dnd5e,
-                Name = elementType.Name,
-                Description = elementType.Description,
+                Name = name,
+                Description = description,
             });
         }
 
@@ -46,14 +46,14 @@ public static partial class DnD5eFactory {
                 "Wizards of the Coast"),
             // ReSharper restore StringLiteralTypo
         };
-        foreach (var source in sources) {
+        foreach (var (name, abbreviation, description, publisher) in sources) {
             dnd5e.Sources.Add(new() {
                 OwnerId = "System",
                 RuleSet = dnd5e,
-                Name = source.Name,
-                Abbreviation = source.Abbreviation,
-                Description = source.Description,
-                Publisher = source.Publisher,
+                Name = name,
+                Abbreviation = abbreviation,
+                Description = description,
+                Publisher = publisher,
             });
         }
 

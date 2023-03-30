@@ -1,6 +1,5 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public interface IHasAttributes
-{
-    IList<IElementAttribute> Attributes { get; init; }
+public interface IHasAttributes {
+    IList<IAttributeWithValue> Attributes { get; }
 }
