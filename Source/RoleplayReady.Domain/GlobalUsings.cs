@@ -6,5 +6,9 @@ global using RoleplayReady.Domain.Models;
 global using RoleplayReady.Domain.Validation;
 
 global using System.Collections.ObjectModel;
+global using System.Numerics;
 
-global using static RoleplayReady.Domain.Rules.DefinitionsHelper;
+global using RoleplayReady.Domain.Extensions;
+global using RoleplayReady.Domain.Models.Modifiers;
+
+global using static RoleplayReady.Domain.Validation.ValidationSeverityLevel;

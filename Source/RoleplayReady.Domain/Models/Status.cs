@@ -1,6 +1,6 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public enum SystemStatus
+public enum Status
 {
     NotReady,
     Public,

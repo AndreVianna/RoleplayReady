@@ -1,8 +1,8 @@
 ﻿namespace RoleplayReady.Domain.Validation;
 
-public record ElementValidation
+public record EntityValidation
 {
     public ValidationSeverityLevel Severity { get; init; }
-    public Func<Element, bool> Validate { get; init; } = _ => true;
+    public Func<Entity, bool> Validate { get; init; } = _ => true;
     public string Message { get; init; } = string.Empty;
 }

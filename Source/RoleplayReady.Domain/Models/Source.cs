@@ -2,9 +2,11 @@
 
 public class Source
 {
-    // System and Name must be unique.
-    public required GameSystem System { get; init; }
-    public required string Name { get; init; }
-    public required string Description { get; init; }
+    // RuleSet and Abbreviation must be unique.
+    public required RuleSet RuleSet { get; init; }
     public required string OwnerId { get; init; }
+    public required string Name { get; init; }
+    public required string Abbreviation { get; init; }
+    public string? Description { get; init; }
+    public string? Publisher { get; init; }
 }

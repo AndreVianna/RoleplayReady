@@ -1,6 +1,6 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record ElementFeature<TValue> : Feature<TValue>, IElementFeature, IHasValue<TValue>
+public record ElementAttribute<TValue>() : Attribute(typeof(TValue)), IElementAttribute, IHasValue<TValue>
 {
     public TValue? Value { get; set; }
 

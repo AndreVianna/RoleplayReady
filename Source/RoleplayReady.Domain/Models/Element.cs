@@ -1,9 +1,11 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RoleplayReady.Domain.Models;
 
 public record Element
 {
-    // System, OwnerId, and Name must be unique.
-    public required GameSystem System { get; init; }
+    // RuleSet, OwnerId, and Name must be unique.
+    public required RuleSet RuleSet { get; init; }
     public required string OwnerId { get; init; }
     public required string Name { get; init; }
 
@@ -14,7 +16,5 @@ public record Element
     public string? Description { get; init; }
 
     public DateTime Timestamp { get; init; } = DateTime.UtcNow;
-    public SystemStatus SystemStatus { get; init; }
-
-    public IList<IElementFeature> Features { get; init; } = new List<IElementFeature>();
+    public Status Status { get; init; }
 }
