@@ -1,8 +1,9 @@
 ﻿namespace RoleplayReady.Domain.Models.Effects;
 
 public record AddItems<TValue> : Effect {
-    public AddItems(IHasEffects parent, string attributeName, Func<IHasAttributes, IEnumerable<TValue>> getItemsFrom)
-        : base(parent, e => {
+    [SetsRequiredMembers]
+    public AddItems(string attributeName, Func<IElement, IEnumerable<TValue>> getItemsFrom)
+        : base(e => {
             var list = e.GetAttribute<HashSet<TValue>>(attributeName)?.Value;
             foreach (var item in getItemsFrom(e))
                 list?.Add(item);

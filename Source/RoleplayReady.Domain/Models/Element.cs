@@ -1,22 +1,28 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record Element : IHasTags, IHasRequirements, IHasValidations {
-    // RuleSet, OwnerId, and Name must be unique.
-    public required RuleSet RuleSet { get; init; }
-    public required string OwnerId { get; init; }
-    public required string Name { get; init; }
-    public IList<string> Tags { get; set; } = new List<string>();
+public record Element : Child, IElement {
+    public Element() {
+        
+    }
 
-    public required ElementType Type { get; init; }
-    public Usage Usage { get; init; }
-    public required Source Source { get; init; }
+    [SetsRequiredMembers]
+    public Element(IEntity parent, string ownerId, string name, string? description = null)
+        : base(parent, ownerId, name, description) {
+    }
 
-    public string? Description { get; init; }
+    public Usage Usage { get; init; } = Usage.Standard;
 
     public DateTime Timestamp { get; init; } = DateTime.UtcNow;
-    public Status Status { get; init; }
+    public Status Status { get; init; } = Status.NotReady;
 
-    public IList<Validation> Requirements { get; set; } = new List<Validation>();
+    public ISource? Source { get; init; }
 
-    public IList<Validation> Validations { get; set; } = new List<Validation>();
+    public IList<string> Tags { get; init; } = new List<string>();
+    public IList<IValidation> Requirements { get; init; } = new List<IValidation>();
+    public IList<IElementAttribute> Attributes { get; init; } = new List<IElementAttribute>();
+    public IList<ITrait> Traits { get; init; } = new List<ITrait>();
+    public IList<IPowerSource> PowerSources { get; init; } = new List<IPowerSource>();
+    public IList<IEffects> Effects { get; init; } = new List<IEffects>();
+    public IList<ITrigger> Triggers { get; init; } = new List<ITrigger>();
+    public IList<IValidation> Validations { get; init; } = new List<IValidation>();
 }

@@ -1,11 +1,12 @@
 ﻿namespace RoleplayReady.Domain.Models.Effects;
 
-public record Effect {
-    public Effect(IHasEffects parent, Func<Actor, Actor> modify) {
-        Parent = parent;
-        Modify = modify;
+public record Effect : IEffects {
+    public Effect() { }
+
+    [SetsRequiredMembers]
+    public Effect(Func<IElement, IElement> apply) {
+        Apply = apply;
     }
 
-    public IHasEffects Parent { get; }
-    public Func<Actor, Actor> Modify { get; set; } = _ => _;
+    public required Func<IElement, IElement> Apply { get; init; } = _ => _;
 }

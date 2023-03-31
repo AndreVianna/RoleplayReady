@@ -27,6 +27,8 @@ public readonly struct ValidationResult {
                     : validationErrors);
     }
 
+    public static Valid Valid => new();
+
     private ValidationResult AddError(ValidationError? error) => AddErrors(new[] { error ?? throw new ArgumentException("The error cannot be null.", nameof(error)) });
 
     public bool HasErrors => _validationResult.IsT1;

@@ -1,9 +1,11 @@
 ﻿namespace RoleplayReady.Domain.Models.Effects;
 
 public record AddJournalEntry : Effect {
-    public AddJournalEntry(IHasEffects parent, EntryType type, string title, string text) : base(parent,
-        e => {
-            e.Entries.Add(new() { Type = type, Title = title, Text = text });
+    [SetsRequiredMembers]
+    public AddJournalEntry(EntrySection section, string title, string text)
+        : base(e => {
+            if (e is not Actor a) return e;
+            a.Journal.Add(new Entry(section, title, text));
             return e;
         }) { }
 }

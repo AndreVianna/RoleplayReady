@@ -1,8 +1,20 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿using System.Xml.Linq;
 
-public record Entry
-{
-    public required EntryType Type { get; init; }
+namespace RoleplayReady.Domain.Models;
+
+public record Entry : IEntry {
+    public Entry() {
+        
+    }
+
+    [SetsRequiredMembers]
+    public Entry(EntrySection section, string title, string text) {
+        Section = section;
+        Title = title;
+        Text = text;
+    }
+
+    public required EntrySection Section { get; init; }
     public required string Title { get; init; }
     public required string Text { get; init; }
 

@@ -1,11 +1,17 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record Actor : Element, IHasAttributes {
-    public IList<Bundle> Equipment { get; init; } = new List<Bundle>();
-    public IList<Power> Powers { get; init; } = new List<Power>();
-    public IList<ActorAction> Actions { get; init; } = new List<ActorAction>();
-    public IList<Condition> Conditions { get; init; } = new List<Condition>();
-    public IList<Entry> Entries { get; init; } = new List<Entry>();
+public record Actor : Element, IActor {
+    public Actor() {
 
-    public IList<IAttributeWithValue> Attributes { get; init; } = new List<IAttributeWithValue>();
+    }
+
+    [SetsRequiredMembers]
+    public Actor(IEntity parent, string ownerId, string name, string? description = null)
+        : base(parent, ownerId, name, description) { }
+
+    public IList<IBundle> Possessions { get; init; } = new List<IBundle>();
+    public IList<IPower> Powers { get; init; } = new List<IPower>();
+    public IList<IAction> Actions { get; init; } = new List<IAction>();
+    public IList<ICondition> Conditions { get; init; } = new List<ICondition>();
+    public IList<IEntry> Journal { get; init; } = new List<IEntry>();
 }

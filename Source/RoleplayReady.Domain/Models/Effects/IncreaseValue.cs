@@ -2,8 +2,9 @@
 
 public record IncreaseValue<TValue> : Effect
     where TValue : IAdditionOperators<TValue, TValue, TValue> {
-    public IncreaseValue(IHasEffects parent, string attributeName, Func<IHasAttributes, TValue> getBonusFrom)
-        : base(parent, e => {
+    [SetsRequiredMembers]
+    public IncreaseValue(string attributeName, Func<IElement, TValue> getBonusFrom)
+        : base(e => {
             var attribute = e.GetAttribute<TValue>(attributeName);
             if (attribute is not null && attribute.Value is not null)
                 attribute.Value += getBonusFrom(e);

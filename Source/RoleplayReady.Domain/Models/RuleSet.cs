@@ -1,20 +1,20 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record RuleSet
-{
-    // Abbreviation must be unique.
-    public required string OwnerId { get; init; }
-    public required string Name { get; init; }
+public record RuleSet : Entity, IRuleSet {
+    public RuleSet() {
+    }
+
+    [SetsRequiredMembers]
+    public RuleSet(string ownerId, string abbreviation, string name, string? description = null)
+        : base(ownerId, name, description) {
+        Abbreviation = abbreviation;
+    }
+
+    // Abbreviation also must be unique.
     public required string Abbreviation { get; init; }
-    public string? Description { get; init; }
-    public string? Publisher { get; init; }
 
-    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
-    public Status Status { get; init; }
-
-    public IList<Source> Sources { get; init; } = new List<Source>();
-    public IList<ElementType> ElementTypes { get; init; } = new List<ElementType>();
-    public IList<Element> Elements { get; init; } = new List<Element>();
-    public IList<RuleSetProcess> Processes { get; init; } = new List<RuleSetProcess>();
+    public IList<ISource> Sources { get; init; } = new List<ISource>();
     public IList<IAttribute> Attributes { get; init; } = new List<IAttribute>();
+    public IList<IElement> Elements { get; init; } = new List<IElement>();
+    public IList<IWorkflow> Workflows { get; init; } = new List<IWorkflow>();
 }

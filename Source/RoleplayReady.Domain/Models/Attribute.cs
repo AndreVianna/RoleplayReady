@@ -1,15 +1,15 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record Attribute : IAttribute
-{
-    public Attribute(Type type)
-    {
-        Type = type;
+public record Attribute : Child, IAttribute {
+    public Attribute() {
+
     }
 
-    // RuleSet and Name must be unique.
-    public required RuleSet RuleSet { get; init; }
-    public required string Name { get; init; }
-    public Type Type { get; }
-    public string? Description { get; init; }
+    [SetsRequiredMembers]
+    public Attribute(IEntity parent, string ownerId, string name, Type dataType, string? description = null)
+        : base(parent, ownerId, name, description) {
+        DataType = dataType;
+    }
+
+    public required Type DataType { get; init; }
 }
