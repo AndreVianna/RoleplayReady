@@ -1,19 +1,14 @@
 ﻿namespace RoleplayReady.Domain.Utilities;
 
-internal class AttributeEffectsBuilder : IFluentBuilder, IConnectBuilders, ILet, ICheck {
-    private readonly IElement _parent;
+public class SectionItemBuilder : IFluentBuilder, IConnectBuilders, ILet, ICheck {
+    private readonly IElement _element;
     private string _attribute = string.Empty;
 
-    private AttributeEffectsBuilder(IElement parent) {
-        _parent = parent;
+    private SectionItemBuilder(IElement element) {
+        _element = element;
     }
 
-    public static IFluentBuilder For(IElement target) => new AttributeEffectsBuilder(target);
-
-    private AttributeEffectsBuilder Add(IEffects effect) {
-        _parent.Effects.Add(effect);
-        return this;
-    }
+    public static IFluentBuilder For(IElement target) => new SectionItemBuilder(target);
 
     public ILet Let(string attribute) {
         _attribute = attribute;
@@ -25,15 +20,7 @@ internal class AttributeEffectsBuilder : IFluentBuilder, IConnectBuilders, ILet,
         return this;
     }
 
-    public ILet AndLet(string featureName) {
-        _attribute = featureName;
-        return this;
-    }
-
-    public ICheck AndCheckIf(string featureName) {
-        _attribute = featureName;
-        return this;
-    }
+    public IFluentBuilder And => this;
 
     public IConnectBuilders Be<TValue>(TValue value)
         => Be(_ => value);
@@ -126,8 +113,13 @@ internal class AttributeEffectsBuilder : IFluentBuilder, IConnectBuilders, ILet,
         => Add(new AddTag(text));
 
     public IConnectBuilders AddPowerSource(string name, string description, Action<IFluentBuilder> build)
+        => AddPowerSource(name, description, (_, b) => build(b));
+
+    public IConnectBuilders AddPowerSource(string name, string description, Action<IElement, IFluentBuilder> build)
         => Add(new AddPowerSource(name, description, build));
 
-
-    public IFluentBuilder And => this;
+    private IConnectBuilders Add(IEffects effect) {
+        _element.Effects.Add(effect);
+        return this;
+    }
 }

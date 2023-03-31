@@ -1,6 +1,9 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface IWorkflowStep : IAmKnownAs, IMayHaveADescription {
-    IWorkflow Parent { get; init; }
+public interface IAmOrderedBy {
     int Order { get; init; }
+}
+
+public interface IWorkflowStep : IAmOrderedBy, IAmKnownAs, IMayHaveADescription {
+    IWorkflow Parent { get; init; }
 }

@@ -1,10 +1,8 @@
-﻿using System.Xml.Linq;
-
-namespace RoleplayReady.Domain.Models;
+﻿namespace RoleplayReady.Domain.Models;
 
 public record Entry : IEntry {
     public Entry() {
-        
+
     }
 
     [SetsRequiredMembers]

@@ -1,4 +1,4 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface IChild : IEntity, IAmAChildOf {
+public interface IChild : IEntity, IAmAChildOf, IAmPartOf {
 }

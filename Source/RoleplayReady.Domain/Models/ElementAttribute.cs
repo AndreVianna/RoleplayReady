@@ -6,8 +6,8 @@ public record ElementAttribute : Child, IElementAttribute {
     }
 
     [SetsRequiredMembers]
-    public ElementAttribute(IEntity parent, string ownerId, string name, IAttribute attribute, object? value, string? description = null)
-        : base(parent, ownerId, name, description) {
+    public ElementAttribute(IEntity parent, string ownerId, string name, IAttribute attribute, object? value, string? description = null, Status? status = null)
+        : base(parent, ownerId, name, description, status) {
         Attribute = attribute;
         Value = value;
     }
@@ -19,7 +19,7 @@ public record ElementAttribute : Child, IElementAttribute {
 
 public record ElementAttribute<TValue> : ElementAttribute, IElementAttribute<TValue> {
     public ElementAttribute() {
-        
+
     }
 
     [SetsRequiredMembers]

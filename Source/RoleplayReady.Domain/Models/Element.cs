@@ -2,20 +2,26 @@
 
 public record Element : Child, IElement {
     public Element() {
-        
+
     }
 
     [SetsRequiredMembers]
-    public Element(IEntity parent, string ownerId, string name, string? description = null)
-        : base(parent, ownerId, name, description) {
+    public Element(IEntity parent, string ownerId, string name, string? description = null, Status? status = null, Usage? usage = null, ISource? source = null)
+        : base(parent, ownerId, name, description, status) {
+        if (parent is IElement element) {
+            Usage = usage ?? element.Usage;
+            Status = status ?? element.Status;
+            Source = source ?? element.Source;
+        }
+        else {
+            Usage = usage ?? Usage.Standard;
+            Status = status ?? Status.NotReady;
+            Source = source;
+        }
     }
 
-    public Usage Usage { get; init; } = Usage.Standard;
-
-    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
-    public Status Status { get; init; } = Status.NotReady;
-
-    public ISource? Source { get; init; }
+    public required Usage Usage { get; init; }
+    public required ISource? Source { get; init; }
 
     public IList<string> Tags { get; init; } = new List<string>();
     public IList<IValidation> Requirements { get; init; } = new List<IValidation>();

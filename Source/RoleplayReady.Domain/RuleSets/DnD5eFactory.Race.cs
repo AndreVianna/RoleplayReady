@@ -23,11 +23,21 @@ public static partial class DnD5eFactory {
             .Add("Drow Ability Score Increase", "[FeatureDescription]", x => x.Let("Charisma").IncreaseBy(1))
             .Add("Superior Darkvision", "[FeatureDescription]", x => x.Let("Senses").Have("Superior Darkvision"))
             .Add("Drow Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Rapiers", "Shortswords", "Hand Crossbows"))
-            .Add("Drow Magic", "[FeatureDescription]", x => x.AddPowerSource("Drow Innate Magic", "[Add description here]", build => {
-                build.AddTag("Innate");
-                build.Let("SpellCastingAbility").Be("Charisma");
-                build.Let("CantripsKnown").Be(1);
-                build.Let("SpellsKnown").Be(1);
+            .Add("Drow Magic", "[FeatureDescription]", x => x.AddPowerSource("Drow Innate Magic", "[Add description here]", (e, b) => {
+                var level = e.GetAttribute<int>("Level").Value;
+                var spellsKnown = level >= 5 ? 2 : level >= 3 ? 1 : 0;
+                b.AddTag("Innate")
+                    .And.Let("SpellCastingAbility").Be("Charisma")
+                    .And.Let("CantripsKnown").Be(1)
+                    .And.Let("SpellsKnown").Be(spellsKnown);
+                if (level >= 3) {
+                    b.Let("SlotsPerLevel").Have(1, 1)
+                        .And.Let("SpellList").Have("Faerie Fire");
+                }
+                if (level >= 5) {
+                    b.Let("SlotsPerLevel").Have(2, 1)
+                        .And.Let("SpellList").Have("Faerie Fire");
+                }
             })));
 
         var woodElf = dnd5e.GetElement("Elf (Wood)").CopyTraitsFrom(dnd5e.GetElement("Elf"), excluding: "Speed");
@@ -42,11 +52,11 @@ public static partial class DnD5eFactory {
             .Add("High Elf Ability Score Increase", "[FeatureDescription]", x => x.Let("Intelligence").IncreaseBy(1))
             .Add("Extra Language", "[FeatureDescription]", x => x.Let("MaximumLanguagesKnown").IncreaseBy(1))
             .Add("High Elf Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Longswords", "Shortswords", "Shortbows", "Longbows"))
-            .Add("Cantrip", "[FeatureDescription]", x => x.AddPowerSource("High Elf Innate Magic", "[Add description here]", build => {
-                build.AddTag("Innate");
-                build.Let("SpellCastingAbility").Be("Intelligence");
-                build.Let("CantripsKnown").Be(1);
-                build.Let("SpellList").Have("Wizard");
-            })));
+            .Add("Cantrip", "[FeatureDescription]", x => x.AddPowerSource("High Elf Innate Magic", "[Add description here]", b => b
+                .AddTag("Innate")
+                .And.Let("SpellCastingAbility").Be("Intelligence")
+                .And.Let("CantripsKnown").Be(1)
+                .And.Let("SpellList").Have("Wizard")
+            )));
     }
 }

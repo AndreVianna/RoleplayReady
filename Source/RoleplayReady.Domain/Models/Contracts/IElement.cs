@@ -1,8 +1,7 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
 public interface IElement
-    : IEntity,
-    IAmTracked,
+    : IChild,
     IHaveStatus,
     ICanBeUsedAs,
     IMayHaveASource,

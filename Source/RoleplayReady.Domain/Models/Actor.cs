@@ -6,8 +6,8 @@ public record Actor : Element, IActor {
     }
 
     [SetsRequiredMembers]
-    public Actor(IEntity parent, string ownerId, string name, string? description = null)
-        : base(parent, ownerId, name, description) { }
+    public Actor(IEntity parent, string ownerId, string name, string? description = null, Status? status = null, Usage? usage = null, ISource? source = null)
+        : base(parent, ownerId, name, description, status, usage, source) { }
 
     public IList<IBundle> Possessions { get; init; } = new List<IBundle>();
     public IList<IPower> Powers { get; init; } = new List<IPower>();

@@ -13,6 +13,7 @@ public static partial class DnD5eFactory {
             Name = "Dungeons & Dragons 5th Edition",
             Abbreviation = "DnD5e",
             Description = "Dungeons & Dragons 5th Edition is a tabletop role-playing game system.",
+            Status = Status.Public,
         };
 
         var sources = new[] { new Source {
@@ -107,6 +108,7 @@ public static partial class DnD5eFactory {
                 Name = attribute.Name,
                 DataType = attribute.Type,
                 Description = attribute.Description,
+                Status = Status.Public,
             });
         }
 

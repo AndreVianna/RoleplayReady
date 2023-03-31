@@ -6,10 +6,10 @@ public abstract record Child : Entity, IChild {
     }
 
     [SetsRequiredMembers]
-    protected Child(IEntity parent, string ownerId, string name, string? description = null)
-        : base(ownerId, name, description) {
+    protected Child(IEntity parent, string ownerId, string name, string? description = null, Status? status = null)
+        : base(ownerId, name, description, status) {
         Parent = parent ?? throw new ArgumentNullException(nameof(parent));
-        RuleSet = parent is Element element ? element.RuleSet : parent as RuleSet ?? throw new ArgumentException("Parent must be an Element or a RuleSet.", nameof(parent));
+        RuleSet = parent is IChild element ? element.RuleSet : parent as RuleSet ?? throw new ArgumentException("Parent must be a RuleSet or one of its Children.", nameof(parent));
     }
 
     public required RuleSet RuleSet { get; init; }

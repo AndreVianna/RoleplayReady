@@ -1,10 +1,7 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface IEntry {
+public interface IEntry : IAmTracked, IUseSoftDelete {
     EntrySection Section { get; init; }
     string Title { get; init; }
     string Text { get; init; }
-
-    DateTime Timestamp { get; init; }
-    bool IsDeleted { get; init; }
 }

@@ -2,11 +2,9 @@
 
 public record AddPowerSource : Effect {
     [SetsRequiredMembers]
-    public AddPowerSource(string name, string description, Action<IFluentBuilder> build, Usage usage = Usage.Closed, Status status = Status.Public,
-        ISource? source = null)
+    public AddPowerSource(string name, string description, Action<IElement, IFluentBuilder> configure)
         : base(e => {
-            e.Configure(nameof(Element.PowerSources)).For(e.OwnerId).WithUsage(usage).WithStatus(status).WithSource(source).As(powerSources => powerSources
-                .Add(name, description, build));
-            return e;
+            return e.Configure(nameof(Element.PowerSources)).As(ps => ps
+                    .Add(name, description, configure));
         }) { }
 }

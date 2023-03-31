@@ -7,5 +7,6 @@ public interface IFluentBuilder {
     IConnectBuilders AddJournalEntry(EntrySection section, string text);
     IConnectBuilders AddTag(string tag);
     IConnectBuilders AddPowerSource(string name, string description, Action<IFluentBuilder> build);
+    IConnectBuilders AddPowerSource(string name, string description, Action<IElement, IFluentBuilder> build);
 
 }

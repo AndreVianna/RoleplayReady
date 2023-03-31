@@ -5,8 +5,8 @@ public record RuleSet : Entity, IRuleSet {
     }
 
     [SetsRequiredMembers]
-    public RuleSet(string ownerId, string abbreviation, string name, string? description = null)
-        : base(ownerId, name, description) {
+    public RuleSet(string ownerId, string abbreviation, string name, string? description = null, Status? status = null)
+        : base(ownerId, name, description, status) {
         Abbreviation = abbreviation;
     }
 

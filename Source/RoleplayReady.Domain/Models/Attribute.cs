@@ -6,8 +6,8 @@ public record Attribute : Child, IAttribute {
     }
 
     [SetsRequiredMembers]
-    public Attribute(IEntity parent, string ownerId, string name, Type dataType, string? description = null)
-        : base(parent, ownerId, name, description) {
+    public Attribute(IEntity parent, string ownerId, Type dataType, string name, string? description = null, Status? status = null)
+        : base(parent, ownerId, name, description, status) {
         DataType = dataType;
     }
 

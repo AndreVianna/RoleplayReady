@@ -6,14 +6,18 @@ public abstract record Entity : IEntity {
     }
 
     [SetsRequiredMembers]
-    protected Entity(string ownerId, string name, string? description = null) {
+    protected Entity(string ownerId, string name, string? description = null, Status? status = null) {
         OwnerId = ownerId ?? throw new ArgumentNullException(nameof(ownerId));
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Description = description;
+        Status = status ?? Status.NotReady;
     }
 
     // RuleSet, OwnerId, and Name must be unique.
     public required string OwnerId { get; init; }
     public required string Name { get; init; }
     public string? Description { get; init; }
+
+    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
+    public required Status Status { get; init; }
 }
