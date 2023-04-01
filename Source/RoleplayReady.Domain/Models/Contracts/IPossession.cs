@@ -1,7 +1,6 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface IBundle {
+public interface IPossession : IAmChildOf {
     IObject Object { get; init; }
     decimal Quantity { get; init; }
-    string Unit { get; init; }
 }

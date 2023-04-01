@@ -6,6 +6,6 @@ public interface IEntity
 	IAmPartOf, 
     IAmKnownAs,
     IAmAlsoKnownAs,
-    IMayHaveADescription,
+    IAmDescribedAs,
     IAmTracked {
 }

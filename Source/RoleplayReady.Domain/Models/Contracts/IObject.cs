@@ -1,4 +1,3 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface IObject : IElement {
-}
+public interface IObject : IElement, IAmMeasuredBy { }

@@ -6,7 +6,7 @@ namespace RoleplayReady.Domain.RuleSets;
 public static partial class DnD5eFactory {
     // ReSharper disable once InconsistentNaming - DnD5e is the official name of the system.
     private static void SetRaceModifiers(IRuleSet dnd5e) {
-        var elf = dnd5e.GetElement("Elf");
+        var elf = dnd5e.GetComponent("Elf");
         elf.Configure(nameof(Element.Traits)).As(traits => traits
             .Add("Ability Score Increase", "[FeatureDescription]", x => x.Let("Dexterity").IncreaseBy(2))
             .Add("Age", "[FeatureDescription]", x => x.CheckIf("Age").IsBetween(100, 750, "Elves only mature at the age of 100 years and should live only up to 750 years. Please, consider changing your age."))
@@ -18,10 +18,10 @@ public static partial class DnD5eFactory {
             .Add("Trance", "[FeatureDescription]", x => x.AddJournalEntry(Traits, "Elves don't need to sleep. Instead, they meditate deeply for 4 hours a day."))
             .Add("Languages", "[FeatureDescription]", x => x.Let("MaximumLanguagesKnown").Be(2).And.Let("Languages").Have("Common", "Elvish")));
 
-        var drow = dnd5e.GetElement("Drow (Dark Elf)").CopyTraitsFrom(dnd5e.GetElement("Elf"), excluding: "Darkvision");
+        var drow = dnd5e.GetComponent("Drow (Dark Elf)").CopyTraitsFrom(elf, excluding: "Darkvision");
         drow.Configure(nameof(Element.Traits)).As(traits => traits
             .Add("Drow Ability Score Increase", "[FeatureDescription]", x => x.Let("Charisma").IncreaseBy(1))
-            .Add("Superior Darkvision", "[FeatureDescription]", x => x.Let("Senses").Have("Superior Darkvision"))
+            .Replace("Darkvision").With("Superior Darkvision", "[FeatureDescription]", x => x.Let("Senses").Have("Superior Darkvision"))
             .Add("Drow Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Rapiers", "Shortswords", "Hand Crossbows"))
             .Add("Drow Magic", "[FeatureDescription]", x => x.AddPowerSource("Drow Innate Magic", "[Add description here]", (e, b) => {
                 var level = e.GetAttribute<int>("Level").Value;
@@ -40,14 +40,14 @@ public static partial class DnD5eFactory {
                 }
             })));
 
-        var woodElf = dnd5e.GetElement("Elf (Wood)").CopyTraitsFrom(dnd5e.GetElement("Elf"), excluding: "Speed");
+        var woodElf = dnd5e.GetComponent("Elf (Wood)").CopyTraitsFrom(elf, excluding: "Speed");
         woodElf.Configure(nameof(Element.Traits)).As(traits => traits
             .Add("Drow Ability Score Increase", "[FeatureDescription]", x => x.Let("Wisdom").IncreaseBy(1))
             .Add("Fleet of Foot", "[FeatureDescription]", x => x.Let("Movements").Have("Walk", 35))
             .Add("Wood Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Longswords", "Shortswords", "Shortbows", "Longbows"))
             .Add("Mask of the Wild", "[FeatureDescription]", x => x.AddJournalEntry(Traits, "You can attempt to hide even when you are only lightly obscured by foliage, heavy rain, falling snow, mist, and other natural phenomena.")));
 
-        var highElf = dnd5e.GetElement("Elf (High)").CopyTraitsFrom(dnd5e.GetElement("Elf"));
+        var highElf = dnd5e.GetComponent("Elf (High)").CopyTraitsFrom(elf);
         highElf.Configure(nameof(Element.Traits)).As(traits => traits
             .Add("High Elf Ability Score Increase", "[FeatureDescription]", x => x.Let("Intelligence").IncreaseBy(1))
             .Add("Extra Language", "[FeatureDescription]", x => x.Let("MaximumLanguagesKnown").IncreaseBy(1))

@@ -1,17 +1,18 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record ElementAttribute : Child, IElementAttribute {
-    public ElementAttribute() {
-
-    }
+public abstract record ElementAttribute : IElementAttribute {
+    protected ElementAttribute() { }
 
     [SetsRequiredMembers]
-    public ElementAttribute(IEntity parent, string ownerId, string name, IAttribute attribute, object? value, string? description = null, Status? status = null)
-        : base(parent, ownerId, name, description, status) {
-        Attribute = attribute;
+    protected ElementAttribute(IEntity parent, IElement element, IAttribute attribute, object? value) {
+        Parent = parent ?? throw new ArgumentNullException(nameof(parent));
+        Element = element ?? throw new ArgumentNullException(nameof(element));
+        Attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
         Value = value;
     }
 
+    // Element + Attribute must be unique;
+    public required IEntity Parent { get; init; }
     public required IElement Element { get; init; }
     public required IAttribute Attribute { get; init; }
 
@@ -24,8 +25,8 @@ public record ElementAttribute<TValue> : ElementAttribute, IElementAttribute<TVa
     }
 
     [SetsRequiredMembers]
-    public ElementAttribute(IEntity parent, string ownerId, string name, IAttribute attribute, TValue? value, string? description = null)
-        : base(parent, ownerId, name, attribute, value, description) {
+    public ElementAttribute(IEntity parent, IElement element, IAttribute attribute, TValue? value)
+        : base(parent, element, attribute, value) {
     }
 
     public new required TValue? Value { get; set; }

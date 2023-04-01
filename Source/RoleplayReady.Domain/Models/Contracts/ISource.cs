@@ -2,6 +2,6 @@
 
 public interface ISource
     : IAmKnownAs,
-    IMayHaveADescription,
+    IAmDescribedAs,
     IAmAlsoKnownAs {
 }

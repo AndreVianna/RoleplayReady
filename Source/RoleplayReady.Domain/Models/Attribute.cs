@@ -1,13 +1,13 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record Attribute : Child, IAttribute {
+public record Attribute : Entity, IAttribute {
     public Attribute() {
 
     }
 
     [SetsRequiredMembers]
-    public Attribute(IEntity parent, string ownerId, Type dataType, string name, string? description = null, Status? status = null)
-        : base(parent, ownerId, name, description, status) {
+    public Attribute(IEntity parent, string ownerId, Type dataType, string abbreviation, string name, string description, State? state = null)
+        : base(parent, ownerId, abbreviation, name, description, state) {
         DataType = dataType;
     }
 

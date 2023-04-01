@@ -5,7 +5,7 @@ public record AddJournalEntry : Effect {
     public AddJournalEntry(EntrySection section, string title, string text)
         : base(e => {
             if (e is not Actor a) return e;
-            a.Journal.Add(new Entry(section, title, text));
+            a.JournalEntries.Add(new JournalEntry(e, section, title, text));
             return e;
         }) { }
 }

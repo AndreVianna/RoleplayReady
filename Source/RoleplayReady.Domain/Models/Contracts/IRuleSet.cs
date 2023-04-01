@@ -2,9 +2,7 @@
 
 public interface IRuleSet 
     : IEntity,
-    IAmAlsoKnownAs,
     IHaveSources,
-    IHaveAttributes,
-    IHaveElements,
+    IHaveComponents,
     IHaveWorkflows {
 }

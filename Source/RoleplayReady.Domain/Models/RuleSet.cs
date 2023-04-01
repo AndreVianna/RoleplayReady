@@ -5,16 +5,12 @@ public record RuleSet : Entity, IRuleSet {
     }
 
     [SetsRequiredMembers]
-    public RuleSet(string ownerId, string abbreviation, string name, string? description = null, Status? status = null)
-        : base(ownerId, name, description, status) {
-        Abbreviation = abbreviation;
+    public RuleSet(string ownerId, string abbreviation, string name, string description, State? state = null)
+        : base(ownerId, abbreviation, name, description, state) {
     }
 
-    // Abbreviation also must be unique.
-    public required string Abbreviation { get; init; }
-
     public IList<ISource> Sources { get; } = new List<ISource>();
-    public IList<IAttribute> Attributes { get; } = new List<IAttribute>();
-    public IList<IElement> Elements { get; } = new List<IElement>();
-    public IList<IWorkflow> Workflows { get; } = new List<IWorkflow>();
+    public IList<IComponent> Components { get; } = new List<IComponent>();
+    public IList<IActor> Actors { get; } = new List<IActor>();
+    public IList<IProcess> Workflows { get; } = new List<IProcess>();
 }

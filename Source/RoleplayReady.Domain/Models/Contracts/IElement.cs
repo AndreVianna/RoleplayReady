@@ -1,8 +1,7 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
 public interface IElement
-    : IChild,
-    IHaveStatus,
+    : IEntity,
     ICanBeUsedAs,
     IMayHaveASource,
     IHaveTags,
