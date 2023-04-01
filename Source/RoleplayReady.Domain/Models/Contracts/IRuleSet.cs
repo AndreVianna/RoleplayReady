@@ -2,7 +2,7 @@
 
 public interface IRuleSet 
     : IEntity,
-    IHaveAnAbbreviation,
+    IAmAlsoKnownAs,
     IHaveSources,
     IHaveAttributes,
     IHaveElements,

@@ -12,6 +12,7 @@ public record ElementAttribute : Child, IElementAttribute {
         Value = value;
     }
 
+    public required IElement Element { get; init; }
     public required IAttribute Attribute { get; init; }
 
     public object? Value { get; set; }

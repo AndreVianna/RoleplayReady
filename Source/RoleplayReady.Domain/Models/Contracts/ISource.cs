@@ -3,5 +3,5 @@
 public interface ISource
     : IAmKnownAs,
     IMayHaveADescription,
-    IHaveAnAbbreviation {
+    IAmAlsoKnownAs {
 }

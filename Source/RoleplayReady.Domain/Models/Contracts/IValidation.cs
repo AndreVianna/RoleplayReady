@@ -2,5 +2,5 @@
 
 public interface IValidation {
     Func<IElement, bool> Validate { get; init; }
-    string ErrorMessage { get; init; }
+    string FailureMessage { get; init; }
 }

@@ -13,8 +13,8 @@ public record RuleSet : Entity, IRuleSet {
     // Abbreviation also must be unique.
     public required string Abbreviation { get; init; }
 
-    public IList<ISource> Sources { get; init; } = new List<ISource>();
-    public IList<IAttribute> Attributes { get; init; } = new List<IAttribute>();
-    public IList<IElement> Elements { get; init; } = new List<IElement>();
-    public IList<IWorkflow> Workflows { get; init; } = new List<IWorkflow>();
+    public IList<ISource> Sources { get; } = new List<ISource>();
+    public IList<IAttribute> Attributes { get; } = new List<IAttribute>();
+    public IList<IElement> Elements { get; } = new List<IElement>();
+    public IList<IWorkflow> Workflows { get; } = new List<IWorkflow>();
 }

@@ -8,5 +8,5 @@ public record Effect : IEffects {
         Apply = apply;
     }
 
-    public required Func<IElement, IElement> Apply { get; init; } = _ => _;
+    public required Func<IElement, IElement> Apply { get; init; }
 }

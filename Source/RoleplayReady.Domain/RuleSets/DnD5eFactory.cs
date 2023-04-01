@@ -145,7 +145,7 @@ public static partial class DnD5eFactory {
             var element = (Element)ElementFactory.For(raceSection, "System").Create(nameof(Component), race.Name, race.Description) with {
                 Usage = race.Usage,
                 Source = playersHandbook,
-                Status = Status.Public,
+                State = State.Public,
             };
             dnd5e.Elements.Add(element);
         }
