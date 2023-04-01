@@ -1,19 +1,26 @@
 ﻿namespace RoleplayReady.Domain.Utilities;
 
-public interface ISectionBuilder {
-    ISectionBuilder Add(string name, string description, Action<IFluentBuilder> configure);
-    ISectionBuilder Add(string name, string description, Action<IElement, IFluentBuilder> configure);
+public interface ISectionBuilderMainCommands {
+    ISectionBuilderCommandConnector Add(string name, string description, Action<IElementUpdater.IElementUpdaterMain> configure);
+    ISectionBuilderCommandConnector Add(string name, string description, Action<IElement, IElementUpdater.IElementUpdaterMain> configure);
 
-    ISectionBuilder Remove(string existing);
+    ISectionBuilderCommandConnector Remove(string existing);
+    ISectionBuilderReplaceContinuation Replace(string existing);
+    ISectionBuilderAppendContinuation Append(string existing);
+}
 
-    IReplaceContinuation Replace(string existing, string name, string description, Action<IFluentBuilder> configure);
-    ISectionBuilder Replace(string existing, string name, string description, Action<IElement, IFluentBuilder> configure);
+public interface ISectionBuilderCommandConnector {
+    ISectionBuilderMainCommands And { get; }
+}
 
-    ISectionBuilder IncludeIn(string existing, string description, Action<IFluentBuilder> configure);
-    ISectionBuilder IncludeIn(string existing, string description, Action<IElement, IFluentBuilder> configure);
+public interface ISectionBuilderReplaceContinuation {
+    ISectionBuilderCommandConnector With(string name, string description, Action<IElementUpdater.IElementUpdaterMain> configure);
+    ISectionBuilderCommandConnector With(string name, string description, Action<IElement, IElementUpdater.IElementUpdaterMain> configure);
+}
 
-    public interface IReplaceContinuation {
-        ISectionBuilder With(string name, string description, Action<IFluentBuilder> configure);
-        ISectionBuilder With(string name, string description, Action<IElement, IFluentBuilder> configure);
-    }
+public interface ISectionBuilderAppendContinuation {
+    ISectionBuilderCommandConnector With(Action<IElementUpdater.IElementUpdaterMain> configure);
+    ISectionBuilderCommandConnector With(Action<IElement, IElementUpdater.IElementUpdaterMain> configure);
+    ISectionBuilderCommandConnector With(string additionalDescription, Action<IElementUpdater.IElementUpdaterMain> configure);
+    ISectionBuilderCommandConnector With(string additionalDescription, Action<IElement, IElementUpdater.IElementUpdaterMain> configure);
 }

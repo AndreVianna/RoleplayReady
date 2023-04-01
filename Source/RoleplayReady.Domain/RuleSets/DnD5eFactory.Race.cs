@@ -20,10 +20,10 @@ public static partial class DnD5eFactory {
 
         var drow = dnd5e.GetComponent("Drow (Dark Elf)").CopyTraitsFrom(elf, excluding: "Darkvision");
         drow.Configure(nameof(Element.Traits)).As(traits => traits
-            .Add("Drow Ability Score Increase", "[FeatureDescription]", x => x.Let("Charisma").IncreaseBy(1))
             .Replace("Darkvision").With("Superior Darkvision", "[FeatureDescription]", x => x.Let("Senses").Have("Superior Darkvision"))
-            .Add("Drow Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Rapiers", "Shortswords", "Hand Crossbows"))
-            .Add("Drow Magic", "[FeatureDescription]", x => x.AddPowerSource("Drow Innate Magic", "[Add description here]", (e, b) => {
+            .And.Add("Drow Ability Score Increase", "[FeatureDescription]", x => x.Let("Charisma").IncreaseBy(1))
+            .And.Add("Drow Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Rapiers", "Shortswords", "Hand Crossbows"))
+            .And.Add("Drow Magic", "[FeatureDescription]", x => x.AddPowerSource("Drow Innate Magic", "[Add description here]", (e, b) => {
                 var level = e.GetAttribute<int>("Level").Value;
                 var spellsKnown = level >= 5 ? 2 : level >= 3 ? 1 : 0;
                 b.AddTag("Innate")

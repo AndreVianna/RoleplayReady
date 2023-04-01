@@ -11,7 +11,7 @@ public class ElementBuilder {
 
     public static ElementBuilder For(IElement element, string section) => new ElementBuilder(element, section);
 
-    public IElement As(Action<ISectionBuilder> configure) {
+    public IElement As(Action<ISectionBuilderMainCommands> configure) {
         configure(SectionBuilder.For(_parent, _section));
         return _parent;
     }

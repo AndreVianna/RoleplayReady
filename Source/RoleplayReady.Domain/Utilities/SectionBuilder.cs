@@ -1,6 +1,6 @@
 ﻿namespace RoleplayReady.Domain.Utilities;
 
-public class SectionBuilder : ISectionBuilder {
+public class SectionBuilder : ISectionBuilderReplaceContinuation, ISectionBuilderMainCommands, ISectionBuilderCommandConnector {
     private readonly IElement _parent;
     private readonly string _section;
     private readonly string _sectionItem;
@@ -15,15 +15,17 @@ public class SectionBuilder : ISectionBuilder {
         };
     }
 
-    public static ISectionBuilder For(IElement element, string section) => new SectionBuilder(element, section);
+    public static ISectionBuilderMainCommands For(IElement element, string section) => new SectionBuilder(element, section);
 
-    public ISectionBuilder Add(string name, string description, Action<IFluentBuilder> configure)
+    public ISectionBuilderMainCommands And => this;
+
+    public ISectionBuilderCommandConnector Add(string name, string description, Action<IElementUpdaterMain> configure)
         => Add(name, description, (_, x) => configure(x));
 
-    public ISectionBuilder Add(string name, string description, Action<IElement, IFluentBuilder> configure) {
+    public ISectionBuilderCommandConnector Add(string name, string description, Action<IElement, IElementUpdaterMain> configure) {
         var factory = ElementFactory.For(_parent, _parent.OwnerId);
         var item = factory.Create(_sectionItem, name, description, _parent.State, _parent.Usage, _parent.Source);
-        var builder = SectionItemBuilder.For(item);
+        var builder = ElementUpdater.For(item);
         configure(_parent, builder);
         switch (_section) {
             case nameof(Element.Traits) when item is Trait trait:
@@ -37,7 +39,7 @@ public class SectionBuilder : ISectionBuilder {
         };
     }
 
-    public ISectionBuilder Remove(string existing) {
+    public ISectionBuilderCommandConnector Remove(string existing) {
         var item = Find(existing);
         if (item is null) {
             throw new InvalidOperationException($"No {_sectionItem} named {existing} found.");
@@ -61,17 +63,25 @@ public class SectionBuilder : ISectionBuilder {
             _ => throw new NotImplementedException()
         };
 
-    public ISectionBuilder Replace(string existing, string name, string description, Action<IFluentBuilder> configure)
-        => Replace(existing, name, description, (_, x) => configure(x));
+    public ISectionBuilderReplaceContinuation Replace(string existing)
+        => (ISectionBuilderReplaceContinuation)Remove(existing);
 
-    public ISectionBuilder Replace(string existing, string name, string description, Action<IElement, IFluentBuilder> configure)
-        => Remove(existing).Add(name, description, configure);
+    public ISectionBuilderCommandConnector With(string name, string description, Action<IElementUpdaterMain> configure)
+        => Add(name, description, (_, x) => configure(x));
 
-    public ISectionBuilder IncludeIn(string existing, string description, Action<IFluentBuilder> configure) {
-        throw new NotImplementedException();
-    }
+    public ISectionBuilderCommandConnector With(string name, string description, Action<IElement, IElementUpdaterMain> configure)
+        => Add(name, description, configure);
 
-    public ISectionBuilder IncludeIn(string existing, string description, Action<IElement, IFluentBuilder> configure) {
-        throw new NotImplementedException();
-    }
+    public ISectionBuilderCommandConnector With(string description, Action<IElementUpdaterMain> configure)
+        => Add(name, description, (_, x) => configure(x));
+
+    public ISectionBuilderCommandConnector With(string description, Action<IElement, IElementUpdaterMain> configure)
+        => Add(name, description, configure);
+
+    public ISectionBuilderCommandConnector With(Action<IElementUpdaterMain> configure)
+        => Add(name, description, (_, x) => configure(x));
+
+    public ISectionBuilderCommandConnector With(Action<IElement, IElementUpdaterMain> configure)
+        => Add(name, description, configure);
+
 }
