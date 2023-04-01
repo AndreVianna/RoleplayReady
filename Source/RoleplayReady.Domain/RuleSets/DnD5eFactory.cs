@@ -1,6 +1,4 @@
-﻿using Attribute = RoleplayReady.Domain.Models.Attribute;
-
-namespace RoleplayReady.Domain.RuleSets;
+﻿namespace RoleplayReady.Domain.RuleSets;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable once InconsistentNaming - DnD5e is the official name of the system.
@@ -154,3 +152,57 @@ public static partial class DnD5eFactory {
         return ruleSet;
     }
 }
+
+//Inspiration: "A temporary boost allowing a character to gain advantage on one ability check, attack roll, or saving throw."
+//Height: "The vertical measurement of a character or creature."
+//Weight: "The mass of a character or creature."
+//Classes: "A dictionary of character classes and their associated levels."
+//Currency: "A dictionary of various currencies and their amounts possessed by the character."
+//Movements: "A dictionary of different movement types and their associated speeds."
+//AbilityCharges: "A dictionary of abilities and their remaining charges or uses."
+//SavingThrows: "A dictionary of saving throw proficiencies and their associated ability modifiers."
+//SkillChecks: "A dictionary of skill proficiencies and their associated ability modifiers."
+//ArmorClass: "A measure of how well a character or creature can avoid taking damage in combat."
+//CarryingCapacity: "The maximum weight a character can carry without being encumbered."
+//ChallengeRating: "A numerical rating representing the relative difficulty of defeating a creature in combat."
+//Charisma: "A measure of a character's force of personality, persuasiveness, and personal magnetism."
+//Constitution: "A measure of a character's health, stamina, and vital force."
+//CurrentCarryingWeight: "The current weight of all items being carried by the character."
+//CurrentHitPoints: "The remaining health points of a character or creature."
+//Dexterity: "A measure of a character's agility, reflexes, and balance."
+//ExhaustionLevel: "A measure of how fatigued a character is, with higher levels resulting in more severe penalties."
+//Intelligence: "A measure of a character's mental acuity, information recall, and analytical skill."
+//MaximumLanguagesKnown: "The maximum number of languages a character can learn."
+//MaximumHitPoints: "The highest possible hit points a character or creature can have."
+//ProficiencyBonus: "A bonus added to ability checks, attack rolls, and saving throws based on a character's level and class."
+//Strength: "A measure of a character's physical power and ability to perform physically demanding tasks."
+//TemporaryHitPoints: "Additional hit points that can absorb damage before reducing a character's current hit points."
+//Wisdom: "A measure of a character's awareness, intuition, and insight."
+//Alignment: "A description of a character's moral and ethical outlook."
+//Appearance: "A brief description of a character's physical appearance."
+//Background: "A character's history, including occupation, upbringing, and personal experiences."
+//CreatureType: "The classification of a creature, such as humanoid, beast, or undead."
+//EyeColor: "The color of a character's or creature's eyes."
+//Gender: "The gender identity of a character."
+//HairColor: "The color of a character's hair."
+//NPCType: "A classification for non-player characters, such as merchant, guard, or innkeeper."
+//PassiveInsight: "A measure of a character's ability to discern hidden motives without actively trying."
+//PassivePerception: "A measure of a character's ability to notice hidden objects or creatures without actively searching."
+//Race: "The species or ancestry of a character."
+//Size: "The physical size category of a character or creature, such as Small, Medium, or Large."
+//SkinColor: "The color of a character's skin."
+//SpellCastingAbility: "The ability score used for calculating a character's spellcasting modifier and save DC."
+//Actions: "A set of special actions a character or creature can take during combat."
+//Archetypes: "A set of subclass options available to a character within their chosen class."
+//Armors: "A set of protective gear a character is proficient in using."
+//Feats: "A set of special abilities or features that provide a character with unique capabilities."
+//Immunities: "A set of damage types, conditions, or effects a character or creature is completely unaffected by."
+//LairActions: "A set of unique actions a creature can take within its lair, typically used by powerful adversaries."
+//Languages: "A set of languages a character can understand, speak, read, and write."
+//LegendaryActions: "A set of powerful actions a legendary creature can take outside of its turn in combat."
+//Resistances: "A set of damage types a character or creature takes reduced damage from."
+//Senses: "A set of special sensory capabilities a character or creature possesses, such as darkvision or blindsight."
+//Traits: "A set of innate or learned characteristics that define a character or creature's abilities and qualities."
+//Tools: "A set of tools, instruments, or other equipment a character is proficient in using."
+//Vulnerabilities: "A set of damage types a character or creature takes increased damage from."
+//Weapons: "A set of weapons a character is proficient in using."

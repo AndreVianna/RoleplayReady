@@ -54,5 +54,28 @@ public static partial class DnD5eFactory {
                     .And().Let("SpellCastingAbility").Be("Intelligence")
                     .And().Let("CantripsKnown").Be(1)
                     .And().Let("SpellList").Have("Wizard"))));
+
+        var dwarf = dnd5e.GetComponent("Dwarf");
+        dwarf.Configure(nameof(Element.Traits)).As(traits => traits
+            .Add("Ability Score Increase", "[FeatureDescription]", x => x.Let("Constitution").IncreaseBy(2))
+            .And().Add("Age", "[FeatureDescription]", x => x.CheckIf("Age").IsBetween(50, 350, "Dwarves mature at the age of 50 years and live up to 350 years. Please, consider changing your age."))
+            .And().Add("Size", "[FeatureDescription]", x => x.Let("Size").Be("Medium"))
+            .And().Add("Speed", "[FeatureDescription]", x => x.Let("Movements").Have("Walk", 25))
+            .And().Add("Darkvision", "[FeatureDescription]", x => x.Let("Senses").Have("Darkvision", 60))
+            .And().Add("Dwarven Resilience", "[FeatureDescription]", x => x.Let("SavingThrows").Have("Poison", "Advantage").And().Let("Resistances").Have("Poison"))
+            .And().Add("Dwarven Combat Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Battleaxe", "Handaxe", "Light Hammer", "Warhammer"))
+            .And().Add("Tool Proficiency", "[FeatureDescription]", x => x.Let("ToolProficiencies").Have("Smith's Tools", "Brewer's Supplies", "Mason's Tools"))
+            .And().Add("Stonecunning", "[FeatureDescription]", x => x.Let("SkillChecks").Have("Intelligence (History)", "Double Proficiency", "Stonework")));
+
+        var hillDwarf = dnd5e.GetComponent("Dwarf (Hill)").CopyTraitsFrom(dwarf);
+        hillDwarf.Configure(nameof(Element.Traits)).As(traits => traits
+            .Add("Hill Dwarf Ability Score Increase", "[FeatureDescription]", x => x.Let("Wisdom").IncreaseBy(1))
+            .And().Add("Dwarven Toughness", "[FeatureDescription]", x => x.Let("HitPoints").IncreaseByLevel(1)));
+
+        var mountainDwarf = dnd5e.GetComponent("Dwarf (Mountain)").CopyTraitsFrom(dwarf);
+        mountainDwarf.Configure(nameof(Element.Traits)).As(traits => traits
+            .Add("Mountain Dwarf Ability Score Increase", "[FeatureDescription]", x => x.Let("Strength").IncreaseBy(2))
+            .And().Add("Dwarven Armor Training", "[FeatureDescription]", x => x.Let("ArmorProficiencies").Have("Light Armor", "Medium Armor")));
+
     }
 }
