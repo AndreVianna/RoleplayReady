@@ -1,12 +1,13 @@
-﻿using RoleplayReady.Domain.Models.Validations;
-
-using Attribute = RoleplayReady.Domain.Models.Attribute;
+﻿using Attribute = RoleplayReady.Domain.Models.Attribute;
 
 namespace RoleplayReady.Domain.Utilities;
 
 internal static class ElementExtensions {
     public static IElementAttribute<T?> GetAttribute<T>(this IElement element, string name)
         => element.Attributes.OfType<ElementAttribute<T?>>().First(p => p.Attribute.Name == name);
+
+    public static bool Exists(this IElement element, string name)
+        => element.Attributes.Any(p => p.Attribute.Name == name);
 
     public static IElementAttribute<T?>? FindAttribute<T>(this IElement element, string name)
         => element.Attributes.OfType<ElementAttribute<T?>>().FirstOrDefault(p => p.Attribute.Name == name);
@@ -16,6 +17,9 @@ internal static class ElementExtensions {
 
     public static IPowerSource? FindPowerSource(this IElement element, string name)
         => element.PowerSources.FirstOrDefault(p => p.Name == name);
+
+    public static ElementBuilder Configure(this IRuleSet ruleSet, string section) =>
+        ElementBuilder.For(ruleSet, section);
 
     public static ElementBuilder Configure(this IElement element, string section) =>
         ElementBuilder.For(element, section);
@@ -56,7 +60,7 @@ internal static class ElementExtensions {
                 Attributes = new List<IElementAttribute>(),
                 Traits = new List<ITrait>(),
                 PowerSources = new List<IPowerSource>(),
-                Effects = new List<IEffects>(element.Effects.ToArray()),
+                Effects = new List<IElementModifier>(element.Effects.ToArray()),
                 Triggers = new List<ITrigger>(),
                 Validations = new List<IValidation>(element.Validations.ToArray()),
                 Possessions = new List<IPossession>(),
@@ -74,11 +78,10 @@ internal static class ElementExtensions {
                 Attributes = new List<IElementAttribute>(),
                 Traits = new List<ITrait>(),
                 PowerSources = new List<IPowerSource>(),
-                Effects = new List<IEffects>(element.Effects.ToArray()),
+                Effects = new List<IElementModifier>(element.Effects.ToArray()),
                 Triggers = new List<ITrigger>(),
                 Validations = new List<IValidation>(element.Validations.ToArray()),
-            } as TEntity,
-            { } => source,
+            } as TEntity, { } => source,
         };
         if (source is not Element s || target is not Element t)
             return target;

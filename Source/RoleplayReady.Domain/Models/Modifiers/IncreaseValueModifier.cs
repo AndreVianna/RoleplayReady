@@ -1,9 +1,9 @@
-﻿namespace RoleplayReady.Domain.Models.Effects;
+﻿namespace RoleplayReady.Domain.Models.Modifiers;
 
-public record IncreaseValue<TValue> : Effect
+public record IncreaseValueModifier<TValue> : ElementModifier
     where TValue : IAdditionOperators<TValue, TValue, TValue> {
     [SetsRequiredMembers]
-    public IncreaseValue(string attributeName, Func<IElement, TValue> getBonusFrom)
+    public IncreaseValueModifier(string attributeName, Func<IElement, TValue> getBonusFrom)
         : base(e => {
             var attribute = e.GetAttribute<TValue>(attributeName);
             if (attribute is not null && attribute.Value is not null)

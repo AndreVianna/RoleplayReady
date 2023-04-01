@@ -1,9 +1,9 @@
-﻿namespace RoleplayReady.Domain.Models.Effects;
+﻿namespace RoleplayReady.Domain.Models.Modifiers;
 
-public record DecreaseValue<TValue> : Effect
+public record DecreaseValueModifier<TValue> : ElementModifier
     where TValue : ISubtractionOperators<TValue, TValue, TValue> {
     [SetsRequiredMembers]
-    public DecreaseValue(string attributeName, Func<IElement, TValue> getBonusFrom)
+    public DecreaseValueModifier(string attributeName, Func<IElement, TValue> getBonusFrom)
         : base(e => {
             var attribute = e.GetAttribute<TValue>(attributeName);
             if (attribute is not null && attribute.Value is not null)

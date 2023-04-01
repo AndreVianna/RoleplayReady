@@ -8,7 +8,6 @@ public interface IElement
     IHaveRequirements,
     IHaveElementAttributes,
     IHaveTraits,
-    IHavePowerSources,
     IHaveTriggers,
     IHaveEffects,
     IHaveValidations {

@@ -1,208 +1,256 @@
-﻿using RoleplayReady.Domain.Models.Effects;
-
-namespace RoleplayReady.Domain.Utilities;
+﻿namespace RoleplayReady.Domain.Utilities;
 
 internal class ElementUpdater : IElementUpdater {
-    private readonly IElementUpdater _previous = null!;
+    private readonly ICollection<ValidationError> _errors = new List<ValidationError>();
 
-    private ElementUpdater(IElement target) {
+    private ElementUpdater(IElement target, string attribute) {
         Target = target;
-    }
-
-    protected ElementUpdater(IElement target, IElementUpdater previous) {
-        Target = target;
-        _previous = previous;
+        Attribute = attribute;
     }
 
     public IElement Target { get; }
+    public string Attribute { get; }
 
-    public static IElementUpdater.IElementUpdaterMain For(IElement target) => new ElementUpdaterMain(target, new ElementUpdater(target));
+    public static IElementUpdater.IMain For(IElement target)
+        => new Main(target);
 
-    private IElementUpdater.IElementUpdaterMainConnector Add(IEffects effect) {
-        Target.Effects.Add(effect);
-        return new ElementUpdaterMainConnector(Target, this);
+    private class Main : ElementUpdater, IElementUpdater.IMain {
+        public Main(IElement target) : base(target, null!) {
+        }
+
+        public IElementUpdater.ISetter Let(string attribute) {
+            if (string.IsNullOrWhiteSpace(attribute))
+                throw new ArgumentException($"{nameof(attribute)} cannot be null or white spaces.", nameof(attribute));
+            if (!Target.Exists(attribute))
+                throw new ArgumentException($"{nameof(attribute)} not found in {Target.Name}.", nameof(attribute));
+            return new Setter(Target, attribute);
+        }
+
+        public IElementUpdater.IValidator CheckThat(string attribute) {
+            if (string.IsNullOrWhiteSpace(attribute))
+                throw new ArgumentException($"{nameof(attribute)} cannot be null or white spaces.", nameof(attribute));
+            if (!Target.Exists(attribute))
+                throw new ArgumentException($"{nameof(attribute)} not found in {Target.Name}.", nameof(attribute));
+            return new Validator(Target, attribute);
+        }
+
+        public IElementUpdater.IConditional If(string attribute) {
+            if (string.IsNullOrWhiteSpace(attribute))
+                throw new ArgumentException($"{nameof(attribute)} cannot be null or white spaces.", nameof(attribute));
+            if (!Target.Exists(attribute))
+                throw new ArgumentException($"{nameof(attribute)} not found in {Target.Name}.", nameof(attribute));
+            return new Conditional(Target, attribute);
+        }
     }
 
-    private class ElementUpdaterMain : ElementUpdater, IElementUpdater.IElementUpdaterMain {
-        public ElementUpdaterMain(IElement target, IElementUpdater previous) : base(target, previous) {
+    private class ActionConnector : ElementUpdater, IElementUpdater.IActionConnector {
+        public ActionConnector(IElement element)
+            : base(element, null!) {
         }
 
-        public string Attribute { get; private set; } = string.Empty;
-
-        public IElementUpdater.IElementUpdaterSetter Let(string attribute) {
-            Attribute = attribute;
-            return new ElementUpdaterSetter(Target, this);
-        }
-
-        public IElementUpdater.IElementUpdaterValidation Validate(string attribute) {
-            Attribute = attribute;
-            return new ElementUpdaterValidation(Target, this);
-        }
-
-        public IElementUpdater.IElementUpdaterConditional If(string attribute) {
-            Attribute = attribute;
-            return new ElementUpdaterConditional(Target, this);
-        }
-
-        public IElementUpdater.IElementUpdaterMainConnector AddJournalEntry(EntrySection section, string title, string text)
-            => Add(new AddJournalEntry(section, title, text));
-
-        public IElementUpdater.IElementUpdaterMainConnector AddJournalEntry(EntrySection section, string text)
-            => Add(new AddJournalEntry(section, Attribute, text));
-
-        public IElementUpdater.IElementUpdaterMainConnector AddTag(string text)
-            => Add(new AddTag(text));
-
-        public IElementUpdater.IElementUpdaterMainConnector AddPowerSource(string name, string description, Action<IElementUpdater.IElementUpdaterMain> build)
-            => AddPowerSource(name, description, (_, b) => build(b));
-
-        public IElementUpdater.IElementUpdaterMainConnector AddPowerSource(string name, string description, Action<IElement, IElementUpdater.IElementUpdaterMain> build)
-            => Add(new AddPowerSource(name, description, build));
+        public IElementUpdater.IMain And() => new Main(Target);
     }
 
-    private class ElementUpdaterMainConnector : ElementUpdater, IElementUpdater.IElementUpdaterMainConnector {
-        public ElementUpdaterMainConnector(IElement element, IElementUpdater previous) : base(element, previous) { }
-
-        public IElementUpdater.IElementUpdaterMain And() => new ElementUpdaterMain(Target, this);
-    }
-
-    private class ElementUpdaterSetter : ElementUpdater, IElementUpdater.IElementUpdaterSetter {
-        public ElementUpdaterSetter(IElement target, IElementUpdater previous) : base(target, previous) {
+    private class Setter : ElementUpdater, IElementUpdater.ISetter {
+        public Setter(IElement target, string attribute)
+            : base(target, attribute) {
         }
 
-        public IElementUpdater.IElementUpdaterMainConnector Be<TValue>(TValue value)
+        public IElementUpdater.IActionConnector Be<TValue>(TValue value)
             => Be(_ => value);
 
-        public IElementUpdater.IElementUpdaterMainConnector Be<TValue>(Func<IElement, TValue> getValueFrom)
-            => Add(new SetValue<TValue>(((ElementUpdaterMain)_previous).Attribute, getValueFrom));
+        public IElementUpdater.IActionConnector Be<TValue>(Func<IElement, TValue> getValueFrom) {
+            var modifier = new SetValueModifier<TValue>(Attribute, getValueFrom);
+            return new ActionConnector(modifier.Modify(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector Have<TKey, TValue>(TKey key, TValue value)
+        public IElementUpdater.IActionConnector Have<TKey, TValue>(TKey key, TValue value)
             where TKey : notnull
             => Have(key, _ => value);
 
-        public IElementUpdater.IElementUpdaterMainConnector Have<TKey, TValue>(TKey key, Func<IElement, TValue> getValueFrom)
-            where TKey : notnull
-            => Add(new AddOrSetPair<TKey, TValue>(((ElementUpdaterMain)_previous).Attribute, key, getValueFrom));
+        public IElementUpdater.IActionConnector Have<TKey, TValue>(TKey key, Func<IElement, TValue> getValueFrom)
+            where TKey : notnull {
+            var modifier = new AddOrSetPairModifier<TKey, TValue>(Attribute, key, getValueFrom);
+            return new ActionConnector(modifier.Modify(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector Have<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> items)
+        public IElementUpdater.IActionConnector Have<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> items)
             where TKey : notnull
             => Have(_ => items);
 
-        public IElementUpdater.IElementUpdaterMainConnector Have<TKey, TValue>(Func<IElement, IEnumerable<KeyValuePair<TKey, TValue>>> getItemsFrom)
-            where TKey : notnull
-            => Add(new AddOrSetPairs<TKey, TValue>(((ElementUpdaterMain)_previous).Attribute, getItemsFrom));
+        public IElementUpdater.IActionConnector Have<TKey, TValue>(Func<IElement, IEnumerable<KeyValuePair<TKey, TValue>>> getItemsFrom)
+            where TKey : notnull {
+            var modifier = new AddOrSetPairsModifier<TKey, TValue>(Attribute, getItemsFrom);
+            return new ActionConnector(modifier.Modify(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector Have<TValue>(TValue item)
+        public IElementUpdater.IActionConnector Have<TValue>(TValue item)
             => Have(_ => item);
 
-        public IElementUpdater.IElementUpdaterMainConnector Have<TValue>(Func<IElement, TValue> getItemFrom)
-            => Add(new AddItem<TValue>(((ElementUpdaterMain)_previous).Attribute, getItemFrom));
+        public IElementUpdater.IActionConnector Have<TValue>(Func<IElement, TValue> getItemFrom) {
+            var modifier = new AddItemModifier<TValue>(Attribute, getItemFrom);
+            return new ActionConnector(modifier.Modify(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector Have<TValue>(params TValue[] items)
+        public IElementUpdater.IActionConnector Have<TValue>(params TValue[] items)
             => Have(_ => items);
 
-        public IElementUpdater.IElementUpdaterMainConnector Have<TValue>(Func<IElement, IEnumerable<TValue>> getItemsFrom)
-            => Add(new AddItems<TValue>(((ElementUpdaterMain)_previous).Attribute, getItemsFrom));
+        public IElementUpdater.IActionConnector Have<TValue>(Func<IElement, IEnumerable<TValue>> getItemsFrom) {
+            var modifier = new AddItemsModifier<TValue>(Attribute, getItemsFrom);
+            return new ActionConnector(modifier.Modify(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector IncreaseBy<TValue>(TValue bonus)
+        public IElementUpdater.IActionConnector IncreaseBy<TValue>(TValue bonus)
             where TValue : IAdditionOperators<TValue, TValue, TValue>
             => IncreaseBy(_ => bonus);
 
-        public IElementUpdater.IElementUpdaterMainConnector IncreaseBy<TValue>(Func<IElement, TValue> getBonusFrom)
-            where TValue : IAdditionOperators<TValue, TValue, TValue>
-            => Add(new IncreaseValue<TValue>(((ElementUpdaterMain)_previous).Attribute, getBonusFrom));
+        public IElementUpdater.IActionConnector IncreaseBy<TValue>(Func<IElement, TValue> getBonusFrom)
+            where TValue : IAdditionOperators<TValue, TValue, TValue> {
+            var modifier = new IncreaseValueModifier<TValue>(Attribute, getBonusFrom);
+            return new ActionConnector(modifier.Modify(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector DecreaseBy<TValue>(TValue bonus)
+        public IElementUpdater.IActionConnector DecreaseBy<TValue>(TValue bonus)
             where TValue : ISubtractionOperators<TValue, TValue, TValue>
             => DecreaseBy(_ => bonus);
 
-        public IElementUpdater.IElementUpdaterMainConnector DecreaseBy<TValue>(Func<IElement, TValue> getBonusFrom)
-            where TValue : ISubtractionOperators<TValue, TValue, TValue>
-            => Add(new DecreaseValue<TValue>(((ElementUpdaterMain)_previous).Attribute, getBonusFrom));
+        public IElementUpdater.IActionConnector DecreaseBy<TValue>(Func<IElement, TValue> getBonusFrom)
+            where TValue : ISubtractionOperators<TValue, TValue, TValue> {
+            var modifier = new DecreaseValueModifier<TValue>(Attribute, getBonusFrom);
+            return new ActionConnector(modifier.Modify(Target));
+        }
     }
 
-    private class ElementUpdaterValidation : ElementUpdater, IElementUpdater.IElementUpdaterValidation {
-        public ElementUpdaterValidation(IElement target, IElementUpdater previous) : base(target, previous) {
+    private class Validator : ElementUpdater, IElementUpdater.IValidator {
+        public Validator(IElement target, string attribute)
+            : base(target, attribute) {
         }
 
-        public IElementUpdater.IElementUpdaterMainConnector Contains<TValue>(TValue candidate, string message, Severity severity = Suggestion)
-            => Add(new Contains<TValue>(((ElementUpdaterMain)_previous).Attribute, candidate, message));
+        public IElementUpdater.IActionConnector Contains<TValue>(TValue candidate, string message) {
+            var validator = new ContainsValidator<TValue>(Attribute, candidate, message);
+            return new ActionConnector(validator.Validate(Target, _errors));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector ContainsKey<TKey, TValue>(TKey key, string message, Severity severity = Suggestion)
-            where TKey : notnull
-            => Add(new ContainsKey<TKey, TValue>(((ElementUpdaterMain)_previous).Attribute, key, message));
+        public IElementUpdater.IActionConnector ContainsKey<TKey, TValue>(TKey key, string message)
+            where TKey : notnull {
+            var validator = new ContainsKeyValidator<TKey, TValue>(Attribute, key, message);
+            return new ActionConnector(validator.Validate(Target, _errors));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector IsEqualTo<TValue>(TValue validValue, string message, Severity severity = Suggestion)
-            where TValue : IEquatable<TValue>
-            => Add(new IsEqual<TValue>(((ElementUpdaterMain)_previous).Attribute, validValue, message));
+        public IElementUpdater.IActionConnector IsEqualTo<TValue>(TValue validValue, string message)
+            where TValue : IEquatable<TValue> {
+            var validator = new IsEqualValidator<TValue>(Attribute, validValue, message);
+            return new ActionConnector(validator.Validate(Target, _errors));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector IsBetween<TValue>(TValue minimum, TValue maximum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Add(new IsBetween<TValue>(((ElementUpdaterMain)_previous).Attribute, minimum, maximum, message));
+        public IElementUpdater.IActionConnector IsBetween<TValue>(TValue minimum, TValue maximum, string message)
+            where TValue : IComparable<TValue> {
+            var validator = new IsBetweenValidator<TValue>(Attribute, minimum, maximum, message);
+            return new ActionConnector(validator.Validate(Target, _errors));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector IsGreaterThan<TValue>(TValue minimum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Add(new IsGrater<TValue>(((ElementUpdaterMain)_previous).Attribute, minimum, message));
+        public IElementUpdater.IActionConnector IsGreaterThan<TValue>(TValue minimum, string message)
+            where TValue : IComparable<TValue> {
+            var validator = new IsGraterValidator<TValue>(Attribute, minimum, message);
+            return new ActionConnector(validator.Validate(Target, _errors));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector IsGreaterOrEqualTo<TValue>(TValue minimum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Add(new IsGraterOrEqual<TValue>(((ElementUpdaterMain)_previous).Attribute, minimum, message));
+        public IElementUpdater.IActionConnector IsGreaterOrEqualTo<TValue>(TValue minimum, string message)
+            where TValue : IComparable<TValue> {
+            var validator = new IsGraterOrEqualValidator<TValue>(Attribute, minimum, message);
+            return new ActionConnector(validator.Validate(Target, _errors));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector IsLessThan<TValue>(TValue maximum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Add(new IsLess<TValue>(((ElementUpdaterMain)_previous).Attribute, maximum, message));
+        public IElementUpdater.IActionConnector IsLessThan<TValue>(TValue maximum, string message)
+            where TValue : IComparable<TValue> {
+            var validator = new IsLessValidator<TValue>(Attribute, maximum, message);
+            return new ActionConnector(validator.Validate(Target, _errors));
+        }
 
-        public IElementUpdater.IElementUpdaterMainConnector IsLessOrEqualTo<TValue>(TValue maximum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Add(new IsLessOrEqual<TValue>(((ElementUpdaterMain)_previous).Attribute, maximum, message));
+        public IElementUpdater.IActionConnector IsLessOrEqualTo<TValue>(TValue maximum, string message)
+            where TValue : IComparable<TValue> {
+            var validator = new IsLessOrEqualValidator<TValue>(Attribute, maximum, message);
+            return new ActionConnector(validator.Validate(Target, _errors));
+        }
     }
 
-    private class ElementUpdaterConditional : ElementUpdater, IElementUpdater.IElementUpdaterConditional {
-        public ElementUpdaterConditional(IElement target, IElementUpdater previous) : base(target, previous) {
+    private class Conditional : ElementUpdater, IElementUpdater.IConditional {
+        private readonly bool _previous;
+
+        public Conditional(IElement target, string attribute, bool previous = true)
+            : base(target, attribute) {
+            _previous = previous;
         }
 
-        public IElementUpdater.IElementUpdaterConditionalConnector Contains<TValue>(TValue candidate, string message, Severity severity = Suggestion)
-            => Evaluate(new Contains<TValue>(((ElementUpdaterMain)_previous).Attribute, candidate, message));
+        public IElementUpdater.ILogicalConnector Contains<TValue>(TValue candidate) {
+            var condition = new ContainsChecker<TValue>(Attribute, candidate);
+            return new LogicalConnector(Target, _previous && condition.IsTrueFor(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterConditionalConnector ContainsKey<TKey, TValue>(TKey key, string message, Severity severity = Suggestion)
-            where TKey : notnull
-            => Evaluate(new ContainsKey<TKey, TValue>(((ElementUpdaterMain)_previous).Attribute, key, message));
+        public IElementUpdater.ILogicalConnector ContainsKey<TKey, TValue>(TKey key)
+            where TKey : notnull {
+            var condition = new ContainsKeyChecker<TKey, TValue>(Attribute, key);
+            return new LogicalConnector(Target, _previous && condition.IsTrueFor(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterConditionalConnector IsEqualTo<TValue>(TValue validValue, string message, Severity severity = Suggestion)
-            where TValue : IEquatable<TValue>
-            => Evaluate(new IsEqual<TValue>(((ElementUpdaterMain)_previous).Attribute, validValue, message));
+        public IElementUpdater.ILogicalConnector IsEqualTo<TValue>(TValue validValue)
+            where TValue : IEquatable<TValue> {
+            var condition = new IsEqualChecker<TValue>(Attribute, validValue);
+            return new LogicalConnector(Target, _previous && condition.IsTrueFor(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterConditionalConnector IsBetween<TValue>(TValue minimum, TValue maximum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Evaluate(new IsBetween<TValue>(((ElementUpdaterMain)_previous).Attribute, minimum, maximum, message));
+        public IElementUpdater.ILogicalConnector IsBetween<TValue>(TValue minimum, TValue maximum)
+            where TValue : IComparable<TValue> {
+            var condition = new IsBetweenChecker<TValue>(Attribute, minimum, maximum);
+            return new LogicalConnector(Target, _previous && condition.IsTrueFor(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterConditionalConnector IsGreaterThan<TValue>(TValue minimum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Evaluate(new IsGrater<TValue>(((ElementUpdaterMain)_previous).Attribute, minimum, message));
+        public IElementUpdater.ILogicalConnector IsGreaterThan<TValue>(TValue minimum)
+            where TValue : IComparable<TValue> {
+            var condition = new IsGraterChecker<TValue>(Attribute, minimum);
+            return new LogicalConnector(Target, _previous && condition.IsTrueFor(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterConditionalConnector IsGreaterOrEqualTo<TValue>(TValue minimum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Evaluate(new IsGraterOrEqual<TValue>(((ElementUpdaterMain)_previous).Attribute, minimum, message));
+        public IElementUpdater.ILogicalConnector IsGreaterOrEqualTo<TValue>(TValue minimum)
+            where TValue : IComparable<TValue> {
+            var condition = new IsGraterOrEqualChecker<TValue>(Attribute, minimum);
+            return new LogicalConnector(Target, _previous && condition.IsTrueFor(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterConditionalConnector IsLessThan<TValue>(TValue maximum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Evaluate(new IsLess<TValue>(((ElementUpdaterMain)_previous).Attribute, maximum, message));
+        public IElementUpdater.ILogicalConnector IsLessThan<TValue>(TValue maximum)
+            where TValue : IComparable<TValue> {
+            var condition = new IsLessChecker<TValue>(Attribute, maximum);
+            return new LogicalConnector(Target, _previous && condition.IsTrueFor(Target));
+        }
 
-        public IElementUpdater.IElementUpdaterConditionalConnector IsLessOrEqualTo<TValue>(TValue maximum, string message, Severity severity = Suggestion)
-            where TValue : IComparable<TValue>
-            => Evaluate(new IsLessOrEqual<TValue>(((ElementUpdaterMain)_previous).Attribute, maximum, message));
+        public IElementUpdater.ILogicalConnector IsLessOrEqualTo<TValue>(TValue maximum)
+            where TValue : IComparable<TValue> {
+            var condition = new IsLessOrEqualChecker<TValue>(Attribute, maximum);
+            return new LogicalConnector(Target, _previous && condition.IsTrueFor(Target));
+        }
     }
 
-    private class ElementUpdaterConditionalConnector : ElementUpdater, IElementUpdater.IElementUpdaterConditionalConnector {
-        public ElementUpdaterConditionalConnector(IElement target, IElementUpdater previous) : base(target, previous) {
+    private class LogicalConnector : ElementUpdater, IElementUpdater.ILogicalConnector {
+        private readonly bool _result;
+
+        public LogicalConnector(IElement target, bool result)
+            : base(target, null!) {
+            _result = result;
         }
 
-        public IElementUpdater.IElementUpdaterConditional And() => throw new NotImplementedException();
+        public IElementUpdater.IConditional And()
+            => new Conditional(Target, Attribute, _result);
 
-        public IElementUpdater.IElementUpdaterConditional And(string attribute) => throw new NotImplementedException();
+        public IElementUpdater.IConditional And(string attribute)
+            => new Conditional(Target, attribute, _result);
 
-        public IElementUpdater.IElementUpdaterMain Then(Action<IElementUpdater.IElementUpdaterMain> ifTrue, Action<IElementUpdater.IElementUpdaterMain>? ifFalse = null) {
-            Add(new IfThenElse<TValue>())
+        public IElementUpdater.IMain Then(Action<IElementUpdater.IMain> onTrue, Action<IElementUpdater.IMain>? onFalse = null) {
+            var result = new Main(Target);
+            if (_result)
+                onTrue(result);
+            else
+                onFalse?.Invoke(result);
+            return result;
         }
     }
 }

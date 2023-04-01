@@ -1,8 +1,8 @@
-﻿namespace RoleplayReady.Domain.Models.Effects;
+﻿namespace RoleplayReady.Domain.Models.Modifiers;
 
-public record AddItems<TValue> : Effect {
+public record AddItemsModifier<TValue> : ElementModifier {
     [SetsRequiredMembers]
-    public AddItems(string attributeName, Func<IElement, IEnumerable<TValue>> getItemsFrom)
+    public AddItemsModifier(string attributeName, Func<IElement, IEnumerable<TValue>> getItemsFrom)
         : base(e => {
             var list = e.GetAttribute<HashSet<TValue>>(attributeName)?.Value;
             foreach (var item in getItemsFrom(e))

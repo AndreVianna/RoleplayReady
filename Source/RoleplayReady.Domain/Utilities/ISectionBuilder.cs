@@ -1,26 +1,28 @@
 ﻿namespace RoleplayReady.Domain.Utilities;
 
-public interface ISectionBuilderMainCommands {
-    ISectionBuilderCommandConnector Add(string name, string description, Action<IElementUpdater.IElementUpdaterMain> configure);
-    ISectionBuilderCommandConnector Add(string name, string description, Action<IElement, IElementUpdater.IElementUpdaterMain> configure);
+public interface ISectionBuilder {
+    public interface IMainCommands {
+        IConnector Add(string name, string description, Action<IElementUpdater.IMain> configure);
+        IConnector Add(string name, string description, Action<IEntity, IElementUpdater.IMain> configure);
 
-    ISectionBuilderCommandConnector Remove(string existing);
-    ISectionBuilderReplaceContinuation Replace(string existing);
-    ISectionBuilderAppendContinuation Append(string existing);
-}
+        IConnector Remove(string existing);
+        IReplaceWith Replace(string existing);
+        IAppendWith Append(string existing);
+    }
 
-public interface ISectionBuilderCommandConnector {
-    ISectionBuilderMainCommands And { get; }
-}
+    public interface IConnector {
+        IMainCommands And();
+    }
 
-public interface ISectionBuilderReplaceContinuation {
-    ISectionBuilderCommandConnector With(string name, string description, Action<IElementUpdater.IElementUpdaterMain> configure);
-    ISectionBuilderCommandConnector With(string name, string description, Action<IElement, IElementUpdater.IElementUpdaterMain> configure);
-}
+    public interface IReplaceWith {
+        IConnector With(string name, string description, Action<IElementUpdater.IMain> configure);
+        IConnector With(string name, string description, Action<IEntity, IElementUpdater.IMain> configure);
+    }
 
-public interface ISectionBuilderAppendContinuation {
-    ISectionBuilderCommandConnector With(Action<IElementUpdater.IElementUpdaterMain> configure);
-    ISectionBuilderCommandConnector With(Action<IElement, IElementUpdater.IElementUpdaterMain> configure);
-    ISectionBuilderCommandConnector With(string additionalDescription, Action<IElementUpdater.IElementUpdaterMain> configure);
-    ISectionBuilderCommandConnector With(string additionalDescription, Action<IElement, IElementUpdater.IElementUpdaterMain> configure);
+    public interface IAppendWith {
+        IConnector With(string additionalDescription, Action<IElementUpdater.IMain> configure);
+        IConnector With(string additionalDescription, Action<IEntity, IElementUpdater.IMain> configure);
+        IConnector With(Action<IElementUpdater.IMain> configure);
+        IConnector With(Action<IEntity, IElementUpdater.IMain> configure);
+    }
 }

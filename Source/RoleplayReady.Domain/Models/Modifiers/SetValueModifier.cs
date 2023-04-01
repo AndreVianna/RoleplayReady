@@ -1,8 +1,8 @@
-﻿namespace RoleplayReady.Domain.Models.Effects;
+﻿namespace RoleplayReady.Domain.Models.Modifiers;
 
-public record SetValue<TValue> : Effect {
+public record SetValueModifier<TValue> : ElementModifier {
     [SetsRequiredMembers]
-    public SetValue(string attributeName, Func<IElement, TValue> getValueFrom)
+    public SetValueModifier(string attributeName, Func<IElement, TValue> getValueFrom)
         : base(e => {
             var attribute = e.GetAttribute<TValue>(attributeName);
             if (attribute is not null && attribute.Value is not null)

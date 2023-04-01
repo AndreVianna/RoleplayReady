@@ -1,87 +1,134 @@
 ﻿namespace RoleplayReady.Domain.Utilities;
 
-public class SectionBuilder : ISectionBuilderReplaceContinuation, ISectionBuilderMainCommands, ISectionBuilderCommandConnector {
-    private readonly IElement _parent;
-    private readonly string _section;
-    private readonly string _sectionItem;
+public class SectionBuilder : ISectionBuilder {
 
-    private SectionBuilder(IElement parent, string section) {
-        _parent = parent;
-        _section = section;
-        _sectionItem = _section switch {
+    private SectionBuilder(IEntity entity, string section) {
+        Target = entity;
+        Section = section;
+        SectionItem = Section switch {
             nameof(Element.Traits) => nameof(Trait),
-            nameof(Element.PowerSources) => nameof(PowerSource),
+            nameof(RuleSet.PowerSources) => nameof(PowerSource),
             _ => throw new NotImplementedException()
         };
     }
 
-    public static ISectionBuilderMainCommands For(IElement element, string section) => new SectionBuilder(element, section);
+    public static ISectionBuilder.IMainCommands For(IEntity entity, string section) => new MainCommands(entity, section);
 
-    public ISectionBuilderMainCommands And => this;
+    protected IEntity Target { get; }
+    protected string Section { get; }
+    protected string SectionItem { get; }
 
-    public ISectionBuilderCommandConnector Add(string name, string description, Action<IElementUpdaterMain> configure)
-        => Add(name, description, (_, x) => configure(x));
-
-    public ISectionBuilderCommandConnector Add(string name, string description, Action<IElement, IElementUpdaterMain> configure) {
-        var factory = ElementFactory.For(_parent, _parent.OwnerId);
-        var item = factory.Create(_sectionItem, name, description, _parent.State, _parent.Usage, _parent.Source);
-        var builder = ElementUpdater.For(item);
-        configure(_parent, builder);
-        switch (_section) {
-            case nameof(Element.Traits) when item is Trait trait:
-                _parent.Traits.Add(trait);
-                return this;
-            case nameof(Element.PowerSources) when item is PowerSource powerSource:
-                _parent.PowerSources.Add(powerSource);
-                return this;
-            default:
-                throw new NotImplementedException();
+    protected IElement? Find(string existing)
+        => Section switch {
+            nameof(Element.Traits) when Target is Element element => element.Traits.FirstOrDefault(i => i.Name == existing),
+            nameof(RuleSet.PowerSources) when Target is RuleSet ruleSet => ruleSet.PowerSources.FirstOrDefault(i => i.Name == existing),
+            _ => throw new NotImplementedException()
         };
-    }
 
-    public ISectionBuilderCommandConnector Remove(string existing) {
-        var item = Find(existing);
-        if (item is null) {
-            throw new InvalidOperationException($"No {_sectionItem} named {existing} found.");
-        }
-        switch (_section) {
-            case nameof(Element.Traits):
-                _parent.Traits.Remove((ITrait)item);
-                return this;
-            case nameof(Element.PowerSources):
-                _parent.PowerSources.Remove((IPowerSource)item);
-                return this;
+    protected void Add(IElement item) {
+        switch (Target) {
+            case Element element when item is Trait trait:
+                element.Traits.Add(trait);
+                return;
+            case RuleSet ruleSet when item is PowerSource powerSource:
+                ruleSet.PowerSources.Add(powerSource);
+                return;
             default:
                 throw new NotImplementedException();
         }
     }
 
-    private IElement? Find(string existing) =>
-        _section switch {
-            nameof(Element.Traits) => _parent.Traits.FirstOrDefault(i => i.Name == existing),
-            nameof(Element.PowerSources) => _parent.PowerSources.FirstOrDefault(i => i.Name == existing),
-            _ => throw new NotImplementedException()
-        };
+    protected void Remove(IElement item) {
+        switch (Section) {
+            case nameof(Element.Traits) when Target is Element element:
+                element.Traits.Remove((ITrait)item);
+                return;
+            case nameof(RuleSet.PowerSources) when Target is RuleSet ruleSet:
+                ruleSet.PowerSources.Remove((IPowerSource)item);
+                return;
+            default:
+                throw new NotImplementedException();
+        }
+    }
 
-    public ISectionBuilderReplaceContinuation Replace(string existing)
-        => (ISectionBuilderReplaceContinuation)Remove(existing);
+    private class MainCommands : SectionBuilder, ISectionBuilder.IMainCommands {
+        public MainCommands(IEntity entity, string section) : base(entity, section) {
+        }
 
-    public ISectionBuilderCommandConnector With(string name, string description, Action<IElementUpdaterMain> configure)
-        => Add(name, description, (_, x) => configure(x));
+        public ISectionBuilder.IConnector Add(string name, string description, Action<IElementUpdater.IMain> configure)
+            => Add(name, description, (_, x) => configure(x));
 
-    public ISectionBuilderCommandConnector With(string name, string description, Action<IElement, IElementUpdaterMain> configure)
-        => Add(name, description, configure);
+        public ISectionBuilder.IConnector Add(string name, string description, Action<IEntity, IElementUpdater.IMain> configure) {
+            var factory = ElementFactory.For(Target, Target.OwnerId);
+            var item = factory.Create(SectionItem, name, description);
+            configure(Target, ElementUpdater.For(item));
+            Add(item);
+            return new Connector(Target, Section);
+        }
 
-    public ISectionBuilderCommandConnector With(string description, Action<IElementUpdaterMain> configure)
-        => Add(name, description, (_, x) => configure(x));
+        public ISectionBuilder.IConnector Remove(string existing) {
+            var item = Find(existing) ?? throw new InvalidOperationException($"{SectionItem} named {existing} not found.");
+            Remove(item);
+            return new Connector(Target, Section);
+        }
 
-    public ISectionBuilderCommandConnector With(string description, Action<IElement, IElementUpdaterMain> configure)
-        => Add(name, description, configure);
+        public ISectionBuilder.IReplaceWith Replace(string existing) {
+            Remove(existing);
+            return new ReplaceWith(Target, Section);
+        }
 
-    public ISectionBuilderCommandConnector With(Action<IElementUpdaterMain> configure)
-        => Add(name, description, (_, x) => configure(x));
+        public ISectionBuilder.IAppendWith Append(string existing) {
+            var item = Find(existing) ?? throw new InvalidOperationException($"{SectionItem} named {existing} not found.");
+            return new AppendWith(Target, Section, item);
+        }
+    }
 
-    public ISectionBuilderCommandConnector With(Action<IElement, IElementUpdaterMain> configure)
-        => Add(name, description, configure);
+    private class Connector : SectionBuilder, ISectionBuilder.IConnector {
+        public Connector(IEntity entity, string section) : base(entity, section) {
+        }
 
+        public ISectionBuilder.IMainCommands And() => new MainCommands(Target, Section);
+    }
+
+    private class ReplaceWith : SectionBuilder, ISectionBuilder.IReplaceWith {
+        public ReplaceWith(IEntity entity, string section) : base(entity, section) {
+        }
+
+        public ISectionBuilder.IConnector With(string name, string description, Action<IElementUpdater.IMain> configure) {
+            var mainCommands = new MainCommands(Target, Section);
+            return mainCommands.Add(name, description, (_, x) => configure(x));
+        }
+
+        public ISectionBuilder.IConnector With(string name, string description, Action<IEntity, IElementUpdater.IMain> configure) {
+            var mainCommands = new MainCommands(Target, Section);
+            return mainCommands.Add(name, description, configure);
+        }
+    }
+
+    private class AppendWith : SectionBuilder, ISectionBuilder.IAppendWith {
+        private IElement _original;
+
+        public AppendWith(IEntity entity, string section, IElement original) : base(entity, section) {
+            _original = original;
+        }
+
+        public ISectionBuilder.IConnector With(string additionalDescription, Action<IElementUpdater.IMain> configure)
+            => With(additionalDescription, (_, e) => configure(e));
+
+        public ISectionBuilder.IConnector With(string additionalDescription, Action<IEntity, IElementUpdater.IMain> configure) {
+            _original = (Element)_original with {
+                Description = $"{_original.Description}\n{additionalDescription}",
+            };
+            return With(configure);
+        }
+
+        public ISectionBuilder.IConnector With(Action<IElementUpdater.IMain> configure)
+                => With((_, x) => configure(x));
+
+        public ISectionBuilder.IConnector With(Action<IEntity, IElementUpdater.IMain> configure) {
+            configure(Target, ElementUpdater.For(_original));
+            Add(_original);
+            return new Connector(Target, Section);
+        }
+    }
 }
