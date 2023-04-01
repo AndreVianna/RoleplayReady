@@ -26,7 +26,7 @@ internal class ElementUpdater : IElementUpdater {
             return new Setter(Target, attribute);
         }
 
-        public IElementUpdater.IValidator CheckThat(string attribute) {
+        public IElementUpdater.IValidator CheckIf(string attribute) {
             if (string.IsNullOrWhiteSpace(attribute))
                 throw new ArgumentException($"{nameof(attribute)} cannot be null or white spaces.", nameof(attribute));
             if (!Target.Exists(attribute))
@@ -40,6 +40,29 @@ internal class ElementUpdater : IElementUpdater {
             if (!Target.Exists(attribute))
                 throw new ArgumentException($"{nameof(attribute)} not found in {Target.Name}.", nameof(attribute));
             return new Conditional(Target, attribute);
+        }
+
+        public IElementUpdater.IActionConnector AddJournalEntry(EntrySection section, string title, string text) {
+            ((Actor)Target).JournalEntries.Add(new JournalEntry(Target, section, title, text));
+            return new ActionConnector(Target);
+        }
+
+        public IElementUpdater.IActionConnector AddJournalEntry(EntrySection section, string text) {
+            ((Actor)Target).JournalEntries.Add(new JournalEntry(Target, section, Attribute, text));
+            return new ActionConnector(Target);
+        }
+
+        public IElementUpdater.IActionConnector AddTag(string text) {
+            Target.Tags.Add(text);
+            return new ActionConnector(Target);
+        }
+
+        public IElementUpdater.IActionConnector AddPowerSource(string name, string description, Action<IElementUpdater.IMain> build)
+            => AddPowerSource(name, description, (_, b) => build(b));
+
+        public IElementUpdater.IActionConnector AddPowerSource(string name, string description, Action<IEntity, IElementUpdater.IMain> build) {
+            Target.RuleSet!.Configure(nameof(RuleSet.PowerSources)).As(ps => ps.Add(name, description, build));
+            return new ActionConnector(Target);
         }
     }
 
@@ -244,13 +267,13 @@ internal class ElementUpdater : IElementUpdater {
         public IElementUpdater.IConditional And(string attribute)
             => new Conditional(Target, attribute, _result);
 
-        public IElementUpdater.IMain Then(Action<IElementUpdater.IMain> onTrue, Action<IElementUpdater.IMain>? onFalse = null) {
-            var result = new Main(Target);
+        public IElementUpdater.IActionConnector Then(Action<IElementUpdater.IMain> onTrue, Action<IElementUpdater.IMain>? onFalse = null) {
+            var newBranch = new Main(Target);
             if (_result)
-                onTrue(result);
+                onTrue(newBranch);
             else
-                onFalse?.Invoke(result);
-            return result;
+                onFalse?.Invoke(newBranch);
+            return new ActionConnector(Target);
         }
     }
 }

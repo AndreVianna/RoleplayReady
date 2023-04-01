@@ -12,17 +12,17 @@ internal static class ElementExtensions {
     public static IElementAttribute<T?>? FindAttribute<T>(this IElement element, string name)
         => element.Attributes.OfType<ElementAttribute<T?>>().FirstOrDefault(p => p.Attribute.Name == name);
 
-    public static IPowerSource GetPowerSource(this IElement element, string name)
-        => element.PowerSources.First(p => p.Name == name);
+    public static IPowerSource GetPowerSource(this IRuleSet ruleSet, string name)
+        => ruleSet.PowerSources.First(p => p.Name == name);
 
-    public static IPowerSource? FindPowerSource(this IElement element, string name)
-        => element.PowerSources.FirstOrDefault(p => p.Name == name);
+    public static IPowerSource? FindPowerSource(this IRuleSet ruleSet, string name)
+        => ruleSet.PowerSources.FirstOrDefault(p => p.Name == name);
 
-    public static ElementBuilder Configure(this IRuleSet ruleSet, string section) =>
-        ElementBuilder.For(ruleSet, section);
+    public static EntityBuilder Configure(this IRuleSet ruleSet, string section) =>
+        EntityBuilder.For(ruleSet, section);
 
-    public static ElementBuilder Configure(this IElement element, string section) =>
-        ElementBuilder.For(element, section);
+    public static EntityBuilder Configure(this IElement element, string section) =>
+        EntityBuilder.For(element, section);
 
     public static IElement CopyTraitsFrom(this IElement target, IElement source, params string[] excluding) {
         target.Traits.Clear();
@@ -59,7 +59,6 @@ internal static class ElementExtensions {
                 Requirements = new List<IValidation>(element.Requirements.ToArray()),
                 Attributes = new List<IElementAttribute>(),
                 Traits = new List<ITrait>(),
-                PowerSources = new List<IPowerSource>(),
                 Effects = new List<IElementModifier>(element.Effects.ToArray()),
                 Triggers = new List<ITrigger>(),
                 Validations = new List<IValidation>(element.Validations.ToArray()),
@@ -77,19 +76,18 @@ internal static class ElementExtensions {
                 Requirements = new List<IValidation>(element.Requirements.ToArray()),
                 Attributes = new List<IElementAttribute>(),
                 Traits = new List<ITrait>(),
-                PowerSources = new List<IPowerSource>(),
                 Effects = new List<IElementModifier>(element.Effects.ToArray()),
                 Triggers = new List<ITrigger>(),
                 Validations = new List<IValidation>(element.Validations.ToArray()),
             } as TEntity, { } => source,
+            _ => throw new ArgumentNullException(nameof(source))
         };
         if (source is not Element s || target is not Element t)
-            return target;
+            return target!;
 
         s.Requirements.ToList().ForEach(t.Requirements.Add);
         s.Attributes.ToList().ForEach(a => t.Attributes.Add(a.Clone(t)));
         s.Traits.ToList().ForEach(x => t.Traits.Add(x.Clone(t)));
-        s.PowerSources.ToList().ForEach(x => t.PowerSources.Add(x.Clone(t)));
         s.Effects.ToList().ForEach(t.Effects.Add);
         s.Triggers.ToList().ForEach(x => x.Triggers.Add(x.Clone(t)));
         s.Validations.ToList().ForEach(t.Validations.Add);

@@ -16,5 +16,3 @@ global using RoleplayReady.Domain.Models.Validations;
 global using RoleplayReady.Domain.Models.Validators;
 global using RoleplayReady.Domain.Utilities;
 
-global using static RoleplayReady.Domain.Models.Validations.Severity;
-

@@ -3,8 +3,13 @@
 public interface IElementUpdater {
     public interface IMain {
         ISetter Let(string attribute);
-        IValidator CheckThat(string attribute);
+        IValidator CheckIf(string attribute);
         IConditional If(string attribute);
+
+        IActionConnector AddJournalEntry(EntrySection section, string title, string text);
+        IActionConnector AddJournalEntry(EntrySection section, string text);
+        IActionConnector AddTag(string tag);
+        IActionConnector AddPowerSource(string name, string description, Action<IMain> build);
     }
 
     public interface IActionConnector {
@@ -14,7 +19,7 @@ public interface IElementUpdater {
     public interface ILogicalConnector {
         IConditional And();
         IConditional And(string attribute);
-        IMain Then(Action<IMain> onTrue, Action<IMain>? onFalse = null);
+        IActionConnector Then(Action<IMain> onTrue, Action<IMain>? onFalse = null);
     }
 
     public interface ISetter {
