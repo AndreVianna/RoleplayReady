@@ -1,4 +1,4 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface ITrait : IElement {
+public interface ITrait : IComponent {
 }

@@ -4,13 +4,15 @@ public record Possession : IPossession {
     public Possession() { }
 
     [SetsRequiredMembers]
-    public Possession(IEntity parent, IObject @object, decimal quantity) {
-        Parent = parent ?? throw new ArgumentNullException(nameof(parent));
-        Object = @object ?? throw new ArgumentNullException(nameof(@object));
+    public Possession(IActor owner, IObject @object, decimal quantity) {
+        Owner = Throw.IfNull(owner);
+        Object = Throw.IfNull(@object);
         Quantity = quantity;
     }
 
-    public required IEntity Parent { get; init; }
+    public required IActor Owner { get; init; }
     public required IObject Object { get; init; }
     public required decimal Quantity { get; init; }
+
+    public IPossession CloneTo(IActor newOwner) => this with { Owner = newOwner, Object = ((Component)Object).CloneUnder<Object>(newOwner) };
 }

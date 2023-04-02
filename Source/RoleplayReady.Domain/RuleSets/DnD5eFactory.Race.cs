@@ -21,8 +21,8 @@ public static partial class DnD5eFactory {
         var drow = dnd5e.GetComponent("Drow (Dark Elf)").CopyTraitsFrom(elf, excluding: "Darkvision");
         drow.Configure(nameof(Element.Traits)).As(traits => traits
             .Replace("Darkvision").With("Superior Darkvision", "[FeatureDescription]", x => x.Let("Senses").Have("Superior Darkvision"))
-            .And().Add("Drow Ability Score Increase", "[FeatureDescription]", x => x.Let("Charisma").IncreaseBy(1))
-            .And().Add("Drow Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Rapiers", "Shortswords", "Hand Crossbows"))
+            .And().Append("Ability Score Increase").With("[FeatureDescription]", x => x.Let("Charisma").IncreaseBy(1))
+            .And().Add("Elf Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Rapiers", "Shortswords", "Hand Crossbows"))
             .And().Add("Drow Magic", "[FeatureDescription]", x => x.AddPowerSource("Drow Innate Magic", "[Add description here]", b
                 => b.AddTag("Innate")
                      .And().Let("SpellCastingAbility").Be("Charisma")
@@ -39,16 +39,16 @@ public static partial class DnD5eFactory {
 
         var woodElf = dnd5e.GetComponent("Elf (Wood)").CopyTraitsFrom(elf, excluding: "Speed");
         woodElf.Configure(nameof(Element.Traits)).As(traits => traits
-            .Add("Drow Ability Score Increase", "[FeatureDescription]", x => x.Let("Wisdom").IncreaseBy(1))
+            .Append("Ability Score Increase").With("[FeatureDescription]", x => x.Let("Wisdom").IncreaseBy(1))
             .And().Add("Fleet of Foot", "[FeatureDescription]", x => x.Let("Movements").Have("Walk", 35))
-            .And().Add("Wood Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Longswords", "Shortswords", "Shortbows", "Longbows"))
+            .And().Add("Elf Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Longswords", "Shortswords", "Shortbows", "Longbows"))
             .And().Add("Mask of the Wild", "[FeatureDescription]", x => x.AddJournalEntry(Traits, "You can attempt to hide even when you are only lightly obscured by foliage, heavy rain, falling snow, mist, and other natural phenomena.")));
 
         var highElf = dnd5e.GetComponent("Elf (High)").CopyTraitsFrom(elf);
         highElf.Configure(nameof(Element.Traits)).As(traits => traits
-            .Add("High Elf Ability Score Increase", "[FeatureDescription]", x => x.Let("Intelligence").IncreaseBy(1))
+            .Append("Ability Score Increase").With("[FeatureDescription]", x => x.Let("Intelligence").IncreaseBy(1))
             .And().Add("Extra Language", "[FeatureDescription]", x => x.Let("MaximumLanguagesKnown").IncreaseBy(1))
-            .And().Add("High Elf Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Longswords", "Shortswords", "Shortbows", "Longbows"))
+            .And().Add("Elf Weapon Training", "[FeatureDescription]", x => x.Let("Weapons").Have("Longswords", "Shortswords", "Shortbows", "Longbows"))
             .And().Add("Cantrip", "[FeatureDescription]", x => x.AddPowerSource("High Elf Innate Magic", "[Add description here]", b
                 => b.AddTag("Innate")
                     .And().Let("SpellCastingAbility").Be("Intelligence")
@@ -69,12 +69,12 @@ public static partial class DnD5eFactory {
 
         var hillDwarf = dnd5e.GetComponent("Dwarf (Hill)").CopyTraitsFrom(dwarf);
         hillDwarf.Configure(nameof(Element.Traits)).As(traits => traits
-            .Add("Hill Dwarf Ability Score Increase", "[FeatureDescription]", x => x.Let("Wisdom").IncreaseBy(1))
-            .And().Add("Dwarven Toughness", "[FeatureDescription]", x => x.Let("HitPoints").IncreaseByLevel(1)));
+            .Append("Ability Score Increase").With("[FeatureDescription]", x => x.Let("Wisdom").IncreaseBy(1))
+            .And().Add("Dwarven Toughness", "[FeatureDescription]", x => x.Let("HitPoints").IncreaseBy(1).Per("Level")));
 
         var mountainDwarf = dnd5e.GetComponent("Dwarf (Mountain)").CopyTraitsFrom(dwarf);
         mountainDwarf.Configure(nameof(Element.Traits)).As(traits => traits
-            .Add("Mountain Dwarf Ability Score Increase", "[FeatureDescription]", x => x.Let("Strength").IncreaseBy(2))
+            .Append("Ability Score Increase").With("[FeatureDescription]", x => x.Let("Strength").IncreaseBy(2))
             .And().Add("Dwarven Armor Training", "[FeatureDescription]", x => x.Let("ArmorProficiencies").Have("Light Armor", "Medium Armor")));
 
     }

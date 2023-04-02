@@ -1,17 +1,20 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record RuleSet : Entity, IRuleSet {
+public record RuleSet : Component, IRuleSet {
     public RuleSet() {
     }
 
     [SetsRequiredMembers]
-    public RuleSet(string ownerId, string abbreviation, string name, string description, State? state = null)
-        : base(ownerId, abbreviation, name, description, state) {
+    public RuleSet(string abbreviation, string name, string description, IDateTimeProvider? dateTime)
+        : base(null, abbreviation, name, description, dateTime) { }
+
+    public IList<ISource> Sources { get; init; } = new List<ISource>();
+
+    public override TSelf CloneUnder<TSelf>(IEntity? _) {
+        var result = base.CloneUnder<RuleSet>(null) with {
+            Sources = new List<ISource>(Sources)
+        };
+        return (result as TSelf)!;
     }
 
-    public IList<ISource> Sources { get; } = new List<ISource>();
-    public IList<IComponent> Components { get; } = new List<IComponent>();
-    public IList<IActor> Actors { get; } = new List<IActor>();
-    public IList<IPowerSource> PowerSources { get; init; } = new List<IPowerSource>();
-    public IList<IProcess> Workflows { get; } = new List<IProcess>();
 }

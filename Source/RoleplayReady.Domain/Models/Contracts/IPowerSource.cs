@@ -1,4 +1,4 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface IPowerSource : IElement {
+public interface IPowerSource : IComponent {
 }

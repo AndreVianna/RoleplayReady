@@ -1,8 +1,7 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public enum Usage
-{
+public enum Usage {
+    Sealed,
     Standard,
     Template,
-    Closed
 }

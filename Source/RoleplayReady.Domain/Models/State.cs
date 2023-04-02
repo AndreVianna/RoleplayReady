@@ -1,11 +1,8 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public enum State
-{
-    New,
+public enum State {
     NotReady,
     Public,
     Private,
-    Retired,
-    Deleted,
+    Hidden,
 }

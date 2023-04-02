@@ -6,7 +6,7 @@ public class SectionBuilder : ISectionBuilder {
         Target = entity;
         Section = section;
         SectionItem = Section switch {
-            nameof(Element.Traits) => nameof(Trait),
+            nameof(Component.Traits) => nameof(Trait),
             nameof(RuleSet.PowerSources) => nameof(PowerSource),
             _ => throw new NotImplementedException()
         };
@@ -18,16 +18,16 @@ public class SectionBuilder : ISectionBuilder {
     protected string Section { get; }
     protected string SectionItem { get; }
 
-    protected IElement? Find(string existing)
+    protected IComponent? Find(string existing)
         => Section switch {
-            nameof(Element.Traits) when Target is Element element => element.Traits.FirstOrDefault(i => i.Name == existing),
+            nameof(Component.Traits) when Target is Component element => element.Traits.FirstOrDefault(i => i.Name == existing),
             nameof(RuleSet.PowerSources) when Target is RuleSet ruleSet => ruleSet.PowerSources.FirstOrDefault(i => i.Name == existing),
             _ => throw new NotImplementedException()
         };
 
-    protected void Add(IElement item) {
+    protected void Add(IComponent item) {
         switch (Target) {
-            case Element element when item is Trait trait:
+            case Component element when item is Trait trait:
                 element.Traits.Add(trait);
                 return;
             case RuleSet ruleSet when item is PowerSource powerSource:
@@ -38,9 +38,9 @@ public class SectionBuilder : ISectionBuilder {
         }
     }
 
-    protected void Remove(IElement item) {
+    protected void Remove(IComponent item) {
         switch (Section) {
-            case nameof(Element.Traits) when Target is Element element:
+            case nameof(Component.Traits) when Target is Component element:
                 element.Traits.Remove((ITrait)item);
                 return;
             case nameof(RuleSet.PowerSources) when Target is RuleSet ruleSet:
@@ -55,13 +55,13 @@ public class SectionBuilder : ISectionBuilder {
         public MainCommands(IEntity entity, string section) : base(entity, section) {
         }
 
-        public ISectionBuilder.IConnector Add(string name, string description, Action<IElementUpdater.IMain> configure)
+        public ISectionBuilder.IConnector Add(string name, string description, Action<IComponentUpdater.IMain> configure)
             => Add(name, description, (_, x) => configure(x));
 
-        public ISectionBuilder.IConnector Add(string name, string description, Action<IEntity, IElementUpdater.IMain> configure) {
-            var factory = ElementFactory.For(Target, Target.OwnerId);
+        public ISectionBuilder.IConnector Add(string name, string description, Action<IEntity, IComponentUpdater.IMain> configure) {
+            var factory = ComponentFactory.For(Target, Target.OwnerId);
             var item = factory.Create(SectionItem, name, description);
-            configure(Target, ElementUpdater.For(item));
+            configure(Target, ComponentUpdater.For(item));
             Add(item);
             return new Connector(Target, Section);
         }
@@ -94,39 +94,39 @@ public class SectionBuilder : ISectionBuilder {
         public ReplaceWith(IEntity entity, string section) : base(entity, section) {
         }
 
-        public ISectionBuilder.IConnector With(string name, string description, Action<IElementUpdater.IMain> configure) {
+        public ISectionBuilder.IConnector With(string name, string description, Action<IComponentUpdater.IMain> configure) {
             var mainCommands = new MainCommands(Target, Section);
             return mainCommands.Add(name, description, (_, x) => configure(x));
         }
 
-        public ISectionBuilder.IConnector With(string name, string description, Action<IEntity, IElementUpdater.IMain> configure) {
+        public ISectionBuilder.IConnector With(string name, string description, Action<IEntity, IComponentUpdater.IMain> configure) {
             var mainCommands = new MainCommands(Target, Section);
             return mainCommands.Add(name, description, configure);
         }
     }
 
     private class AppendWith : SectionBuilder, ISectionBuilder.IAppendWith {
-        private IElement _original;
+        private IComponent _original;
 
-        public AppendWith(IEntity entity, string section, IElement original) : base(entity, section) {
+        public AppendWith(IEntity entity, string section, IComponent original) : base(entity, section) {
             _original = original;
         }
 
-        public ISectionBuilder.IConnector With(string additionalDescription, Action<IElementUpdater.IMain> configure)
+        public ISectionBuilder.IConnector With(string additionalDescription, Action<IComponentUpdater.IMain> configure)
             => With(additionalDescription, (_, e) => configure(e));
 
-        public ISectionBuilder.IConnector With(string additionalDescription, Action<IEntity, IElementUpdater.IMain> configure) {
-            _original = (Element)_original with {
+        public ISectionBuilder.IConnector With(string additionalDescription, Action<IEntity, IComponentUpdater.IMain> configure) {
+            _original = (Component)_original with {
                 Description = $"{_original.Description}\n{additionalDescription}",
             };
             return With(configure);
         }
 
-        public ISectionBuilder.IConnector With(Action<IElementUpdater.IMain> configure)
+        public ISectionBuilder.IConnector With(Action<IComponentUpdater.IMain> configure)
                 => With((_, x) => configure(x));
 
-        public ISectionBuilder.IConnector With(Action<IEntity, IElementUpdater.IMain> configure) {
-            configure(Target, ElementUpdater.For(_original));
+        public ISectionBuilder.IConnector With(Action<IEntity, IComponentUpdater.IMain> configure) {
+            configure(Target, ComponentUpdater.For(_original));
             Add(_original);
             return new Connector(Target, Section);
         }

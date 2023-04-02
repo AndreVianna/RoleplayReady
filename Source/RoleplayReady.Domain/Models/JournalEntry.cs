@@ -11,7 +11,7 @@ public record JournalEntry : IJournalEntry {
         Section = section;
         Title = title ?? throw new ArgumentNullException(nameof(title));
         Text = text ?? throw new ArgumentNullException(nameof(text));
-        State = state ?? State.New;
+        State = state ?? State.NotReady;
     }
 
     public required IEntity Parent { get; init; }
@@ -20,5 +20,5 @@ public record JournalEntry : IJournalEntry {
     public required string Text { get; init; }
 
     public DateTime Timestamp { get; init; } = DateTime.UtcNow;
-    public State State { get; init; } = State.New;
+    public State State { get; init; } = State.NotReady;
 }

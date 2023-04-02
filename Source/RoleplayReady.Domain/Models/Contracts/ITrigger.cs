@@ -1,4 +1,4 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface ITrigger : IElement {
+public interface ITrigger : IComponent {
 }

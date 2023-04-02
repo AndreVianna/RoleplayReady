@@ -1,15 +1,11 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record Actor : Element, IActor {
+public record Actor : Component, IActor {
     public Actor() { }
 
     [SetsRequiredMembers]
-    public Actor(IEntity parent, string ownerId, string abbreviation, string name, string description, State? state = null, Usage? usage = null, ISource? source = null)
-        : base(parent, ownerId, abbreviation, name, description, state, usage, source) { }
-
-    [SetsRequiredMembers]
-    public Actor(IEntity parent, string ownerId, string name, string description, State? state = null, Usage? usage = null, ISource? source = null) :
-        base(parent, ownerId, name, description, state, usage, source) { }
+    public Actor(IComponent? parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime = null)
+        : base(parent, abbreviation, name, description, dateTime) { }
 
     public IList<IPossession> Possessions { get; init; } = new List<IPossession>();
     public IList<IPower> Powers { get; init; } = new List<IPower>();

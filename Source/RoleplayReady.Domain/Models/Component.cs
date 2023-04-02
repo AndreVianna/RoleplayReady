@@ -1,13 +1,22 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record Component : Element, IComponent {
-    public Component() { }
+public abstract record Component : Entity, IComponent {
+    protected Component() { }
 
     [SetsRequiredMembers]
-    public Component(IEntity parent, string ownerId, string abbreviation, string name, string description, State? state = null, Usage? usage = null, ISource? source = null)
-        : base(parent, ownerId, abbreviation, name, description, state, usage, source) { }
+    protected Component(IComponent? parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime = null)
+        : base(abbreviation, name, description, dateTime) {
+        Parent = parent;
+    }
 
-    [SetsRequiredMembers]
-    public Component(IEntity parent, string ownerId, string name, string description, State? state = null, Usage? usage = null, ISource? source = null) :
-        base(parent, ownerId, name, description, state, usage, source) { }
+    public IComponent? Parent { get; init; } // Top level should be a RuleSet.
+    public IComponent? Root { get; init; } // Quick access to the root.
+    public IList<IComponent> Components { get; init; } = new List<IComponent>();
+
+    public override TSelf CloneUnder<TSelf>(IEntity? parent) {
+        var result = base.CloneUnder<Component>(Parent);
+        foreach (var child in Components.Cast<Component>())
+            result.Components.Add(child.CloneUnder<IComponent>(result));
+        return (result as TSelf)!;
+    }
 }

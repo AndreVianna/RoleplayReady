@@ -1,13 +1,9 @@
 ﻿namespace RoleplayReady.Domain.Models;
 
-public record Trigger : Element, ITrigger {
+public record Trigger : Component, ITrigger {
     public Trigger() { }
 
     [SetsRequiredMembers]
-    public Trigger(IEntity parent, string ownerId, string abbreviation, string name, string description, State? state = null, Usage? usage = null, ISource? source = null)
-        : base(parent, ownerId, abbreviation, name, description, state, usage, source) { }
-
-    [SetsRequiredMembers]
-    public Trigger(IEntity parent, string ownerId, string name, string description, State? state = null, Usage? usage = null, ISource? source = null) :
-        base(parent, ownerId, name, description, state, usage, source) { }
+    public Trigger(IComponent? parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime)
+        : base(parent, abbreviation, name, description, dateTime) { }
 }

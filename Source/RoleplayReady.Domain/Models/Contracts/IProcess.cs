@@ -1,5 +1,5 @@
 ﻿namespace RoleplayReady.Domain.Models.Contracts;
 
-public interface IProcess : IElement, IHaveAStart {
+public interface IProcess : IComponent {
     IProcessStep Start { get; init; }
 }
