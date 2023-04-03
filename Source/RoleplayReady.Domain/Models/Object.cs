@@ -1,4 +1,8 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities;
+using RolePlayReady.Utilities.Contracts;
+
+namespace RolePlayReady.Models;
 
 public record Object : Component, IObject {
     public Object() { }

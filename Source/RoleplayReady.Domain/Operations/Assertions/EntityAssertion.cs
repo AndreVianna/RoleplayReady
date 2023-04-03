@@ -1,4 +1,7 @@
-﻿namespace RoleplayReady.Domain.Operations.Assertions;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities;
+
+namespace RolePlayReady.Operations.Assertions;
 
 public abstract record EntityAssertion
     : EntityOperation<IEntityAssertion, bool>,

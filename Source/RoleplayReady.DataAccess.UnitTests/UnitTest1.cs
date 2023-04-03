@@ -1,4 +1,4 @@
-namespace RoleplayReady.DataAccess.UnitTests;
+namespace RolePlayReady.DataAccess.UnitTests;
 
 public class UnitTest1
 {

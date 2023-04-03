@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Utilities.Contracts;
+﻿using RolePlayReady.Models.Contracts;
+
+namespace RolePlayReady.Utilities.Contracts;
 
 public interface ISectionBuilder {
     public interface IMainCommands {

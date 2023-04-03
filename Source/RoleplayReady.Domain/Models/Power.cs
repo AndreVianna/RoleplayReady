@@ -1,4 +1,7 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities.Contracts;
+
+namespace RolePlayReady.Models;
 
 public record Power : Component, IPower {
     public Power() { }

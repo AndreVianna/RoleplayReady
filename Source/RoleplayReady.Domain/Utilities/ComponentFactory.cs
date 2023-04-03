@@ -1,6 +1,10 @@
-﻿using Object = RoleplayReady.Domain.Models.Object;
+﻿using RolePlayReady.Models;
+using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities.Contracts;
 
-namespace RoleplayReady.Domain.Utilities;
+using Object = RolePlayReady.Models.Object;
+
+namespace RolePlayReady.Utilities;
 
 public class ComponentFactory : IComponentFactory {
     private readonly IComponent _parent;

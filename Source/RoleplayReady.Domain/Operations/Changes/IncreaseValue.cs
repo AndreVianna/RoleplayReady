@@ -1,4 +1,7 @@
-﻿namespace RoleplayReady.Domain.Operations.Changes;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities;
+
+namespace RolePlayReady.Operations.Changes;
 
 public record IncreaseValue<TValue> : EntityChange
     where TValue : IAdditionOperators<TValue, TValue, TValue> {

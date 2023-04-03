@@ -1,4 +1,4 @@
-﻿namespace RoleplayReady.Domain.Models.Contracts;
+﻿namespace RolePlayReady.Models.Contracts;
 
 public interface IRuleSet : IComponent {
     IList<ISource> Sources { get; }

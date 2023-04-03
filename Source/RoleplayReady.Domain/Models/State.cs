@@ -1,4 +1,4 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿namespace RolePlayReady.Models;
 
 public enum State {
     NotReady,

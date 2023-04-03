@@ -3,33 +3,43 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.Web", "RoleplayReady.Web\RoleplayReady.Web.csproj", "{FBE69ABE-19EE-4C76-9E37-5111B2A61C6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Web", "RolePlayReady.Web\RolePlayReady.Web.csproj", "{FBE69ABE-19EE-4C76-9E37-5111B2A61C6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.Api", "RoleplayReady.Api\RoleplayReady.Api.csproj", "{D43A475A-9441-442D-88D4-46FCCB196C4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Api", "RolePlayReady.Api\RolePlayReady.Api.csproj", "{D43A475A-9441-442D-88D4-46FCCB196C4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.Domain", "RoleplayReady.Domain\RoleplayReady.Domain.csproj", "{35553F2E-431A-4583-A15B-4CCD522F8E6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Domain", "RolePlayReady.Domain\RolePlayReady.Domain.csproj", "{35553F2E-431A-4583-A15B-4CCD522F8E6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.DataAccess", "RoleplayReady.DataAccess\RoleplayReady.DataAccess.csproj", "{F7D70759-B319-4EB6-B581-94D932BD9C95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.DataAccess", "RolePlayReady.DataAccess\RolePlayReady.DataAccess.csproj", "{F7D70759-B319-4EB6-B581-94D932BD9C95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.Migrations", "RoleplayReady.Migrations\RoleplayReady.Migrations.csproj", "{4409A398-BF49-44C2-97ED-1DCE03E1621C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Migrations", "RolePlayReady.Migrations\RolePlayReady.Migrations.csproj", "{4409A398-BF49-44C2-97ED-1DCE03E1621C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.Web.UnitTests", "RoleplayReady.Web.UnitTests\RoleplayReady.Web.UnitTests.csproj", "{43BF3D91-D62D-4D09-94B6-08B85F9910AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Web.UnitTests", "RolePlayReady.Web.UnitTests\RolePlayReady.Web.UnitTests.csproj", "{43BF3D91-D62D-4D09-94B6-08B85F9910AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.Api.UnitTests", "RoleplayReady.Api.UnitTests\RoleplayReady.Api.UnitTests.csproj", "{E33DA855-EE16-431F-BC18-90BA139700E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Api.UnitTests", "RolePlayReady.Api.UnitTests\RolePlayReady.Api.UnitTests.csproj", "{E33DA855-EE16-431F-BC18-90BA139700E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.Domain.UnitTests", "RoleplayReady.Domain.UnitTests\RoleplayReady.Domain.UnitTests.csproj", "{7B6C3C6F-A1FF-4442-99D9-77B939B3E6AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Domain.UnitTests", "RolePlayReady.Domain.UnitTests\RolePlayReady.Domain.UnitTests.csproj", "{7B6C3C6F-A1FF-4442-99D9-77B939B3E6AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.DataAccess.UnitTests", "RoleplayReady.DataAccess.UnitTests\RoleplayReady.DataAccess.UnitTests.csproj", "{2E8CF19C-B1BE-4BFA-B471-3FD59807C79C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.DataAccess.UnitTests", "RolePlayReady.DataAccess.UnitTests\RolePlayReady.DataAccess.UnitTests.csproj", "{2E8CF19C-B1BE-4BFA-B471-3FD59807C79C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleplayReady.Api.IntegrationTests", "RoleplayReady.Api.IntegrationTests\RoleplayReady.Api.IntegrationTests.csproj", "{CBF94706-1C31-4098-AD28-85A43E8C4D60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Api.IntegrationTests", "RolePlayReady.Api.IntegrationTests\RolePlayReady.Api.IntegrationTests.csproj", "{CBF94706-1C31-4098-AD28-85A43E8C4D60}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Engine", "RolePlayReady.Engine\RolePlayReady.Engine.csproj", "{40D84BDC-0E36-4763-BE04-9ECF83077581}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Core", "RolePlayReady.Core\RolePlayReady.Core.csproj", "{F9E2B4E8-295D-4AA7-A4B5-C6785C9924CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RolePlayReady.Engine.UnitTests", "RolePlayReady.Engine.UnitTests\RolePlayReady.Engine.UnitTests.csproj", "{ADA1E08C-F1EA-4E85-873A-15B9B2A92054}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1988928B-40FF-430C-B156-F0A6FE06C583}"
+	ProjectSection(SolutionItems) = preProject
+		.runsettings = .runsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RolePlayReady.Core.UnitTests", "RolePlayReady.Core.UnitTests\RolePlayReady.Core.UnitTests.csproj", "{066B362A-C0F4-47F3-8752-C500C4BA448E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FBE69ABE-19EE-4C76-9E37-5111B2A61C6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -72,5 +82,27 @@ Global
 		{CBF94706-1C31-4098-AD28-85A43E8C4D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBF94706-1C31-4098-AD28-85A43E8C4D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBF94706-1C31-4098-AD28-85A43E8C4D60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40D84BDC-0E36-4763-BE04-9ECF83077581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40D84BDC-0E36-4763-BE04-9ECF83077581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40D84BDC-0E36-4763-BE04-9ECF83077581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40D84BDC-0E36-4763-BE04-9ECF83077581}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9E2B4E8-295D-4AA7-A4B5-C6785C9924CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9E2B4E8-295D-4AA7-A4B5-C6785C9924CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9E2B4E8-295D-4AA7-A4B5-C6785C9924CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9E2B4E8-295D-4AA7-A4B5-C6785C9924CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADA1E08C-F1EA-4E85-873A-15B9B2A92054}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADA1E08C-F1EA-4E85-873A-15B9B2A92054}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADA1E08C-F1EA-4E85-873A-15B9B2A92054}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADA1E08C-F1EA-4E85-873A-15B9B2A92054}.Release|Any CPU.Build.0 = Release|Any CPU
+		{066B362A-C0F4-47F3-8752-C500C4BA448E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066B362A-C0F4-47F3-8752-C500C4BA448E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066B362A-C0F4-47F3-8752-C500C4BA448E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066B362A-C0F4-47F3-8752-C500C4BA448E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {43AFC96A-748D-4284-A7FA-2B9FB820357D}
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-﻿namespace RoleplayReady.Domain.Models.Contracts;
+﻿namespace RolePlayReady.Models.Contracts;
 
-public interface ISource : IAmKnownAs {
+public interface ISource : IIdentification {
 }

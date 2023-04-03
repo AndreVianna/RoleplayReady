@@ -1,4 +1,4 @@
-﻿namespace RoleplayReady.Domain.Validations;
+﻿namespace RolePlayReady.Validations;
 
 public readonly struct ValidationResult {
     private readonly OneOf<Valid, Invalid> _result;

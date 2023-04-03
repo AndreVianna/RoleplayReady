@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿using RolePlayReady.Models.Contracts;
+
+namespace RolePlayReady.Models;
 
 public record JournalEntry : IJournalEntry {
     public JournalEntry() {
@@ -19,6 +21,6 @@ public record JournalEntry : IJournalEntry {
     public required string Title { get; init; }
     public required string Text { get; init; }
 
-    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
+    public DateTime Version { get; init; } = DateTime.UtcNow;
     public State State { get; init; } = State.NotReady;
 }

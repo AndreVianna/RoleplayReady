@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Utilities;
+﻿using RolePlayReady.Utilities.Contracts;
+
+namespace RolePlayReady.Utilities;
 
 public class SystemDateTimeProvider : IDateTimeProvider
 {

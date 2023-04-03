@@ -1,4 +1,7 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities;
+
+namespace RolePlayReady.Models;
 
 public abstract record EntityAttribute
     : IEntityAttribute {
@@ -12,9 +15,9 @@ public abstract record EntityAttribute
     }
 
     // Entity + Attribute must be unique;
-    public required IEntity Entity { get; init; }
-    public required IAttribute Attribute { get; init; }
-    public object Value { get; init; } = default!;
+    public required IEntity Entity { get; set; }
+    public IAttribute Attribute { get; init; }
+    public object Value { get; set; } = default!;
 
     public IList<Func<IEntityAttribute, ValidationResult>> Validations { get; init; }
         = new List<Func<IEntityAttribute, ValidationResult>>();
@@ -33,28 +36,20 @@ public record EntityFlag
     public EntityFlag() { }
 
     [SetsRequiredMembers]
-    public EntityFlag(IEntity owner, IAttribute attribute, bool value)
+    public EntityFlag(IEntity owner, IAttribute<bool> attribute, bool value)
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }
 
-    object IHaveValue.Value {
+    public new required bool Value { get; set; }
+    object IEntityAttribute.Value {
         get => Value;
-        init => Value = (bool)(value);
+        set => Value = (bool)value;
     }
 
-    public new required bool Value { get; init; }
-
-
-    IList<Func<IEntityAttribute, ValidationResult>> IEntityAttribute.Validations {
-        get => Validations
-            .Select(i => (Func<IEntityAttribute, ValidationResult>)(_ => i(this)))
-            .ToList();
-        init => Validations = value
-            .Select(i => (Func<IEntityFlag, ValidationResult>)(_ => i(this)))
-            .ToList();
-
-    }
+    IList<Func<IEntityAttribute, ValidationResult>> IEntityAttribute.Validations => Validations
+        .Select(i => (Func<IEntityAttribute, ValidationResult>)(_ => i(this)))
+        .ToList();
 
     public new IList<Func<IEntityFlag, ValidationResult>> Validations { get; init; }
         = new List<Func<IEntityFlag, ValidationResult>>();
@@ -72,11 +67,11 @@ public record EntityValue<TValue>
         Value = Throw.IfNull(value);
     }
 
-    public new required TValue Value { get; init; }
-
-    object IHaveValue.Value {
+    public new IAttribute<TValue> Attribute { get; init; }
+    public new required TValue Value { get; set; }
+    object IEntityAttribute.Value {
         get => Value;
-        init => Value = (TValue)Throw.IfNull(value);
+        set => Value = (TValue)Throw.IfNull(value);
     }
 
     IList<Func<IEntityAttribute, ValidationResult>> IEntityAttribute.Validations {

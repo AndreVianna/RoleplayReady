@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RoleplayReady.Domain\RoleplayReady.Domain.csproj" />
+    <ProjectReference Include="..\RoleplayReady.Domain\RolePlayReady.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using RoleplayReady.Web.Data;
+
+using RolePlayReady.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

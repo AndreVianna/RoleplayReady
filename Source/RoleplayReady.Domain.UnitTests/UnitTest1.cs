@@ -1,4 +1,4 @@
-namespace RoleplayReady.Domain.UnitTests;
+namespace RolePlayReady.Domain.UnitTests;
 
 public class UnitTest1
 {

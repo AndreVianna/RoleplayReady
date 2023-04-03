@@ -1,4 +1,4 @@
-namespace RoleplayReady.Api;
+namespace RolePlayReady.Api;
 
 public class WeatherForecast
 {

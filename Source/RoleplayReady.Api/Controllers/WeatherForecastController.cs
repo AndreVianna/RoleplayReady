@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace RoleplayReady.Api.Controllers;
+namespace RolePlayReady.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]

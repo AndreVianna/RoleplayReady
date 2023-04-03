@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Operations.Changes;
+﻿using RolePlayReady.Models.Contracts;
+
+namespace RolePlayReady.Operations.Changes;
 
 public interface IEntityChange
     : IEntityOperation<IEntityChange, IEntity> {

@@ -1,4 +1,8 @@
-﻿namespace RoleplayReady.Domain.Utilities;
+﻿using RolePlayReady.Models;
+using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities.Contracts;
+
+namespace RolePlayReady.Utilities;
 
 public class SectionBuilder : ISectionBuilder {
 

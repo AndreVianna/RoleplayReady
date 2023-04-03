@@ -1,4 +1,4 @@
-namespace RoleplayReady.Web.Data;
+namespace RolePlayReady.Web.Data;
 
 public class WeatherForecast
 {

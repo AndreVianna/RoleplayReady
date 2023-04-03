@@ -1,4 +1,4 @@
-﻿namespace RoleplayReady.Domain.Utilities.Contracts;
+﻿namespace RolePlayReady.Utilities.Contracts;
 
 public interface IDateTimeProvider {
     DateTime Now { get; }

@@ -1,4 +1,7 @@
-﻿namespace RoleplayReady.Domain.Utilities;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities.Contracts;
+
+namespace RolePlayReady.Utilities;
 
 public class EntityBuilder {
     private readonly IEntity _entity;

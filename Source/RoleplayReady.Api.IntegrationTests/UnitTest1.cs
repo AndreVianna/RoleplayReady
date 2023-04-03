@@ -1,4 +1,4 @@
-namespace RoleplayReady.Api.IntegrationTests;
+namespace RolePlayReady.Api.IntegrationTests;
 
 public class UnitTest1
 {

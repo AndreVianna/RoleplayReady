@@ -1,6 +1,7 @@
-﻿using RoleplayReady.Domain.RuleSets;
+﻿using RolePlayReady.Models;
+using RolePlayReady.RuleSets;
 
-namespace RoleplayReady.DataAccess;
+namespace RolePlayReady.DataAccess;
 
 public class InMemoryDataContext
 {

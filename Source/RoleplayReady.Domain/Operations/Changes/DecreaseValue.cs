@@ -1,4 +1,7 @@
-﻿namespace RoleplayReady.Domain.Operations.Changes;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities;
+
+namespace RolePlayReady.Operations.Changes;
 
 public record DecreaseValue<TValue> : EntityChange
     where TValue : ISubtractionOperators<TValue, TValue, TValue> {

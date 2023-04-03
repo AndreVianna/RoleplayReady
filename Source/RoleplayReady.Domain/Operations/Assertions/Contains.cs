@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Operations.Assertions;
+﻿using RolePlayReady.Utilities;
+
+namespace RolePlayReady.Operations.Assertions;
 
 public record Contains<TValue> : EntityAssertion {
     [SetsRequiredMembers]

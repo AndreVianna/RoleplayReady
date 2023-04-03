@@ -1,4 +1,11 @@
-﻿namespace RoleplayReady.Domain.RuleSets;
+﻿using RolePlayReady.Models;
+using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities.Contracts;
+
+using RuleSet = RolePlayReady.Models.RuleSet;
+using Source = RolePlayReady.Models.Source;
+
+namespace RolePlayReady.RuleSets;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable once InconsistentNaming - DnD5e is the official name of the system.
@@ -99,7 +106,7 @@ public static partial class DnD5eFactory {
         //};
         //foreach (var attribute in attributes) {
         //    ruleSet.Attributes.Add(new Attribute {
-        //        Parent = ruleSet,
+        //        Procedure = ruleSet,
         //        RuleSet = ruleSet,
         //        OwnerId = "System",
         //        Name = attribute.Name,
@@ -111,7 +118,7 @@ public static partial class DnD5eFactory {
 
         var raceSection = ruleSet.GetComponent("Race");
         var playersHandbook = ruleSet.GetSource("PHB");
-        var races = new (string Name, Usage Usage, string Description)[]
+        var races = new (string Name, Models.Usage Usage, string Description)[]
         {
             ("Dragonborn", Usage.Standard, "Dragonborn are proud and self-assured, drawing upon their draconic ancestry for strength and power."),
             ("Dwarf", Usage.Template, "Dwarves are a stout and hardy folk, known for their resilience and craftsmanship."),

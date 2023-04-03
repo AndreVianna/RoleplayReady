@@ -1,7 +1,11 @@
-﻿namespace RoleplayReady.Domain.Models.Contracts;
+﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IAttribute {
-    string Abbreviation { get; init; }
-    string Name { get; init; }
-    string Description { get; init; }
+public interface IAttribute : IIdentification, ICloneable {
+    IRuleSet RuleSet { get; set; }
+    Type DataType => typeof(object);
+    new string FullName => $"<{RuleSet.Abbreviation}:{Type}>{Name}({Abbreviation}):{DataType.Name}";
+}
+
+public interface IAttribute<TValue> : IAttribute {
+    new string FullName => $"<{RuleSet.Abbreviation}:{Type}>{Name}({Abbreviation}):{DataType.Name}";
 }

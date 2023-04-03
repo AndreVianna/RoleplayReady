@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Operations.Validations;
+﻿using RolePlayReady.Models.Contracts;
+
+namespace RolePlayReady.Operations.Validations;
 
 public interface IEntityValidation
     : IEntityOperation<IEntityValidation, IList<ValidationError>> {

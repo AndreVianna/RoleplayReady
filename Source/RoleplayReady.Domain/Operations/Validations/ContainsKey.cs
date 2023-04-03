@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Operations.Validations;
+﻿using RolePlayReady.Utilities;
+
+namespace RolePlayReady.Operations.Validations;
 
 public record ContainsKey<TKey, TValue> : EntityValidation
     where TKey : notnull {

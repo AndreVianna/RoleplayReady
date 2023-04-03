@@ -1,7 +1,7 @@
-﻿namespace RoleplayReady.Domain.Models.Contracts;
+﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IJournalEntry : IAmTrackable {
-    EntrySection Section { get; init; }
-    string Title { get; init; }
-    string Text { get; init; }
+public interface IJournalEntry : IVersion {
+    string Section { get; init; }
+    string Title { get; set; }
+    string Text { get; set; }
 }

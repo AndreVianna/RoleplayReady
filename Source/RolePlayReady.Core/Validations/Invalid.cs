@@ -1,6 +1,4 @@
-﻿using RoleplayReady.Domain.Operations.Validations;
-
-namespace RoleplayReady.Domain.Validations;
+﻿namespace RolePlayReady.Validations;
 
 public record Invalid {
     public Invalid(IEnumerable<ValidationError?>? errors) {

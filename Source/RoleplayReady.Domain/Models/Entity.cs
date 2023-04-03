@@ -1,11 +1,15 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities;
+using RolePlayReady.Utilities.Contracts;
+
+namespace RolePlayReady.Models;
 
 public abstract record Entity : IEntity {
     protected Entity() {
         OwnerId = "System";
         DateTime = new SystemDateTimeProvider();
         State = State.NotReady;
-        Timestamp = DateTime.Now;
+        Version = DateTime.Now;
     }
 
     protected Entity(IDateTimeProvider? dateTime = null)
@@ -34,7 +38,7 @@ public abstract record Entity : IEntity {
     public State State { get; init; }
     public ISource? Source { get; init; }
 
-    public DateTime Timestamp { get; init; }
+    public DateTime Version { get; init; }
     public Usage Usage { get; init; }
 
     public IList<string> Tags { get; init; } = new List<string>();
@@ -63,7 +67,7 @@ public abstract record Entity : IEntity {
         where TSelf : class, IEntity {
         var result = this with {
             State = State.NotReady,
-            Timestamp = DateTime.Now,
+            Version = DateTime.Now,
             Tags = Tags.ToList(),
             Attributes = new List<IEntityAttribute>(),
             Requirements = new List<Func<IEntity, bool>>(Requirements),

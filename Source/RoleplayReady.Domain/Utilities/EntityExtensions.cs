@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Utilities;
+﻿using RolePlayReady.Models.Contracts;
+
+namespace RolePlayReady.Utilities;
 
 internal static class EntityExtensions {
     public static object? GetValue(this IEntity element, string name)

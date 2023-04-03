@@ -1,6 +1,8 @@
-﻿using static RoleplayReady.Domain.Models.EntrySection;
+﻿using RolePlayReady.Models.Contracts;
+using RolePlayReady.Utilities;
+using RolePlayReady.Utilities.Contracts;
 
-namespace RoleplayReady.Domain.RuleSets;
+namespace RolePlayReady.RuleSets;
 
 // ReSharper disable once InconsistentNaming - DnD5e is the official name of the system.
 public static partial class DnD5eFactory {

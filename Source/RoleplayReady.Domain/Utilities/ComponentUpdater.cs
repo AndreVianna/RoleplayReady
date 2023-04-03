@@ -1,4 +1,10 @@
-﻿namespace RoleplayReady.Domain.Utilities;
+﻿using RolePlayReady.Models;
+using RolePlayReady.Models.Contracts;
+using RolePlayReady.Operations.Changes;
+using RolePlayReady.Operations.Validations;
+using RolePlayReady.Utilities.Contracts;
+
+namespace RolePlayReady.Utilities;
 
 internal class ComponentUpdater : IComponentUpdater {
     private readonly ICollection<ValidationError> _errors = new List<ValidationError>();

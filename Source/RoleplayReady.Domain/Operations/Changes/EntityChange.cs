@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Operations.Changes;
+﻿using RolePlayReady.Models.Contracts;
+
+namespace RolePlayReady.Operations.Changes;
 
 public abstract record EntityChange
     : EntityOperation<IEntityChange, IEntity>,

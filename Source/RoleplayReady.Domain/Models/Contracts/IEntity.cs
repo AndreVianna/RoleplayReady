@@ -1,17 +1,12 @@
-﻿namespace RoleplayReady.Domain.Models.Contracts;
+﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IEntity
-    : IAmTrackable {
+public interface IEntity : IIdentification, IVersion, ICloneable {
 
-    string Abbreviation { get; init; }
-    string Name { get; init; }
-    string Description { get; init; }
     Usage Usage { get; init; }
-    ISource? Source { get; init; }
 
     IList<string> Tags { get; init; }
-
     IList<IEntityAttribute> Attributes { get; init; }
+    IList<IEntityProcess> Processes { get; init; }
 
     IList<Func<IEntity, bool>> Requirements { get; init; }
     bool QualifiesFor(IEntity entity);

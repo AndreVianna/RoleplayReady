@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Operations;
+﻿using RolePlayReady.Models.Contracts;
+
+namespace RolePlayReady.Operations;
 
 public interface IEntityOperation {
 }

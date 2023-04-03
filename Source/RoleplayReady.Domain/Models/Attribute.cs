@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Models;
+﻿using RolePlayReady.Models.Contracts;
+
+namespace RolePlayReady.Models;
 
 public record Attribute : IAttribute {
     public Attribute() {

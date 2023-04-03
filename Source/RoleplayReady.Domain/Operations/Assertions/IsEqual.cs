@@ -1,4 +1,6 @@
-﻿namespace RoleplayReady.Domain.Operations.Assertions;
+﻿using RolePlayReady.Utilities;
+
+namespace RolePlayReady.Operations.Assertions;
 
 public record IsEqual<TValue> : EntityAssertion
     where TValue : IEquatable<TValue> {
