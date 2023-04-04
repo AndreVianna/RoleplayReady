@@ -17,19 +17,16 @@ public readonly struct ValidationResult {
     }
 
     private ValidationResult AddErrors(IEnumerable<ValidationError?>? errors) {
-        var validationErrors = errors as ValidationError?[] ?? errors?.ToArray() ?? Array.Empty<ValidationError?>();
-        return validationErrors.Length == 0
-            ? throw new ArgumentException("The error collection cannot be null or empty.", nameof(errors))
-            : validationErrors.Any(e => e is null)
-                ? throw new ArgumentException("The error collection cannot contain null elements.", nameof(errors))
-                : new(_result.IsT1
-                    ? _result.AsT1.Errors.Concat(validationErrors)
+        var validationErrors = Throw.IfNullOrEmptyOrContainNulls(errors);
+        return new(_result.IsT1
+                    ? _result.AsT1.Errors.Concat(validationErrors).ToArray()
                     : validationErrors);
     }
 
     public static ValidationResult Valid => new();
 
-    private ValidationResult AddError(ValidationError? error) => AddErrors(new[] { error ?? throw new ArgumentException("The error cannot be null.", nameof(error)) });
+    private ValidationResult AddError(ValidationError? error)
+        => AddErrors(new[] { Throw.IfNull(error) });
 
     public bool IsValid => _result.IsT0;
     public bool HasErrors => _result.IsT1;
@@ -46,6 +43,5 @@ public readonly struct ValidationResult {
     public static implicit operator ValidationResult(ValidationError error) => new(error);
 
     public static ValidationResult operator +(ValidationResult left, ValidationError? right) => left.AddError(right);
-    public static ValidationResult operator +(ValidationResult left, IEnumerable<ValidationError?> right) => left.AddErrors(right);
-    public static ValidationResult operator +(ValidationResult left, ValidationResult? right) => left.AddErrors(right?.Errors ?? _noErrors);
+    public static ValidationResult operator +(ValidationResult left, ValidationResult right) => left.AddErrors(right.Errors);
 }

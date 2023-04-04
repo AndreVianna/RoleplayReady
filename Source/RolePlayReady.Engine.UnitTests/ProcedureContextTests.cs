@@ -13,7 +13,7 @@ public class ProcedureContextTests {
     }
 
     [Fact]
-    public void IncrementStepNumber_StepNumberIsIncremented() {
+    public void IncrementStepNumber_WhenCalled_IncrementsStepNumber() {
         // Arrange
         var context = new TestContext();
 

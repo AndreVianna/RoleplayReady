@@ -2,7 +2,7 @@
 
 public class ProcedureTests {
     [Fact]
-    public async Task RunAsync_WithValidSteps_Passes() {
+    public async Task RunAsync_WithValidSteps_ExecutesSteps() {
         // Arrange
         var context = new TestContext();
         var procedure = new TestProcedure(context, typeof(FirstProcedureStep));
@@ -16,7 +16,7 @@ public class ProcedureTests {
     }
 
     [Fact]
-    public async Task RunAsync_WithValidSteps_AndName_Passes() {
+    public async Task RunAsync_WithValidSteps_AndName_ExecutesSteps() {
         // Arrange
         var context = new TestContext();
         var procedure = new TestProcedure(context, "SomeName", typeof(FirstProcedureStep), new StepFactory(), NullLoggerFactory.Instance);
@@ -30,7 +30,7 @@ public class ProcedureTests {
     }
 
     [Fact]
-    public async Task RunAsync_OnError_AndSetToThrow_Throws() {
+    public async Task RunAsync_OnError_AndSetToThrow_ThrowsProcedureException() {
         // Arrange
         var procedure = new FaultyProcedure(new TestContext(), typeof(FaultyProcedureStep));
 

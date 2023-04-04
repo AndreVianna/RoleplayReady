@@ -1,15 +1,19 @@
 ﻿namespace RolePlayReady.Validations;
 
 public record ValidationError {
-    public ValidationError(string message, params object?[] arguments) {
-        if (string.IsNullOrWhiteSpace(message))
-            throw new ArgumentException("Message cannot be null or empty.", nameof(message));
+    public ValidationError() { }
 
-        Message = message;
-        Arguments = arguments;
+    [SetsRequiredMembers]
+    public ValidationError(string message, string? field = null) {
+        Message = Throw.IfNullOrWhiteSpaces(message);
+        Field = field;
     }
 
-    public string Source { get; init; } = string.Empty;
-    public string Message { get; }
-    public object?[] Arguments { get; }
+    private readonly string _message = string.Empty;
+    public required string Message {
+        get => _message;
+        init => _message = Throw.IfNullOrWhiteSpaces(value);
+    }
+
+    public string? Field { get; init; }
 }
