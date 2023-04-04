@@ -1,7 +1,10 @@
 ﻿namespace RolePlayReady.Engine;
 
-public abstract class ProcedureContext<TContext> : IDisposable, IAsyncDisposable
+public abstract class ProcedureContext<TContext> : IAsyncDisposable
     where TContext : ProcedureContext<TContext> {
+    protected ProcedureContext() {
+        ThrowOnError = true;
+    }
 
     [SetsRequiredMembers]
     protected ProcedureContext(bool throwOnError = true) {
@@ -14,18 +17,6 @@ public abstract class ProcedureContext<TContext> : IDisposable, IAsyncDisposable
     public void IncrementStepNumber() => StepNumber++;
 
     private bool _disposed;
-    protected virtual void Dispose(bool _) {
-        if (_disposed)
-            return;
-
-        _disposed = true;
-    }
-
-    public void Dispose() {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
     protected virtual ValueTask DisposeAsync(bool _) {
         if (_disposed)
             return ValueTask.CompletedTask;

@@ -1,19 +1,12 @@
 namespace RolePlayReady.Engine;
 
 public class ProcedureContextTests {
-    private class TestProcedureContext : ProcedureContext<TestProcedureContext> {
-        [SetsRequiredMembers]
-        public TestProcedureContext(bool throwOnError = true)
-            : base(throwOnError) { }
-    }
-
-    [Fact]
-    public void Constructor_ThrowOnErrorIsSet_ProcedureContextInitialized() {
-        // Arrange
-        var throwOnError = true;
-
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Constructor_ThrowOnErrorIsSet_ProcedureContextInitialized(bool throwOnError) {
         // Act
-        var context = new TestProcedureContext(throwOnError);
+        var context = new TestContext(throwOnError);
 
         // Assert
         context.ThrowOnError.Should().Be(throwOnError);
@@ -22,7 +15,7 @@ public class ProcedureContextTests {
     [Fact]
     public void IncrementStepNumber_StepNumberIsIncremented() {
         // Arrange
-        var context = new TestProcedureContext();
+        var context = new TestContext();
 
         // Act
         context.IncrementStepNumber();
@@ -32,22 +25,9 @@ public class ProcedureContextTests {
     }
 
     [Fact]
-    public void Dispose_CalledMultipleTimes_ContextDisposed() {
-        // Arrange
-        var context = new TestProcedureContext();
-
-        // Act
-        context.Dispose();
-        context.Dispose();
-
-        // Assert
-        // No exception should be thrown
-    }
-
-    [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_ContextDisposed() {
         // Arrange
-        var context = new TestProcedureContext();
+        var context = new TestContext();
 
         // Act
         await context.DisposeAsync();

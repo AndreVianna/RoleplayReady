@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Engine;
 
 public interface IStepFactory {
-    ProcedureStep<TContext> Create<TContext>(Type step)
+    ProcedureStep<TContext>? Create<TContext>(Type? step)
         where TContext : ProcedureContext<TContext>;
 }

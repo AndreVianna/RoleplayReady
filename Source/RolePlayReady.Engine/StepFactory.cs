@@ -7,7 +7,11 @@ public class StepFactory : IStepFactory {
         _loggerFactory = loggerFactory ?? new NullLoggerFactory();
     }
 
-    public ProcedureStep<TContext> Create<TContext>(Type step)
+    public ProcedureStep<TContext>? Create<TContext>(Type? step)
         where TContext : ProcedureContext<TContext>
-        => (ProcedureStep<TContext>)Activator.CreateInstance(step, this, _loggerFactory)!;
+        => step is null
+            ? default
+            :  step.IsAssignableTo(typeof(ProcedureStep<TContext>))
+                ? Activator.CreateInstance(step, this, _loggerFactory) as ProcedureStep<TContext>
+                : throw new InvalidCastException($"Step type must be assignable to ProcedureStep<{typeof(TContext).Name}>.");
 }
