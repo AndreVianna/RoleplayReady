@@ -17,6 +17,8 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
         _stepFactory = stepFactory ?? new StepFactory();
         _logger = loggerFactory?.CreateLogger(GetType()) ?? NullLoggerFactory.Instance.CreateLogger(GetType());
         _context = Throw.IfNull(context);
+        if (_context.IsInProgress)
+            throw new ArgumentException("The context is being processed by another job.", nameof(context));
         Name = GetType().Name;
     }
 
@@ -37,6 +39,9 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
 
     public async Task<TContext> RunAsync(CancellationToken cancellation = default) {
         try {
+            if (_context.IsInProgress)
+                throw new InvalidOperationException("The context is being processed by another job.");
+            _context.IsInProgress = true;
             await _context.ResetAsync().ConfigureAwait(false);
             _logger.LogDebug("Starting process {Name}...", Name);
             await OnStartAsync(cancellation).ConfigureAwait(false);
@@ -59,6 +64,9 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
             _logger.LogError(ex, "There was an error while executing procedure {Name}.", Name);
             await OnErrorAsync(ex, cancellation).ConfigureAwait(false);
             throw new ProcedureException($"There was an error while executing procedure {Name}.", ex);
+        }
+        finally {
+            _context.IsInProgress = false;
         }
         return _context;
     }

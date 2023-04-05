@@ -1,6 +1,9 @@
 ﻿namespace RolePlayReady.Engine.Utilities;
 
-internal class TestProcedure : DefaultProcedure {
+internal class TestProcedure : Procedure<EmptyContext> {
+    public TestProcedure(IStepFactory? stepFactory = null, ILoggerFactory? loggerFactory = null)
+        : base(new(), stepFactory, loggerFactory) { }
+
     public TestProcedure(EmptyContext context, IStepFactory? stepFactory = null, ILoggerFactory? loggerFactory = null)
         : base(context, stepFactory, loggerFactory) { }
 

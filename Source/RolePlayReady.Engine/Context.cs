@@ -17,6 +17,7 @@ public abstract class Context : IContext {
 
     public IServiceProvider? Services { get; }
 
+    public bool IsInProgress { get; internal set; }
     public int CurrentStepNumber { get; internal set; }
     public Type CurrentStepType { get; internal set; } = default!;
 

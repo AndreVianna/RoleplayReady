@@ -1,6 +1,20 @@
 ﻿namespace RolePlayReady.Engine;
 
 public class ProcedureTests {
+
+    [Fact]
+    public void Constructor_WithContextInProgress_ThrowsArgumentException() {
+        // Arrange
+        var context = new EmptyContext();
+        context.IsInProgress = true;
+
+        // Act
+        var action = () => _ = new TestProcedure(context);
+
+        // Assert
+        action.Should().Throw<ArgumentException>();
+    }
+
     [Fact]
     public async Task RunAsync_WithValidSteps_ExecutesSteps() {
         // Arrange
@@ -12,6 +26,7 @@ public class ProcedureTests {
 
         // Assert
         procedure.Name.Should().Be("TestProcedure");
+        context.IsInProgress.Should().BeFalse();
         context.CurrentStepNumber.Should().Be(2);
     }
 
@@ -27,6 +42,22 @@ public class ProcedureTests {
         // Assert
         procedure.Name.Should().Be("SomeName");
         context.CurrentStepNumber.Should().Be(2);
+        context.IsInProgress.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task RunAsync_WithContextInProgress_ThrowsInvalidOperationException() {
+        // Arrange
+        var context = new EmptyContext();
+        var procedure = new TestProcedure(context);
+        context.IsInProgress = true;
+
+        // Act
+        var action = () => procedure.RunAsync();
+
+        // Assert
+        await action.Should().ThrowAsync<ProcedureException>();
+        context.IsInProgress.Should().BeFalse();
     }
 
     [Fact]
@@ -58,7 +89,7 @@ public class ProcedureTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_Passes() {
         // Arrange
-        var procedure = new TestProcedure(new());
+        var procedure = new TestProcedure();
 
         // Act
         await procedure.DisposeAsync();
