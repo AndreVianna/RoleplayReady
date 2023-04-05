@@ -4,35 +4,35 @@ public class ProcedureTests {
     [Fact]
     public async Task RunAsync_WithValidSteps_ExecutesSteps() {
         // Arrange
-        var context = new TestContext();
-        var procedure = new TestProcedure(context, typeof(FirstProcedureStep));
+        var context = new EmptyContext();
+        var procedure = new TestProcedure(context);
 
         // Act
         await procedure.RunAsync();
 
         // Assert
         procedure.Name.Should().Be("TestProcedure");
-        context.StepNumber.Should().Be(2);
+        context.CurrentStepNumber.Should().Be(2);
     }
 
     [Fact]
     public async Task RunAsync_WithValidSteps_AndName_ExecutesSteps() {
         // Arrange
-        var context = new TestContext();
-        var procedure = new TestProcedure(context, "SomeName", typeof(FirstProcedureStep), new StepFactory(), NullLoggerFactory.Instance);
+        var context = new EmptyContext();
+        var procedure = new TestProcedure("SomeName", context, new StepFactory(), NullLoggerFactory.Instance);
 
         // Act
         await procedure.RunAsync();
 
         // Assert
         procedure.Name.Should().Be("SomeName");
-        context.StepNumber.Should().Be(2);
+        context.CurrentStepNumber.Should().Be(2);
     }
 
     [Fact]
     public async Task RunAsync_OnError_AndSetToThrow_ThrowsProcedureException() {
         // Arrange
-        var procedure = new FaultyProcedure(new TestContext(), typeof(FaultyProcedureStep));
+        var procedure = new FaultyProcedure();
 
         // Act
         var action = () => procedure.RunAsync();
@@ -44,7 +44,7 @@ public class ProcedureTests {
     [Fact]
     public async Task RunAsync_OnError_AndSetNotToThrow_Passes() {
         // Arrange
-        var procedure = new FaultyProcedure(new TestContext(false), typeof(FaultyProcedureStep));
+        var procedure = new FaultyProcedure(false);
 
         // Act
         await procedure.RunAsync();
@@ -56,7 +56,7 @@ public class ProcedureTests {
     [Fact]
     public async Task RunAsync_WithCancellationRequested_AndSetToThrow_Throws() {
         // Arrange
-        var procedure = new TestProcedure(new TestContext(), typeof(LongRunningProcedureStep));
+        var procedure = new LongRunningProcedure();
         var cancellationTokenSource = new CancellationTokenSource();
 
         // Act
@@ -70,7 +70,7 @@ public class ProcedureTests {
     [Fact]
     public async Task RunAsync_WithCancellationRequested_AndSetNotToThrow_Passes() {
         // Arrange
-        var procedure = new LongRunningProcedure(new TestContext(false), typeof(LastProcedureStep));
+        var procedure = new LongRunningProcedure(false);
         var cancellationTokenSource = new CancellationTokenSource();
 
         // Act
@@ -84,7 +84,7 @@ public class ProcedureTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_Passes() {
         // Arrange
-        var procedure = new LongRunningProcedure(new TestContext(), typeof(LastProcedureStep));
+        var procedure = new TestProcedure(new());
 
         // Act
         await procedure.DisposeAsync();

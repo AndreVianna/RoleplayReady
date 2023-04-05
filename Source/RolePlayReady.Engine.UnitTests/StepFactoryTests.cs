@@ -7,11 +7,11 @@ public class StepFactoryTests {
         var stepFactory = new StepFactory();
 
         // Act
-        var step = stepFactory.Create<TestContext>(typeof(FirstProcedureStep));
+        var step = stepFactory.Create<EmptyContext>(typeof(FirstStep));
 
         // Assert
         step.Should().NotBeNull();
-        step.Should().BeOfType<FirstProcedureStep>();
+        step.Should().BeOfType<FirstStep>();
     }
 
     [Fact]
@@ -20,10 +20,10 @@ public class StepFactoryTests {
         var stepFactory = new StepFactory();
 
         // Act
-        var action = () => stepFactory.Create<TestContext>(typeof(TestContext));
+        var action = () => stepFactory.Create<EmptyContext>(typeof(EmptyContext));
 
         // Assert
-        action.Should().Throw<InvalidCastException>();
+        action.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -32,9 +32,9 @@ public class StepFactoryTests {
         var stepFactory = new StepFactory();
 
         // Act
-        var step = stepFactory.Create<TestContext>(null);
+        var action = () => stepFactory.Create<EmptyContext>(null!);
 
         // Assert
-        step.Should().BeNull();
+        action.Should().Throw<ArgumentNullException>();
     }
 }

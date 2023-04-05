@@ -1,13 +1,13 @@
 ﻿namespace RolePlayReady.Engine;
 
-public class ProcedureStepTests {
+public class StepTests {
     [Fact]
     public async Task RunAsync_OnError_AndSetToThrow_Throws() {
         // Arrange
-        var step = new FaultyProcedureStep();
+        var step = new FaultyStep();
 
         // Act
-        var action = () => step.RunAsync(new TestContext());
+        var action = () => step.RunAsync();
 
         // Assert
         await action.Should().ThrowAsync<ProcedureException>();
@@ -16,10 +16,10 @@ public class ProcedureStepTests {
     [Fact]
     public async Task RunAsync_OnError_AndSetNotToThrow_Passes() {
         // Arrange
-        var step = new FaultyProcedureStep();
+        var step = new FaultyStep();
 
         // Act
-        await step.RunAsync(new TestContext(false));
+        await step.RunAsync(false);
 
         // Assert
         // No exception should be thrown, and the test should pass.
@@ -28,11 +28,11 @@ public class ProcedureStepTests {
     [Fact]
     public async Task RunAsync_CancellationRequested_AndSetToThrow_Throws() {
         // Arrange
-        var step = new LongRunningProcedureStep();
+        var step = new LongRunningStep();
         var cancellationTokenSource = new CancellationTokenSource();
 
         // Act
-        var action = () => step.RunAsync(new TestContext(), cancellationTokenSource.Token);
+        var action = () => step.RunAsync(cancellationTokenSource.Token);
         cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(10));
 
         // Assert
@@ -42,11 +42,11 @@ public class ProcedureStepTests {
     [Fact]
     public async Task RunAsync_CancellationRequested_AndSetNotToThrow_Passes() {
         // Arrange
-        var step = new LongRunningProcedureStep();
+        var step = new LongRunningStep();
         var cancellationTokenSource = new CancellationTokenSource();
 
         // Act
-        var action = () => step.RunAsync(new TestContext(false), cancellationTokenSource.Token);
+        var action = () => step.RunAsync(false, cancellationTokenSource.Token);
         cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(50));
 
         // Assert
@@ -56,10 +56,10 @@ public class ProcedureStepTests {
     [Fact]
     public async Task RunAsync_WithNoErrors_Passes() {
         // Arrange
-        var step = new FirstProcedureStep();
+        var step = new FirstStep();
 
         // Act
-        var action = async () => await step.RunAsync(new TestContext());
+        var action = async () => await step.RunAsync(true);
 
         // Assert
         await action.Should().NotThrowAsync<ProcedureException>();
@@ -68,7 +68,7 @@ public class ProcedureStepTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_Passes() {
         // Arrange
-        var step = new FirstProcedureStep();
+        var step = new FirstStep();
 
         // Act
         await step.DisposeAsync();

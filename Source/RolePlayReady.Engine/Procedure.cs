@@ -1,43 +1,47 @@
 ﻿namespace RolePlayReady.Engine;
 
-public abstract class Procedure<TContext, TProcedure> : IAsyncDisposable
-    where TContext : ProcedureContext<TContext>
-    where TProcedure : Procedure<TContext, TProcedure> {
+public abstract class Procedure<TContext> : IAsyncDisposable
+    where TContext : EmptyContext {
 
     private readonly TContext _context;
-    private readonly Type _initialStep;
     private readonly IStepFactory _stepFactory;
-    private readonly ILogger<TProcedure> _logger;
+    private readonly ILogger _logger;
 
-    protected Procedure(TContext context, Type initialStep, IStepFactory? stepFactory = null, ILoggerFactory? loggerFactory = null) {
+    protected Procedure(TContext context, IStepFactory? stepFactory, ILoggerFactory? loggerFactory) {
         _stepFactory = stepFactory ?? new StepFactory();
-        _logger = loggerFactory?.CreateLogger<TProcedure>() ?? NullLogger<TProcedure>.Instance;
+        _logger = loggerFactory?.CreateLogger(GetType()) ?? NullLoggerFactory.Instance.CreateLogger(GetType());
         _context = Throw.IfNull(context);
-        _initialStep = Throw.IfNull(initialStep);
         Name = GetType().Name;
     }
 
     [SetsRequiredMembers]
-    protected Procedure(TContext context, string name, Type initialStep, IStepFactory? stepFactory = null, ILoggerFactory? loggerFactory = null)
-        : this(context, initialStep, stepFactory, loggerFactory) {
+    protected Procedure(string name, TContext context, IStepFactory? stepFactory, ILoggerFactory? loggerFactory)
+        : this(context, stepFactory, loggerFactory) {
         Name = Throw.IfNullOrWhiteSpaces(name);
     }
 
     public string Name { get; }
+    public bool IsRunning { get; private set; }
 
-    protected virtual Task OnBeforeStartAsync(CancellationToken cancellation = default) => Task.CompletedTask;
-    protected virtual Task OnFinishAsync(CancellationToken cancellation = default) => Task.CompletedTask;
-    protected virtual Task OnErrorAsync(Exception ex, CancellationToken cancellation = default) => Task.CompletedTask;
+    protected virtual Task<Type?> OnStartAsync(CancellationToken cancellation = default)
+        => Task.FromResult((Type?)null);
+    protected virtual Task OnFinishAsync(CancellationToken cancellation = default)
+        => Task.CompletedTask;
+    protected virtual Task OnErrorAsync(Exception ex, CancellationToken cancellation = default)
+        => Task.CompletedTask;
 
     public async Task<TContext> RunAsync(CancellationToken cancellation = default) {
         try {
+            if (IsRunning) return _context;
+            IsRunning = true;
+            await _context.ResetAsync().ConfigureAwait(false);
             _logger.LogDebug("Starting process {Name}...", Name);
-            await OnBeforeStartAsync(cancellation).ConfigureAwait(false);
-            _logger.LogDebug("Running process {Name}...", Name);
-            await using var start = _stepFactory.Create<TContext>(_initialStep);
-            if (start is not null) {
-                await start.RunAsync(_context, cancellation).ConfigureAwait(false);
-                await start.DisposeAsync().ConfigureAwait(false);
+            await OnStartAsync(cancellation).ConfigureAwait(false);
+            var firstStepType = await OnStartAsync(cancellation).ConfigureAwait(false);
+            if (firstStepType is not null) {
+                _logger.LogDebug("Expecting first step to be '{FirstStepType}'.", firstStepType.Name);
+                await using var firstStep = _stepFactory.Create<TContext>(firstStepType);
+                await firstStep.RunAsync(_context, cancellation).ConfigureAwait(false);
             }
 
             _logger.LogDebug("Finishing process {Name}...", Name);
@@ -46,12 +50,15 @@ public abstract class Procedure<TContext, TProcedure> : IAsyncDisposable
         }
         catch (OperationCanceledException ex) {
             _logger.LogError(ex, "Process {Name} cancelled.", Name);
-            if (_context.ThrowOnError) throw;
+            if (_context.ThrowsOnError) throw;
         }
         catch (Exception ex) {
             _logger.LogError(ex, "There was an error while executing procedure {Name}.", Name);
             await OnErrorAsync(ex, cancellation).ConfigureAwait(false);
-            if (_context.ThrowOnError) throw new ProcedureException($"There was an error while executing procedure {Name}.", ex);
+            if (_context.ThrowsOnError) throw new ProcedureException($"There was an error while executing procedure {Name}.", ex);
+        }
+        finally {
+            IsRunning = false;
         }
         return _context;
     }

@@ -1,33 +1,35 @@
 namespace RolePlayReady.Engine;
 
-public class ProcedureContextTests {
+public class ContextTests {
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void Constructor_ThrowOnErrorIsSet_ProcedureContextInitialized(bool throwOnError) {
         // Act
-        var context = new TestContext(throwOnError);
+        var context = new EmptyContext(throwOnError);
 
         // Assert
-        context.ThrowOnError.Should().Be(throwOnError);
+        context.ThrowsOnError.Should().Be(throwOnError);
     }
 
     [Fact]
     public void IncrementStepNumber_WhenCalled_IncrementsStepNumber() {
         // Arrange
-        var context = new TestContext();
+        var context = new EmptyContext();
 
         // Act
-        context.IncrementStepNumber();
+        context.CurrentStepNumber++;
+        context.CurrentStepType = typeof(FirstStep);
 
         // Assert
-        context.StepNumber.Should().Be(1);
+        context.CurrentStepNumber.Should().Be(1);
+        context.CurrentStepType.Should().Be(typeof(FirstStep));
     }
 
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_ContextDisposed() {
         // Arrange
-        var context = new TestContext();
+        var context = new EmptyContext();
 
         // Act
         await context.DisposeAsync();
