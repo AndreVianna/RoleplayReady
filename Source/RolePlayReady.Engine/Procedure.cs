@@ -1,11 +1,5 @@
 ﻿namespace RolePlayReady.Engine;
 
-public interface IProcedure<TContext> : IAsyncDisposable
-    where TContext : Context {
-    string Name { get; }
-    Task<TContext> RunAsync(CancellationToken cancellation = default);
-}
-
 public abstract class Procedure<TContext> : IProcedure<TContext>
     where TContext : Context {
 

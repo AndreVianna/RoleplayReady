@@ -30,7 +30,7 @@ public abstract class Step<TContext> : IStep<TContext>
     protected virtual Task OnErrorAsync(Exception ex, CancellationToken cancellation = default)
         => Task.CompletedTask;
 
-    Task IStep.RunAsync(Context context, CancellationToken cancellation) => RunAsync((TContext)context, cancellation);
+    Task IStep.RunAsync(IContext context, CancellationToken cancellation) => RunAsync((TContext)context, cancellation);
     public async Task RunAsync(TContext context, CancellationToken cancellation = default) {
         try {
             context.CurrentStepNumber++;

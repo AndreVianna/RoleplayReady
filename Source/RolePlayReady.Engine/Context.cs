@@ -1,12 +1,5 @@
 ﻿namespace RolePlayReady.Engine;
 
-public interface IContext : IAsyncDisposable {
-    int CurrentStepNumber { get; }
-    Type CurrentStepType { get; }
-
-    IServiceProvider? Services { get; }
-}
-
 public abstract class Context : IContext {
     private static readonly IServiceCollection _emptyServiceCollection = new ServiceCollection();
     private static readonly IServiceProvider _emptyServiceProvider = _emptyServiceCollection.BuildServiceProvider();
