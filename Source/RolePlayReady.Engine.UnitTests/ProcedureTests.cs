@@ -42,18 +42,6 @@ public class ProcedureTests {
     }
 
     [Fact]
-    public async Task RunAsync_OnError_AndSetNotToThrow_Passes() {
-        // Arrange
-        var procedure = new FaultyProcedure(false);
-
-        // Act
-        await procedure.RunAsync();
-
-        // Assert
-        // No exception should be thrown, and the test should pass.
-    }
-
-    [Fact]
     public async Task RunAsync_WithCancellationRequested_AndSetToThrow_Throws() {
         // Arrange
         var procedure = new LongRunningProcedure();
@@ -65,20 +53,6 @@ public class ProcedureTests {
 
         // Assert
         await action.Should().ThrowAsync<OperationCanceledException>();
-    }
-
-    [Fact]
-    public async Task RunAsync_WithCancellationRequested_AndSetNotToThrow_Passes() {
-        // Arrange
-        var procedure = new LongRunningProcedure(false);
-        var cancellationTokenSource = new CancellationTokenSource();
-
-        // Act
-        var action = () => procedure.RunAsync(cancellationTokenSource.Token);
-        cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(10));
-
-        // Assert
-        await action.Should().NotThrowAsync();
     }
 
     [Fact]

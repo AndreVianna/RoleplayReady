@@ -7,7 +7,23 @@ public class StepFactoryTests {
         var stepFactory = new StepFactory();
 
         // Act
-        var step = stepFactory.Create<EmptyContext>(typeof(FirstStep));
+        var step = stepFactory.Create(typeof(FirstStep));
+
+        // Assert
+        step.Should().NotBeNull();
+        step.Should().BeOfType<FirstStep>();
+    }
+
+    [Fact]
+    public void Create_WithServiceProvider_ReturnsInstance() {
+        // Arrange
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddScoped<FirstStep>();
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        var stepFactory = new StepFactory(serviceCollection);
+
+        // Act
+        var step = stepFactory.Create(typeof(FirstStep));
 
         // Assert
         step.Should().NotBeNull();
@@ -20,19 +36,19 @@ public class StepFactoryTests {
         var stepFactory = new StepFactory();
 
         // Act
-        var action = () => stepFactory.Create<EmptyContext>(typeof(EmptyContext));
+        var action = () => stepFactory.Create(typeof(EmptyContext));
 
         // Assert
         action.Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
-    public void Create_WithNullType_ReturnsNull() {
+    public void Create_WithNullType_ThrowsArgumentNullException() {
         // Arrange
         var stepFactory = new StepFactory();
 
         // Act
-        var action = () => stepFactory.Create<EmptyContext>(null!);
+        var action = () => stepFactory.Create(null!);
 
         // Assert
         action.Should().Throw<ArgumentNullException>();

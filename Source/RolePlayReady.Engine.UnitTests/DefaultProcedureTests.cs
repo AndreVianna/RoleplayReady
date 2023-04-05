@@ -8,12 +8,6 @@ public class DefaultProcedureTests {
     }
 
     [Fact]
-    public void Constructor_WithThrowsOnError_CreatesDefaultProcedure() {
-        var procedure = new DefaultProcedure(throwsOnError: true);
-        procedure.Should().NotBeNull();
-    }
-
-    [Fact]
     public void Constructor_WithEmptyContext_CreatesDefaultProcedure() {
         var context = new EmptyContext();
         var procedure = new DefaultProcedure(context);
@@ -23,12 +17,6 @@ public class DefaultProcedureTests {
     [Fact]
     public void Constructor_WithName_CreatesDefaultProcedure() {
         var procedure = new DefaultProcedure("TestProcedure");
-        procedure.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void Constructor_WithNameAndThrowsOnError_CreatesDefaultProcedure() {
-        var procedure = new DefaultProcedure("TestProcedure", throwsOnError: true);
         procedure.Should().NotBeNull();
     }
 

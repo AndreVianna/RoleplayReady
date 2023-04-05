@@ -14,18 +14,6 @@ public class StepTests {
     }
 
     [Fact]
-    public async Task RunAsync_OnError_AndSetNotToThrow_Passes() {
-        // Arrange
-        var step = new FaultyStep();
-
-        // Act
-        await step.RunAsync(false);
-
-        // Assert
-        // No exception should be thrown, and the test should pass.
-    }
-
-    [Fact]
     public async Task RunAsync_CancellationRequested_AndSetToThrow_Throws() {
         // Arrange
         var step = new LongRunningStep();
@@ -40,29 +28,15 @@ public class StepTests {
     }
 
     [Fact]
-    public async Task RunAsync_CancellationRequested_AndSetNotToThrow_Passes() {
-        // Arrange
-        var step = new LongRunningStep();
-        var cancellationTokenSource = new CancellationTokenSource();
-
-        // Act
-        var action = () => step.RunAsync(false, cancellationTokenSource.Token);
-        cancellationTokenSource.CancelAfter(TimeSpan.FromMilliseconds(50));
-
-        // Assert
-        await action.Should().NotThrowAsync();
-    }
-
-    [Fact]
     public async Task RunAsync_WithNoErrors_Passes() {
         // Arrange
         var step = new FirstStep();
 
         // Act
-        var action = async () => await step.RunAsync(true);
+        await step.RunAsync();
 
         // Assert
-        await action.Should().NotThrowAsync<ProcedureException>();
+        // No exception should be thrown, and the test should pass.
     }
 
     [Fact]

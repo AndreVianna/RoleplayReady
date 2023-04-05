@@ -1,17 +1,6 @@
 namespace RolePlayReady.Engine;
 
 public class ContextTests {
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void Constructor_ThrowOnErrorIsSet_ProcedureContextInitialized(bool throwOnError) {
-        // Act
-        var context = new EmptyContext(throwOnError);
-
-        // Assert
-        context.ThrowsOnError.Should().Be(throwOnError);
-    }
-
     [Fact]
     public void IncrementStepNumber_WhenCalled_IncrementsStepNumber() {
         // Arrange

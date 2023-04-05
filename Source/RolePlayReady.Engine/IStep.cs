@@ -1,11 +1,10 @@
 ﻿namespace RolePlayReady.Engine;
 
-public interface IStep {
-    Task RunAsync(EmptyContext context, CancellationToken cancellation = default);
-    ValueTask DisposeAsync();
+public interface IStep : IAsyncDisposable {
+    Task RunAsync(Context context, CancellationToken cancellation = default);
 }
 
 public interface IStep<in TContext> : IStep
-    where TContext : EmptyContext {
+    where TContext : Context {
     Task RunAsync(TContext context, CancellationToken cancellation = default);
 }
