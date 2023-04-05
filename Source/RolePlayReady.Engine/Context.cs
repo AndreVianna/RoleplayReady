@@ -8,7 +8,7 @@ public abstract class Context : IContext {
         Services = services?.BuildServiceProvider() ?? _emptyServiceProvider;
     }
 
-    public IServiceProvider? Services { get; }
+    public IServiceProvider Services { get; }
 
     public bool IsInProgress { get; internal set; }
     public int CurrentStepNumber { get; internal set; }

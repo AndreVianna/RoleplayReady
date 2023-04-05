@@ -7,9 +7,9 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
     private readonly IStepFactory _stepFactory;
     private readonly ILogger _logger;
 
-    protected Procedure(TContext context, IStepFactory? stepFactory, ILoggerFactory? loggerFactory) {
-        _stepFactory = stepFactory ?? new StepFactory();
+    protected Procedure(TContext context, IStepFactory stepFactory, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger(GetType()) ?? NullLoggerFactory.Instance.CreateLogger(GetType());
+        _stepFactory = Throw.IfNull(stepFactory);
         _context = Throw.IfNull(context);
         if (_context.IsInProgress)
             throw new ArgumentException("The context is being processed by another job.", nameof(context));
@@ -17,7 +17,7 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
     }
 
     [SetsRequiredMembers]
-    protected Procedure(string name, TContext context, IStepFactory? stepFactory, ILoggerFactory? loggerFactory)
+    protected Procedure(string name, TContext context, IStepFactory stepFactory, ILoggerFactory? loggerFactory)
         : this(context, stepFactory, loggerFactory) {
         Name = Throw.IfNullOrWhiteSpaces(name);
     }
@@ -38,7 +38,6 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
             _context.IsInProgress = true;
             await _context.ResetAsync().ConfigureAwait(false);
             _logger.LogDebug("Starting process {Name}...", Name);
-            await OnStartAsync(cancellation).ConfigureAwait(false);
             var firstStepType = await OnStartAsync(cancellation).ConfigureAwait(false);
             if (firstStepType is not null) {
                 _logger.LogDebug("Expecting first step to be '{FirstStepType}'.", firstStepType.Name);

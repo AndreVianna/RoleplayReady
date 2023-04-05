@@ -9,7 +9,7 @@ public class ProcedureTests {
         context.IsInProgress = true;
 
         // Act
-        var action = () => _ = new TestProcedure(context);
+        var action = () => _ = new TestProcedure(context, NullStepFactory.Instance);
 
         // Assert
         action.Should().Throw<ArgumentException>();
@@ -19,7 +19,7 @@ public class ProcedureTests {
     public async Task RunAsync_WithValidSteps_ExecutesSteps() {
         // Arrange
         var context = new EmptyContext();
-        var procedure = new TestProcedure(context);
+        var procedure = new TestProcedure(context, new StepFactory());
 
         // Act
         await procedure.RunAsync();
@@ -49,7 +49,7 @@ public class ProcedureTests {
     public async Task RunAsync_WithContextInProgress_ThrowsInvalidOperationException() {
         // Arrange
         var context = new EmptyContext();
-        var procedure = new TestProcedure(context);
+        var procedure = new TestProcedure(context, NullStepFactory.Instance);
         context.IsInProgress = true;
 
         // Act
@@ -89,7 +89,7 @@ public class ProcedureTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_Passes() {
         // Arrange
-        var procedure = new TestProcedure();
+        var procedure = new TestProcedure(NullStepFactory.Instance);
 
         // Act
         await procedure.DisposeAsync();
