@@ -1,11 +1,7 @@
 ﻿namespace RolePlayReady.Engine.Utilities;
 
 internal class FaultyStep : Step {
-    public FaultyStep()
-        : this(null, null) { }
-
-    public FaultyStep(IStepFactory? stepFactory, ILoggerFactory? loggerFactory)
-        : base(stepFactory, loggerFactory) { }
+    public FaultyStep(IServiceCollection services) : base(services) { }
 
 
     protected override Task<Type?> OnRunAsync(CancellationToken cancellation = default)

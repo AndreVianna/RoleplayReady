@@ -1,16 +1,10 @@
-﻿namespace RolePlayReady.Engine;
-
-public class EndStep : EndStep<EmptyContext> {
-    public EndStep(IStepFactory? stepFactory = null, ILoggerFactory? loggerFactory = null)
-        : base(stepFactory, loggerFactory) {
-    }
-}
+﻿namespace RolePlayReady.Engine.Steps;
 
 public class EndStep<TContext> : Step<TContext>
-    where TContext : EmptyContext {
+    where TContext : DefaultContext {
 
-    public EndStep(IStepFactory? stepFactory = null, ILoggerFactory? loggerFactory = null)
-        : base(stepFactory, loggerFactory) {
+    public EndStep(IServiceCollection services, ILoggerFactory? loggerFactory = null)
+        : base(services, loggerFactory) {
     }
 
     protected sealed override Task<Type?> OnRunAsync(CancellationToken cancellation = default)

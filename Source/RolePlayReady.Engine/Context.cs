@@ -1,11 +1,8 @@
 ﻿namespace RolePlayReady.Engine;
 
 public abstract class Context : IContext {
-    private static readonly IServiceCollection _emptyServiceCollection = new ServiceCollection();
-    private static readonly IServiceProvider _emptyServiceProvider = _emptyServiceCollection.BuildServiceProvider();
-
     protected Context(IServiceCollection? services = null) {
-        Services = services?.BuildServiceProvider() ?? _emptyServiceProvider;
+        Services = services?.BuildServiceProvider() ?? NullServiceProvider.Instance;
     }
 
     public IServiceProvider Services { get; }

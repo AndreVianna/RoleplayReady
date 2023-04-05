@@ -11,6 +11,6 @@ public class NullStepFactoryTests {
 
         // Assert
         step.Should().NotBeNull();
-        step.Should().BeOfType<EndStep>();
+        step.Should().BeOfType<NullStep>();
     }
 }

@@ -28,4 +28,11 @@
     <ProjectReference Include="..\RolePlayReady.Engine\RolePlayReady.Engine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+    <Folder Include="Defaults\" />
+    <Folder Include="Step\" />
+    <Folder Include="Nulls\" />
+  </ItemGroup>
+
 </Project>

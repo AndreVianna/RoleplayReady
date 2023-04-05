@@ -4,7 +4,7 @@ public class ContextTests {
     [Fact]
     public void IncrementStepNumber_WhenCalled_IncrementsStepNumber() {
         // Arrange
-        var context = new EmptyContext();
+        var context = new DefaultContext();
 
         // Act
         context.CurrentStepNumber++;
@@ -18,7 +18,7 @@ public class ContextTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_ContextDisposed() {
         // Arrange
-        var context = new EmptyContext();
+        var context = new DefaultContext();
 
         // Act
         await context.DisposeAsync();

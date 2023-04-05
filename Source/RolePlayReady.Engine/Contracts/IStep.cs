@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Engine;
+﻿namespace RolePlayReady.Engine.Contracts;
 
 public interface IStep : IAsyncDisposable {
     Task RunAsync(IContext context, CancellationToken cancellation = default);

@@ -1,19 +1,25 @@
 ﻿namespace RolePlayReady.Engine;
 
 public class DefaultProcedureTests {
+    private readonly ServiceCollection _services;
+
+    public DefaultProcedureTests() {
+        _services = new();
+        _services.AddEngine();
+    }
+
     [Fact]
     public void Constructor_WithName_CreatesDefaultProcedure() {
-        var stepFactory = NullStepFactory.Instance;
-        var loggerFactory = NullLoggerFactory.Instance;
-        var procedure = new DefaultProcedure("TestProcedure", stepFactory, loggerFactory);
+
+        var procedure = new DefaultProcedure("TestProcedure", _services, NullLoggerFactory.Instance);
+
         procedure.Should().NotBeNull();
     }
 
     [Fact]
     public void Constructor_WithStepFactoryAndLoggerFactory_CreatesDefaultProcedure() {
-        var stepFactory = NullStepFactory.Instance;
-        var loggerFactory = NullLoggerFactory.Instance;
-        var procedure = new DefaultProcedure(stepFactory, loggerFactory);
+        var procedure = new DefaultProcedure(_services, NullLoggerFactory.Instance);
+
         procedure.Should().NotBeNull();
     }
 }

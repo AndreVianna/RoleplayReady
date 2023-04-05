@@ -1,6 +1,8 @@
 ﻿namespace RolePlayReady.Engine.Utilities;
 
-internal class TestEndStep : EndStep {
+internal class TestEndStep : DefaultEndStep {
+    public TestEndStep(IServiceCollection services) : base(services) { }
+
     public Task<Type?> TestOnRunAsync(CancellationToken cancellation = default)
         => OnRunAsync(cancellation);
 
@@ -9,4 +11,5 @@ internal class TestEndStep : EndStep {
 
     public Task TestOnFinishAsync(CancellationToken cancellation = default)
         => OnFinishAsync(cancellation);
+
 }

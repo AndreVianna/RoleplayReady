@@ -1,9 +1,9 @@
 ﻿namespace RolePlayReady.Engine;
 
-public abstract class Step : Step<EmptyContext> {
+public abstract class Step : Step<DefaultContext> {
 
-    protected Step(IStepFactory? stepFactory, ILoggerFactory? loggerFactory)
-        : base(stepFactory, loggerFactory) {
+    protected Step(IServiceCollection services, ILoggerFactory? loggerFactory = null)
+        : base(services, loggerFactory) {
     }
 
     public Task RunAsync(CancellationToken cancellation = default) => base.RunAsync(new(), cancellation);
@@ -15,9 +15,9 @@ public abstract class Step<TContext> : IStep<TContext>
     private readonly IStepFactory _stepFactory;
     private readonly ILogger _logger;
 
-    protected Step(IStepFactory? stepFactory, ILoggerFactory? loggerFactory) {
+    protected Step(IServiceCollection services, ILoggerFactory? loggerFactory = null) {
         _stepType = GetType();
-        _stepFactory = stepFactory ?? new StepFactory();
+        _stepFactory = Throw.IfNull(services).BuildServiceProvider().GetRequiredService<IStepFactory>();
         _logger = loggerFactory?.CreateLogger(_stepType) ?? NullLogger.Instance;
     }
 

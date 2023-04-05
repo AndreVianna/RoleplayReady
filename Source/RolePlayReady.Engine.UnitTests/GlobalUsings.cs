@@ -6,6 +6,12 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Logging.Abstractions;
 
+global using RolePlayReady.Engine.Contracts;
+global using RolePlayReady.Engine.Defaults;
+global using RolePlayReady.Engine.Exceptions;
+global using RolePlayReady.Engine.Extensions;
+global using RolePlayReady.Engine.Factories;
+global using RolePlayReady.Engine.Nulls;
 global using RolePlayReady.Engine.Utilities;
 
 global using Xunit;

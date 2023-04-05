@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Engine;
+﻿namespace RolePlayReady.Engine.Exceptions;
 
 public class ProcedureException : Exception {
     public ProcedureException(string message)
