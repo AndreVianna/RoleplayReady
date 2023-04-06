@@ -1,22 +1,32 @@
 ﻿namespace RolePlayReady.Engine;
 
-public abstract class Context<TContext> : IContext
-    where TContext : Context<TContext> {
-    protected Context(IServiceProvider services) {
+public class Context : IContext {
+    public Context(IServiceProvider services) {
         Services = services;
     }
 
     public IServiceProvider Services { get; }
 
-    public bool IsInProgress { get; set; }
-    public int CurrentStepNumber { get; set; }
-    public Type CurrentStepType { get; set; } = typeof(EndStep<TContext>);
+    public bool IsBlocked { get; private set; }
+    public int CurrentStepNumber { get; private set; }
+    public IStep? CurrentStep { get; private set; }
 
-    public virtual Task ResetAsync() {
+
+    public void Block() => IsBlocked = true;
+
+    public virtual Task InitializeAsync(CancellationToken cancellationToken = default) {
         CurrentStepNumber = 0;
-        CurrentStepType = typeof(EndStep<TContext>);
+        CurrentStep = default;
         return Task.CompletedTask;
     }
+
+    public virtual Task UpdateAsync(IStep currentStepType, CancellationToken cancellationToken = default) {
+        CurrentStepNumber++;
+        CurrentStep = currentStepType;
+        return Task.CompletedTask;
+    }
+
+    public void Release() => IsBlocked = false;
 
     private bool _disposed;
     protected virtual ValueTask DisposeAsync(bool disposing) {

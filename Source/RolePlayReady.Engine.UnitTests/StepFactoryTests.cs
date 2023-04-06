@@ -1,34 +1,33 @@
+using FluentAssertions.Common;
+
 namespace RolePlayReady.Engine;
 
 public class StepFactoryTests {
     private readonly IStepFactory _stepFactory;
-    private readonly ServiceCollection _services;
 
     public StepFactoryTests() {
-        _services = new ServiceCollection();
-        _services.AddStepEngine();
-        var provider = _services.BuildServiceProvider();
+        var services = new ServiceCollection();
+        services.AddSingleton<ILoggerFactory, NullLoggerFactory>();
+        services.AddStepEngine();
+        services.AddStep<TestStep>();
+        var provider = services.BuildServiceProvider();
         _stepFactory = provider.GetRequiredService<IStepFactory>();
     }
 
     [Fact]
     public void Create_WithValidType_ReturnsInstance() {
         // Act
-        _services.AddStep<TestStep<NullContext>>();
-        var provider = _services.BuildServiceProvider();
-        var stepFactory = provider.GetRequiredService<IStepFactory>();
-
-        var step = stepFactory.Create(typeof(TestStep<NullContext>));
+        var step = _stepFactory.Create(typeof(TestStep));
 
         // Assert
         step.Should().NotBeNull();
-        step.Should().BeOfType<TestStep<NullContext>>();
+        step.Should().BeOfType<TestStep>();
     }
 
     [Fact]
     public void Create_WithInvalidType_ThrowsInvalidCastException() {
         // Act
-        var action = () => _stepFactory.Create(typeof(DefaultContext));
+        var action = () => _stepFactory.Create(typeof(Context));
 
         // Assert
         action.Should().Throw<InvalidOperationException>();

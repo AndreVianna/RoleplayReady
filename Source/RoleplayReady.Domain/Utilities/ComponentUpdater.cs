@@ -47,12 +47,12 @@ internal class ComponentUpdater : IComponentUpdater {
         }
 
         public IComponentUpdater.IActionConnector AddJournalEntry(string section, string title, string text) {
-            ((Actor)Target).JournalEntries.Add(new JournalEntry(Target, section, title, text));
+            ((Agent)Target).JournalEntries.Add(new JournalEntry(Target, section, title, text));
             return new ActionConnector(Target);
         }
 
         public IComponentUpdater.IActionConnector AddJournalEntry(string section, string text) {
-            ((Actor)Target).JournalEntries.Add(new JournalEntry(Target, section, Attribute, text));
+            ((Agent)Target).JournalEntries.Add(new JournalEntry(Target, section, Attribute, text));
             return new ActionConnector(Target);
         }
 

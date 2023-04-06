@@ -2,18 +2,19 @@
 
 public class StepTests {
     private readonly IStepFactory _stepFactory;
+    private readonly ServiceProvider _provider;
 
     public StepTests() {
         var services = new ServiceCollection();
         services.AddStepEngine();
-        var provider = services.BuildServiceProvider();
-        _stepFactory = provider.GetRequiredService<IStepFactory>();
+        _provider = services.BuildServiceProvider();
+        _stepFactory = _provider.GetRequiredService<IStepFactory>();
     }
 
     [Fact]
     public async Task RunAsync_OnError_AndSetToThrow_Throws() {
         // Arrange
-        var step = new FaultyStep<NullContext>(_stepFactory);
+        var step = new FaultyStep(_stepFactory);
 
         // Act
         var action = () => step.RunAsync(NullContext.Instance);
@@ -25,7 +26,7 @@ public class StepTests {
     [Fact]
     public async Task RunAsync_CancellationRequested_AndSetToThrow_Throws() {
         // Arrange
-        var step = new LongRunningStep<NullContext>(_stepFactory);
+        var step = new LongRunningStep(_stepFactory);
         var cancellationTokenSource = new CancellationTokenSource();
 
         // Act
@@ -39,10 +40,24 @@ public class StepTests {
     [Fact]
     public async Task RunAsync_WithNoErrors_Passes() {
         // Arrange
-        var step = new EndStep<NullContext>(_stepFactory, NullLoggerFactory.Instance);
+        var step = new TestStep(_stepFactory, NullLoggerFactory.Instance);
+        var context = new Context(_provider);
 
         // Act
-        await step.RunAsync(NullContext.Instance);
+        await step.RunAsync(context);
+
+        // Assert
+        // No exception should be thrown, and the test should pass.
+    }
+
+    [Fact]
+    public async Task RunAsync_FromInterface_Passes() {
+        // Arrange
+        var step = new TestStep(_stepFactory, NullLoggerFactory.Instance);
+        var context = new Context(_provider);
+
+        // Act
+        await ((IIsRunnable)step).RunAsync(context);
 
         // Assert
         // No exception should be thrown, and the test should pass.
@@ -51,7 +66,7 @@ public class StepTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_Passes() {
         // Arrange
-        var step = new EndStep<NullContext>(_stepFactory);
+        var step = new TestStep(_stepFactory, null);
 
         // Act
         await step.DisposeAsync();

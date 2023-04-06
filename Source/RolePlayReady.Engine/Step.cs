@@ -6,7 +6,7 @@ public abstract class Step<TContext> : IStep<TContext>
     private readonly IStepFactory _stepFactory;
     private readonly ILogger _logger;
 
-    protected Step(IStepFactory stepFactory, ILoggerFactory? loggerFactory = null) {
+    protected Step(IStepFactory stepFactory, ILoggerFactory? loggerFactory) {
         _stepType = GetType();
         _logger = loggerFactory?.CreateLogger(_stepType) ?? NullLogger.Instance;
         _stepFactory = stepFactory;
@@ -21,15 +21,14 @@ public abstract class Step<TContext> : IStep<TContext>
     protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default)
         => Task.CompletedTask;
 
-    Task IStep.RunAsync(IContext context, CancellationToken cancellation)
-        => RunAsync(
+    async Task<IContext> IIsRunnable.RunAsync(IContext context, CancellationToken cancellation)
+        => await RunAsync(
             Throw.IfNull(context as TContext, $"Context must be of type '{typeof(TContext).Name}'."),
             cancellation);
-    public async Task RunAsync(TContext context, CancellationToken cancellation = default) {
+    public async Task<TContext> RunAsync(TContext context, CancellationToken cancellation = default) {
         try {
             Throw.IfNull(context);
-            context.CurrentStepNumber++;
-            context.CurrentStepType = _stepType;
+            await context.UpdateAsync(this, cancellation).ConfigureAwait(false);
             _logger.LogDebug("Running step {StepNumber}: '{Type}'...", context.CurrentStepNumber, _stepType.Name);
             var nextStepType = await OnRunAsync(context, cancellation).ConfigureAwait(false);
             if (nextStepType is not null) {
@@ -41,6 +40,8 @@ public abstract class Step<TContext> : IStep<TContext>
             _logger.LogDebug("Finishing step {StepNumber}: '{Type}'...", context.CurrentStepNumber, _stepType.Name);
             await OnFinishAsync(context, cancellation).ConfigureAwait(false);
             _logger.LogDebug("Step {StepNumber}: '{Type}' finished.", context.CurrentStepNumber, _stepType.Name);
+
+            return context;
         }
         catch (OperationCanceledException ex) {
             _logger.LogError(ex, "Step {StepNumber}: '{Type}' cancelled.", context.CurrentStepNumber, _stepType.Name);

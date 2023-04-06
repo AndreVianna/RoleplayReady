@@ -5,7 +5,7 @@ public sealed class NullStep : IStep {
 
     public static NullStep Instance { get; } = new();
 
-    public Task RunAsync(IContext _, CancellationToken __ = default) => Task.CompletedTask;
+    public Task<IContext> RunAsync(IContext context, CancellationToken cancellation = default) => Task.FromResult(context);
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }

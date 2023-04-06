@@ -3,9 +3,12 @@
 public interface IContext : IAsyncDisposable {
     IServiceProvider Services { get; }
 
-    bool IsInProgress { get; set; }
-    int CurrentStepNumber { get; set; }
-    Type CurrentStepType { get; set; }
+    bool IsBlocked { get; }
+    int CurrentStepNumber { get; }
+    IStep? CurrentStep { get; }
 
-    Task ResetAsync();
+    void Block();
+    Task InitializeAsync(CancellationToken cancellationToken = default);
+    Task UpdateAsync(IStep currentStep, CancellationToken cancellationToken = default);
+    void Release();
 }

@@ -32,9 +32,9 @@ public static partial class DnD5eFactory {
 
         var sections = new (string Type, string Name, string Description)[]
         {
-            (nameof(Actor), "Character", "[Add description here]"),
-            (nameof(Actor), "Non-Player Character", "[Add description here]"),
-            (nameof(Actor), "Creature", "[Add description here]"),
+            (nameof(Agent), "Character", "[Add description here]"),
+            (nameof(Agent), "Non-Player Character", "[Add description here]"),
+            (nameof(Agent), "Creature", "[Add description here]"),
             (nameof(Component), "Race", "Represents the character's race in Dungeons & Dragons 5th Edition."),
             (nameof(Component), "Class", "Represents the character's class, which determines their abilities and progression."),
             (nameof(Component), "Subclass", "Represents a specialization within a class, granting additional abilities and options."),

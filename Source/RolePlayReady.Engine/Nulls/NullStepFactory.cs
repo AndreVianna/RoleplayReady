@@ -5,5 +5,5 @@ public sealed class NullStepFactory : IStepFactory {
 
     public static NullStepFactory Instance { get; } = new();
 
-    public IStep Create(Type _) => NullStep.Instance;
+    public IStep Create(Type stepType) => NullStep.Instance;
 }

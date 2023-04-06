@@ -10,38 +10,69 @@ public class ContextTests {
     }
 
     [Fact]
-    public void IncrementStepNumber_WhenCalled_IncrementsStepNumber() {
-        // Arrange
-        var context = new DefaultContext(_provider);
-
+    public void Services_ReturnsServices() {
         // Act
-        context.CurrentStepNumber++;
-        context.CurrentStepType = typeof(TestStep<DefaultContext>);
+        var context = new Context(_provider);
 
         // Assert
-        context.CurrentStepNumber.Should().Be(1);
-        context.CurrentStepType.Should().Be(typeof(TestStep<DefaultContext>));
+        context.Services.Should().Be(_provider);
     }
 
     [Fact]
-    public async Task ResetAsync_WhenCalled_ResetContextInfo() {
+    public void Block_WhenCalled_BlocksContext() {
         // Arrange
-        var context = new DefaultContext(_provider);
-        context.CurrentStepNumber++;
-        context.CurrentStepType = typeof(TestStep<DefaultContext>);
+        var context = new Context(_provider);
 
         // Act
-        await context.ResetAsync();
+        context.Block();
+
+        // Assert
+        context.IsBlocked.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task IncrementStepNumber_WhenCalled_IncrementsStepNumber() {
+        // Arrange
+        var context = new Context(_provider);
+        var step = new EndStep<Context>(NullStepFactory.Instance, NullLoggerFactory.Instance);
+
+        // Act
+        await context.UpdateAsync(step);
+
+        // Assert
+        context.CurrentStepNumber.Should().Be(1);
+        context.CurrentStep.Should().Be(step);
+    }
+
+    [Fact]
+    public async Task InitializeAsync_WhenCalled_ResetContextInfo() {
+        // Arrange
+        var context = new Context(_provider);
+
+        // Act
+        await context.InitializeAsync();
 
         // Assert
         context.CurrentStepNumber.Should().Be(0);
-        context.CurrentStepType.Should().Be(typeof(EndStep<DefaultContext>));
+        context.CurrentStep.Should().BeNull();
+    }
+
+    [Fact]
+    public void Release_WhenCalled_UnblocksContext() {
+        // Arrange
+        var context = new Context(_provider);
+
+        // Act
+        context.Release();
+
+        // Assert
+        context.IsBlocked.Should().BeFalse();
     }
 
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_ContextDisposed() {
         // Arrange
-        var context = new DefaultContext(_provider);
+        var context = new Context(_provider);
 
         // Act
         await context.DisposeAsync();

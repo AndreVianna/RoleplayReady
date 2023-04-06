@@ -22,7 +22,7 @@ public class ComponentFactory : IComponentFactory {
 
     public IComponent Create(string type, string abbreviation, string name, string description)
         => type switch {
-            nameof(Actor) => new Actor(_parent, abbreviation, name, description),
+            nameof(Agent) => new Agent(_parent, abbreviation, name, description),
             //nameof(Component) => new Component(_parent, abbreviation, name, description),
             nameof(Power) => new Power(_parent, abbreviation, name, description),
             nameof(PowerSource) => new PowerSource(_parent, abbreviation, name, description),

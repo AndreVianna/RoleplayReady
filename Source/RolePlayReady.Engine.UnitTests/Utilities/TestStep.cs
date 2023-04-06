@@ -1,9 +1,14 @@
 ﻿namespace RolePlayReady.Engine.Utilities;
 
-internal class TestStep<TContext> : Step<TContext>
-    where TContext : class, IContext {
-    public TestStep(IStepFactory stepFactory) : base(stepFactory) { }
+internal class TestStep : Step<Context> {
+    public TestStep(IStepFactory stepFactory, ILoggerFactory? loggerFactory) : base(stepFactory, loggerFactory) { }
 
-    protected override Task<Type?> OnRunAsync(TContext context, CancellationToken cancellation = default)
-        => Task.FromResult((Type?)typeof(EndStep<TContext>));
+    protected override Task<Type?> OnRunAsync(Context context, CancellationToken cancellation = default)
+        => Task.FromResult<Type?>(typeof(EndStep<Context>));
+
+    public Task TestOnFinishAsync(Context context, CancellationToken cancellation = default)
+        => OnFinishAsync(context, cancellation);
+
+    public Task TestOnErrorAsync(Exception ex, Context context, CancellationToken cancellation = default)
+        => OnErrorAsync(ex, context, cancellation);
 }
