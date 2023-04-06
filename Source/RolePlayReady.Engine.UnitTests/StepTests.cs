@@ -5,7 +5,7 @@ public class StepTests {
 
     public StepTests() {
         var services = new ServiceCollection();
-        services.AddEngine();
+        services.AddStepEngine();
         var provider = services.BuildServiceProvider();
         _stepFactory = provider.GetRequiredService<IStepFactory>();
     }
@@ -13,7 +13,7 @@ public class StepTests {
     [Fact]
     public async Task RunAsync_OnError_AndSetToThrow_Throws() {
         // Arrange
-        var step = new FaultyStep(_stepFactory);
+        var step = new FaultyStep<NullContext>(_stepFactory);
 
         // Act
         var action = () => step.RunAsync(NullContext.Instance);
@@ -25,7 +25,7 @@ public class StepTests {
     [Fact]
     public async Task RunAsync_CancellationRequested_AndSetToThrow_Throws() {
         // Arrange
-        var step = new LongRunningStep(_stepFactory);
+        var step = new LongRunningStep<NullContext>(_stepFactory);
         var cancellationTokenSource = new CancellationTokenSource();
 
         // Act
@@ -39,7 +39,7 @@ public class StepTests {
     [Fact]
     public async Task RunAsync_WithNoErrors_Passes() {
         // Arrange
-        var step = new EndStep(_stepFactory, NullLoggerFactory.Instance);
+        var step = new EndStep<NullContext>(_stepFactory, NullLoggerFactory.Instance);
 
         // Act
         await step.RunAsync(NullContext.Instance);
@@ -51,7 +51,7 @@ public class StepTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_Passes() {
         // Arrange
-        var step = new EndStep(_stepFactory);
+        var step = new EndStep<NullContext>(_stepFactory);
 
         // Act
         await step.DisposeAsync();
@@ -61,17 +61,17 @@ public class StepTests {
         // No exception should be thrown, and the test should pass.
     }
 
-    private class TestEndStep : EndStep {
+    private class TestEndStep : EndStep<NullContext> {
         public TestEndStep() : base(NullStepFactory.Instance, NullLoggerFactory.Instance) { }
 
         public Task<Type?> TestOnRunAsync(CancellationToken cancellation = default)
-            => OnRunAsync(cancellation);
-
-        public Task TestOnErrorAsync(Exception ex, CancellationToken cancellation = default)
-            => OnErrorAsync(ex, cancellation);
+            => OnRunAsync(NullContext.Instance, cancellation);
 
         public Task TestOnFinishAsync(CancellationToken cancellation = default)
-            => OnFinishAsync(cancellation);
+            => OnFinishAsync(NullContext.Instance, cancellation);
+
+        public Task TestOnErrorAsync(Exception ex, CancellationToken cancellation = default)
+            => OnErrorAsync(ex, NullContext.Instance, cancellation);
 
     }
 

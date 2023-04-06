@@ -2,9 +2,10 @@
 
 public interface IContext : IAsyncDisposable {
     IServiceProvider Services { get; }
-    bool IsInProgress { get; }
 
-    int CurrentStepNumber { get; }
-    Type CurrentStepType { get; }
+    bool IsInProgress { get; set; }
+    int CurrentStepNumber { get; set; }
+    Type CurrentStepType { get; set; }
 
+    Task ResetAsync();
 }

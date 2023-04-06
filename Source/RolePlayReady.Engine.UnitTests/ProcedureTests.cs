@@ -6,8 +6,8 @@ public class ProcedureTests {
 
     public ProcedureTests() {
         var services = new ServiceCollection();
-        services.AddEngine();
-        services.AddStep<TestStep>();
+        services.AddStepEngine();
+        services.AddStep<TestStep<DefaultContext>>();
         _provider = services.BuildServiceProvider();
         _stepFactory = _provider.GetRequiredService<IStepFactory>();
     }

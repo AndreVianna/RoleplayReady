@@ -7,5 +7,5 @@ internal class TestProcedure : Procedure<DefaultContext> {
     }
 
     protected override Task<Type?> OnStartAsync(CancellationToken cancellation = default)
-        => Task.FromResult(typeof(TestStep))!;
+        => Task.FromResult(typeof(TestStep<DefaultContext>))!;
 }

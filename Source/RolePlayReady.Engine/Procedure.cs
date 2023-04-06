@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.Engine;
 
 public abstract class Procedure<TContext> : IProcedure<TContext>
-    where TContext : Context {
+    where TContext : class, IContext {
 
     private readonly TContext _context;
     private readonly IStepFactory _stepFactory;
@@ -26,7 +26,7 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
     public string Name { get; }
 
     protected virtual Task<Type?> OnStartAsync(CancellationToken cancellation = default)
-        => Task.FromResult((Type?)null);
+        => Task.FromResult<Type?>(default);
     protected virtual Task OnFinishAsync(CancellationToken cancellation = default)
         => Task.CompletedTask;
     protected virtual Task OnErrorAsync(Exception ex, CancellationToken cancellation = default)
@@ -66,7 +66,7 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
     }
 
     private bool _disposed;
-    protected virtual ValueTask DisposeAsync(bool _) {
+    protected virtual ValueTask DisposeAsync(bool disposing) {
         if (_disposed)
             return ValueTask.CompletedTask;
 

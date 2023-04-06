@@ -7,7 +7,7 @@ public class NullStepFactoryTests {
         var stepFactory = NullStepFactory.Instance;
 
         // Act
-        var step = stepFactory.Create(typeof(EndStep));
+        var step = stepFactory.Create(typeof(EndStep<NullContext>));
 
         // Assert
         step.Should().NotBeNull();

@@ -5,7 +5,7 @@ public class ContextTests {
 
     public ContextTests() {
         var services = new ServiceCollection();
-        services.AddEngine();
+        services.AddStepEngine();
         _provider = services.BuildServiceProvider();
     }
 
@@ -16,11 +16,26 @@ public class ContextTests {
 
         // Act
         context.CurrentStepNumber++;
-        context.CurrentStepType = typeof(EndStep);
+        context.CurrentStepType = typeof(TestStep<DefaultContext>);
 
         // Assert
         context.CurrentStepNumber.Should().Be(1);
-        context.CurrentStepType.Should().Be(typeof(EndStep));
+        context.CurrentStepType.Should().Be(typeof(TestStep<DefaultContext>));
+    }
+
+    [Fact]
+    public async Task ResetAsync_WhenCalled_ResetContextInfo() {
+        // Arrange
+        var context = new DefaultContext(_provider);
+        context.CurrentStepNumber++;
+        context.CurrentStepType = typeof(TestStep<DefaultContext>);
+
+        // Act
+        await context.ResetAsync();
+
+        // Assert
+        context.CurrentStepNumber.Should().Be(0);
+        context.CurrentStepType.Should().Be(typeof(EndStep<DefaultContext>));
     }
 
     [Fact]

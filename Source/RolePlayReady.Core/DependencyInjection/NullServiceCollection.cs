@@ -1,5 +1,6 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection;
 
-public static class NullServiceCollection {
-    public static IServiceCollection Instance { get; } = new ServiceCollection();
+public sealed class NullServiceCollection {
+    public static IServiceCollection Instance { get; }
+        = new ServiceCollection();
 }

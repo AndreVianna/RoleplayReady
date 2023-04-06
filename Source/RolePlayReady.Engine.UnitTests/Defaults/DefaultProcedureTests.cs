@@ -7,7 +7,7 @@ public class DefaultProcedureTests {
 
     public DefaultProcedureTests() {
         _services = new();
-        _services.AddEngine();
+        _services.AddStepEngine();
         _provider = _services.BuildServiceProvider();
         _stepFactory = new StepFactory(_provider);
     }

@@ -6,7 +6,7 @@ public class StepFactoryTests {
 
     public StepFactoryTests() {
         _services = new ServiceCollection();
-        _services.AddEngine();
+        _services.AddStepEngine();
         var provider = _services.BuildServiceProvider();
         _stepFactory = provider.GetRequiredService<IStepFactory>();
     }
@@ -14,15 +14,15 @@ public class StepFactoryTests {
     [Fact]
     public void Create_WithValidType_ReturnsInstance() {
         // Act
-        _services.AddStep<TestStep>();
+        _services.AddStep<TestStep<NullContext>>();
         var provider = _services.BuildServiceProvider();
         var stepFactory = provider.GetRequiredService<IStepFactory>();
 
-        var step = stepFactory.Create(typeof(TestStep));
+        var step = stepFactory.Create(typeof(TestStep<NullContext>));
 
         // Assert
         step.Should().NotBeNull();
-        step.Should().BeOfType<TestStep>();
+        step.Should().BeOfType<TestStep<NullContext>>();
     }
 
     [Fact]
