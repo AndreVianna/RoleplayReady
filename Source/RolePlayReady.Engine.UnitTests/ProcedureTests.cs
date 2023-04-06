@@ -1,22 +1,26 @@
 ﻿namespace RolePlayReady.Engine;
 
 public class ProcedureTests {
-    private readonly ServiceCollection _services;
+    private readonly ServiceProvider _provider;
+    private readonly IStepFactory _stepFactory;
 
     public ProcedureTests() {
-        _services = new();
-        _services.AddEngine();
+        var services = new ServiceCollection();
+        services.AddEngine();
+        services.AddStep<TestStep>();
+        _provider = services.BuildServiceProvider();
+        _stepFactory = _provider.GetRequiredService<IStepFactory>();
     }
 
 
     [Fact]
     public void Constructor_WithContextInProgress_ThrowsArgumentException() {
         // Arrange
-        var context = new DefaultContext();
+        var context = new DefaultContext(_provider);
         context.IsInProgress = true;
 
         // Act
-        var action = () => _ = new TestProcedure("SomeName", context, _services);
+        var action = () => _ = new TestProcedure("SomeName", context, _stepFactory);
 
         // Assert
         action.Should().Throw<ArgumentException>();
@@ -25,8 +29,8 @@ public class ProcedureTests {
     [Fact]
     public async Task RunAsync_WithValidSteps_AndName_ExecutesSteps() {
         // Arrange
-        var context = new DefaultContext();
-        var procedure = new TestProcedure("SomeName", context, _services);
+        var context = new DefaultContext(_provider);
+        var procedure = new TestProcedure("SomeName", context, _stepFactory);
 
         // Act
         await procedure.RunAsync();
@@ -40,8 +44,8 @@ public class ProcedureTests {
     [Fact]
     public async Task RunAsync_WithContextInProgress_ThrowsInvalidOperationException() {
         // Arrange
-        var context = new DefaultContext();
-        var procedure = new TestProcedure("SomeName", context, _services);
+        var context = new DefaultContext(_provider);
+        var procedure = new TestProcedure("SomeName", context, _stepFactory);
         context.IsInProgress = true;
 
         // Act
@@ -55,7 +59,8 @@ public class ProcedureTests {
     [Fact]
     public async Task RunAsync_OnError_AndSetToThrow_ThrowsProcedureException() {
         // Arrange
-        var procedure = new FaultyProcedure(_services);
+        var context = new DefaultContext(_provider);
+        var procedure = new FaultyProcedure(context, _stepFactory);
 
         // Act
         var action = () => procedure.RunAsync();
@@ -67,7 +72,8 @@ public class ProcedureTests {
     [Fact]
     public async Task RunAsync_WithCancellationRequested_AndSetToThrow_Throws() {
         // Arrange
-        var procedure = new LongRunningProcedure(_services);
+        var context = new DefaultContext(_provider);
+        var procedure = new LongRunningProcedure(context, _stepFactory);
         var cancellationTokenSource = new CancellationTokenSource();
 
         // Act
@@ -81,7 +87,8 @@ public class ProcedureTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_Passes() {
         // Arrange
-        var procedure = new TestProcedure("SomeName", new(), _services);
+        var context = new DefaultContext(_provider);
+        var procedure = new TestProcedure("SomeName", context, _stepFactory);
 
         // Act
         await procedure.DisposeAsync();

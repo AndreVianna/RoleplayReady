@@ -2,11 +2,10 @@
 
 internal class TestProcedure : Procedure<DefaultContext> {
     [SetsRequiredMembers]
-    public TestProcedure(string name, DefaultContext context, IServiceCollection services)
-        : base(name, context, services, null) {
-        services.AddStep<FirstStep>();
+    public TestProcedure(string name, DefaultContext context, IStepFactory stepFactory)
+        : base(name, context, stepFactory, null) {
     }
 
     protected override Task<Type?> OnStartAsync(CancellationToken cancellation = default)
-        => Task.FromResult(typeof(FirstStep))!;
+        => Task.FromResult(typeof(TestStep))!;
 }

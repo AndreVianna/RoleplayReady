@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Engine.Nulls;
 
-public sealed class NullProcedure : IProcedure {
+public sealed class NullProcedure : IProcedure<IContext> {
     private NullProcedure() { }
 
     public static NullProcedure Instance { get; } = new();

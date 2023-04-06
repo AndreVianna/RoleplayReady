@@ -1,4 +1,4 @@
-namespace RolePlayReady.Engine;
+namespace RolePlayReady.Engine.Nulls;
 
 public class NullStepFactoryTests {
     [Fact]
@@ -7,7 +7,7 @@ public class NullStepFactoryTests {
         var stepFactory = NullStepFactory.Instance;
 
         // Act
-        var step = stepFactory.Create(typeof(FirstStep));
+        var step = stepFactory.Create(typeof(EndStep));
 
         // Assert
         step.Should().NotBeNull();

@@ -1,12 +1,12 @@
 ﻿namespace RolePlayReady.Engine.Defaults;
 
 public class DefaultProcedure : Procedure<DefaultContext> {
-    public DefaultProcedure(IServiceCollection services, ILoggerFactory? loggerFactory = null)
-        : base(new(), services, loggerFactory) {
+    public DefaultProcedure(DefaultContext context, IStepFactory stepFactory, ILoggerFactory? loggerFactory = null)
+        : base(context, stepFactory, loggerFactory) {
     }
 
     [SetsRequiredMembers]
-    public DefaultProcedure(string name, IServiceCollection services, ILoggerFactory? loggerFactory = null)
-        : base(name, new(), services, loggerFactory) {
+    public DefaultProcedure(string name, DefaultContext context, IStepFactory stepFactory, ILoggerFactory? loggerFactory = null)
+        : base(name, context, stepFactory, loggerFactory) {
     }
 }

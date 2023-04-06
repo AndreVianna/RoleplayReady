@@ -1,8 +1,8 @@
 ﻿namespace RolePlayReady.Engine;
 
 public abstract class Context : IContext {
-    protected Context(IServiceCollection? services = null) {
-        Services = services?.BuildServiceProvider() ?? NullServiceProvider.Instance;
+    protected Context(IServiceProvider services) {
+        Services = services;
     }
 
     public IServiceProvider Services { get; }
@@ -11,9 +11,7 @@ public abstract class Context : IContext {
     public int CurrentStepNumber { get; internal set; }
     public Type CurrentStepType { get; internal set; } = default!;
 
-    internal Task ResetAsync() => OnResetAsync();
-
-    protected virtual Task OnResetAsync() {
+    public virtual Task ResetAsync() {
         CurrentStepNumber = 0;
         return Task.CompletedTask;
     }

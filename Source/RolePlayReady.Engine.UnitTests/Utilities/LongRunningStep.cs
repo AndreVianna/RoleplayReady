@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.Engine.Utilities;
 
 internal class LongRunningStep : Step {
-    public LongRunningStep(IServiceCollection services) : base(services) { }
+    public LongRunningStep(IStepFactory stepFactory) : base(stepFactory) { }
 
     protected override async Task<Type?> OnRunAsync(CancellationToken cancellation = default) {
         await Task.Delay(TimeSpan.FromSeconds(10), cancellation);

@@ -1,35 +1,28 @@
 namespace RolePlayReady.Engine;
 
 public class StepFactoryTests {
-    private readonly ServiceCollection _serviceCollection;
-    private readonly StepFactory _stepFactory;
+    private readonly IStepFactory _stepFactory;
+    private readonly ServiceCollection _services;
 
     public StepFactoryTests() {
-        _serviceCollection = new ServiceCollection();
-        _stepFactory = new StepFactory(_serviceCollection);
+        _services = new ServiceCollection();
+        _services.AddEngine();
+        var provider = _services.BuildServiceProvider();
+        _stepFactory = provider.GetRequiredService<IStepFactory>();
     }
 
     [Fact]
     public void Create_WithValidType_ReturnsInstance() {
         // Act
-        var step = _stepFactory.Create(typeof(FirstStep));
+        _services.AddStep<TestStep>();
+        var provider = _services.BuildServiceProvider();
+        var stepFactory = provider.GetRequiredService<IStepFactory>();
+
+        var step = stepFactory.Create(typeof(TestStep));
 
         // Assert
         step.Should().NotBeNull();
-        step.Should().BeOfType<FirstStep>();
-    }
-
-    [Fact]
-    public void Create_WithServiceProvider_ReturnsInstance() {
-        // Arrange
-        _serviceCollection.AddScoped<FirstStep>();
-
-        // Act
-        var step = _stepFactory.Create(typeof(FirstStep));
-
-        // Assert
-        step.Should().NotBeNull();
-        step.Should().BeOfType<FirstStep>();
+        step.Should().BeOfType<TestStep>();
     }
 
     [Fact]

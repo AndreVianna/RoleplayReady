@@ -1,24 +1,14 @@
 ﻿namespace RolePlayReady.Engine;
 
-public abstract class Step : Step<DefaultContext> {
-
-    protected Step(IServiceCollection services, ILoggerFactory? loggerFactory = null)
-        : base(services, loggerFactory) {
-    }
-
-    public Task RunAsync(CancellationToken cancellation = default) => base.RunAsync(new(), cancellation);
-}
-
-public abstract class Step<TContext> : IStep<TContext>
-    where TContext : Context {
+public abstract class Step : IStep {
     private readonly Type _stepType;
     private readonly IStepFactory _stepFactory;
     private readonly ILogger _logger;
 
-    protected Step(IServiceCollection services, ILoggerFactory? loggerFactory = null) {
+    protected Step(IStepFactory stepFactory, ILoggerFactory? loggerFactory = null) {
         _stepType = GetType();
-        _stepFactory = Throw.IfNull(services).BuildServiceProvider().GetRequiredService<IStepFactory>();
         _logger = loggerFactory?.CreateLogger(_stepType) ?? NullLogger.Instance;
+        _stepFactory = stepFactory;
     }
 
     protected virtual Task<Type?> OnRunAsync(CancellationToken cancellation = default)
@@ -30,8 +20,7 @@ public abstract class Step<TContext> : IStep<TContext>
     protected virtual Task OnErrorAsync(Exception ex, CancellationToken cancellation = default)
         => Task.CompletedTask;
 
-    Task IStep.RunAsync(IContext context, CancellationToken cancellation) => RunAsync((TContext)context, cancellation);
-    public async Task RunAsync(TContext context, CancellationToken cancellation = default) {
+    public async Task RunAsync(Context context, CancellationToken cancellation = default) {
         try {
             context.CurrentStepNumber++;
             context.CurrentStepType = _stepType;

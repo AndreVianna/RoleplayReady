@@ -9,14 +9,14 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
 
 
     [SetsRequiredMembers]
-    protected Procedure(string name, TContext context, IServiceCollection services, ILoggerFactory? loggerFactory)
-        : this(context, services, loggerFactory) {
+    protected Procedure(string name, TContext context, IStepFactory stepFactory, ILoggerFactory? loggerFactory)
+        : this(context, stepFactory, loggerFactory) {
         Name = Throw.IfNullOrWhiteSpaces(name);
     }
 
-    protected Procedure(TContext context, IServiceCollection services, ILoggerFactory? loggerFactory) {
+    protected Procedure(TContext context, IStepFactory stepFactory, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger(GetType()) ?? NullLoggerFactory.Instance.CreateLogger(GetType());
-        _stepFactory = Throw.IfNull(services).BuildServiceProvider().GetRequiredService<IStepFactory>();
+        _stepFactory = Throw.IfNull(stepFactory);
         _context = Throw.IfNull(context);
         if (_context.IsInProgress)
             throw new ArgumentException("The context is being processed by another job.", nameof(context));
@@ -32,7 +32,6 @@ public abstract class Procedure<TContext> : IProcedure<TContext>
     protected virtual Task OnErrorAsync(Exception ex, CancellationToken cancellation = default)
         => Task.CompletedTask;
 
-    async Task<IContext> IProcedure.RunAsync(CancellationToken cancellation) => await RunAsync(cancellation);
     public async Task<TContext> RunAsync(CancellationToken cancellation = default) {
         try {
             if (_context.IsInProgress)

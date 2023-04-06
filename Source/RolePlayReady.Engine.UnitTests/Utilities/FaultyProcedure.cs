@@ -2,7 +2,7 @@
 
 
 internal class FaultyProcedure : DefaultProcedure {
-    public FaultyProcedure(IServiceCollection services) : base(services) {
+    public FaultyProcedure(DefaultContext context, IStepFactory stepFactory) : base(context, stepFactory) {
     }
 
     protected override Task<Type?> OnStartAsync(CancellationToken cancellation = default)
