@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-
-namespace RolePlayReady.Utilities.Contracts;
+﻿namespace RolePlayReady.Utilities.Contracts;
 
 public interface IComponentFactory {
     TComponent Create<TComponent>(string abbreviation, string name, string description)

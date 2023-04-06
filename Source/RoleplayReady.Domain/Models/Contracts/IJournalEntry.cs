@@ -2,6 +2,6 @@
 
 public interface IJournalEntry : IVersion {
     string Section { get; init; }
-    string Title { get; set; }
-    string Text { get; set; }
+    string Title { get; init; }
+    string Text { get; init; }
 }

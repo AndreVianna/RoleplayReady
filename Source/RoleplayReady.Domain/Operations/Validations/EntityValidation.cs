@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-
-namespace RolePlayReady.Operations.Validations;
+﻿namespace RolePlayReady.Operations.Validations;
 
 public abstract record EntityValidation
     : EntityOperation<IEntityValidation, IList<ValidationError>>,

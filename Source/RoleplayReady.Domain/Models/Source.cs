@@ -1,7 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-using RolePlayReady.Utilities;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public record Source : ISource {
     public Source() {
@@ -19,6 +16,8 @@ public record Source : ISource {
     public Source(string name, string description, string? publisher = null)
         : this(name.ToAcronym(), name, description, publisher) {
     }
+
+    public string Type => nameof(Source);
 
     // Abbreviation must be unique.
     public required string Abbreviation { get; init; }

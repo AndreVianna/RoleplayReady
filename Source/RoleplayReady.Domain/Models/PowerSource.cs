@@ -1,5 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-using RolePlayReady.Utilities.Contracts;
+﻿using RolePlayReady.Utilities.Contracts;
 
 namespace RolePlayReady.Models;
 

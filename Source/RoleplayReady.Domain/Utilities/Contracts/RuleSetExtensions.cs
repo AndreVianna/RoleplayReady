@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-
-namespace RolePlayReady.Utilities.Contracts;
+﻿namespace RolePlayReady.Utilities.Contracts;
 
 internal static class RuleSetExtensions {
     public static IComponent GetComponent(this IRuleSet ruleSet, string name)

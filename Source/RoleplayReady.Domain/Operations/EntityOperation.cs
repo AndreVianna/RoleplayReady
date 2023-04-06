@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-
-namespace RolePlayReady.Operations;
+﻿namespace RolePlayReady.Operations;
 
 public abstract record EntityOperation<TOperation, TResult>
     : IEntityOperation<TOperation, TResult>

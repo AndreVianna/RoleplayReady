@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-
-namespace RolePlayReady.Operations.Assertions;
+﻿namespace RolePlayReady.Operations.Assertions;
 
 public interface IEntityAssertion
     : IEntityOperation<IEntityAssertion, bool> {

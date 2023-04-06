@@ -1,14 +1,11 @@
-﻿using RolePlayReady.Models.Contracts;
-using RolePlayReady.Utilities;
+﻿namespace RolePlayReady.Models;
 
-namespace RolePlayReady.Models;
-
-public abstract record EntityAttribute
-    : IEntityAttribute {
+public abstract record EntityAttribute<TSelf, TValue> : IEntityAttribute<TSelf, TValue>
+    where TSelf : class, IEntityAttribute<TSelf, TValue> {
     protected EntityAttribute() { }
 
     [SetsRequiredMembers]
-    protected EntityAttribute(IEntity owner, IAttribute attribute, object value) {
+    protected EntityAttribute(IEntity owner, IAttribute<TValue> attribute, TValue value) {
         Entity = Throw.IfNull(owner);
         Attribute = Throw.IfNull(attribute);
         Value = Throw.IfNull(value);
@@ -16,23 +13,19 @@ public abstract record EntityAttribute
 
     // Entity + Attribute must be unique;
     public required IEntity Entity { get; set; }
-    public IAttribute Attribute { get; init; }
-    public object Value { get; set; } = default!;
+    public required IAttribute<TValue> Attribute { get; init; }
+    public TValue Value { get; set; } = default!;
 
-    public IList<Func<IEntityAttribute, ValidationResult>> Validations { get; init; }
-        = new List<Func<IEntityAttribute, ValidationResult>>();
+    public IList<Func<TSelf, ValidationResult>> Validations { get; init; }
+        = new List<Func<TSelf, ValidationResult>>();
 
-    public bool IsValid => Validations.All(validate => validate(this).IsValid);
+    public bool IsValid => Validations.All(validate => validate((this as TSelf)!).IsValid);
     public ValidationResult Validate() => Validations
-        .Aggregate(ValidationResult.Valid,
-            (current, validate) =>
-                current + validate(this));
+        .Aggregate(ValidationResult.Valid, (current, validate) => current + validate((this as TSelf)!));
     public IEntityAttribute CloneUnder(IEntity entity) => this with { Entity = entity };
 }
 
-public record EntityFlag
-    : EntityAttribute,
-        IEntityFlag {
+public record EntityFlag : EntityAttribute<IEntityFlag, bool>, IEntityFlag {
     public EntityFlag() { }
 
     [SetsRequiredMembers]
@@ -40,115 +33,36 @@ public record EntityFlag
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }
-
-    public new required bool Value { get; set; }
-    object IEntityAttribute.Value {
-        get => Value;
-        set => Value = (bool)value;
-    }
-
-    IList<Func<IEntityAttribute, ValidationResult>> IEntityAttribute.Validations => Validations
-        .Select(i => (Func<IEntityAttribute, ValidationResult>)(_ => i(this)))
-        .ToList();
-
-    public new IList<Func<IEntityFlag, ValidationResult>> Validations { get; init; }
-        = new List<Func<IEntityFlag, ValidationResult>>();
 }
 
-public record EntityValue<TValue>
-    : EntityAttribute,
-      IEntityValue<TValue>
+public record EntityValue<TValue> : EntityAttribute<IEntityValue<TValue>, TValue>, IEntityValue<TValue>
     where TValue : notnull {
     public EntityValue() { }
 
     [SetsRequiredMembers]
-    public EntityValue(IEntity owner, IAttribute attribute, TValue value)
+    public EntityValue(IEntity owner, IAttribute<TValue> attribute, TValue value)
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }
-
-    public new IAttribute<TValue> Attribute { get; init; }
-    public new required TValue Value { get; set; }
-    object IEntityAttribute.Value {
-        get => Value;
-        set => Value = (TValue)Throw.IfNull(value);
-    }
-
-    IList<Func<IEntityAttribute, ValidationResult>> IEntityAttribute.Validations {
-        get => Validations
-            .Select(i => (Func<IEntityAttribute, ValidationResult>)(_ => i(this)))
-            .ToList();
-        init => Validations = value
-            .Select(i => (Func<IEntityValue<TValue>, ValidationResult>)(_ => i(this)))
-            .ToList();
-
-    }
-
-    public new IList<Func<IEntityValue<TValue>, ValidationResult>> Validations { get; init; }
-        = new List<Func<IEntityValue<TValue>, ValidationResult>>();
 }
 
-public record EntityList<TValue>
-    : EntityAttribute,
-      IEntityList<TValue> {
+public record EntityList<TValue> : EntityAttribute<IEntityList<TValue>, HashSet<TValue>>, IEntityList<TValue> {
     public EntityList() { }
 
     [SetsRequiredMembers]
-    public EntityList(IEntity owner, IAttribute attribute, HashSet<TValue> value)
+    public EntityList(IEntity owner, IAttribute<HashSet<TValue>> attribute, HashSet<TValue> value)
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }
-
-    public new required HashSet<TValue> Value { get; init; }
-
-    object IHaveValue.Value {
-        get => Value;
-        init => Value = Throw.IfNull(value as HashSet<TValue>);
-    }
-
-    IList<Func<IEntityAttribute, ValidationResult>> IEntityAttribute.Validations {
-        get => Validations
-            .Select(i => (Func<IEntityAttribute, ValidationResult>)(_ => i(this)))
-            .ToList();
-        init => Validations = value
-            .Select(i => (Func<IEntityList<TValue>, ValidationResult>)(_ => i(this)))
-            .ToList();
-
-    }
-
-    public new IList<Func<IEntityList<TValue>, ValidationResult>> Validations { get; init; }
-        = new List<Func<IEntityList<TValue>, ValidationResult>>();
 }
 
-public record EntityMap<TKey, TValue>
-    : EntityAttribute,
-      IEntityMap<TKey, TValue>
+public record EntityMap<TKey, TValue> : EntityAttribute<IEntityMap<TKey, TValue>, Dictionary<TKey, TValue>>, IEntityMap<TKey, TValue>
     where TKey : notnull {
     public EntityMap() { }
 
     [SetsRequiredMembers]
-    public EntityMap(IEntity owner, IAttribute attribute, Dictionary<TKey, TValue> value)
+    public EntityMap(IEntity owner, IAttribute<Dictionary<TKey, TValue>> attribute, Dictionary<TKey, TValue> value)
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }
-
-    public new required Dictionary<TKey, TValue> Value { get; init; }
-
-    object IHaveValue.Value {
-        get => Value;
-        init => Value = Throw.IfNull(value as Dictionary<TKey, TValue>);
-    }
-
-    IList<Func<IEntityAttribute, ValidationResult>> IEntityAttribute.Validations {
-        get => Validations
-            .Select(i => (Func<IEntityAttribute, ValidationResult>)(_ => i(this)))
-            .ToList();
-        init => Validations = value
-            .Select(i => (Func<IEntityMap<TKey, TValue>, ValidationResult>)(_ => i(this)))
-            .ToList();
-
-    }
-
-    public new IList<Func<IEntityMap<TKey, TValue>, ValidationResult>> Validations { get; init; }
-        = new List<Func<IEntityMap<TKey, TValue>, ValidationResult>>();
 }

@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public record JournalEntry : IJournalEntry {
     public JournalEntry() {
@@ -8,7 +6,7 @@ public record JournalEntry : IJournalEntry {
     }
 
     [SetsRequiredMembers]
-    public JournalEntry(IEntity parent, EntrySection section, string title, string text, State? state = null) {
+    public JournalEntry(IEntity parent, string section, string title, string text, State? state = null) {
         Parent = parent ?? throw new ArgumentNullException(nameof(parent));
         Section = section;
         Title = title ?? throw new ArgumentNullException(nameof(title));
@@ -17,7 +15,7 @@ public record JournalEntry : IJournalEntry {
     }
 
     public required IEntity Parent { get; init; }
-    public required EntrySection Section { get; init; }
+    public required string Section { get; init; }
     public required string Title { get; init; }
     public required string Text { get; init; }
 

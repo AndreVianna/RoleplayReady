@@ -1,5 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-using RolePlayReady.Utilities.Contracts;
+﻿using RolePlayReady.Utilities.Contracts;
 
 namespace RolePlayReady.Models;
 
@@ -9,4 +8,6 @@ public record Action : Component, IAction {
     [SetsRequiredMembers]
     public Action(IComponent? parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime)
         : base(parent, abbreviation, name, description, dateTime) { }
+
+    public override string Type => nameof(Action);
 }

@@ -1,7 +1,5 @@
 ﻿using RolePlayReady.Models;
-using RolePlayReady.Models.Contracts;
 using RolePlayReady.Operations.Changes;
-using RolePlayReady.Operations.Validations;
 using RolePlayReady.Utilities.Contracts;
 
 namespace RolePlayReady.Utilities;
@@ -48,12 +46,12 @@ internal class ComponentUpdater : IComponentUpdater {
             return new Conditional(Target, attribute);
         }
 
-        public IComponentUpdater.IActionConnector AddJournalEntry(EntrySection section, string title, string text) {
+        public IComponentUpdater.IActionConnector AddJournalEntry(string section, string title, string text) {
             ((Actor)Target).JournalEntries.Add(new JournalEntry(Target, section, title, text));
             return new ActionConnector(Target);
         }
 
-        public IComponentUpdater.IActionConnector AddJournalEntry(EntrySection section, string text) {
+        public IComponentUpdater.IActionConnector AddJournalEntry(string section, string text) {
             ((Actor)Target).JournalEntries.Add(new JournalEntry(Target, section, Attribute, text));
             return new ActionConnector(Target);
         }

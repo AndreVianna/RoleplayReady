@@ -1,12 +1,11 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IEntity : IIdentification, IVersion, ICloneable {
+public interface IEntity : IIdentification, IMayHaveASource, IVersion {
 
     Usage Usage { get; init; }
 
     IList<string> Tags { get; init; }
     IList<IEntityAttribute> Attributes { get; init; }
-    IList<IEntityProcess> Processes { get; init; }
 
     IList<Func<IEntity, bool>> Requirements { get; init; }
     bool QualifiesFor(IEntity entity);

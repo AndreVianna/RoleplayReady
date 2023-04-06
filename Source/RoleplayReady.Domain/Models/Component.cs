@@ -1,5 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-using RolePlayReady.Utilities.Contracts;
+﻿using RolePlayReady.Utilities.Contracts;
 
 namespace RolePlayReady.Models;
 
@@ -12,8 +11,8 @@ public abstract record Component : Entity, IComponent {
         Parent = parent;
     }
 
-    public IComponent? Parent { get; init; } // Top level should be a RuleSet.
-    public IComponent? Root { get; init; } // Quick access to the root.
+    public IComponent? Root => Parent?.Root ?? this;
+    public IComponent? Parent { get; set; } // Top level should be a RuleSet.
     public IList<IComponent> Components { get; init; } = new List<IComponent>();
 
     public override TSelf CloneUnder<TSelf>(IEntity? parent) {

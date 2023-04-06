@@ -1,5 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-using RolePlayReady.Utilities;
+﻿using RolePlayReady.Utilities;
 using RolePlayReady.Utilities.Contracts;
 
 namespace RolePlayReady.Models;
@@ -26,6 +25,8 @@ public abstract record Entity : IEntity {
     }
 
     protected IDateTimeProvider DateTime { get; init; }
+
+    public abstract string Type { get; }
 
     // RuleSet, OwnerId, and Name must be unique.
     public required string Name { get; init; }

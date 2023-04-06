@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Models.Contracts;
-
-namespace RolePlayReady.Utilities.Contracts;
+﻿namespace RolePlayReady.Utilities.Contracts;
 
 public interface IComponentUpdater {
     public interface IMain {
@@ -8,8 +6,8 @@ public interface IComponentUpdater {
         IValidator CheckIf(string attribute);
         IConditional If(string attribute);
 
-        IActionConnector AddJournalEntry(EntrySection section, string title, string text);
-        IActionConnector AddJournalEntry(EntrySection section, string text);
+        IActionConnector AddJournalEntry(string section, string title, string text);
+        IActionConnector AddJournalEntry(string section, string text);
         IActionConnector AddTag(string tag);
         IActionConnector AddPowerSource(string name, string description, Action<IMain> build);
     }
