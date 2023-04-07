@@ -2,14 +2,15 @@
 
 public interface IEntityAttribute {
     IEntity Entity { get; set; }
-    IEntityAttribute CloneUnder(IEntity entity);
+    IAttribute Attribute { get; }
+    object? Value { get; }
 }
 
 public interface IEntityAttribute<TSelf, TValue>
     : IEntityAttribute
     where TSelf : IEntityAttribute<TSelf, TValue> {
-    IAttribute<TValue> Attribute { get; init; }
-    TValue Value { get; set; }
+    new IAttribute<TValue> Attribute { get; init; }
+    new TValue Value { get; set; }
     IList<Func<TSelf, ValidationResult>> Validations { get; }
 
     bool IsValid { get; }

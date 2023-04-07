@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Utilities.Contracts;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public abstract record Component : Entity, IComponent {
     protected Component() { }
@@ -15,10 +13,10 @@ public abstract record Component : Entity, IComponent {
     public IComponent? Parent { get; set; } // Top level should be a RuleSet.
     public IList<IComponent> Components { get; init; } = new List<IComponent>();
 
-    public override TSelf CloneUnder<TSelf>(IEntity? parent) {
-        var result = base.CloneUnder<Component>(Parent);
-        foreach (var child in Components.Cast<Component>())
-            result.Components.Add(child.CloneUnder<IComponent>(result));
-        return (result as TSelf)!;
-    }
+    //public override TSelf CloneUnder<TSelf>(IEntity? parent) {
+    //    var result = base.CloneUnder<Component>(Parent);
+    //    foreach (var child in Components.Cast<Component>())
+    //        result.Components.Add(child.CloneUnder<IComponent>(result));
+    //    return (result as TSelf)!;
+    //}
 }

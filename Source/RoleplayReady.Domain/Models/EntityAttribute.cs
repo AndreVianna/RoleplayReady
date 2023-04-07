@@ -13,13 +13,17 @@ public abstract record EntityAttribute<TSelf, TValue> : IEntityAttribute<TSelf, 
 
     // Entity + Attribute must be unique;
     public required IEntity Entity { get; set; }
+    IAttribute IEntityAttribute.Attribute => Attribute;
     public required IAttribute<TValue> Attribute { get; init; }
+    object? IEntityAttribute.Value => Value;
     public TValue Value { get; set; } = default!;
 
     public IList<Func<TSelf, ValidationResult>> Validations { get; init; }
         = new List<Func<TSelf, ValidationResult>>();
 
     public bool IsValid => Validations.All(validate => validate((this as TSelf)!).IsValid);
+
+
     public ValidationResult Validate() => Validations
         .Aggregate(ValidationResult.Valid, (current, validate) => current + validate((this as TSelf)!));
     public IEntityAttribute CloneUnder(IEntity entity) => this with { Entity = entity };

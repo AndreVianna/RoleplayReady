@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Utilities.Contracts;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public record RuleSet : Component, IRuleSet {
     public RuleSet() {
@@ -12,11 +10,10 @@ public record RuleSet : Component, IRuleSet {
 
     public IList<ISource> Sources { get; init; } = new List<ISource>();
 
-    public override TSelf CloneUnder<TSelf>(IEntity? _) {
-        var result = base.CloneUnder<RuleSet>(null) with {
-            Sources = new List<ISource>(Sources)
-        };
-        return (result as TSelf)!;
-    }
-
+    //public override TSelf CloneUnder<TSelf>(IEntity? _) {
+    //    var result = base.CloneUnder<RuleSet>(null) with {
+    //        Sources = new List<ISource>(Sources)
+    //    };
+    //    return (result as TSelf)!;
+    //}
 }

@@ -1,7 +1,4 @@
-﻿using RolePlayReady.Utilities;
-using RolePlayReady.Utilities.Contracts;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public abstract record Entity : IEntity {
     protected Entity() {
@@ -26,7 +23,7 @@ public abstract record Entity : IEntity {
 
     protected IDateTimeProvider DateTime { get; init; }
 
-    public abstract string Type { get; }
+    public string Type => GetType().Name;
 
     // RuleSet, OwnerId, and Name must be unique.
     public required string Name { get; init; }
@@ -46,37 +43,37 @@ public abstract record Entity : IEntity {
     public IList<IEntityAttribute> Attributes { get; init; } = new List<IEntityAttribute>();
 
 
-    public IList<Func<IEntity, bool>> Requirements { get; init; } = new List<Func<IEntity, bool>>();
+    //public IList<Func<IEntity, bool>> Requirements { get; init; } = new List<Func<IEntity, bool>>();
 
-    public bool QualifiesFor(IEntity entity)
-        => Requirements.All(checkFor => checkFor(entity));
+    //public bool QualifiesFor(IEntity entity)
+    //    => Requirements.All(checkFor => checkFor(entity));
 
-    public IList<Func<IEntity, IEntity>> Changes { get; init; } = new List<Func<IEntity, IEntity>>();
+    //public IList<Func<IEntity, IEntity>> Changes { get; init; } = new List<Func<IEntity, IEntity>>();
 
-    public IEntity ApplyTo(IEntity entity)
-        => Changes.Aggregate(entity, (current, change) => change(current));
+    //public IEntity ApplyTo(IEntity entity)
+    //    => Changes.Aggregate(entity, (current, change) => change(current));
 
-    public IList<Func<IEntity, ValidationResult>> Validations { get; init; } = new List<Func<IEntity, ValidationResult>>();
-    public bool IsValid => Validations.All(validate => validate(this).IsValid);
+    //public IList<Func<IEntity, ValidationResult>> Validations { get; init; } = new List<Func<IEntity, ValidationResult>>();
+    //public bool IsValid => Validations.All(validate => validate(this).IsValid);
 
-    public ValidationResult Validate() => Validations
-        .Aggregate(ValidationResult.Valid,
-            (current, validate) =>
-                current + validate(this));
+    //public ValidationResult Validate() => Validations
+    //    .Aggregate(ValidationResult.Valid,
+    //        (current, validate) =>
+    //            current + validate(this));
 
-    public virtual TSelf CloneUnder<TSelf>(IEntity? _)
-        where TSelf : class, IEntity {
-        var result = this with {
-            State = State.NotReady,
-            Version = DateTime.Now,
-            Tags = Tags.ToList(),
-            Attributes = new List<IEntityAttribute>(),
-            Requirements = new List<Func<IEntity, bool>>(Requirements),
-            Changes = new List<Func<IEntity, IEntity>>(Changes),
-            Validations = new List<Func<IEntity, ValidationResult>>(Validations),
-        };
-        foreach (var attribute in Attributes)
-            result.Attributes.Add(attribute.CloneUnder(result));
-        return (result as TSelf)!;
-    }
+    //public virtual TSelf CloneUnder<TSelf>(IEntity? _)
+    //    where TSelf : class, IEntity {
+    //    var result = this with {
+    //        State = State.NotReady,
+    //        Version = DateTime.Now,
+    //        Tags = Tags.ToList(),
+    //        Attributes = new List<IEntityAttribute>(),
+    //        Requirements = new List<Func<IEntity, bool>>(Requirements),
+    //        Changes = new List<Func<IEntity, IEntity>>(Changes),
+    //        Validations = new List<Func<IEntity, ValidationResult>>(Validations),
+    //    };
+    //    foreach (var attribute in Attributes)
+    //        result.Attributes.Add(attribute.CloneUnder(result));
+    //    return (result as TSelf)!;
+    //}
 }

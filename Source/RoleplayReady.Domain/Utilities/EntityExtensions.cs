@@ -25,6 +25,6 @@ internal static class EntityExtensions {
     public static IEntityAttribute? FindAttribute(this IEntity element, string name)
         => element.Attributes.FirstOrDefault(p => p.Attribute.Name == name);
 
-    public static EntityBuilder Configure(this IEntity element, string section) =>
-        EntityBuilder.For(element, section);
+    //public static EntityBuilder Configure(this IEntity element, string section) =>
+    //    EntityBuilder.For(element, section);
 }

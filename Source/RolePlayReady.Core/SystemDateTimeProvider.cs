@@ -1,9 +1,6 @@
-﻿using RolePlayReady.Utilities.Contracts;
+﻿namespace RolePlayReady;
 
-namespace RolePlayReady.Utilities;
-
-public class SystemDateTimeProvider : IDateTimeProvider
-{
+public class SystemDateTimeProvider : IDateTimeProvider {
     public DateTime Now => DateTime.UtcNow;
     public DateOnly Today => DateOnly.FromDateTime(DateTime.UtcNow);
     public TimeOnly TimeOfDay => TimeOnly.FromDateTime(DateTime.UtcNow);

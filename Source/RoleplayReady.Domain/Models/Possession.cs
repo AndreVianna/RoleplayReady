@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Utilities;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public record Possession : IPossession {
     public Possession() { }
@@ -16,5 +14,5 @@ public record Possession : IPossession {
     public required IObject Object { get; init; }
     public required decimal Quantity { get; init; }
 
-    public IPossession CloneTo(IAgent newOwner) => this with { Owner = newOwner, Object = ((Component)Object).CloneUnder<Object>(newOwner) };
+    //public IPossession CloneTo(IAgent newOwner) => this with { Owner = newOwner, Object = ((Component)Object).CloneUnder<Object>(newOwner) };
 }

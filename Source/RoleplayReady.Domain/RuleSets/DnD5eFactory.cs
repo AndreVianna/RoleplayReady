@@ -44,65 +44,65 @@ public static partial class DnD5eFactory {
             (nameof(Power), "Cantrip", "[Add description here]"),
             (nameof(Power), "Equipment", "Represents items, weapons, armor, and other gear that characters can acquire and use throughout their adventures."),
         };
-        foreach (var (type, name, description) in sections) {
-            ruleSet.Components.Add((IComponent)ElementFactory.For(ruleSet, "System").Create(type, name, description));
-        }
+        //foreach (var (type, name, description) in sections) {
+        //    ruleSet.Components.Add((IComponent)ElementFactory.For(ruleSet, "System").Create(type, name, description));
+        //}
 
-        //var attributes = new (Type Type, string Name, string Description)[] {
-        //    (typeof(bool), "Inspiration", "[Add description here]"),
-        //    (typeof(decimal), "Height", "[Add description here]"),
-        //    (typeof(decimal), "Weight", "[Add description here]"),
-        //    (typeof(Dictionary<string, int>), "Classes", "[Add description here]"),
-        //    (typeof(Dictionary<string, int>), "Currency", "[Add description here]"),
-        //    (typeof(Dictionary<string, int>), "Moviments", "[Add description here]"),
-        //    (typeof(Dictionary<string, int>), "AbilityCharges", "[Add description here]"),
-        //    (typeof(Dictionary<string, string>), "SavingThrows", "[Add description here]"),
-        //    (typeof(Dictionary<string, string>), "SkillChecks", "[Add description here]"),
-        //    (typeof(int), "ArmorClass", "[Add description here]"),
-        //    (typeof(int), "CarryingCapacity", "[Add description here]"),
-        //    (typeof(int), "ChallengeRating", "[Add description here]"),
-        //    (typeof(int), "Charisma", "[Add description here]"),
-        //    (typeof(int), "Constitution", "[Add description here]"),
-        //    (typeof(int), "CurrentCarryingWeight", "[Add description here]"),
-        //    (typeof(int), "CurrentHitPoints", "[Add description here]"),
-        //    (typeof(int), "Dexterity", "[Add description here]"),
-        //    (typeof(int), "ExhaustionLevel", "[Add description here]"),
-        //    (typeof(int), "Intelligence", "[Add description here]"),
-        //    (typeof(int), "MaximumLanguagesKnown", "[Add description here]"),
-        //    (typeof(int), "MaximumHitPoints", "[Add description here]"),
-        //    (typeof(int), "ProficiencyBonus", "[Add description here]"),
-        //    (typeof(int), "Strength", "[Add description here]"),
-        //    (typeof(int), "TemporaryHitPoints", "[Add description here]"),
-        //    (typeof(int), "Wisdom", "[Add description here]"),
-        //    (typeof(string), "Alignment", "[Add description here]"),
-        //    (typeof(string), "Appearance", "[Add description here]"),
-        //    (typeof(string), "Background", "[Add description here]"),
-        //    (typeof(string), "CreatureType", "[Add description here]"),
-        //    (typeof(string), "EyeColor", "[Add description here]"),
-        //    (typeof(string), "Gender", "[Add description here]"),
-        //    (typeof(string), "HairColor", "[Add description here]"),
-        //    (typeof(string), "NPCType", "[Add description here]"),
-        //    (typeof(string), "PassiveInsight", "[Add description here]"),
-        //    (typeof(string), "PassivePerception", "[Add description here]"),
-        //    (typeof(string), "Race", "[Add description here]"),
-        //    (typeof(string), "Size", "[Add description here]"),
-        //    (typeof(string), "SkinColor", "[Add description here]"),
-        //    (typeof(string), "SpellCastingAbility", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Actions", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Archetypes", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Armors", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Feats", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Immunities", "[Add description here]"),
-        //    (typeof(HashSet<string>), "LairActions", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Languages", "[Add description here]"),
-        //    (typeof(HashSet<string>), "LegendaryActions", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Resistances", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Senses", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Traits", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Tools", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Vulnerabilities", "[Add description here]"),
-        //    (typeof(HashSet<string>), "Weapons", "[Add description here]"),
-        //};
+        var attributes = new (Type Type, string Name, string Description)[] {
+            (typeof(bool), "Inspiration", "[Add description here]"),
+            (typeof(decimal), "Height", "[Add description here]"),
+            (typeof(decimal), "Weight", "[Add description here]"),
+            (typeof(Dictionary<string, int>), "Classes", "[Add description here]"),
+            (typeof(Dictionary<string, int>), "Currency", "[Add description here]"),
+            (typeof(Dictionary<string, int>), "Moviments", "[Add description here]"),
+            (typeof(Dictionary<string, int>), "AbilityCharges", "[Add description here]"),
+            (typeof(Dictionary<string, string>), "SavingThrows", "[Add description here]"),
+            (typeof(Dictionary<string, string>), "SkillChecks", "[Add description here]"),
+            (typeof(int), "ArmorClass", "[Add description here]"),
+            (typeof(int), "CarryingCapacity", "[Add description here]"),
+            (typeof(int), "ChallengeRating", "[Add description here]"),
+            (typeof(int), "Charisma", "[Add description here]"),
+            (typeof(int), "Constitution", "[Add description here]"),
+            (typeof(int), "CurrentCarryingWeight", "[Add description here]"),
+            (typeof(int), "CurrentHitPoints", "[Add description here]"),
+            (typeof(int), "Dexterity", "[Add description here]"),
+            (typeof(int), "ExhaustionLevel", "[Add description here]"),
+            (typeof(int), "Intelligence", "[Add description here]"),
+            (typeof(int), "MaximumLanguagesKnown", "[Add description here]"),
+            (typeof(int), "MaximumHitPoints", "[Add description here]"),
+            (typeof(int), "ProficiencyBonus", "[Add description here]"),
+            (typeof(int), "Strength", "[Add description here]"),
+            (typeof(int), "TemporaryHitPoints", "[Add description here]"),
+            (typeof(int), "Wisdom", "[Add description here]"),
+            (typeof(string), "Alignment", "[Add description here]"),
+            (typeof(string), "Appearance", "[Add description here]"),
+            (typeof(string), "Background", "[Add description here]"),
+            (typeof(string), "CreatureType", "[Add description here]"),
+            (typeof(string), "EyeColor", "[Add description here]"),
+            (typeof(string), "Gender", "[Add description here]"),
+            (typeof(string), "HairColor", "[Add description here]"),
+            (typeof(string), "NPCType", "[Add description here]"),
+            (typeof(string), "PassiveInsight", "[Add description here]"),
+            (typeof(string), "PassivePerception", "[Add description here]"),
+            (typeof(string), "Race", "[Add description here]"),
+            (typeof(string), "Size", "[Add description here]"),
+            (typeof(string), "SkinColor", "[Add description here]"),
+            (typeof(string), "SpellCastingAbility", "[Add description here]"),
+            (typeof(HashSet<string>), "Actions", "[Add description here]"),
+            (typeof(HashSet<string>), "Archetypes", "[Add description here]"),
+            (typeof(HashSet<string>), "Armors", "[Add description here]"),
+            (typeof(HashSet<string>), "Feats", "[Add description here]"),
+            (typeof(HashSet<string>), "Immunities", "[Add description here]"),
+            (typeof(HashSet<string>), "LairActions", "[Add description here]"),
+            (typeof(HashSet<string>), "Languages", "[Add description here]"),
+            (typeof(HashSet<string>), "LegendaryActions", "[Add description here]"),
+            (typeof(HashSet<string>), "Resistances", "[Add description here]"),
+            (typeof(HashSet<string>), "Senses", "[Add description here]"),
+            (typeof(HashSet<string>), "Traits", "[Add description here]"),
+            (typeof(HashSet<string>), "Tools", "[Add description here]"),
+            (typeof(HashSet<string>), "Vulnerabilities", "[Add description here]"),
+            (typeof(HashSet<string>), "Weapons", "[Add description here]"),
+        };
         //foreach (var attribute in attributes) {
         //    ruleSet.Attributes.Add(new Attribute {
         //        Procedure = ruleSet,
@@ -144,16 +144,16 @@ public static partial class DnD5eFactory {
             ("Tiefling", Usage.Standard,
                 "Tieflings bear the mark of an infernal heritage, granting them dark powers and a connection to the planes of Hell."),
         };
-        foreach (var race in races) {
-            var element = ElementFactory.For(raceSection, "System").Create<Component>(race.Name, race.Description) with {
-                Usage = race.Usage,
-                Source = playersHandbook,
-                State = State.Public,
-            };
-            ruleSet.Components.Add(element);
-        }
+        //foreach (var race in races) {
+        //    var element = ElementFactory.For(raceSection, "System").Create<Component>(race.Name, race.Description) with {
+        //        Usage = race.Usage,
+        //        Source = playersHandbook,
+        //        State = State.Public,
+        //    };
+        //    ruleSet.Components.Add(element);
+        //}
 
-        SetRaceModifiers(ruleSet);
+        //SetRaceModifiers(ruleSet);
 
         return ruleSet;
     }
