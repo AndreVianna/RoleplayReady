@@ -1,11 +1,9 @@
-﻿using RolePlayReady.Utilities.Contracts;
+﻿namespace RolePlayReady.Models;
 
-namespace RolePlayReady.Models;
-
-public record Trait : Component, ITrait {
+public record Trait : Entity, ITrait {
     public Trait() { }
 
     [SetsRequiredMembers]
-    public Trait(IComponent? parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime)
+    public Trait(INode parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime)
         : base(parent, abbreviation, name, description, dateTime) { }
 }

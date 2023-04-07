@@ -5,7 +5,7 @@ public abstract record EntityAttribute<TSelf, TValue> : IEntityAttribute<TSelf, 
     protected EntityAttribute() { }
 
     [SetsRequiredMembers]
-    protected EntityAttribute(IEntity owner, IAttribute<TValue> attribute, TValue value) {
+    protected EntityAttribute(IEntity owner, IAttribute attribute, TValue value) {
         Entity = Throw.IfNull(owner);
         Attribute = Throw.IfNull(attribute);
         Value = Throw.IfNull(value);
@@ -13,8 +13,7 @@ public abstract record EntityAttribute<TSelf, TValue> : IEntityAttribute<TSelf, 
 
     // Entity + Attribute must be unique;
     public required IEntity Entity { get; set; }
-    IAttribute IEntityAttribute.Attribute => Attribute;
-    public required IAttribute<TValue> Attribute { get; init; }
+    public required IAttribute Attribute { get; init; }
     object? IEntityAttribute.Value => Value;
     public TValue Value { get; set; } = default!;
 
@@ -33,7 +32,7 @@ public record EntityFlag : EntityAttribute<IEntityFlag, bool>, IEntityFlag {
     public EntityFlag() { }
 
     [SetsRequiredMembers]
-    public EntityFlag(IEntity owner, IAttribute<bool> attribute, bool value)
+    public EntityFlag(IEntity owner, IAttribute attribute, bool value)
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }
@@ -44,7 +43,7 @@ public record EntityValue<TValue> : EntityAttribute<IEntityValue<TValue>, TValue
     public EntityValue() { }
 
     [SetsRequiredMembers]
-    public EntityValue(IEntity owner, IAttribute<TValue> attribute, TValue value)
+    public EntityValue(IEntity owner, IAttribute attribute, TValue value)
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }
@@ -54,7 +53,7 @@ public record EntityList<TValue> : EntityAttribute<IEntityList<TValue>, HashSet<
     public EntityList() { }
 
     [SetsRequiredMembers]
-    public EntityList(IEntity owner, IAttribute<HashSet<TValue>> attribute, HashSet<TValue> value)
+    public EntityList(IEntity owner, IAttribute attribute, HashSet<TValue> value)
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }
@@ -65,7 +64,7 @@ public record EntityMap<TKey, TValue> : EntityAttribute<IEntityMap<TKey, TValue>
     public EntityMap() { }
 
     [SetsRequiredMembers]
-    public EntityMap(IEntity owner, IAttribute<Dictionary<TKey, TValue>> attribute, Dictionary<TKey, TValue> value)
+    public EntityMap(IEntity owner, IAttribute attribute, Dictionary<TKey, TValue> value)
         : base(owner, attribute, value) {
         Value = Throw.IfNull(value);
     }

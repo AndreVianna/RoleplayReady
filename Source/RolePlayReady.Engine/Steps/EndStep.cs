@@ -7,10 +7,13 @@ public class EndStep<TContext> : Step<TContext>
         : base(stepFactory, loggerFactory) {
     }
 
-    protected sealed override Task<Type?> OnRunAsync(TContext context, CancellationToken cancellation = default)
-        => base.OnRunAsync(context, cancellation);
+    protected sealed override Task<TContext> OnStartAsync(TContext context, CancellationToken cancellation = default)
+        => base.OnStartAsync(context, cancellation);
 
-    protected sealed override Task OnFinishAsync(TContext context, CancellationToken cancellation = default)
+    protected sealed override Task<Type?> OnSelectNextAsync(TContext context, CancellationToken cancellation = default)
+        => base.OnSelectNextAsync(context, cancellation);
+
+    protected sealed override Task<TContext> OnFinishAsync(TContext context, CancellationToken cancellation = default)
         => base.OnFinishAsync(context, cancellation);
 
     protected sealed override Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default)

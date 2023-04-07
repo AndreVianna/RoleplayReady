@@ -1,4 +1,4 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface ITrait : IComponent {
+public interface ITrait : INode {
 }

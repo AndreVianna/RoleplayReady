@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IObject : IComponent {
+public interface IObject : INode {
     string Unit { get; init; }
 }

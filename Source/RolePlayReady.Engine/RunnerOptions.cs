@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.Engine;
 
 public class RunnerOptions : IRunnerOptions<RunnerOptions> {
-    public string Name { get; set; } = string.Empty;
+    public string Name => GetType().Name;
 }
 
 public class RunnerOptions<TOptions> : RunnerOptions, IRunnerOptions<TOptions>

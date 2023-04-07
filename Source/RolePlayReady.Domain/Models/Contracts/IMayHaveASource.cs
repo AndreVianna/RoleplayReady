@@ -1,5 +1,5 @@
-﻿namespace RolePlayReady.Models.Contracts;
+﻿//namespace RolePlayReady.Models.Contracts;
 
-public interface IMayHaveASource {
-    ISource? Source { get; init; }
-}
+//public interface IMayHaveASource {
+//    ISource? Source { get; init; }
+//}

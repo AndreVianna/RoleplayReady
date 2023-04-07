@@ -1,5 +1,6 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IRuleSet : IComponent {
-    IList<ISource> Sources { get; }
+public interface IRuleSet : INode, IIdentification, ITrackable {
+    IList<string> Tags { get; }
+    IList<IAttribute> Attributes { get; }
 }

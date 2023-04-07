@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
 public interface IEntityAttribute {
-    IEntity Entity { get; set; }
+    IEntity Entity { get; }
     IAttribute Attribute { get; }
     object? Value { get; }
 }
@@ -9,7 +9,6 @@ public interface IEntityAttribute {
 public interface IEntityAttribute<TSelf, TValue>
     : IEntityAttribute
     where TSelf : IEntityAttribute<TSelf, TValue> {
-    new IAttribute<TValue> Attribute { get; init; }
     new TValue Value { get; set; }
     IList<Func<TSelf, ValidationResult>> Validations { get; }
 

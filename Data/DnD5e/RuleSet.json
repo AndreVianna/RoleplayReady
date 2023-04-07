@@ -1,0 +1,14 @@
+{
+  "Abbreviation": "DnD5e",
+  "Name": "Dungeons and Dragons 5th Edition",
+  "Description": "A fantasy tabletop role-playing game system",
+  "Tags": ["Fantasy"],
+  "Attributes": [
+    {
+      "DataType": "bool",
+      "Abbreviation": "Insp",
+      "Name": "Inspiration",
+      "Description": "A temporary boost allowing a character to gain advantage on one ability check, attack roll, or saving throw."
+    },
+  ]
+}

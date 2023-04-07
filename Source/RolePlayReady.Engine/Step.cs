@@ -12,16 +12,16 @@ public abstract class Step<TContext> : IStep<TContext>
         _stepFactory = stepFactory;
     }
 
-    protected virtual Task<Type?> OnRunAsync(TContext context, CancellationToken cancellation = default)
+    protected virtual Task<TContext> OnStartAsync(TContext context, CancellationToken cancellation = default)
+        => Task.FromResult(context);
+    protected virtual Task<Type?> OnSelectNextAsync(TContext context, CancellationToken cancellation = default)
         => Task.FromResult<Type?>(default);
-
-    protected virtual Task OnFinishAsync(TContext context, CancellationToken cancellation = default)
-        => Task.CompletedTask;
-
+    protected virtual Task<TContext> OnFinishAsync(TContext context, CancellationToken cancellation = default)
+        => Task.FromResult(context);
     protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default)
         => Task.CompletedTask;
 
-    async Task<IContext> IIsRunnable.RunAsync(IContext context, CancellationToken cancellation)
+    async Task<IContext> IStep.RunAsync(IContext context, CancellationToken cancellation)
         => await RunAsync(
             Throw.IfNull(context as TContext, $"Context must be of type '{typeof(TContext).Name}'."),
             cancellation);
@@ -29,16 +29,19 @@ public abstract class Step<TContext> : IStep<TContext>
         try {
             Throw.IfNull(context);
             await context.UpdateAsync(this, cancellation).ConfigureAwait(false);
+
             _logger.LogDebug("Running step {StepNumber}: '{Type}'...", context.CurrentStepNumber, _stepType.Name);
-            var nextStepType = await OnRunAsync(context, cancellation).ConfigureAwait(false);
+            context = await OnStartAsync(context, cancellation).ConfigureAwait(false);
+
+            var nextStepType = await OnSelectNextAsync(context, cancellation).ConfigureAwait(false);
             if (nextStepType is not null) {
                 _logger.LogDebug("Expecting next step of type '{NextStepType}'.", nextStepType.Name);
                 await using var nextStep = _stepFactory.Create(nextStepType);
-                await nextStep.RunAsync(context, cancellation).ConfigureAwait(false);
+                context = (TContext)await nextStep.RunAsync(context, cancellation).ConfigureAwait(false);
             }
 
             _logger.LogDebug("Finishing step {StepNumber}: '{Type}'...", context.CurrentStepNumber, _stepType.Name);
-            await OnFinishAsync(context, cancellation).ConfigureAwait(false);
+            context = await OnFinishAsync(context, cancellation).ConfigureAwait(false);
             _logger.LogDebug("Step {StepNumber}: '{Type}' finished.", context.CurrentStepNumber, _stepType.Name);
 
             return context;

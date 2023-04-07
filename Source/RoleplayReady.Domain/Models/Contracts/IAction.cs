@@ -1,4 +1,4 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IAction : IComponent {
+public interface IAction : INode {
 }

@@ -1,9 +1,9 @@
 ﻿namespace RolePlayReady.Models;
 
-public record Action : Component, IAction {
+public record Action : Entity, IAction {
     public Action() { }
 
     [SetsRequiredMembers]
-    public Action(IComponent? parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime)
+    public Action(INode parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime)
         : base(parent, abbreviation, name, description, dateTime) { }
 }

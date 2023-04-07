@@ -1,10 +1,10 @@
 ﻿namespace RolePlayReady.Models;
 
-public record Agent : Component, IAgent {
+public record Agent : Entity, IAgent {
     public Agent() { }
 
     [SetsRequiredMembers]
-    public Agent(IComponent? parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime = null)
+    public Agent(INode parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime = null)
         : base(parent, abbreviation, name, description, dateTime) { }
 
     public IList<IPossession> Possessions { get; init; } = new List<IPossession>();

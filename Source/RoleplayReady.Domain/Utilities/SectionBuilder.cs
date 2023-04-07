@@ -9,7 +9,7 @@
 //        Target = entity;
 //        Section = section;
 //        SectionItem = Section switch {
-//            nameof(Component.Traits) => nameof(Trait),
+//            nameof(Node.Traits) => nameof(Trait),
 //            nameof(RuleSet.PowerSources) => nameof(PowerSource),
 //            _ => throw new NotImplementedException()
 //        };
@@ -21,16 +21,16 @@
 //    protected string Section { get; }
 //    protected string SectionItem { get; }
 
-//    protected IComponent? Find(string existing)
+//    protected INode? Find(string existing)
 //        => Section switch {
-//            nameof(Component.Traits) when Target is Component element => element.Traits.FirstOrDefault(i => i.Name == existing),
+//            nameof(Node.Traits) when Target is Node element => element.Traits.FirstOrDefault(i => i.Name == existing),
 //            nameof(RuleSet.PowerSources) when Target is RuleSet ruleSet => ruleSet.PowerSources.FirstOrDefault(i => i.Name == existing),
 //            _ => throw new NotImplementedException()
 //        };
 
-//    protected void Add(IComponent item) {
+//    protected void Add(INode item) {
 //        switch (Target) {
-//            case Component element when item is Trait trait:
+//            case Node element when item is Trait trait:
 //                element.Traits.Add(trait);
 //                return;
 //            case RuleSet ruleSet when item is PowerSource powerSource:
@@ -41,9 +41,9 @@
 //        }
 //    }
 
-//    protected void Remove(IComponent item) {
+//    protected void Remove(INode item) {
 //        switch (Section) {
-//            case nameof(Component.Traits) when Target is Component element:
+//            case nameof(Node.Traits) when Target is Node element:
 //                element.Traits.Remove((ITrait)item);
 //                return;
 //            case nameof(RuleSet.PowerSources) when Target is RuleSet ruleSet:
@@ -109,9 +109,9 @@
 //    }
 
 //    private class AppendWith : SectionBuilder, ISectionBuilder.IAppendWith {
-//        private IComponent _original;
+//        private INode _original;
 
-//        public AppendWith(IEntity entity, string section, IComponent original) : base(entity, section) {
+//        public AppendWith(IEntity entity, string section, INode original) : base(entity, section) {
 //            _original = original;
 //        }
 
@@ -119,7 +119,7 @@
 //            => With(additionalDescription, (_, e) => configure(e));
 
 //        public ISectionBuilder.IConnector With(string additionalDescription, Action<IEntity, IEntityUpdater.IMain> configure) {
-//            _original = (Component)_original with {
+//            _original = (Node)_original with {
 //                Description = $"{_original.Description}\n{additionalDescription}",
 //            };
 //            return With(configure);

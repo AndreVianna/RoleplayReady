@@ -79,8 +79,11 @@ public class StepTests {
     private class TestEndStep : EndStep<NullContext> {
         public TestEndStep() : base(NullStepFactory.Instance, NullLoggerFactory.Instance) { }
 
-        public Task<Type?> TestOnRunAsync(CancellationToken cancellation = default)
-            => OnRunAsync(NullContext.Instance, cancellation);
+        public Task<NullContext> TestOnStartAsync(CancellationToken cancellation = default)
+            => OnStartAsync(NullContext.Instance, cancellation);
+
+        public Task<Type?> TestOnSelectNextAsync(CancellationToken cancellation = default)
+            => OnSelectNextAsync(NullContext.Instance, cancellation);
 
         public Task TestOnFinishAsync(CancellationToken cancellation = default)
             => OnFinishAsync(NullContext.Instance, cancellation);
@@ -91,12 +94,24 @@ public class StepTests {
     }
 
     [Fact]
-    public async Task OnRunAsync_IsCalled() {
+    public async Task OnStartAsync_IsCalled() {
         // Arrange
         var step = new TestEndStep();
 
         // Act
-        await step.TestOnRunAsync();
+        await step.TestOnStartAsync();
+
+        // Assert
+        // No exception should be thrown, and the test should pass.
+    }
+
+    [Fact]
+    public async Task OnSelectStepAsync_IsCalled() {
+        // Arrange
+        var step = new TestEndStep();
+
+        // Act
+        await step.TestOnSelectNextAsync();
 
         // Assert
         // No exception should be thrown, and the test should pass.

@@ -2,7 +2,7 @@
 
 public interface IComponentFactory {
     TComponent Create<TComponent>(string abbreviation, string name, string description)
-        where TComponent : IComponent;
+        where TComponent : INode;
 
-    IComponent Create(string type, string abbreviation, string name, string description);
+    INode Create(string type, string abbreviation, string name, string description);
 }

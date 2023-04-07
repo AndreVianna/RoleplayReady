@@ -7,11 +7,11 @@ public class RunnerTests {
 
     public RunnerTests() {
         var builder = new ConfigurationBuilder();
-        _configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>{ {"Abc", "123" } }).Build();
+        _configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { { "Abc", "123" } }).Build();
         var services = new ServiceCollection();
         services.AddSingleton<ILoggerFactory, NullLoggerFactory>();
         services.AddStepEngine();
-        services.AddRunner<TestRunner>();
+        services.AddRunner<TestStepRunner>();
         services.AddStep<TestStep>();
         _provider = services.BuildServiceProvider();
         _stepFactory = _provider.GetRequiredService<IStepFactory>();
@@ -20,14 +20,14 @@ public class RunnerTests {
     [Fact]
     public async Task RunAsync_WithValidSteps_ExecutesSteps() {
         // Arrange
-        var runner = new TestRunner(_configuration, _stepFactory, NullLoggerFactory.Instance);
+        var runner = new TestStepRunner(_configuration, _stepFactory, NullLoggerFactory.Instance);
         var context = new Context(_provider);
 
         // Act
         await runner.RunAsync(context);
 
         // Assert
-        runner.Options.Name.Should().Be(nameof(TestRunner));
+        runner.Options.Name.Should().Be(nameof(TestStepRunner));
         context.CurrentStepNumber.Should().Be(2);
         context.IsBlocked.Should().BeFalse();
     }
@@ -36,14 +36,14 @@ public class RunnerTests {
     [Fact]
     public async Task RunAsync_FromInterface_ExecutesSteps() {
         // Arrange
-        var runner = new TestRunner(_configuration, _stepFactory, NullLoggerFactory.Instance);
+        var runner = new TestStepRunner(_configuration, _stepFactory, NullLoggerFactory.Instance);
         var context = new Context(_provider);
 
         // Act
         await ((IIsRunnable)runner).RunAsync(context);
 
         // Assert
-        runner.Options.Name.Should().Be(nameof(TestRunner));
+        runner.Options.Name.Should().Be(nameof(TestStepRunner));
         context.CurrentStepNumber.Should().Be(2);
         context.IsBlocked.Should().BeFalse();
     }
@@ -51,7 +51,7 @@ public class RunnerTests {
     [Fact]
     public async Task RunAsync_WithContextInProgress_ThrowsInvalidOperationException() {
         // Arrange
-        var runner = new TestRunner(_configuration, _stepFactory, null);
+        var runner = new TestStepRunner(_configuration, _stepFactory, null);
         var context = new Context(_provider);
         context.Block();
 
@@ -92,7 +92,7 @@ public class RunnerTests {
     [Fact]
     public async Task DisposeAsync_CalledMultipleTimes_Passes() {
         // Arrange
-        var runner = new TestRunner(_configuration, _stepFactory, NullLoggerFactory.Instance);
+        var runner = new TestStepRunner(_configuration, _stepFactory, NullLoggerFactory.Instance);
 
         // Act
         await runner.DisposeAsync();
@@ -102,15 +102,18 @@ public class RunnerTests {
         // No exception should be thrown, and the test should pass.
     }
 
-    private class TestEndRunner : Runner<NullContext, RunnerOptions> {
+    private class TestEndStepRunner : StepRunner<NullContext, RunnerOptions> {
         [SetsRequiredMembers]
-        public TestEndRunner(IConfiguration configuration)
+        public TestEndStepRunner(IConfiguration configuration)
             : base(configuration, NullStepFactory.Instance, NullLoggerFactory.Instance) { }
 
-        public Task<Type?> TestOnStartAsync(CancellationToken cancellation = default)
+        public Task<NullContext> TestOnStartAsync(CancellationToken cancellation = default)
             => OnStartAsync(NullContext.Instance, cancellation);
 
-        public Task TestOnFinishAsync(CancellationToken cancellation = default)
+        public Task<Type?> TestOnSelectStepAsync(CancellationToken cancellation = default)
+            => OnSelectStepAsync(NullContext.Instance, cancellation);
+
+        public Task<NullContext> TestOnFinishAsync(CancellationToken cancellation = default)
             => OnFinishAsync(NullContext.Instance, cancellation);
 
         public Task TestOnErrorAsync(Exception ex, CancellationToken cancellation = default)
@@ -121,7 +124,7 @@ public class RunnerTests {
     [Fact]
     public async Task OnRunAsync_IsCalled() {
         // Arrange
-        var step = new TestEndRunner(_configuration);
+        var step = new TestEndStepRunner(_configuration);
 
         // Act
         await step.TestOnStartAsync();
@@ -133,7 +136,7 @@ public class RunnerTests {
     [Fact]
     public async Task OnFinishAsync_IsCalled() {
         // Arrange
-        var step = new TestEndRunner(_configuration);
+        var step = new TestEndStepRunner(_configuration);
 
         // Act
         await step.TestOnFinishAsync();
@@ -145,7 +148,7 @@ public class RunnerTests {
     [Fact]
     public async Task OnErrorAsync_IsCalled() {
         // Arrange
-        var step = new TestEndRunner(_configuration);
+        var step = new TestEndStepRunner(_configuration);
 
         // Act
         await step.TestOnErrorAsync(new Exception("Some message."));

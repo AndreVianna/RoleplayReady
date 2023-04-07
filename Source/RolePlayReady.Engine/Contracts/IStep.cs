@@ -1,8 +1,10 @@
 ﻿namespace RolePlayReady.Engine.Contracts;
 
-public interface IStep : IIsRunnable {
+public interface IStep : IAsyncDisposable {
+    Task<IContext> RunAsync(IContext context, CancellationToken cancellation = default);
 }
 
-public interface IStep<TContext> : IIsRunnable<TContext>, IStep
+public interface IStep<TContext> : IStep
     where TContext : class, IContext {
+    Task<TContext> RunAsync(TContext context, CancellationToken cancellation = default);
 }

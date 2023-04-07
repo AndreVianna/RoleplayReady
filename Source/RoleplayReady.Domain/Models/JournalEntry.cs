@@ -19,6 +19,6 @@ public record JournalEntry : IJournalEntry {
     public required string Title { get; init; }
     public required string Text { get; init; }
 
-    public DateTime Version { get; init; } = DateTime.UtcNow;
+    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
     public State State { get; init; } = State.NotReady;
 }

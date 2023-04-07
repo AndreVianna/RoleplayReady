@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Models.Contracts;
+﻿//namespace RolePlayReady.Models.Contracts;
 
-public interface ISource : IIdentification {
-}
+//public interface ISource : IIdentification {
+//}

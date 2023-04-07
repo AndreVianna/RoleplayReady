@@ -1,4 +1,4 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IPower : IComponent {
+public interface IPower : INode {
 }

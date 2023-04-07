@@ -3,45 +3,44 @@
 public abstract record Entity : IEntity {
     protected Entity() {
         OwnerId = "System";
-        DateTime = new SystemDateTimeProvider();
-        State = State.NotReady;
-        Version = DateTime.Now;
-    }
-
-    protected Entity(IDateTimeProvider? dateTime = null)
-        : this() {
-        DateTime = dateTime ?? DateTime;
     }
 
     [SetsRequiredMembers]
-    protected Entity(string abbreviation, string name, string description, IDateTimeProvider? dateTime)
-        : this(dateTime) {
+    protected Entity(INode parent, string abbreviation, string name, string description, IDateTimeProvider? dateTime = null)
+        : this() {
+        Parent = parent;
+
         Abbreviation = Throw.IfNullOrWhiteSpaces(abbreviation);
         Name = Throw.IfNullOrWhiteSpaces(name);
         Description = Throw.IfNull(description);
+
+        dateTime ??= new SystemDateTimeProvider();
+        Timestamp = dateTime.Now;
+        State = State.NotReady;
     }
 
-    protected IDateTimeProvider DateTime { get; init; }
+    public string OwnerId { get; init; }
 
-    public string Type => GetType().Name;
+    public INode Root => Parent.Root;
+    public required INode Parent { get; init; }
+    public IList<INode> Children { get; init; } = new List<INode>();
 
-    // RuleSet, OwnerId, and Name must be unique.
-    public required string Name { get; init; }
-
+    public string EntityType => GetType().Name;
     // RuleSet, OwnerId, and Abbreviation must be unique.
     public required string Abbreviation { get; init; }
+    // RuleSet, OwnerId, and Name must be unique.
+    public required string Name { get; init; }
     public required string Description { get; init; }
+    public string FullName => $"<{EntityType}> {Name} ({Abbreviation})";
 
-    public string OwnerId { get; init; }
-    public State State { get; init; }
-    public ISource? Source { get; init; }
 
-    public DateTime Version { get; init; }
-    public Usage Usage { get; init; }
+    //public Usage Usage { get; init; }
 
     public IList<string> Tags { get; init; } = new List<string>();
     public IList<IEntityAttribute> Attributes { get; init; } = new List<IEntityAttribute>();
 
+    public DateTime Timestamp { get; init; }
+    public State State { get; init; }
 
     //public IList<Func<IEntity, bool>> Requirements { get; init; } = new List<Func<IEntity, bool>>();
 
@@ -65,7 +64,7 @@ public abstract record Entity : IEntity {
     //    where TSelf : class, IEntity {
     //    var result = this with {
     //        State = State.NotReady,
-    //        Version = DateTime.Now,
+    //        Timestamp = DateTime.Now,
     //        Tags = Tags.ToList(),
     //        Attributes = new List<IEntityAttribute>(),
     //        Requirements = new List<Func<IEntity, bool>>(Requirements),
