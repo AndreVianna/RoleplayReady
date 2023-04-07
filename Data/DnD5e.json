@@ -1,0 +1,328 @@
+{
+  "Abbreviation": "DnD5e",
+  "Name": "Dungeons and Dragons 5th Edition",
+  "Description": "A fantasy tabletop role-playing game system",
+  "Tags": [
+    "Fantasy"
+  ],
+  "Attributes": [
+    {
+      "DataType": "bool",
+      "Abbreviation": "Inspiration",
+      "Name": "Inspiration",
+      "Description": "A temporary boost allowing a character to gain advantage on one ability check, attack roll, or saving throw."
+    },
+    {
+      "DataType": "decimal",
+      "Abbreviation": "Height",
+      "Name": "Height",
+      "Description": "The vertical measurement of a character or creature."
+    },
+    {
+      "DataType": "decimal",
+      "Abbreviation": "Weight",
+      "Name": "Weight",
+      "Description": "The mass of a character or creature."
+    },
+    {
+      "DataType": "Dictionary<string, int>",
+      "Abbreviation": "Classes",
+      "Name": "Classes",
+      "Description": "A dictionary of character classes and their associated levels."
+    },
+    {
+      "DataType": "Dictionary<string, int>",
+      "Abbreviation": "Currency",
+      "Name": "Currency",
+      "Description": "A dictionary of various currencies and their amounts possessed by the character."
+    },
+    {
+      "DataType": "Dictionary<string, int>",
+      "Abbreviation": "Moviments",
+      "Name": "Movements",
+      "Description": "A dictionary of different movement types and their associated speeds."
+    },
+    {
+      "DataType": "Dictionary<string, int>",
+      "Abbreviation": "AbilityCharges",
+      "Name": "AbilityCharges",
+      "Description": "A dictionary of abilities and their remaining charges or uses."
+    },
+    {
+      "DataType": "Dictionary<string, string>",
+      "Abbreviation": "SavingThrows",
+      "Name": "SavingThrows",
+      "Description": "A dictionary of saving throw proficiencies and their associated ability modifiers."
+    },
+    {
+      "DataType": "Dictionary<string, string>",
+      "Abbreviation": "SkillChecks",
+      "Name": "SkillChecks",
+      "Description": "A dictionary of skill proficiencies and their associated ability modifiers."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "ArmorClass",
+      "Name": "ArmorClass",
+      "Description": "A measure of how well a character or creature can avoid taking damage in combat."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "CarryingCapacity",
+      "Name": "CarryingCapacity",
+      "Description": "The maximum weight a character can carry without being encumbered."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "ChallengeRating",
+      "Name": "ChallengeRating",
+      "Description": "A numerical rating representing the relative difficulty of defeating a creature in combat."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "Charisma",
+      "Name": "Charisma",
+      "Description": "A measure of a character's force of personality, persuasiveness, and personal magnetism."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "Constitution",
+      "Name": "Constitution",
+      "Description": "A measure of a character's health, stamina, and vital force."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "CurrentCarryingWeight",
+      "Name": "CurrentCarryingWeight",
+      "Description": "The current weight of all items being carried by the character."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "CurrentHitPoints",
+      "Name": "CurrentHitPoints",
+      "Description": "The remaining health points of a character or creature."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "Dexterity",
+      "Name": "Dexterity",
+      "Description": "A measure of a character's agility, reflexes, and balance."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "ExhaustionLevel",
+      "Name": "ExhaustionLevel",
+      "Description": "A measure of how fatigued a character is, with higher levels resulting in more severe penalties."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "Intelligence",
+      "Name": "Intelligence",
+      "Description": "A measure of a character's mental acuity, information recall, and analytical skill."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "MaximumLanguagesKnown",
+      "Name": "MaximumLanguagesKnown",
+      "Description": "The maximum number of languages a character can learn."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "MaximumHitPoints",
+      "Name": "MaximumHitPoints",
+      "Description": "The highest possible hit points a character or creature can have."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "ProficiencyBonus",
+      "Name": "ProficiencyBonus",
+      "Description": "A bonus added to ability checks, attack rolls, and saving throws based on a character's level and class."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "Strength",
+      "Name": "Strength",
+      "Description": "A measure of a character's physical power and ability to perform physically demanding tasks."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "TemporaryHitPoints",
+      "Name": "TemporaryHitPoints",
+      "Description": "Additional hit points that can absorb damage before reducing a character's current hit points."
+    },
+    {
+      "DataType": "int",
+      "Abbreviation": "Wisdom",
+      "Name": "Wisdom",
+      "Description": "A measure of a character's awareness, intuition, and insight."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "Alignment",
+      "Name": "Alignment",
+      "Description": "A description of a character's moral and ethical outlook."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "Appearance",
+      "Name": "Appearance",
+      "Description": "A brief description of a character's physical appearance."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "Background",
+      "Name": "Background",
+      "Description": "A character's history, including occupation, upbringing, and personal experiences."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "CreatureType",
+      "Name": "CreatureType",
+      "Description": "The classification of a creature, such as humanoid, beast, or undead."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "EyeColor",
+      "Name": "EyeColor",
+      "Description": "The color of a character's or creature's eyes."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "Gender",
+      "Name": "Gender",
+      "Description": "The gender identity of a character."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "HairColor",
+      "Name": "HairColor",
+      "Description": "The color of a character's hair."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "NPCType",
+      "Name": "NPCType",
+      "Description": "A classification for non-player characters, such as merchant, guard, or innkeeper."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "PassiveInsight",
+      "Name": "PassiveInsight",
+      "Description": "A measure of a character's ability to discern hidden motives without actively trying."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "PassivePerception",
+      "Name": "PassivePerception",
+      "Description": "A measure of a character's ability to notice hidden objects or creatures without actively searching."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "Race",
+      "Name": "Race",
+      "Description": "The species or ancestry of a character."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "Size",
+      "Name": "Size",
+      "Description": "The physical size category of a character or creature, such as Small, Medium, or Large."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "SkinColor",
+      "Name": "SkinColor",
+      "Description": "The color of a character's skin."
+    },
+    {
+      "DataType": "string",
+      "Abbreviation": "SpellCastingAbility",
+      "Name": "SpellCastingAbility",
+      "Description": "The ability score used for calculating a character's spellcasting modifier and save DC."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Actions",
+      "Name": "Actions",
+      "Description": "A set of special actions a character or creature can take during combat."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Archetypes",
+      "Name": "Archetypes",
+      "Description": "A set of subclass options available to a character within their chosen class."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Armors",
+      "Name": "Armors",
+      "Description": "A set of protective gear a character is proficient in using."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Feats",
+      "Name": "Feats",
+      "Description": "A set of special abilities or features that provide a character with unique capabilities."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Immunities",
+      "Name": "Immunities",
+      "Description": "A set of damage types, conditions, or effects a character or creature is completely unaffected by."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "LairActions",
+      "Name": "LairActions",
+      "Description": "A set of unique actions a creature can take within its lair, typically used by powerful adversaries."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Languages",
+      "Name": "Languages",
+      "Description": "A set of languages a character can understand, speak, read, and write."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "LegendaryActions",
+      "Name": "LegendaryActions",
+      "Description": "A set of powerful actions a legendary creature can take outside of its turn in combat."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Resistances",
+      "Name": "Resistances",
+      "Description": "A set of damage types a character or creature takes reduced damage from."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Senses",
+      "Name": "Senses",
+      "Description": "A set of special sensory capabilities a character or creature possesses, such as darkvision or blindsight."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Traits",
+      "Name": "Traits",
+      "Description": "A set of innate or learned characteristics that define a character or creature's abilities and qualities."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Tools",
+      "Name": "Tools",
+      "Description": "A set of tools, instruments, or other equipment a character is proficient in using."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Vulnerabilities",
+      "Name": "Vulnerabilities",
+      "Description": "A set of damage types a character or creature takes increased damage from."
+    },
+    {
+      "DataType": "HashSet<string>",
+      "Abbreviation": "Weapons",
+      "Name": "Weapons",
+      "Description": "A set of weapons a character is proficient in using."
+    }
+  ]
+}

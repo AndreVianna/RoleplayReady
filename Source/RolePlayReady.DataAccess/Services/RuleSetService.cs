@@ -1,18 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace RolePlayReady.DataAccess.Services;
+﻿namespace RolePlayReady.DataAccess.Services;
 
 public class RuleSetService {
-    private readonly IServiceProvider _services;
+    private readonly IRuleSetRepository _ruleSets;
 
-    public RuleSetService(IServiceProvider services) {
-        _services = services;
+    public RuleSetService(IRuleSetRepository ruleSets) {
+        _ruleSets = ruleSets;
     }
 
-    public async Task<RuleSet> LoadRuleSetAsync(string fileName, CancellationToken cancellation) {
-        var context = new ReadJsonContext<RuleSet>(_services, fileName);
-        var runner = _services.GetRequiredService<LoadRuleSetFromJson>();
-        context = await runner.RunAsync(context, cancellation);
-        return context.Result!;
-    }
+    public async Task<RuleSet> LoadAsync(string id, CancellationToken cancellation = default)
+        => await _ruleSets.GetByIdAsync(id, cancellation)
+           ?? throw new InvalidOperationException($"Rule set for '{id}' was not found.");
 }
