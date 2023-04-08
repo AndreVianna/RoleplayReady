@@ -4,5 +4,5 @@ public enum State {
     NotReady,
     Public,
     Private,
-    Hidden,
+    Deleted,
 }

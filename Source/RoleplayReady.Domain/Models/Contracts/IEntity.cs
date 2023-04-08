@@ -1,9 +1,6 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IEntity : INode, IIdentification, ITrackable {
-
-    //Usage Usage { get; init; }
-
+public interface IEntity : IIdentification, ITrackable {
     IList<string> Tags { get; init; }
-    IList<IEntityAttribute> Attributes { get; init; }
+    IList<IAttribute> Attributes { get; init; }
 }

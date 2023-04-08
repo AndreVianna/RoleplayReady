@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady;
+﻿using System.Globalization;
+
+namespace RolePlayReady;
 
 public class SystemDateTimeProvider : IDateTimeProvider {
     public DateTime Now => DateTime.UtcNow;
@@ -8,4 +10,6 @@ public class SystemDateTimeProvider : IDateTimeProvider {
     public DateTime Last => DateTime.MinValue;
     public DateTime Parse(string candidate) => DateTime.Parse(candidate);
     public bool TryParse(string candidate, out DateTime result) => DateTime.TryParse(candidate, out result);
+    public bool TryParseExact(string candidate, string format, IFormatProvider? formatProvider, DateTimeStyles style, out DateTime result)
+        => DateTime.TryParseExact(candidate, format, formatProvider, style, out result);
 }

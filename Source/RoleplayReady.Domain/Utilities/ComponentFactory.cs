@@ -5,7 +5,7 @@
 
 //namespace RolePlayReady.Utilities;
 
-//public class ComponentFactory : IComponentFactory {
+//public class ComponentFactory : IEntityFactory {
 //    private readonly INode _parent;
 //    private readonly string _ownerId;
 
@@ -14,7 +14,7 @@
 //        _ownerId = ownerId;
 //    }
 
-//    public static IComponentFactory For(INode parent, string ownerId) => new ComponentFactory(parent, ownerId);
+//    public static IEntityFactory For(INode parent, string ownerId) => new ComponentFactory(parent, ownerId);
 
 //    public TComponent Create<TComponent>(string abbreviation, string name, string description)
 //        where TComponent : INode

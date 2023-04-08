@@ -1,4 +1,4 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface ITrigger : INode {
+public interface ITrigger : IEntity {
 }

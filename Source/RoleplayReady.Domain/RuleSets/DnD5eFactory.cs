@@ -12,15 +12,15 @@
 
 //    public static RuleSet Create() {
 //        var ruleSet = new RuleSet {
-//            OwnerId = "System",
+//            Owner = "System",
 //            Name = "Dungeons & Dragons 5th Edition",
-//            Abbreviation = "DnD5e",
+//            ShortName = "DnD5e",
 //            Description = "Dungeons & Dragons 5th Edition is a tabletop role-playing game system.",
 //            State = State.Public,
 //        };
 
 //        var sources = new[] { new Source {
-//                Abbreviation = "PHB",
+//                ShortName = "PHB",
 //                Name = "Player's Handbook",
 //                Description = "The Player's Handbook is the essential reference for every Dungeons & Dragons roleplayer. It contains rules for character creation and advancement, backgrounds and skills, exploration and combat, equipment, spells, and much more.",
 //                Publisher = "Wizards of the Coast",
@@ -103,14 +103,14 @@
 //            (typeof(HashSet<string>), "Vulnerabilities", "[Add description here]"),
 //            (typeof(HashSet<string>), "Weapons", "[Add description here]"),
 //        };
-//        //foreach (var attribute in attributes) {
-//        //    ruleSet.Attributes.Add(new Attribute {
+//        //foreach (var attributeDefinition in attributes) {
+//        //    ruleSet.AttributeDefinitions.Add(new AttributeDefinition {
 //        //        Procedure = ruleSet,
 //        //        RuleSet = ruleSet,
-//        //        OwnerId = "System",
-//        //        Name = attribute.Name,
-//        //        DataType = attribute.EntityType,
-//        //        Description = attribute.Description,
+//        //        Owner = "System",
+//        //        Name = attributeDefinition.Name,
+//        //        DataType = attributeDefinition.EntityType,
+//        //        Description = attributeDefinition.Description,
 //        //        State = State.Public,
 //        //    });
 //        //}

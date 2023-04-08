@@ -62,7 +62,7 @@
 //            => Add(name, description, (_, x) => configure(x));
 
 //        public ISectionBuilder.IConnector Add(string name, string description, Action<IEntity, IEntityUpdater.IMain> configure) {
-//            var factory = ComponentFactory.For(Target, Target.OwnerId);
+//            var factory = ComponentFactory.For(Target, Target.Owner);
 //            var item = factory.Create(SectionItem, name, description);
 //            configure(Target, EntityUpdater.For(item));
 //            Add(item);

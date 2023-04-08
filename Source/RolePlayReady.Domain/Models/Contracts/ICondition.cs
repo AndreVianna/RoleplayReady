@@ -1,4 +1,4 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface ICondition : INode {
+public interface ICondition : IEntity {
 }
