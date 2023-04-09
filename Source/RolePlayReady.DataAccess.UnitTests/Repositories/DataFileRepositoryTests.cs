@@ -1,7 +1,6 @@
-using System.Globalization;
-using System.Text;
+using Microsoft.Extensions.Logging.Abstractions;
 
-namespace RolePlayReady.DataAccess;
+namespace RolePlayReady.DataAccess.Repositories;
 
 public class DataFileRepositoryTests {
     private readonly IIOProvider _io;
@@ -18,45 +17,57 @@ public class DataFileRepositoryTests {
         _dateTime = Substitute.For<IDateTimeProvider>();
         var configuration = Substitute.For<IConfiguration>();
         configuration[$"{nameof(DataFileRepository)}:BaseFolder"].Returns(_baseFolder);
-        _repository = new DataFileRepository(configuration, _io, _dateTime);
+        _repository = new DataFileRepository(configuration, _io, _dateTime, NullLoggerFactory.Instance);
     }
 
-
     [Fact]
-    public void Constructor_WithoutProxies_CreatesInstance() {
+    public void Constructor_WithNulls_CreatesInstance() {
         // Arrange
         var configuration = Substitute.For<IConfiguration>();
         configuration[$"{nameof(DataFileRepository)}:BaseFolder"].Returns(_baseFolder);
 
         // Act
-        var result = new DataFileRepository(configuration, null, null);
+        var result = new DataFileRepository(configuration, null, null, null);
 
         // Assert
         result.Should().NotBeNull();
     }
 
     [Fact]
+    public void Constructor_WithConfigurationMissing_Throws() {
+        // Arrange
+        var configuration = Substitute.For<IConfiguration>();
+        configuration[$"{nameof(DataFileRepository)}:BaseFolder"].Returns(default(string));
+
+        // Act
+        var action = () => new DataFileRepository(configuration, null, null, null);
+
+        // Assert
+        action.Should().Throw<ArgumentException>();
+    }
+
+    [Fact]
     public async Task GetAllAsync_PathGiven_ReturnsAllDataFiles() {
         // Arrange
-        var testFolderPath = $"{_baseFolder}/{_path}";
+        const string testFolderPath = $"{_baseFolder}/{_path}";
         var filePaths = new[] {
-            $"{testFolderPath}/+{_id1}_20220406T120000.json",
-            $"{testFolderPath}/+{_id2}_20220406T130000.json"
+            $"{testFolderPath}/+{_id1}_20220406120000.json",
+            $"{testFolderPath}/+{_id2}_20220406130000.json"
         };
 
         _io.CombinePath(_baseFolder, _path).Returns(testFolderPath);
         _io.GetFilesFrom(testFolderPath, "+*.json", SearchOption.TopDirectoryOnly).Returns(filePaths);
 
-        _io.ExtractFileNameFrom(filePaths[0]).Returns($"+{_id1}_20220406T120000.json");
-        _dateTime.TryParseExact("20220406T120000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
+        _io.ExtractFileNameFrom(filePaths[0]).Returns($"+{_id1}_20220406120000.json");
+        _dateTime.TryParseExact("20220406120000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
             .Returns(x => {
                 x[4] = DateTime.Parse("2022-04-06 12:00:00");
                 return true;
             });
         _io.OpenFileForReading(filePaths[0]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\":\"SomeName\",\"Number\":42}")));
 
-        _io.ExtractFileNameFrom(filePaths[1]).Returns($"+{_id2}_20220406T130000.json");
-        _dateTime.TryParseExact("20220406T130000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
+        _io.ExtractFileNameFrom(filePaths[1]).Returns($"+{_id2}_20220406130000.json");
+        _dateTime.TryParseExact("20220406130000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
             .Returns(x => {
                 x[4] = DateTime.Parse("2022-04-06 13:00:00");
                 return true;
@@ -70,31 +81,33 @@ public class DataFileRepositoryTests {
         result.Should().HaveCount(2);
         result.First().Id.Should().Be(_id1);
         result.First().Content.Name.Should().Be("SomeName");
+        result.First().Content.Number.Should().Be(42);
         result.Last().Id.Should().Be(_id2);
         result.Last().Content.Name.Should().Be("OtherName");
+        result.Last().Content.Number.Should().Be(7);
     }
 
     [Fact]
     public async Task GetAllAsync_NoPathGiven_ReturnsAllDataFiles() {
         // Arrange
         var filePaths = new[] {
-            $"{_baseFolder}/+{_id1}_20220406T120000.json",
-            $"{_baseFolder}/+{_id2}_20220406T130000.json"
+            $"{_baseFolder}/+{_id1}_20220406120000.json",
+            $"{_baseFolder}/+{_id2}_20220406130000.json"
         };
 
         _io.CombinePath(_baseFolder, string.Empty).Returns(_baseFolder);
         _io.GetFilesFrom(_baseFolder, "+*.json", SearchOption.TopDirectoryOnly).Returns(filePaths);
 
-        _io.ExtractFileNameFrom(filePaths[0]).Returns($"+{_id1}_20220406T120000.json");
-        _dateTime.TryParseExact("20220406T120000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
+        _io.ExtractFileNameFrom(filePaths[0]).Returns($"+{_id1}_20220406120000.json");
+        _dateTime.TryParseExact("20220406120000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
             .Returns(x => {
                 x[4] = DateTime.Parse("2022-04-06 12:00:00");
                 return true;
             });
         _io.OpenFileForReading(filePaths[0]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\":\"SomeName\",\"Number\":42}")));
 
-        _io.ExtractFileNameFrom(filePaths[1]).Returns($"+{_id2}_20220406T130000.json");
-        _dateTime.TryParseExact("20220406T130000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
+        _io.ExtractFileNameFrom(filePaths[1]).Returns($"+{_id2}_20220406130000.json");
+        _dateTime.TryParseExact("20220406130000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
             .Returns(x => {
                 x[4] = DateTime.Parse("2022-04-06 13:00:00");
                 return true;
@@ -102,7 +115,7 @@ public class DataFileRepositoryTests {
         _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\":\"OtherName\",\"Number\":7}")));
 
         // Act
-        var result = (await _repository.GetAllAsync<TestData>()).ToArray();
+        var result = (await _repository.GetAllAsync<TestData>(null)).ToArray();
 
         // Assert
         result.Should().HaveCount(2);
@@ -115,15 +128,15 @@ public class DataFileRepositoryTests {
     [Fact]
     public async Task GetByIdAsync_PathAndIdGiven_DataFileFound_ReturnsDataFile() {
         // Arrange
-        var filePath = $"{_baseFolder}/{_path}/+{_id1}_20220406T123456.json";
+        const string filePath = $"{_baseFolder}/{_path}/+{_id1}_20220406123456.json";
         var expectedData = GenerateTestData();
 
         _io.CombinePath(_baseFolder, _path).Returns($"{_baseFolder}/{_path}");
         _io.GetFilesFrom($"{_baseFolder}/{_path}", $"+{_id1}*.json", SearchOption.TopDirectoryOnly)
             .Returns(new[] { filePath });
 
-        _io.ExtractFileNameFrom(filePath).Returns($"+{_id1}_20220406T123456.json");
-        _dateTime.TryParseExact("20220406T123456", "yyyyMMddTHHmmss", null, DateTimeStyles.None, out Arg.Any<DateTime>())
+        _io.ExtractFileNameFrom(filePath).Returns($"+{_id1}_20220406123456.json");
+        _dateTime.TryParseExact("20220406123456", "yyyyMMddHHmmss", null, DateTimeStyles.None, out Arg.Any<DateTime>())
             .Returns(x => {
                 x[4] = DateTime.Parse("2022-04-06 12:34:56");
                 return true;
@@ -139,6 +152,25 @@ public class DataFileRepositoryTests {
         result!.Id.Should().Be(_id1);
         result.Timestamp.Should().Be(DateTime.Parse("2022-04-06 12:34:56"));
         result.Content.Should().BeEquivalentTo(expectedData);
+    }
+
+
+    [Fact]
+    public async Task GetByIdAsync_WithInvalidFileName_ThrowsInvalidOperationException() {
+        // Arrange
+        const string filePath = $"{_baseFolder}/+{_id1}_Hello.json";
+
+        _io.CombinePath(_baseFolder, string.Empty).Returns(_baseFolder);
+        _io.GetFilesFrom(_baseFolder, $"+{_id1}*.json", SearchOption.TopDirectoryOnly)
+            .Returns(new[] { filePath });
+
+        _io.ExtractFileNameFrom(filePath).Returns($"+{_id1}_Hello.json");
+
+        // Act
+        var result = await _repository.GetByIdAsync<TestData>(null, _id1);
+
+        // Assert
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -158,15 +190,15 @@ public class DataFileRepositoryTests {
     [Fact]
     public async Task GetByIdAsync_IdGiven_DataFileFound_ReturnsDataFile() {
         // Arrange
-        var filePath = $"{_baseFolder}/+{_id1}_20220406T123456.json";
+        var filePath = $"{_baseFolder}/+{_id1}_20220406123456.json";
         var expectedData = GenerateTestData();
 
         _io.CombinePath(_baseFolder, string.Empty).Returns(_baseFolder);
         _io.GetFilesFrom(_baseFolder, $"+{_id1}*.json", SearchOption.TopDirectoryOnly)
             .Returns(new[] { filePath });
 
-        _io.ExtractFileNameFrom(filePath).Returns($"+{_id1}_20220406T123456.json");
-        _dateTime.TryParseExact("20220406T123456", "yyyyMMddTHHmmss", null, DateTimeStyles.None, out Arg.Any<DateTime>())
+        _io.ExtractFileNameFrom(filePath).Returns($"+{_id1}_20220406123456.json");
+        _dateTime.TryParseExact("20220406123456", "yyyyMMddHHmmss", null, DateTimeStyles.None, out Arg.Any<DateTime>())
             .Returns(x => {
                 x[4] = DateTime.Parse("2022-04-06 12:34:56");
                 return true;
@@ -175,7 +207,7 @@ public class DataFileRepositoryTests {
         _io.OpenFileForReading(filePath).Returns(memoryStream);
 
         // Act
-        var result = await _repository.GetByIdAsync<TestData>(_id1);
+        var result = await _repository.GetByIdAsync<TestData>(null, _id1);
 
         // Assert
         result.Should().NotBeNull();
@@ -192,7 +224,7 @@ public class DataFileRepositoryTests {
             .Returns(Array.Empty<string>());
 
         // Act
-        var result = await _repository.GetByIdAsync<TestData>(_id1);
+        var result = await _repository.GetByIdAsync<TestData>(null, _id1);
 
         // Assert
         result.Should().BeNull();
@@ -201,8 +233,8 @@ public class DataFileRepositoryTests {
     [Fact]
     public async Task UpsertAsync_PathAndIdGiven_InsertsNewDataFile() {
         // Arrange
-        var currentFilePath = $"{_baseFolder}/{_path}/+{_id1}_20220406T120000.json";
-        var newFilePath = $"{_baseFolder}/{_path}/+{_id1}_20220406T230000.json";
+        var currentFilePath = $"{_baseFolder}/{_path}/+{_id1}_20220406120000.json";
+        var newFilePath = $"{_baseFolder}/{_path}/+{_id1}_20220406230000.json";
         var data = GenerateTestData();
 
         _io.CombinePath(_baseFolder, _path).Returns($"{_baseFolder}/{_path}");
@@ -210,7 +242,7 @@ public class DataFileRepositoryTests {
             .Returns(new[] { currentFilePath });
         _dateTime.Now.Returns(DateTime.Parse("2022-04-06 23:00:00"));
         _io.When(x => x.MoveFile(currentFilePath, currentFilePath.Replace("+", ""))).Do(_ => { });
-        _io.CombinePath($"{_baseFolder}/{_path}", $"+{_id1}_20220406T230000.json").Returns(newFilePath);
+        _io.CombinePath($"{_baseFolder}/{_path}", $"+{_id1}_20220406230000.json").Returns(newFilePath);
         var buffer = new byte[1024];
         using var memoryStream = new MemoryStream(buffer, true);
         _io.CreateNewFileAndOpenForWriting(newFilePath).Returns(memoryStream);
@@ -226,8 +258,8 @@ public class DataFileRepositoryTests {
     [Fact]
     public async Task UpsertAsync_IdGiven_InsertsNewDataFile() {
         // Arrange
-        var currentFilePath = $"{_baseFolder}/+{_id1}_20220406T120000.json";
-        var newFilePath = $"{_baseFolder}/+{_id1}_20220406T230000.json";
+        var currentFilePath = $"{_baseFolder}/+{_id1}_20220406120000.json";
+        var newFilePath = $"{_baseFolder}/+{_id1}_20220406230000.json";
         var data = GenerateTestData();
 
         _io.CombinePath(_baseFolder, string.Empty).Returns(_baseFolder);
@@ -235,13 +267,13 @@ public class DataFileRepositoryTests {
             .Returns(new[] { currentFilePath });
         _dateTime.Now.Returns(DateTime.Parse("2022-04-06 23:00:00"));
         _io.When(x => x.MoveFile(currentFilePath, currentFilePath.Replace("+", ""))).Do(_ => { });
-        _io.CombinePath(_baseFolder, $"+{_id1}_20220406T230000.json").Returns(newFilePath);
+        _io.CombinePath(_baseFolder, $"+{_id1}_20220406230000.json").Returns(newFilePath);
         var buffer = new byte[1024];
         using var memoryStream = new MemoryStream(buffer, true);
         _io.CreateNewFileAndOpenForWriting(newFilePath).Returns(memoryStream);
 
         // Act
-        await _repository.UpsertAsync(_id1, data);
+        await _repository.UpsertAsync(null, _id1, data);
 
         // Assert
         _io.Received(1).MoveFile(currentFilePath, currentFilePath.Replace("+", ""));
@@ -251,10 +283,10 @@ public class DataFileRepositoryTests {
     [Fact]
     public void Delete_PathAndIdGiven_RemovesDataFile() {
         // Arrange
-        var activeFilePath = $"{_baseFolder}/{_path}/+{_id1}_20220406T123456.json";
-        var inactiveFilePath = $"{_baseFolder}/{_path}/{_id1}_20220405T120000.json";
-        var deletedFilePath1 = $"{_baseFolder}/{_path}/-{_id1}_20220406T123456.json";
-        var deletedFilePath2 = $"{_baseFolder}/{_path}/-{_id1}_20220405T120000.json";
+        var activeFilePath = $"{_baseFolder}/{_path}/+{_id1}_20220406123456.json";
+        var inactiveFilePath = $"{_baseFolder}/{_path}/{_id1}_20220405120000.json";
+        var deletedFilePath1 = $"{_baseFolder}/{_path}/-{_id1}_20220406123456.json";
+        var deletedFilePath2 = $"{_baseFolder}/{_path}/-{_id1}_20220405120000.json";
 
         _io.CombinePath(_baseFolder, _path).Returns($"{_baseFolder}/{_path}");
         _io.GetFilesFrom($"{_baseFolder}/{_path}", $"+{_id1}*.json", SearchOption.TopDirectoryOnly)
@@ -262,12 +294,12 @@ public class DataFileRepositoryTests {
         _io.GetFilesFrom($"{_baseFolder}/{_path}", $"{_id1}*.json", SearchOption.TopDirectoryOnly)
             .Returns(new[] { inactiveFilePath });
 
-        _io.ExtractFileNameFrom(activeFilePath).Returns($"+{_id1}_20220406T123456.json");
-        _io.CombinePath($"{_baseFolder}/{_path}", $"-{_id1}_20220406T123456.json").Returns(deletedFilePath1);
+        _io.ExtractFileNameFrom(activeFilePath).Returns($"+{_id1}_20220406123456.json");
+        _io.CombinePath($"{_baseFolder}/{_path}", $"-{_id1}_20220406123456.json").Returns(deletedFilePath1);
         _io.When(x => x.MoveFile(activeFilePath, deletedFilePath1)).Do(_ => { });
 
-        _io.ExtractFileNameFrom(inactiveFilePath).Returns($"{_id1}_20220406T120000.json");
-        _io.CombinePath($"{_baseFolder}/{_path}", $"-{_id1}_20220406T120000.json").Returns(deletedFilePath2);
+        _io.ExtractFileNameFrom(inactiveFilePath).Returns($"{_id1}_20220406120000.json");
+        _io.CombinePath($"{_baseFolder}/{_path}", $"-{_id1}_20220406120000.json").Returns(deletedFilePath2);
         _io.When(x => x.MoveFile(inactiveFilePath, deletedFilePath2)).Do(_ => { });
 
         // Act
@@ -281,10 +313,10 @@ public class DataFileRepositoryTests {
     [Fact]
     public void Delete_IdGiven_RemovesDataFile() {
         // Arrange
-        var activeFilePath = $"{_baseFolder}/+{_id1}_20220406T123456.json";
-        var inactiveFilePath = $"{_baseFolder}/{_id1}_20220405T120000.json";
-        var deletedFilePath1 = $"{_baseFolder}/-{_id1}_20220406T123456.json";
-        var deletedFilePath2 = $"{_baseFolder}/-{_id1}_20220405T120000.json";
+        var activeFilePath = $"{_baseFolder}/+{_id1}_20220406123456.json";
+        var inactiveFilePath = $"{_baseFolder}/{_id1}_20220405120000.json";
+        var deletedFilePath1 = $"{_baseFolder}/-{_id1}_20220406123456.json";
+        var deletedFilePath2 = $"{_baseFolder}/-{_id1}_20220405120000.json";
 
         _io.CombinePath(_baseFolder, string.Empty).Returns(_baseFolder);
         _io.GetFilesFrom(_baseFolder, $"+{_id1}*.json", SearchOption.TopDirectoryOnly)
@@ -292,16 +324,16 @@ public class DataFileRepositoryTests {
         _io.GetFilesFrom(_baseFolder, $"{_id1}*.json", SearchOption.TopDirectoryOnly)
             .Returns(new[] { inactiveFilePath });
 
-        _io.ExtractFileNameFrom(activeFilePath).Returns($"+{_id1}_20220406T123456.json");
-        _io.CombinePath(_baseFolder, $"-{_id1}_20220406T123456.json").Returns(deletedFilePath1);
+        _io.ExtractFileNameFrom(activeFilePath).Returns($"+{_id1}_20220406123456.json");
+        _io.CombinePath(_baseFolder, $"-{_id1}_20220406123456.json").Returns(deletedFilePath1);
         _io.When(x => x.MoveFile(activeFilePath, deletedFilePath1)).Do(_ => { });
 
-        _io.ExtractFileNameFrom(inactiveFilePath).Returns($"{_id1}_20220406T120000.json");
-        _io.CombinePath(_baseFolder, $"-{_id1}_20220406T120000.json").Returns(deletedFilePath2);
+        _io.ExtractFileNameFrom(inactiveFilePath).Returns($"{_id1}_20220406120000.json");
+        _io.CombinePath(_baseFolder, $"-{_id1}_20220406120000.json").Returns(deletedFilePath2);
         _io.When(x => x.MoveFile(inactiveFilePath, deletedFilePath2)).Do(_ => { });
 
         // Act
-        _repository.Delete(_id1);
+        _repository.Delete(null, _id1);
 
         // Assert
         _io.Received(1).MoveFile(activeFilePath, deletedFilePath1);
@@ -313,16 +345,6 @@ public class DataFileRepositoryTests {
             Name = "SomeName",
             Number = 42,
         };
-
-    private DataFile<TestData> GenerateDataFile()
-        => new() {
-            Id = _id1,
-            Timestamp = DateTime.UtcNow,
-            Content = GenerateTestData(),
-        };
-
-    private IEnumerable<DataFile<TestData>> GenerateDataFiles()
-        => new[] { GenerateDataFile() };
 
     private record TestData {
         public required string Name { get; init; }

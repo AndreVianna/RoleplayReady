@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Validations;
+﻿namespace RolePlayReady.Results;
 
 public record Invalid {
     public Invalid(IEnumerable<ValidationError?>? errors) {

@@ -7,3 +7,5 @@ global using System.Text;
 global using System.Text.RegularExpressions;
 
 global using OneOf;
+
+global using RolePlayReady.Results;

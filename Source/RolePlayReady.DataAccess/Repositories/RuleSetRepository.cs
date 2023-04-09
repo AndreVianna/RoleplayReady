@@ -9,21 +9,21 @@ public class RuleSetRepository : IRuleSetRepository {
 
     public async Task<IEnumerable<RuleSet>> GetManyAsync(CancellationToken cancellation = default) {
         var files = await _files
-            .GetAllAsync<RuleSetDataModel>(cancellation)
+            .GetAllAsync<RuleSetDataModel>(null, cancellation)
             .ConfigureAwait(false);
         return files.Select(RuleSetMapper.MapFrom).ToArray()!;
     }
 
     public async Task<RuleSet?> GetByIdAsync(string id, CancellationToken cancellation = default) {
         var file = await _files
-            .GetByIdAsync<RuleSetDataModel>(id, cancellation)
+            .GetByIdAsync<RuleSetDataModel>(null, id, cancellation)
             .ConfigureAwait(false);
         return RuleSetMapper.MapFrom(file);
     }
 
     public Task UpsertAsync(RuleSet ruleSet, CancellationToken cancellation = default)
-        => _files.UpsertAsync(ruleSet.ShortName, RuleSetMapper.MapFrom(ruleSet), cancellation);
+        => _files.UpsertAsync(null, ruleSet.ShortName, RuleSetMapper.MapFrom(ruleSet), cancellation);
 
     public void Delete(string id)
-        => _files.Delete(id);
+        => _files.Delete(null, id);
 }

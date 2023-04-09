@@ -17,3 +17,4 @@ global using RolePlayReady.Engine;
 global using RolePlayReady.Engine.Contracts;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Contracts;
+global using RolePlayReady.Results;

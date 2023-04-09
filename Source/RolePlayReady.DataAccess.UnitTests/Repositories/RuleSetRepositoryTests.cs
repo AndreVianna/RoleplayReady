@@ -1,4 +1,4 @@
-namespace RolePlayReady.DataAccess;
+namespace RolePlayReady.DataAccess.Repositories;
 
 public class RuleSetRepositoryTests {
     private readonly IDataFileRepository _dataFileRepository;
@@ -13,7 +13,7 @@ public class RuleSetRepositoryTests {
     public async Task GetManyAsync_ReturnsAllRuleSets() {
         // Arrange
         var dataFiles = GenerateDataFiles();
-        _dataFileRepository.GetAllAsync<RuleSetDataModel>(default).Returns(dataFiles);
+        _dataFileRepository.GetAllAsync<RuleSetDataModel>(null).Returns(dataFiles);
 
         // Act
         var ruleSets = await _ruleSetRepository.GetManyAsync();
@@ -26,7 +26,7 @@ public class RuleSetRepositoryTests {
     public async Task GetByIdAsync_RuleSetFound_ReturnsRuleSet() {
         // Arrange
         var dataFile = GenerateDataFile();
-        _dataFileRepository.GetByIdAsync<RuleSetDataModel>(dataFile.Id, default).Returns(dataFile);
+        _dataFileRepository.GetByIdAsync<RuleSetDataModel>(null, dataFile.Id, default).Returns(dataFile);
 
         // Act
         var ruleSet = await _ruleSetRepository.GetByIdAsync(dataFile.Id);
@@ -39,7 +39,7 @@ public class RuleSetRepositoryTests {
     [Fact]
     public async Task GetByIdAsync_RuleSetNotFound_ReturnsNull() {
         // Arrange
-        _dataFileRepository.GetByIdAsync<RuleSetDataModel>("nonexistent", default).Returns((DataFile<RuleSetDataModel>?)null);
+        _dataFileRepository.GetByIdAsync<RuleSetDataModel>(null, "nonexistent", default).Returns((DataFile<RuleSetDataModel>?)null);
 
         // Act
         var ruleSet = await _ruleSetRepository.GetByIdAsync("nonexistent");
@@ -57,7 +57,7 @@ public class RuleSetRepositoryTests {
         await _ruleSetRepository.UpsertAsync(ruleSet);
 
         // Assert
-        await _dataFileRepository.Received().UpsertAsync<RuleSetDataModel>(ruleSet.ShortName, Arg.Any<RuleSetDataModel>(), default);
+        await _dataFileRepository.Received().UpsertAsync(null, ruleSet.ShortName, Arg.Any<RuleSetDataModel>(), default);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class RuleSetRepositoryTests {
         await _ruleSetRepository.UpsertAsync(ruleSet);
 
         // Assert
-        await _dataFileRepository.Received().UpsertAsync<RuleSetDataModel>(ruleSet.ShortName, Arg.Any<RuleSetDataModel>(), default);
+        await _dataFileRepository.Received().UpsertAsync(null, ruleSet.ShortName, Arg.Any<RuleSetDataModel>(), default);
     }
 
     [Fact]
@@ -81,7 +81,7 @@ public class RuleSetRepositoryTests {
         _ruleSetRepository.Delete(id);
 
         // Assert
-        _dataFileRepository.Received().Delete(id);
+        _dataFileRepository.Received().Delete(null, id);
     }
 
     private static DataFile<RuleSetDataModel>[] GenerateDataFiles()

@@ -9,5 +9,5 @@ global using System.Text.RegularExpressions;
 global using RolePlayReady.Models.Contracts;
 global using RolePlayReady.Validations;
 
-global using ValidationResult = RolePlayReady.Validations.ValidationResult;
+global using ValidationResult = RolePlayReady.Results.ValidationResult;
 
