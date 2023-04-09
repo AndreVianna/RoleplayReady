@@ -25,10 +25,6 @@ public abstract class SimpleRunner<TContext, TOptions> : IRunner<TContext, TOpti
     protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default)
         => Task.CompletedTask;
 
-    async Task<IContext> IRunner.RunAsync(IContext context, CancellationToken cancellation)
-        => await RunAsync(
-            Throw.IfNull(context as TContext, $"Context must be of type '{typeof(TContext).Name}'."),
-            cancellation);
     public async Task<TContext> RunAsync(TContext context, CancellationToken cancellation = default) {
         try {
             if (context.IsBlocked)

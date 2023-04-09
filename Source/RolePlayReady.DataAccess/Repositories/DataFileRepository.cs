@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
+﻿using System.Abstractions;
+
+using Microsoft.Extensions.Logging.Abstractions;
 
 using static System.Text.Json.JsonSerializer;
 
@@ -6,8 +8,8 @@ namespace RolePlayReady.DataAccess.Repositories;
 
 public partial class DataFileRepository : IDataFileRepository {
     private readonly ILogger<DataFileRepository> _logger;
-    private readonly IIOProvider _io;
-    private readonly IDateTimeProvider _dateTime;
+    private readonly IFileSystem _io;
+    private readonly IDateTime _dateTime;
 
     private readonly string _baseFolderPath;
 
@@ -15,23 +17,23 @@ public partial class DataFileRepository : IDataFileRepository {
     private const string _baseFolderConfigurationKey = $"{nameof(DataFileRepository)}:BaseFolder";
     private const string _errorMessage = $"{_baseFolderConfigurationKey} configuration value is missing.";
 
-    public DataFileRepository(IConfiguration configuration, IIOProvider? io, IDateTimeProvider? dateTime, ILoggerFactory? loggerFactory) {
+    public DataFileRepository(IConfiguration configuration, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger<DataFileRepository>() ?? NullLogger<DataFileRepository>.Instance;
-        _io = io ?? new SystemIOProvider();
-        _dateTime = dateTime ?? new SystemDateTimeProvider();
+        _io = io ?? new DefaultFileSystem();
+        _dateTime = dateTime ?? new DefaultDateTime();
         var baseFolder = configuration[_baseFolderConfigurationKey];
         _baseFolderPath = Throw.IfNullOrWhiteSpaces(baseFolder, _errorMessage, nameof(configuration)).Trim();
     }
 
     public async Task<IEnumerable<DataFile<TData>>> GetAllAsync<TData>(string? path, CancellationToken cancellation = default) {
-        var folderPath = GetFolderFullPath(path);
-        _logger.LogDebug("Getting data files from '{path}'...", folderPath);
         try {
+            var folderPath = GetFolderFullPath(path);
+            _logger.LogDebug("Getting data files from '{path}'...", folderPath);
             var filePaths = _io.GetFilesFrom(folderPath, "+*.json", SearchOption.TopDirectoryOnly);
             var fileInfos = new List<DataFile<TData>>();
             foreach (var filePath in filePaths) {
                 var result = await GetFileDataAsync<TData>(filePath, cancellation).ConfigureAwait(false);
-                if (!result.HasValue) {
+                if (!result.IsSuccessful) {
                     _logger.LogWarning(result.Exception, "Data file '{filePath}' is invalid.", filePath);
                     continue;
                 }
@@ -43,15 +45,16 @@ public partial class DataFileRepository : IDataFileRepository {
             return fileInfos;
         }
         catch (Exception ex) {
-            _logger.LogError(ex, "Failed to get data files from '{path}'!", folderPath);
+            var errorFolder = $"{_baseFolderPath}/{path}";
+            _logger.LogError(ex, "Failed to get data files from '{path}'!", errorFolder);
             return Array.Empty<DataFile<TData>>();
         }
     }
 
     public async Task<DataFile<TData>?> GetByIdAsync<TData>(string? path, string id, CancellationToken cancellation = default) {
-        var folderPath = GetFolderFullPath(path);
-        _logger.LogDebug("Getting data from file '{path}/{id}'...", folderPath, id);
         try {
+            var folderPath = GetFolderFullPath(path);
+            _logger.LogDebug("Getting data from file '{path}/{id}'...", folderPath, id);
             var filePath = _io.GetFilesFrom(folderPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
                 .FirstOrDefault();
 
@@ -62,7 +65,7 @@ public partial class DataFileRepository : IDataFileRepository {
 
 
             var result = await GetFileDataAsync<TData>(filePath, cancellation).ConfigureAwait(false);
-            if (!result.HasValue) {
+            if (!result.IsSuccessful) {
                 _logger.LogWarning(result.Exception, "Data file '{filePath}' is invalid.", filePath);
                 return null;
             }
@@ -71,15 +74,16 @@ public partial class DataFileRepository : IDataFileRepository {
             return result.Value;
         }
         catch (Exception ex) {
-            _logger.LogError(ex, "Failed to get data from file '{path}/{id}'!", folderPath, id);
+            var errorFolder = $"{_baseFolderPath}/{path}";
+            _logger.LogError(ex, "Failed to get data from file '{path}/{id}'!", errorFolder, id);
             return null;
         }
     }
 
     public async Task<bool> UpsertAsync<TData>(string? path, string id, TData data, CancellationToken cancellation = default) {
-        var folderPath = GetFolderFullPath(path);
-        _logger.LogDebug("Adding or updating data file '{path}/{id}'...", folderPath, id);
         try {
+            var folderPath = GetFolderFullPath(path);
+            _logger.LogDebug("Adding or updating data file '{path}/{id}'...", folderPath, id);
             var currentFile = _io.GetFilesFrom(folderPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
                 .FirstOrDefault();
             if (currentFile is not null)
@@ -89,18 +93,19 @@ public partial class DataFileRepository : IDataFileRepository {
             await SerializeAsync(stream, data, cancellationToken: cancellation);
 
             _logger.LogDebug("Data file '{path}/{id}' added or updated.", folderPath, id);
-            return true;
         }
         catch (Exception ex) {
-            _logger.LogError(ex, "Failed to add or update data file '{path}/{id}'!", folderPath, id);
+            var errorFolder = $"{_baseFolderPath}/{path}";
+            _logger.LogError(ex, "Failed to add or update data file '{path}/{id}'!", errorFolder, id);
             return false;
         }
+        return true;
     }
 
     public bool Delete(string? path, string id) {
-        var folderPath = GetFolderFullPath(path);
-        _logger.LogDebug("Deleting data file '{path}/{id}'...", folderPath, id);
         try {
+            var folderPath = GetFolderFullPath(path);
+            _logger.LogDebug("Deleting data file '{path}/{id}'...", folderPath, id);
             var activeFiles = _io.GetFilesFrom(folderPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
                 .Union(_io.GetFilesFrom(folderPath, $"{id}*.json", SearchOption.TopDirectoryOnly));
             foreach (var activeFile in activeFiles) {
@@ -113,24 +118,31 @@ public partial class DataFileRepository : IDataFileRepository {
             return true;
         }
         catch (Exception ex) {
-            _logger.LogError(ex, "Failed to delete data file '{path}/{id}'!", folderPath, id);
+            var errorFolder = $"{_baseFolderPath}/{path}";
+            _logger.LogError(ex, "Failed to delete data file '{path}/{id}'!", errorFolder, id);
             return false;
         }
     }
 
-    private async Task<MethodResult<DataFile<TData>>> GetFileDataAsync<TData>(string filePath, CancellationToken cancellation) {
-        var fileName = _io.ExtractFileNameFrom(filePath);
-        if (!TryParseFileName(fileName, out var fileInfo))
-            return new InvalidOperationException($"The '{filePath}' has an invalid name.");
-        await using var stream = _io.OpenFileForReading(filePath);
-        var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
-        return content is null
-            ? new InvalidOperationException($"Failed to read file '{filePath}' content.")
-            : new DataFile<TData> {
+    private async Task<ValueOf<DataFile<TData>>> GetFileDataAsync<TData>(string filePath, CancellationToken cancellation) {
+        ValueOf<DataFile<TData>> result;
+        try {
+            var fileName = _io.ExtractFileNameFrom(filePath);
+            if (!TryParseFileName(fileName, out var fileInfo))
+                return new InvalidOperationException($"'{filePath}' is an invalid file name.");
+            await using var stream = _io.OpenFileForReading(filePath);
+            var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
+            result = new DataFile<TData> {
                 Id = fileInfo.Name,
                 Timestamp = fileInfo.Timestamp,
-                Content = content
+                Content = content!
             };
+        }
+        catch (Exception ex) {
+            result = ex;
+        }
+
+        return result;
     }
 
     private bool TryParseFileName(string fileName, out FileInfo fileInfo) {

@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Validations;
+﻿namespace System.Abstractions;
 
 public interface IValidatable {
     ValidationResult Validate<TContext>(TContext? context = null)

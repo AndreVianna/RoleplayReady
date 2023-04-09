@@ -1,6 +1,7 @@
-﻿namespace RolePlayReady;
+﻿namespace System;
 
-public class SystemIOProvider : IIOProvider {
+[ExcludeFromCodeCoverage]
+public class DefaultFileSystem : IFileSystem {
     public string CombinePath(string firstPath, string secondPath)
         => Path.Combine(firstPath, secondPath);
 

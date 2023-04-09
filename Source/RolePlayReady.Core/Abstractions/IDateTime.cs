@@ -1,8 +1,6 @@
-﻿using System.Globalization;
+﻿namespace System.Abstractions;
 
-namespace RolePlayReady;
-
-public interface IDateTimeProvider {
+public interface IDateTime {
     DateTime Now { get; }
     DateOnly Today { get; }
     TimeOnly TimeOfDay { get; }

@@ -1,8 +1,7 @@
-﻿using System.Globalization;
+﻿namespace System;
 
-namespace RolePlayReady;
-
-public class SystemDateTimeProvider : IDateTimeProvider {
+[ExcludeFromCodeCoverage]
+public class DefaultDateTime : IDateTime {
     public DateTime Now => DateTime.UtcNow;
     public DateOnly Today => DateOnly.FromDateTime(DateTime.UtcNow);
     public TimeOnly TimeOfDay => TimeOnly.FromDateTime(DateTime.UtcNow);

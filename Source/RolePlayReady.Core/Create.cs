@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady;
+﻿namespace System;
 
 public static class Create {
     public static T Instance<T>(params object?[]? args)

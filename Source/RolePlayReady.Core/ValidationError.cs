@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Results;
+﻿namespace System;
 
 public record ValidationError {
     private readonly string _message = string.Empty;

@@ -4,9 +4,7 @@ public class InvalidTests {
     [Fact]
     public void Constructor_OneValidationError_SetsErrors() {
         // Arrange
-        var error = new ValidationError {
-            Message = "Error message",
-        };
+        var error = ResultFactory.Error("Error message");
 
         // Act
         var invalid = new Invalid(error);
@@ -17,11 +15,8 @@ public class InvalidTests {
 
     [Fact]
     public void Constructor_NullValidationError_ThrowsArgumentNullException() {
-        // Arrange
-        ValidationError? error = null;
-
         // Act
-        Action act = () => _ = new Invalid(error);
+        Action act = () => _ = new Invalid(default(ValidationError));
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithMessage("The value cannot be null. (Parameter 'error')");
@@ -31,8 +26,8 @@ public class InvalidTests {
     public void Constructor_MultipleValidationErrors_SetsErrors() {
         // Arrange
         var errors = new[] {
-            new ValidationError {Message = "Error message 1"},
-            new ValidationError {Message = "Error message 2"},
+            ResultFactory.Error("Error message 1"),
+            ResultFactory.Error("Error message 2"),
         };
 
         // Act
@@ -44,11 +39,8 @@ public class InvalidTests {
 
     [Fact]
     public void Constructor_NullValidationErrorCollection_ThrowsArgumentException() {
-        // Arrange
-        IEnumerable<ValidationError?>? errors = null;
-
         // Act
-        Action act = () => _ = new Invalid(errors);
+        Action act = () => _ = new Invalid(default(IEnumerable<ValidationError?>));
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("The collection cannot be null or empty. (Parameter 'errors')");
@@ -70,9 +62,9 @@ public class InvalidTests {
     public void Constructor_ValidationErrorCollectionWithNullElement_ThrowsArgumentException() {
         // Arrange
         var errors = new[] {
-            new ValidationError {Message = "Error message 1"},
+            ResultFactory.Error("Error message 1"),
             null,
-            new ValidationError {Message = "Error message 2"},
+            ResultFactory.Error("Error message 2"),
         };
 
         // Act

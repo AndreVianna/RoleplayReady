@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady;
+﻿namespace System;
 
 public static class String {
 

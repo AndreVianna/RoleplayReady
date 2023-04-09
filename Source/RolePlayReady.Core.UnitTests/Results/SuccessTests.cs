@@ -1,12 +1,12 @@
 namespace RolePlayReady.Results;
 
-public class ValidTests {
+public class SuccessTests {
     [Fact]
     public void Constructor_CanBeInstantiated() {
         // Act
-        var valid = Valid.Instance;
+        var success = Success.Instance;
 
         // Assert
-        valid.Should().NotBeNull();
+        success.Should().NotBeNull();
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace RolePlayReady;
+﻿namespace System.Abstractions;
 
-public interface IIOProvider {
+public interface IFileSystem {
     string CombinePath(string firstPath, string secondPath);
     string[] GetFilesFrom(string folderPath, string searchPattern, SearchOption searchOptions);
     void MoveFile(string sourcePath, string targetPath);

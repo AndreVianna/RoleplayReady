@@ -1,7 +1,6 @@
 ﻿namespace RolePlayReady.Engine.Contracts;
 
 public interface IRunner : IAsyncDisposable {
-    Task<IContext> RunAsync(IContext context, CancellationToken cancellation = default);
 }
 
 public interface IRunner<TContext, out TOptions> : IRunner

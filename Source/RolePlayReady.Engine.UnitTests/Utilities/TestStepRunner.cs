@@ -1,8 +1,5 @@
 ﻿namespace RolePlayReady.Engine.Utilities;
 
-internal class TestRunnerOptions : RunnerOptions<TestRunnerOptions> {
-}
-
 internal class TestStepRunner : StepRunner<Context, TestRunnerOptions> {
     [SetsRequiredMembers]
     public TestStepRunner(IConfiguration configuration, IStepFactory stepFactory, ILoggerFactory? loggerFactory)
@@ -11,6 +8,9 @@ internal class TestStepRunner : StepRunner<Context, TestRunnerOptions> {
 
     protected override Task<Type?> OnSelectStepAsync(Context context, CancellationToken cancellation = default)
         => Task.FromResult<Type?>(typeof(TestStep));
+
+    public Task<Type?> TestOnSelectStepAsync(Context context, CancellationToken cancellation = default)
+        => base.OnSelectStepAsync(context, cancellation);
 
     public Task<Context> TestOnStartAsync(Context context, CancellationToken cancellation = default)
         => OnStartAsync(context, cancellation);

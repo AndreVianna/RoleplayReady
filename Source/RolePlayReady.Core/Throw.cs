@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady;
+﻿namespace System;
 
 public static class Throw {
     private const string _emptyCollectionMessage = "The collection cannot be null or empty.";

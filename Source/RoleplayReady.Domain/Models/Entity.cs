@@ -3,8 +3,8 @@
 public abstract record Entity : IEntity {
     private readonly string? _shortName;
 
-    protected Entity(IDateTimeProvider? dateTime = null) {
-        dateTime ??= new SystemDateTimeProvider();
+    protected Entity(IDateTime? dateTime = null) {
+        dateTime ??= new DefaultDateTime();
         Timestamp = dateTime.Now;
     }
 
