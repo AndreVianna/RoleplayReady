@@ -1,12 +1,12 @@
-using RolePlayReady.Results;
-
-namespace RolePlayReady.Validations;
+namespace RolePlayReady.Results;
 
 public class InvalidTests {
     [Fact]
     public void Constructor_OneValidationError_SetsErrors() {
         // Arrange
-        var error = new ValidationError("Error message");
+        var error = new ValidationError {
+            Message = "Error message",
+        };
 
         // Act
         var invalid = new Invalid(error);
@@ -31,8 +31,8 @@ public class InvalidTests {
     public void Constructor_MultipleValidationErrors_SetsErrors() {
         // Arrange
         var errors = new[] {
-            new ValidationError("Error message 1"),
-            new ValidationError("Error message 2")
+            new ValidationError {Message = "Error message 1"},
+            new ValidationError {Message = "Error message 2"},
         };
 
         // Act
@@ -69,10 +69,10 @@ public class InvalidTests {
     [Fact]
     public void Constructor_ValidationErrorCollectionWithNullElement_ThrowsArgumentException() {
         // Arrange
-        var errors = new ValidationError?[] {
-            new ValidationError("Error message 1"),
+        var errors = new[] {
+            new ValidationError {Message = "Error message 1"},
             null,
-            new ValidationError("Error message 2")
+            new ValidationError {Message = "Error message 2"},
         };
 
         // Act

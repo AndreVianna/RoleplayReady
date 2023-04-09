@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.DataAccess.Models;
 
-public class RuleSetDataModel {
+public class SettingDataModel {
     public required string Name { get; set; }
     public required string Description { get; set; }
     public required string[] Tags { get; set; }

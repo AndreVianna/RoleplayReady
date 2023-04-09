@@ -13,7 +13,7 @@ public abstract record Entity : IEntity {
         init => _shortName = Throw.IfNullOrWhiteSpaces(value);
     }
 
-    // RuleSet, Owner, and Name must be unique.
+    // Setting, Owner, and Name must be unique.
     public required string Name { get; init; }
     public required string Description { get; init; }
     public string FullName => $"{GetType().Name} -> {Name} ({ShortName})";

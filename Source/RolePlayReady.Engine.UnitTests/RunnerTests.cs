@@ -27,7 +27,7 @@ public class RunnerTests {
         await runner.RunAsync(context);
 
         // Assert
-        runner.Options.Name.Should().Be(nameof(TestStepRunner));
+        runner.Options.Name.Should().Be(nameof(TestRunnerOptions));
         context.CurrentStepNumber.Should().Be(2);
         context.IsBlocked.Should().BeFalse();
     }
@@ -40,10 +40,10 @@ public class RunnerTests {
         var context = new Context(_provider);
 
         // Act
-        await ((IIsRunnable)runner).RunAsync(context);
+        await runner.RunAsync(context);
 
         // Assert
-        runner.Options.Name.Should().Be(nameof(TestStepRunner));
+        runner.Options.Name.Should().Be(nameof(TestRunnerOptions));
         context.CurrentStepNumber.Should().Be(2);
         context.IsBlocked.Should().BeFalse();
     }

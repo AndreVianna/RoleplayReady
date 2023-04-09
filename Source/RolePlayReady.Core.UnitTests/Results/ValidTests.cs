@@ -1,4 +1,4 @@
-namespace RolePlayReady.Validations;
+namespace RolePlayReady.Results;
 
 public class ValidTests {
     [Fact]

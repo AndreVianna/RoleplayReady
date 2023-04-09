@@ -10,7 +10,7 @@
 //        Section = section;
 //        SectionItem = Section switch {
 //            nameof(Node.Traits) => nameof(Trait),
-//            nameof(RuleSet.PowerSources) => nameof(PowerSource),
+//            nameof(Setting.PowerSources) => nameof(PowerSource),
 //            _ => throw new NotImplementedException()
 //        };
 //    }
@@ -24,7 +24,7 @@
 //    protected INode? Find(string existing)
 //        => Section switch {
 //            nameof(Node.Traits) when Target is Node element => element.Traits.FirstOrDefault(i => i.Name == existing),
-//            nameof(RuleSet.PowerSources) when Target is RuleSet ruleSet => ruleSet.PowerSources.FirstOrDefault(i => i.Name == existing),
+//            nameof(Setting.PowerSources) when Target is Setting ruleSet => ruleSet.PowerSources.FirstOrDefault(i => i.Name == existing),
 //            _ => throw new NotImplementedException()
 //        };
 
@@ -33,7 +33,7 @@
 //            case Node element when item is Trait trait:
 //                element.Traits.Add(trait);
 //                return;
-//            case RuleSet ruleSet when item is PowerSource powerSource:
+//            case Setting ruleSet when item is PowerSource powerSource:
 //                ruleSet.PowerSources.Add(powerSource);
 //                return;
 //            default:
@@ -46,7 +46,7 @@
 //            case nameof(Node.Traits) when Target is Node element:
 //                element.Traits.Remove((ITrait)item);
 //                return;
-//            case nameof(RuleSet.PowerSources) when Target is RuleSet ruleSet:
+//            case nameof(Setting.PowerSources) when Target is Setting ruleSet:
 //                ruleSet.PowerSources.Remove((IPowerSource)item);
 //                return;
 //            default:

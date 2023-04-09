@@ -57,7 +57,7 @@ public class StepTests {
         var context = new Context(_provider);
 
         // Act
-        await ((IIsRunnable)step).RunAsync(context);
+        await step.RunAsync(context);
 
         // Assert
         // No exception should be thrown, and the test should pass.

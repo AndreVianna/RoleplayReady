@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Models;
 
-public record RuleSet : Entity, IOwned, IRuleSet {
+public record Setting : Entity, IOwned, ISetting {
     private readonly string _shortName1 = string.Empty;
     public string Owner { get; init; } = "System";
 

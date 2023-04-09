@@ -1,6 +1,4 @@
-using RolePlayReady.Results;
-
-namespace RolePlayReady.Validations;
+namespace RolePlayReady.Results;
 
 public class ValidationResultTests {
     [Fact]
@@ -36,7 +34,7 @@ public class ValidationResultTests {
     [Fact]
     public void ImplicitOperator_FromInvalid_HasErrors() {
         // Arrange
-        var errors = new[] { new ValidationError("Error message") };
+        var errors = new[] { new ValidationError { Message = "Error message" } };
 
         // Act
         ValidationResult validationResult = new Invalid(errors);
@@ -49,7 +47,7 @@ public class ValidationResultTests {
     [Fact]
     public void ImplicitOperator_FromList_HasErrors() {
         // Arrange
-        var errors = new List<ValidationError?> { new ValidationError("Error message") };
+        var errors = new List<ValidationError?> { new ValidationError { Message = "Error message" } };
 
         // Act
         ValidationResult validationResult = errors;
@@ -62,7 +60,7 @@ public class ValidationResultTests {
     [Fact]
     public void ImplicitOperator_FromArray_HasErrors() {
         // Arrange
-        var errors = new[] { new ValidationError("Error message") };
+        var errors = new[] { new ValidationError { Message = "Error message" } };
 
         // Act
         ValidationResult validationResult = errors;
@@ -75,7 +73,7 @@ public class ValidationResultTests {
     [Fact]
     public void ImplicitOperator_FromValidationError_HasErrors() {
         // Arrange
-        var error = new ValidationError("Error message");
+        var error = new ValidationError { Message = "Error message" };
 
         // Act
         ValidationResult validationResult = error;
@@ -89,7 +87,7 @@ public class ValidationResultTests {
     public void PlusOperator_AddValidationError_HasErrors() {
         // Arrange
         var validationResult = ValidationResult.Valid;
-        var error = new ValidationError("Error message");
+        var error = new ValidationError { Message = "Error message" };
 
         // Act
         validationResult += error;
@@ -116,7 +114,7 @@ public class ValidationResultTests {
     public void PlusOperator_AddValidationErrors_HasErrors() {
         // Arrange
         var validationResult = ValidationResult.Valid;
-        var errors = new[] { new ValidationError("Error message") };
+        var errors = new[] { new ValidationError { Message = "Error message" } };
 
         // Act
         validationResult += errors;
@@ -130,7 +128,7 @@ public class ValidationResultTests {
     public void PlusOperator_AddValidationResultToValid_HasErrors() {
         // Arrange
         var validationResult1 = ValidationResult.Valid;
-        ValidationResult validationResult2 = new ValidationError("Error message");
+        ValidationResult validationResult2 = new ValidationError { Message = "Error message" };
 
         // Act
         validationResult1 += validationResult2;
@@ -157,8 +155,8 @@ public class ValidationResultTests {
     [Fact]
     public void PlusOperator_AddValidationResultToInvalid_HasErrors() {
         // Arrange
-        ValidationResult validationResult1 = new ValidationError("Error message 1");
-        ValidationResult validationResult2 = new ValidationError("Error message 2");
+        ValidationResult validationResult1 = new ValidationError { Message = "Error message 1" };
+        ValidationResult validationResult2 = new ValidationError { Message = "Error message 2" };
 
         // Act
         validationResult1 += validationResult2;
@@ -171,7 +169,7 @@ public class ValidationResultTests {
     [Fact]
     public void TryGetErrors_WhenHasErrors_ReturnsTrue() {
         // Arrange
-        ValidationResult validationResult = new ValidationError("Error message");
+        ValidationResult validationResult = new ValidationError { Message = "Error message" };
 
         // Act
         var result = validationResult.TryGetErrors(out var errors);

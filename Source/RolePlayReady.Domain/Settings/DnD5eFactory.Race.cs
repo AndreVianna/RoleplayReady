@@ -6,7 +6,7 @@
 //// ReSharper disable once InconsistentNaming - DnD5e is the official name of the system.
 //public static partial class DnD5eFactory {
 //    // ReSharper disable once InconsistentNaming - DnD5e is the official name of the system.
-//    private static void SetRaceModifiers(IRuleSet dnd5e) {
+//    private static void SetRaceModifiers(ISetting dnd5e) {
 //        var elf = dnd5e.GetComponent("Elf");
 //        elf.Configure(nameof(Element.Traits)).As(traits => traits
 //            .Add("Ability Score Increase", "[FeatureDescription]", x => x.Let("Dexterity").IncreaseBy(2))

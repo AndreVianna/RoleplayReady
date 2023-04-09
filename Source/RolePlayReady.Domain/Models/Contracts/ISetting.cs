@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IRuleSet : IEntity {
+public interface ISetting : IEntity {
     new string ShortName { get; }
     IList<IAttributeDefinition> AttributeDefinitions { get; }
 }
