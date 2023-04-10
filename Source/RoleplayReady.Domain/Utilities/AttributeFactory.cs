@@ -5,5 +5,5 @@
 //public static class AttributeFactory
 //{
 //    public static object CreateTypedAttribute(EntityType type, IEntity parent, string ownerId, string name, string description)
-//        => Activator.CreateInstance(typeof(Attribute).MakeGenericType(type), parent, ownerId, name, null, description)!;
+//        => Activator.CreateInstance(typeof(EntityAttribute).MakeGenericType(type), parent, ownerId, name, null, description)!;
 //}

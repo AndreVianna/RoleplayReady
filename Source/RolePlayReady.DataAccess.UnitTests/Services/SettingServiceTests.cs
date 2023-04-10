@@ -1,24 +1,36 @@
+using RolePlayReady.Repositories;
+
+using GameSetting = RolePlayReady.Models.GameSetting;
+
 namespace RolePlayReady.DataAccess.Services;
 
 public class SettingServiceTests {
+    private readonly SettingService _settingService;
+    private readonly IGameSettingsRepository _settingRepository;
+    private const string _owner = "System";
+    private const string _dataFileName = "SM";
+
+    public SettingServiceTests() {
+        _settingRepository = Substitute.For<IGameSettingsRepository>();
+        var userAccessor = Substitute.For<IUserAccessor>();
+        userAccessor.Id.Returns(_owner);
+        _settingService = new SettingService(_settingRepository, userAccessor);
+    }
+
     [Fact]
     public async Task LoadAsync_SettingExists_ReturnsSetting() {
         // Arrange
-        var settingRepository = Substitute.For<ISettingRepository>();
-        var settingService = new SettingService(settingRepository);
-
-        var testSettingId = "SM";
-        var expectedSetting = new Setting {
-            ShortName = testSettingId,
+        var expectedSetting = new GameSetting {
+            ShortName = "SM",
             Name = "Some Name",
-            AttributeDefinitions = Array.Empty<IAttributeDefinition>(),
+            AttributeDefinitions = Array.Empty<IAttribute>(),
             Description = "Some description."
         };
 
-        settingRepository.GetByIdAsync(testSettingId, Arg.Any<CancellationToken>()).Returns(expectedSetting);
+        _settingRepository.GetByIdAsync(_owner, _dataFileName, Arg.Any<CancellationToken>()).Returns(expectedSetting);
 
         // Act
-        var result = await settingService.LoadAsync(testSettingId);
+        var result = await _settingService.LoadAsync(_dataFileName);
 
         // Assert
         result.Should().BeEquivalentTo(expectedSetting);
@@ -27,16 +39,12 @@ public class SettingServiceTests {
     [Fact]
     public async Task LoadAsync_SettingDoesNotExist_ThrowsInvalidOperationException() {
         // Arrange
-        var settingRepository = Substitute.For<ISettingRepository>();
-        var settingService = new SettingService(settingRepository);
-
-        var testSettingId = "nonexistent-rule-set-id";
-        settingRepository.GetByIdAsync(testSettingId, Arg.Any<CancellationToken>()).Returns(default(Setting));
+        _settingRepository.GetByIdAsync(_owner, _dataFileName, Arg.Any<CancellationToken>()).Returns(default(GameSetting));
 
         // Act
-        Func<Task> act = async () => await settingService.LoadAsync(testSettingId);
+        Func<Task> act = async () => await _settingService.LoadAsync(_dataFileName);
 
         // Assert
-        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage($"Rule set for '{testSettingId}' was not found.");
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage($"Game setting '{_dataFileName}' was not found.");
     }
 }

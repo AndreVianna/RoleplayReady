@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Models;
 
 public record Agent : Entity, IAgent {
-    public IList<IPossession> Possessions { get; init; } = new List<IPossession>();
-    public IList<IJournalEntry> JournalEntries { get; init; } = new List<IJournalEntry>();
+    public IList<IInventoryEntry> Inventory { get; init; } = new List<IInventoryEntry>();
+    public IList<IJournalEntry> Journal { get; init; } = new List<IJournalEntry>();
 }

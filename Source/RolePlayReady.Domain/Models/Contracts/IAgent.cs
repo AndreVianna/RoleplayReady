@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
 public interface IAgent : IEntity {
-    IList<IPossession> Possessions { get; init; }
-    IList<IJournalEntry> JournalEntries { get; init; }
+    IList<IInventoryEntry> Inventory { get; init; }
+    IList<IJournalEntry> Journal { get; init; }
 }

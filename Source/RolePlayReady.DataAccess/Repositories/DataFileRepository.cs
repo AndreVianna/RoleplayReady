@@ -25,9 +25,9 @@ public partial class DataFileRepository : IDataFileRepository {
         _baseFolderPath = Throw.IfNullOrWhiteSpaces(baseFolder, _errorMessage, nameof(configuration)).Trim();
     }
 
-    public async Task<IEnumerable<DataFile<TData>>> GetAllAsync<TData>(string? path, CancellationToken cancellation = default) {
+    public async Task<IEnumerable<DataFile<TData>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
         try {
-            var folderPath = GetFolderFullPath(path);
+            var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting data files from '{path}'...", folderPath);
             var filePaths = _io.GetFilesFrom(folderPath, "+*.json", SearchOption.TopDirectoryOnly);
             var fileInfos = new List<DataFile<TData>>();
@@ -51,9 +51,9 @@ public partial class DataFileRepository : IDataFileRepository {
         }
     }
 
-    public async Task<DataFile<TData>?> GetByIdAsync<TData>(string? path, string id, CancellationToken cancellation = default) {
+    public async Task<DataFile<TData>?> GetByIdAsync<TData>(string owner, string path, string id, CancellationToken cancellation = default) {
         try {
-            var folderPath = GetFolderFullPath(path);
+            var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting data from file '{path}/{id}'...", folderPath, id);
             var filePath = _io.GetFilesFrom(folderPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
                 .FirstOrDefault();
@@ -80,9 +80,9 @@ public partial class DataFileRepository : IDataFileRepository {
         }
     }
 
-    public async Task<bool> UpsertAsync<TData>(string? path, string id, TData data, CancellationToken cancellation = default) {
+    public async Task<bool> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
         try {
-            var folderPath = GetFolderFullPath(path);
+            var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Adding or updating data file '{path}/{id}'...", folderPath, id);
             var currentFile = _io.GetFilesFrom(folderPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
                 .FirstOrDefault();
@@ -102,9 +102,9 @@ public partial class DataFileRepository : IDataFileRepository {
         return true;
     }
 
-    public bool Delete(string? path, string id) {
+    public bool Delete(string owner, string path, string id) {
         try {
-            var folderPath = GetFolderFullPath(path);
+            var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Deleting data file '{path}/{id}'...", folderPath, id);
             var activeFiles = _io.GetFilesFrom(folderPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
                 .Union(_io.GetFilesFrom(folderPath, $"{id}*.json", SearchOption.TopDirectoryOnly));
@@ -133,7 +133,7 @@ public partial class DataFileRepository : IDataFileRepository {
             await using var stream = _io.OpenFileForReading(filePath);
             var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
             result = new DataFile<TData> {
-                Id = fileInfo.Name,
+                Name = fileInfo.Name,
                 Timestamp = fileInfo.Timestamp,
                 Content = content!
             };
@@ -163,7 +163,7 @@ public partial class DataFileRepository : IDataFileRepository {
         public required DateTime Timestamp { get; init; }
     }
 
-    private string GetFolderFullPath(string? path) => _io.CombinePath(_baseFolderPath, (path ?? string.Empty).Trim());
+    private string GetFolderFullPath(string owner, string path) => _io.CombinePath(_baseFolderPath, owner.Trim(), path.Trim());
 
     [GeneratedRegex("^\\+(?<id>[a-zA-Z0-9]+)_(?<datetime>\\d{14})\\.json$", RegexOptions.Compiled, "en-CA")]
     private static partial Regex FileNameMatcher();

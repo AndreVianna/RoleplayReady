@@ -1,7 +1,7 @@
 ﻿namespace System.Abstractions;
 
 public interface IFileSystem {
-    string CombinePath(string firstPath, string secondPath);
+    string CombinePath(params string[] paths);
     string[] GetFilesFrom(string folderPath, string searchPattern, SearchOption searchOptions);
     void MoveFile(string sourcePath, string targetPath);
     string ExtractFileNameFrom(string filePath);

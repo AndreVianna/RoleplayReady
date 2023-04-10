@@ -1,27 +1,34 @@
-﻿namespace RolePlayReady.DataAccess.Repositories;
+﻿using Attribute = RolePlayReady.Models.Attribute;
 
-public class SettingMapper {
-    public static SettingDataModel MapFrom(ISetting input)
-        => new() {
+namespace RolePlayReady.DataAccess.Repositories.GameSettings;
+
+public class GameSettingMapper
+{
+    public static SettingDataModel MapFrom(IGameSetting input)
+        => new()
+        {
+            ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
             Tags = input.Tags.ToArray(),
-            AttributeDefinitions = input.AttributeDefinitions.Select(MapFrom).ToArray<SettingDataModel.Attribute>(),
+            AttributeDefinitions = input.AttributeDefinitions.Select(MapFrom).ToArray(),
         };
 
-    private static SettingDataModel.Attribute MapFrom(IAttributeDefinition input)
-        => new() {
+    private static SettingDataModel.Attribute MapFrom(IAttribute input)
+        => new()
+        {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
             DataType = input.DataType.Name,
         };
 
-    public static Setting? MapFrom(DataFile<SettingDataModel>? input)
+    public static GameSetting? MapFrom(DataFile<SettingDataModel>? input)
         => input is null
             ? null
-            : new() {
-                ShortName = input.Id,
+            : new GameSetting
+            {
+                ShortName = input.Content.ShortName,
                 Name = input.Content.Name,
                 Description = input.Content.Description,
                 Timestamp = input.Timestamp,
@@ -30,8 +37,9 @@ public class SettingMapper {
                 AttributeDefinitions = input.Content.AttributeDefinitions.Select(MapFrom).ToArray(),
             };
 
-    private static IAttributeDefinition MapFrom(SettingDataModel.Attribute input)
-        => new AttributeDefinition() {
+    private static IAttribute MapFrom(SettingDataModel.Attribute input)
+        => new Attribute
+        {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,

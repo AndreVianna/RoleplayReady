@@ -1,13 +1,17 @@
-﻿namespace RolePlayReady.DataAccess.Services;
+﻿using RolePlayReady.Repositories;
+
+namespace RolePlayReady.DataAccess.Services;
 
 public class SettingService {
-    private readonly ISettingRepository _settings;
+    private readonly IGameSettingsRepository _gameSettings;
+    private readonly string _owner;
 
-    public SettingService(ISettingRepository settings) {
-        _settings = settings;
+    public SettingService(IGameSettingsRepository gameSettings, IUserAccessor user) {
+        _gameSettings = gameSettings;
+        _owner = user.Id;
     }
 
-    public async Task<Setting> LoadAsync(string id, CancellationToken cancellation = default)
-        => await _settings.GetByIdAsync(id, cancellation)
-           ?? throw new InvalidOperationException($"Rule set for '{id}' was not found.");
+    public async Task<GameSetting> LoadAsync(string id, CancellationToken cancellation = default)
+        => await _gameSettings.GetByIdAsync(_owner, id, cancellation)
+           ?? throw new InvalidOperationException($"Game setting '{id}' was not found.");
 }

@@ -4,7 +4,4 @@ public record JournalEntry : IJournalEntry {
     public required string Section { get; init; }
     public required string Title { get; init; }
     public required string Text { get; init; }
-
-    public DateTime Timestamp { get; init; } = DateTime.UtcNow;
-    public State State { get; init; } = State.NotReady;
 }

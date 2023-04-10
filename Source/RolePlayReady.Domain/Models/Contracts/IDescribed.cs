@@ -1,8 +1,7 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IIdentification {
+public interface IDescribed {
     string Name { get; }
-    string? ShortName { get; }
     string Description { get; }
-    string FullName { get; }
+    string? ShortName { get; }
 }

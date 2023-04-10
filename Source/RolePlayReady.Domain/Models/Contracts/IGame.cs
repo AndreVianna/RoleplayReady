@@ -1,4 +1,3 @@
 ﻿namespace RolePlayReady.Models.Contracts;
 
-public interface IPower : IEntity {
-}
+public interface IGame : IBase { }
