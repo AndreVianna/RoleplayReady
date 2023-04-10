@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Models;
 
-public record GameItem : Entity, IInventoryItem {
+public record GameItem : Entity<Guid>, IInventoryItem {
     public GameItem(IDateTime? dateTime = null)
         : base(dateTime) {
     }

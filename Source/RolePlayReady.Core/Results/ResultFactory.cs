@@ -1,4 +1,4 @@
-﻿namespace System;
+﻿namespace System.Results;
 
 public static class ResultFactory {
     public static Success Success => Success.Instance;

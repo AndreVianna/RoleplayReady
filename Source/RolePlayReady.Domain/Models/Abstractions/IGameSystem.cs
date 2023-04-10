@@ -1,3 +1,3 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
-public interface IGame : IBase { }
+public interface IGameSystem : IBase<Guid> { }

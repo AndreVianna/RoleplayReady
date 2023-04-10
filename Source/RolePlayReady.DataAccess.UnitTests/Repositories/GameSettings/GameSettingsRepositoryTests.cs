@@ -1,29 +1,30 @@
-using RolePlayReady.Models.Abstractions;
+using RolePlayReady.DataAccess.Repositories.GameSystemSettings;
 
 using static RolePlayReady.Constants.Common;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSettings;
 
 public class GameSettingsRepositoryTests {
-    private readonly IDataFileRepository _dataFileRepository;
-    private readonly GameSettingsRepository _repository;
+    private readonly ITrackedJsonFileRepository _trackedJsonFileRepository;
+    private readonly GameSystemSettingsRepository _repository;
 
     public GameSettingsRepositoryTests() {
-        _dataFileRepository = Substitute.For<IDataFileRepository>();
-        _repository = new GameSettingsRepository(_dataFileRepository);
+        _trackedJsonFileRepository = Substitute.For<ITrackedJsonFileRepository>();
+        _repository = new GameSystemSettingsRepository(_trackedJsonFileRepository);
     }
 
     [Fact]
     public async Task GetManyAsync_ReturnsAllSettings() {
         // Arrange
         var dataFiles = GenerateDataFiles();
-        _dataFileRepository.GetAllAsync<SettingDataModel>(InternalUser, string.Empty).Returns(dataFiles);
+        _trackedJsonFileRepository.GetAllAsync<GameSystemSettingDataModel>(InternalUser, string.Empty).Returns(dataFiles);
 
         // Act
         var settings = await _repository.GetManyAsync(InternalUser);
 
         // Assert
-        settings.Count().Should().Be(dataFiles.Length);
+        settings.HasValue.Should().BeTrue();
+        settings.Value.Count().Should().Be(dataFiles.Length);
     }
 
     [Fact]
@@ -31,76 +32,83 @@ public class GameSettingsRepositoryTests {
         // Arrange
         var dataFile = GenerateDataFile();
         var tokenSource = new CancellationTokenSource();
-        _dataFileRepository.GetByIdAsync<SettingDataModel>(InternalUser, string.Empty, dataFile.Name, tokenSource.Token).Returns(dataFile);
+        _trackedJsonFileRepository.GetByIdAsync<GameSystemSettingDataModel>(InternalUser, string.Empty, dataFile.Name, tokenSource.Token).Returns(dataFile);
 
         // Act
-        var setting = await _repository.GetByIdAsync(InternalUser, dataFile.Name, tokenSource.Token);
+        var setting = await _repository.GetByIdAsync(InternalUser, Guid.Parse(dataFile.Name), tokenSource.Token);
 
         // Assert
-        setting.Should().NotBeNull();
+        setting.HasValue.Should().BeTrue();
+        setting.Value.Should().NotBeNull();
     }
 
     [Fact]
     public async Task GetByIdAsync_SettingNotFound_ReturnsNull() {
         // Arrange
-        _dataFileRepository.GetByIdAsync<SettingDataModel>(InternalUser, string.Empty, "nonExistent").Returns((DataFile<SettingDataModel>?)null);
+        var id = Guid.NewGuid();
+        _trackedJsonFileRepository.GetByIdAsync<GameSystemSettingDataModel>(InternalUser, string.Empty, id.ToString(), Arg.Any<CancellationToken>()).Returns((DataFile<GameSystemSettingDataModel>?)null);
 
         // Act
-        var setting = await _repository.GetByIdAsync(InternalUser, "nonExistent");
+        var setting = await _repository.GetByIdAsync(InternalUser, id);
 
         // Assert
-        setting.Should().BeNull();
+        setting.HasValue.Should().BeFalse();
+        setting.IsNull.Should().BeTrue();
     }
 
     [Fact]
-    public async Task UpsertAsync_InsertsNewSetting() {
+    public async Task InsertAsync_InsertsNewSetting() {
         // Arrange
         var setting = GenerateSetting();
+        var dataFile = GenerateDataFile();
+        var tokenSource = new CancellationTokenSource();
+        _trackedJsonFileRepository.UpsertAsync(InternalUser, string.Empty, setting.Id.ToString(), dataFile, tokenSource.Token).Returns(DateTime.Now);
 
         // Act
-        await _repository.UpsertAsync(InternalUser, setting);
+        var result = await _repository.InsertAsync(InternalUser, setting, tokenSource.Token);
 
         // Assert
-        await _dataFileRepository.Received().UpsertAsync(InternalUser, string.Empty, setting.DataFileName, Arg.Any<SettingDataModel>());
+        result.HasValue.Should().BeTrue();
     }
 
     [Fact]
-    public async Task UpsertAsync_UpdatesExistingSetting() {
+    public async Task UpdateAsync_UpdatesExistingSetting() {
         // Arrange
         var setting = GenerateSetting();
+        var tokenSource = new CancellationTokenSource();
 
         // Act
-        await _repository.UpsertAsync(InternalUser, setting);
+        var result = await _repository.UpdateAsync(InternalUser, setting, tokenSource.Token);
 
         // Assert
-        await _dataFileRepository.Received().UpsertAsync(InternalUser, string.Empty, setting.DataFileName, Arg.Any<SettingDataModel>());
+        result.HasValue.Should().BeTrue();
     }
 
     [Fact]
     public void Delete_RemovesSetting() {
         // Arrange
-        var id = "testSetting";
+        var id = Guid.NewGuid();
 
         // Act
-        _repository.Delete(InternalUser, id);
+        var result = _repository.Delete(InternalUser, id);
 
         // Assert
-        _dataFileRepository.Received().Delete(InternalUser, string.Empty, id);
+        result.HasValue.Should().BeTrue();
     }
 
-    private static DataFile<SettingDataModel>[] GenerateDataFiles()
+    private static DataFile<GameSystemSettingDataModel>[] GenerateDataFiles()
         => new[] { GenerateDataFile() };
 
-    private static DataFile<SettingDataModel> GenerateDataFile()
+    private static DataFile<GameSystemSettingDataModel> GenerateDataFile()
         => new() {
-            Name = "SomeId",
+            Name = Guid.NewGuid().ToString(),
             Timestamp = DateTime.Now,
-            Content = new SettingDataModel {
+            Content = new GameSystemSettingDataModel {
                 Name = "Some Name",
                 Description = "Some Description",
                 Tags = new[] { "SomeTag" },
                 AttributeDefinitions = new[] {
-                    new SettingDataModel.Attribute {
+                    new GameSystemSettingDataModel.AttributeDefinition {
                         Name = "Some Name",
                         Description = "Some Description",
                         DataType = nameof(Int32)
@@ -110,15 +118,16 @@ public class GameSettingsRepositoryTests {
         };
 
 
-    private static RolePlayReady.Models.GameSystemSetting GenerateSetting()
-        => new() {
+    private static GameSystemSetting GenerateSetting()
+        => new GameSystemSetting() {
+            Id = Guid.NewGuid(),
             ShortName = "SomeId",
             Timestamp = DateTime.Now,
             Name = "Some Name",
             Description = "Some Description",
             Tags = new[] { "SomeTag" },
-            AttributeDefinitions = new IAttributeDefinition[] {
-            new AttributeDefinition {
+            AttributeDefinitions = new AttributeDefinition[] {
+            new() {
                 Name = "Some Name",
                 Description = "Some Description",
                 DataType = typeof(int)

@@ -1,17 +1,17 @@
-﻿using RolePlayReady.Repositories;
+﻿using System.Results;
 
 namespace RolePlayReady.DataAccess.Services;
 
 public class SettingService {
-    private readonly IGameSettingsRepository _gameSettings;
+    private readonly IGameSystemSettingsRepository _gameSystemSettings;
     private readonly string _owner;
 
-    public SettingService(IGameSettingsRepository gameSettings, IUserAccessor user) {
-        _gameSettings = gameSettings;
+    public SettingService(IGameSystemSettingsRepository gameSystemSettings, IUserAccessor user) {
+        _gameSystemSettings = gameSystemSettings;
         _owner = user.Id;
     }
 
-    public async Task<GameSystemSetting> LoadAsync(string id, CancellationToken cancellation = default)
-        => await _gameSettings.GetByIdAsync(_owner, id, cancellation)
-           ?? throw new InvalidOperationException($"GameSystem setting '{id}' was not found.");
+    public async Task<Maybe<GameSystemSetting>> LoadAsync(Guid id, CancellationToken cancellation = default)
+        // Add validations here.
+        => await _gameSystemSettings.GetByIdAsync(_owner, id, cancellation);
 }

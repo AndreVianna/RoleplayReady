@@ -1,7 +1,7 @@
 namespace RolePlayReady.Models;
 
 public class EntityTests {
-    private record TestEntity : Entity {
+    private record TestEntity : Entity<string> {
         public TestEntity(IDateTime? dateTime = null)
             : base(dateTime) { }
     }
@@ -11,6 +11,7 @@ public class EntityTests {
         var dateTime = Substitute.For<IDateTime>();
         dateTime.Now.Returns(DateTime.Parse("2001-01-01 00:00:00"));
         var testEntity = new TestEntity(dateTime) {
+            Id = "TN",
             Name = "TestName",
             Description = "TestDescription",
             Attributes = new List<IEntityAttribute>(),
@@ -22,6 +23,7 @@ public class EntityTests {
     [Fact]
     public void Constructor_WithoutDateTime_SetsTimestampToUtcNowAndAttributes() {
         var testEntity = new TestEntity {
+            Id = "TN",
             Name = "TestName",
             Description = "TestDescription",
         };

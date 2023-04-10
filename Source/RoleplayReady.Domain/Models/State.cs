@@ -1,8 +1,8 @@
 ﻿namespace RolePlayReady.Models;
 
 public enum State {
-    NotReady,
+    Pending,
     Public,
     Private,
-    Deleted,
+    Hidden,
 }

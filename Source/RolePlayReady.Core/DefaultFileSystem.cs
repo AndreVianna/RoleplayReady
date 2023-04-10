@@ -11,6 +11,9 @@ public class DefaultFileSystem : IFileSystem {
     public string[] GetFilesFrom(string folderPath, string searchPattern, SearchOption searchOptions)
         => Directory.GetFiles(folderPath, searchPattern, searchOptions);
 
+    public bool FileExists(string filePath)
+        => File.Exists(filePath);
+
     public void MoveFile(string sourcePath, string targetPath)
         => File.Move(sourcePath, targetPath);
 

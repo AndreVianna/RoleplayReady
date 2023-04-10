@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Models;
 
-public abstract record Base : Persistent, IBase {
+public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
 
     protected Base(IDateTime? dateTime = null)
         : base(dateTime) {
@@ -11,7 +11,6 @@ public abstract record Base : Persistent, IBase {
 
     public string? ShortName { get; init; }
 
-    public override string DataFileName => ShortName ?? Name.ToAcronym();
 
     public IList<string> Tags { get; init; } = new List<string>();
 

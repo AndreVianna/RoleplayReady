@@ -4,6 +4,7 @@ public class InventoryEntryTests {
     [Fact]
     public void Constructor_InitializesProperties() {
         var item = new GameItem {
+            Id = Guid.NewGuid(),
             Name = "TestName",
             ShortName = "TST",
             Description = "TestDescription",

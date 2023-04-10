@@ -1,4 +1,4 @@
-namespace RolePlayReady.Results;
+namespace System.Results;
 
 public class InvalidTests {
     [Fact]

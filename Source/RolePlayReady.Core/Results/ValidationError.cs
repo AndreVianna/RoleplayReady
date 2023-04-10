@@ -1,4 +1,4 @@
-﻿namespace System;
+﻿namespace System.Results;
 
 public record ValidationError {
     private readonly string _message = string.Empty;

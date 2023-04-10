@@ -1,7 +1,6 @@
 ﻿namespace RolePlayReady.Models;
 
-public abstract record EntityAttribute<TSelf, TValue>
-    : IEntityAttribute<TSelf, TValue>
+public abstract record EntityAttribute<TSelf, TValue> : IEntityAttribute<TSelf, TValue>
     where TSelf : class, IEntityAttribute<TSelf, TValue> {
     public required IAttributeDefinition AttributeDefinition { get; init; }
     object? IEntityAttribute.Value => Value;

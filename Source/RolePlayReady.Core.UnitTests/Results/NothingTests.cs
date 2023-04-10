@@ -1,4 +1,4 @@
-namespace RolePlayReady.Results;
+namespace System.Results;
 
 public class NothingTests {
     [Fact]
@@ -12,8 +12,7 @@ public class NothingTests {
 
     [Fact]
     public void ImplicitConversion_FromSuccess_ReturnsNothingWithSuccess() {
-        var testSuccess = ResultFactory.Success;
-        Nothing nothing = testSuccess;
+        Nothing nothing = ResultFactory.Success;
 
         nothing.IsSuccessful.Should().BeTrue();
         nothing.Invoking(v => v.Exception).Should().Throw<InvalidOperationException>();

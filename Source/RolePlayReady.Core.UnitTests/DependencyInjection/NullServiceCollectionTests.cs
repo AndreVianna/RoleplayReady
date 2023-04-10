@@ -1,4 +1,4 @@
-namespace RolePlayReady.DependencyInjection;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public class NullServiceCollectionTests {
     [Fact]

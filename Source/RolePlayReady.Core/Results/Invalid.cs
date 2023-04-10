@@ -1,4 +1,4 @@
-﻿namespace System;
+﻿namespace System.Results;
 
 public record Invalid {
     public Invalid(IEnumerable<ValidationError?>? errors) {

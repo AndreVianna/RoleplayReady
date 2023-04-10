@@ -1,4 +1,4 @@
-namespace RolePlayReady.Validations;
+namespace System.Validations;
 
 public class ValidatableTests {
     private class TestValidatable : Validatable { }

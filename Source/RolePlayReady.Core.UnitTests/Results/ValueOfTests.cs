@@ -1,25 +1,25 @@
-namespace RolePlayReady.Results;
+namespace System.Results;
 
 public class ValueOfTests {
     [Fact]
     public void ImplicitConversion_FromValue_ReturnsMethodResultWithValue() {
         const string testValue = "testValue";
-        ValueOf<string> valueOf = testValue;
+        Result<string> result = testValue;
 
-        valueOf.IsSuccessful.Should().BeTrue();
-        valueOf.Value.Should().Be(testValue);
-        valueOf.Invoking(v => v.Exception).Should().Throw<InvalidOperationException>();
-        valueOf.Invoking(v => v.Throw()).Should().NotThrow();
+        result.HasValue.Should().BeTrue();
+        result.Value.Should().Be(testValue);
+        result.Invoking(v => v.Exception).Should().Throw<InvalidOperationException>();
+        result.Invoking(v => v.Throw()).Should().NotThrow();
     }
 
     [Fact]
     public void ImplicitConversion_FromException_ReturnsMethodResultWithException() {
         var testException = new InvalidOperationException("test");
-        ValueOf<string> valueOf = testException;
+        Result<string> result = testException;
 
-        valueOf.IsSuccessful.Should().BeFalse();
-        valueOf.Exception.Should().Be(testException);
-        valueOf.Invoking(v => v.Value).Should().Throw<InvalidOperationException>();
-        valueOf.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
+        result.HasValue.Should().BeFalse();
+        result.Exception.Should().Be(testException);
+        result.Invoking(v => v.Value).Should().Throw<InvalidOperationException>();
+        result.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
     }
 }

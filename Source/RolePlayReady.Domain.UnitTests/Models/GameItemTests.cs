@@ -7,6 +7,7 @@ public class GameItemTests {
         dateTime.Now.Returns(DateTime.Parse("2001-01-01 00:00:00"));
 
         var agent = new GameItem(dateTime) {
+            Id = Guid.NewGuid(),
             Name = "TestName",
             Description = "TestDescription",
             Unit = "m",
@@ -18,6 +19,7 @@ public class GameItemTests {
     [Fact]
     public void Constructor_CreatesInstance() {
         var agent = new GameItem {
+            Id = Guid.NewGuid(),
             Name = "TestName",
             Description = "TestDescription",
             Unit = "m",

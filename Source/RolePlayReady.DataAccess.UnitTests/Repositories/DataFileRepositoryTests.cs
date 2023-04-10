@@ -3,7 +3,7 @@ namespace RolePlayReady.DataAccess.Repositories;
 public class DataFileRepositoryTests {
     private readonly IFileSystem _io;
     private readonly IDateTime _dateTime;
-    private readonly DataFileRepository _repository;
+    private readonly TrackedJsonFileRepository _repository;
 
     private const string _baseFolder = "testBaseFolder";
     private const string _owner = "owner";
@@ -15,18 +15,18 @@ public class DataFileRepositoryTests {
         _io = Substitute.For<IFileSystem>();
         _dateTime = Substitute.For<IDateTime>();
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(DataFileRepository)}:BaseFolder"].Returns(_baseFolder);
-        _repository = new DataFileRepository(configuration, _io, _dateTime, NullLoggerFactory.Instance);
+        configuration[$"{nameof(TrackedJsonFileRepository)}:BaseFolder"].Returns(_baseFolder);
+        _repository = new TrackedJsonFileRepository(configuration, _io, _dateTime, NullLoggerFactory.Instance);
     }
 
     [Fact]
     public void Constructor_WithNulls_CreatesInstance() {
         // Arrange
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(DataFileRepository)}:BaseFolder"].Returns(_baseFolder);
+        configuration[$"{nameof(TrackedJsonFileRepository)}:BaseFolder"].Returns(_baseFolder);
 
         // Act
-        var result = new DataFileRepository(configuration, null, null, null);
+        var result = new TrackedJsonFileRepository(configuration, null, null, null);
 
         // Assert
         result.Should().NotBeNull();
@@ -36,10 +36,10 @@ public class DataFileRepositoryTests {
     public void Constructor_WithConfigurationMissing_Throws() {
         // Arrange
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(DataFileRepository)}:BaseFolder"].Returns(default(string));
+        configuration[$"{nameof(TrackedJsonFileRepository)}:BaseFolder"].Returns(default(string));
 
         // Act
-        var action = () => new DataFileRepository(configuration, null, null, null);
+        var action = () => new TrackedJsonFileRepository(configuration, null, null, null);
 
         // Assert
         action.Should().Throw<ArgumentException>();
@@ -74,16 +74,17 @@ public class DataFileRepositoryTests {
         _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\":\"OtherName\",\"Number\":7}")));
 
         // Act
-        var result = (await _repository.GetAllAsync<TestData>(_owner, _path)).ToArray();
+        var result = await _repository.GetAllAsync<TestData>(_owner, _path);
 
         // Assert
-        result.Should().HaveCount(2);
-        result.First().Name.Should().Be(_id1);
-        result.First().Content.Name.Should().Be("SomeName");
-        result.First().Content.Number.Should().Be(42);
-        result.Last().Name.Should().Be(_id2);
-        result.Last().Content.Name.Should().Be("OtherName");
-        result.Last().Content.Number.Should().Be(7);
+        result.HasValue.Should().BeTrue();
+        result.Value.Should().HaveCount(2);
+        result.Value.First().Name.Should().Be(_id1);
+        result.Value.First().Content.Name.Should().Be("SomeName");
+        result.Value.First().Content.Number.Should().Be(42);
+        result.Value.Last().Name.Should().Be(_id2);
+        result.Value.Last().Content.Name.Should().Be("OtherName");
+        result.Value.Last().Content.Number.Should().Be(7);
     }
 
     [Fact]
@@ -95,7 +96,8 @@ public class DataFileRepositoryTests {
         var result = await _repository.GetAllAsync<TestData>(_owner, _path);
 
         // Assert
-        result.Should().BeEmpty();
+        result.HasValue.Should().BeFalse();
+        result.Exception.Should().NotBeNull();
     }
 
     [Fact]
@@ -127,13 +129,14 @@ public class DataFileRepositoryTests {
         _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("Invalid")));
 
         // Act
-        var result = (await _repository.GetAllAsync<TestData>(_owner, _path)).ToArray();
+        var result = await _repository.GetAllAsync<TestData>(_owner, _path);
 
         // Assert
-        result.Should().HaveCount(1);
-        result.First().Name.Should().Be(_id1);
-        result.First().Content.Name.Should().Be("SomeName");
-        result.First().Content.Number.Should().Be(42);
+        result.HasValue.Should().BeTrue();
+        result.Value.Should().HaveCount(1);
+        result.Value.First().Name.Should().Be(_id1);
+        result.Value.First().Content.Name.Should().Be("SomeName");
+        result.Value.First().Content.Number.Should().Be(42);
     }
 
     [Fact]
@@ -159,10 +162,11 @@ public class DataFileRepositoryTests {
         var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
 
         // Assert
-        result.Should().NotBeNull();
-        result!.Name.Should().Be(_id1);
-        result.Timestamp.Should().Be(DateTime.Parse("2022-04-06 12:34:56"));
-        result.Content.Should().BeEquivalentTo(expectedData);
+        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value.Name.Should().Be(_id1);
+        result.Value.Timestamp.Should().Be(DateTime.Parse("2022-04-06 12:34:56"));
+        result.Value.Content.Should().BeEquivalentTo(expectedData);
     }
 
 
@@ -177,7 +181,8 @@ public class DataFileRepositoryTests {
         var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
 
         // Assert
-        result.Should().BeNull();
+        result.IsNull.Should().BeTrue();
+        result.Default.Should().BeNull();
     }
 
     [Fact]
@@ -195,7 +200,8 @@ public class DataFileRepositoryTests {
         var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
 
         // Assert
-        result.Should().BeNull();
+        result.IsNull.Should().BeTrue();
+        result.Default.Should().BeNull();
     }
 
 
@@ -214,11 +220,12 @@ public class DataFileRepositoryTests {
         var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
 
         // Assert
-        result.Should().BeNull();
+        result.IsNull.Should().BeTrue();
+        result.Default.Should().BeNull();
     }
 
     [Fact]
-    public async Task GetByIdAsync_WithInvalidFileContent_ReturnsNull() {
+    public async Task GetByIdAsync_WithInvalidFileContent_ReturnsException() {
         // Arrange
         var filePath = $"{_baseFolder}/+{_id1}_20220406123456.json";
 
@@ -239,7 +246,9 @@ public class DataFileRepositoryTests {
         var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
 
         // Assert
-        result.Should().BeNull();
+        result.HasValue.Should().BeFalse();
+        result.IsNull.Should().BeFalse();
+        result.Exception.Should().NotBeNull();
     }
 
     [Fact]
@@ -251,7 +260,9 @@ public class DataFileRepositoryTests {
         var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
 
         // Assert
-        result.Should().BeNull();
+        result.HasValue.Should().BeFalse();
+        result.IsNull.Should().BeFalse();
+        result.Exception.Should().NotBeNull();
     }
 
     [Fact]
@@ -272,9 +283,10 @@ public class DataFileRepositoryTests {
         _io.CreateNewFileAndOpenForWriting(newFilePath).Returns(memoryStream);
 
         // Act
-        await _repository.UpsertAsync(_owner, _path, _id1, data);
+        var result = await _repository.UpsertAsync(_owner, _path, _id1, data);
 
         // Assert
+        result.HasValue.Should().BeTrue();
         _io.Received(1).MoveFile(currentFilePath, currentFilePath.Replace("+", ""));
         _io.Received(1).CreateNewFileAndOpenForWriting(newFilePath);
     }
@@ -288,7 +300,8 @@ public class DataFileRepositoryTests {
         var result = await _repository.UpsertAsync<TestData>(_owner, _path, _id1, GenerateTestData());
 
         // Assert
-        result.Should().BeFalse();
+        result.HasValue.Should().BeFalse();
+        result.Exception.Should().NotBeNull();
     }
 
     [Fact]
@@ -314,11 +327,30 @@ public class DataFileRepositoryTests {
         _io.When(x => x.MoveFile(inactiveFilePath, deletedFilePath2)).Do(_ => { });
 
         // Act
-        _repository.Delete(_owner, _path, _id1);
+        var result = _repository.Delete(_owner, _path, _id1);
 
         // Assert
+        result.HasValue.Should().BeTrue();
+        result.Value.Should().BeTrue();
         _io.Received(1).MoveFile(activeFilePath, deletedFilePath1);
         _io.Received(1).MoveFile(inactiveFilePath, deletedFilePath2);
+    }
+
+    [Fact]
+    public void Delete_WhenFileNotFound_ReturnsFalse() {
+        // Arrange
+        _io.CombinePath(_baseFolder, _owner, _path).Returns($"{_baseFolder}/{_owner}/{_path}");
+        _io.GetFilesFrom($"{_baseFolder}/{_owner}/{_path}", $"+{_id1}*.json", SearchOption.TopDirectoryOnly)
+            .Returns(Array.Empty<string>());
+        _io.GetFilesFrom($"{_baseFolder}/{_owner}/{_path}", $"{_id1}*.json", SearchOption.TopDirectoryOnly)
+            .Returns(Array.Empty<string>());
+
+        // Act
+        var result = _repository.Delete(_owner, _path, _id1);
+
+        // Assert
+        result.HasValue.Should().BeTrue();
+        result.Value.Should().BeFalse();
     }
 
     [Fact]
@@ -330,7 +362,8 @@ public class DataFileRepositoryTests {
         var result = _repository.Delete(_owner, _path, _id1);
 
         // Assert
-        result.Should().BeFalse();
+        result.HasValue.Should().BeFalse();
+        result.Exception.Should().NotBeNull();
     }
 
     private TestData GenerateTestData()

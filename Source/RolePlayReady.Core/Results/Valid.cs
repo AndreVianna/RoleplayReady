@@ -1,6 +1,7 @@
-﻿namespace System;
+﻿namespace System.Results;
 
-public record Valid {
+public record Valid
+{
     private Valid() { }
 
     public static Valid Instance { get; } = new();

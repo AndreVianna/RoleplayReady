@@ -2,19 +2,19 @@
 
 //internal static class EntityExtensions {
 //    public static object? GetValue(this IEntity element, string name)
-//        => element.GetAttribute(name).Value;
+//        => element.GetAttribute(name).Result;
 
 //    public static TValue? GetValue<TValue>(this IEntity element, string name)
-//        => element.Attributes.OfType<IEntitySimpleAttribute<TValue>>().First(p => p.AttributeDefinition.Name == name).Value;
+//        => element.Attributes.OfType<IEntitySimpleAttribute<TValue>>().First(p => p.AttributeDefinition.Name == name).Result;
 //    public static bool GetFlag<TValue>(this IEntity element, string name)
-//        => element.Attributes.OfType<IEntityFlagAttribute>().First(p => p.AttributeDefinition.Name == name).Value;
+//        => element.Attributes.OfType<IEntityFlagAttribute>().First(p => p.AttributeDefinition.Name == name).Result;
 
 //    public static HashSet<TValue> GetList<TValue>(this IEntity element, string name)
-//        => element.Attributes.OfType<Models.Contracts.IEntitySetAttribute<TValue>>().First(p => p.AttributeDefinition.Name == name).Value;
+//        => element.Attributes.OfType<Models.Contracts.IEntitySetAttribute<TValue>>().First(p => p.AttributeDefinition.Name == name).Result;
 
 //    public static Dictionary<TKey, TValue>? GetMap<TKey, TValue>(this IEntity element, string name)
 //        where TKey : notnull
-//        => element.Attributes.OfType<IEntityDictionaryAttribute<TKey, TValue>>().First(p => p.AttributeDefinition.Name == name).Value;
+//        => element.Attributes.OfType<IEntityDictionaryAttribute<TKey, TValue>>().First(p => p.AttributeDefinition.Name == name).Result;
 
 //    public static IEntityAttribute GetAttribute(this IEntity element, string name)
 //        => element.Attributes.First(p => p.AttributeDefinition.Name == name);

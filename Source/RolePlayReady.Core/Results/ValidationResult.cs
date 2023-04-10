@@ -1,22 +1,27 @@
-﻿namespace System;
+﻿namespace System.Results;
 
-public readonly struct ValidationResult {
+public readonly struct ValidationResult
+{
     private readonly OneOf<Valid, Invalid> _result;
     private static readonly ReadOnlyCollection<ValidationError> _noErrors = new(Array.Empty<ValidationError>());
 
-    public ValidationResult() {
+    public ValidationResult()
+    {
         _result = ResultFactory.Valid;
     }
 
-    private ValidationResult(IEnumerable<ValidationError?>? errors) {
+    private ValidationResult(IEnumerable<ValidationError?>? errors)
+    {
         _result = ResultFactory.Invalid(errors);
     }
 
-    private ValidationResult(ValidationError? error) {
+    private ValidationResult(ValidationError? error)
+    {
         _result = ResultFactory.Invalid(error);
     }
 
-    private ValidationResult AddErrors(IEnumerable<ValidationError?>? errors) {
+    private ValidationResult AddErrors(IEnumerable<ValidationError?>? errors)
+    {
         var validationErrors = Throw.IfNullOrEmptyOrContainNulls(errors);
         return new(_result.IsT1
                     ? _result.AsT1.Errors.Concat(validationErrors).ToArray()
@@ -31,7 +36,8 @@ public readonly struct ValidationResult {
     public bool IsValid => _result.IsT0;
     public bool HasErrors => _result.IsT1;
     public IEnumerable<ValidationError> Errors => _result.IsT1 ? _result.AsT1.Errors : _noErrors;
-    public bool TryGetErrors(out IEnumerable<ValidationError>? errors) {
+    public bool TryGetErrors(out IEnumerable<ValidationError>? errors)
+    {
         errors = _result.IsT1 ? _result.AsT1.Errors : null;
         return _result.IsT1;
     }
