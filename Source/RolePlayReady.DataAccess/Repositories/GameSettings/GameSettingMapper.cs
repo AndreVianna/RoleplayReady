@@ -1,12 +1,10 @@
-﻿using Attribute = RolePlayReady.Models.Attribute;
+﻿using RolePlayReady.Models.Abstractions;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSettings;
 
-public class GameSettingMapper
-{
+public class GameSettingMapper {
     public static SettingDataModel MapFrom(IGameSetting input)
-        => new()
-        {
+        => new() {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
@@ -14,20 +12,18 @@ public class GameSettingMapper
             AttributeDefinitions = input.AttributeDefinitions.Select(MapFrom).ToArray(),
         };
 
-    private static SettingDataModel.Attribute MapFrom(IAttribute input)
-        => new()
-        {
+    private static SettingDataModel.Attribute MapFrom(IAttributeDefinition input)
+        => new() {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
             DataType = input.DataType.Name,
         };
 
-    public static GameSetting? MapFrom(DataFile<SettingDataModel>? input)
+    public static GameSystemSetting? MapFrom(DataFile<SettingDataModel>? input)
         => input is null
             ? null
-            : new GameSetting
-            {
+            : new GameSystemSetting {
                 ShortName = input.Content.ShortName,
                 Name = input.Content.Name,
                 Description = input.Content.Description,
@@ -37,9 +33,8 @@ public class GameSettingMapper
                 AttributeDefinitions = input.Content.AttributeDefinitions.Select(MapFrom).ToArray(),
             };
 
-    private static IAttribute MapFrom(SettingDataModel.Attribute input)
-        => new Attribute
-        {
+    private static IAttributeDefinition MapFrom(SettingDataModel.Attribute input)
+        => new AttributeDefinition {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,

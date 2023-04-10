@@ -2,6 +2,15 @@ namespace RolePlayReady.Results;
 
 public class NothingTests {
     [Fact]
+    public void Constructor_CanBeInstantiated() {
+        // Act
+        var nothing = ResultFactory.Nothing;
+
+        // Assert
+        nothing.Should().NotBeNull();
+    }
+
+    [Fact]
     public void ImplicitConversion_FromSuccess_ReturnsNothingWithSuccess() {
         var testSuccess = ResultFactory.Success;
         Nothing nothing = testSuccess;

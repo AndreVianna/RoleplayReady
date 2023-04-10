@@ -1,7 +1,7 @@
-﻿namespace RolePlayReady.Models.Contracts;
+﻿namespace RolePlayReady.Models.Abstractions;
 
 public interface IEntityAttribute {
-    IAttribute Attribute { get; }
+    IAttributeDefinition AttributeDefinition { get; }
     object? Value { get; }
 }
 

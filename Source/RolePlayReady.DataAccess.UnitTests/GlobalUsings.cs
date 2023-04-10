@@ -8,9 +8,10 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Logging.Abstractions;
 
 global using NSubstitute;
+global using NSubstitute.ExceptionExtensions;
 
 global using RolePlayReady.DataAccess.Models;
-global using RolePlayReady.DataAccess.Repositories.GameSettings;
-global using RolePlayReady.Models.Contracts;
+global using RolePlayReady.Models;
+global using RolePlayReady.Repositories;
 
 global using Xunit;

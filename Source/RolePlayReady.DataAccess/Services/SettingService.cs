@@ -11,7 +11,7 @@ public class SettingService {
         _owner = user.Id;
     }
 
-    public async Task<GameSetting> LoadAsync(string id, CancellationToken cancellation = default)
+    public async Task<GameSystemSetting> LoadAsync(string id, CancellationToken cancellation = default)
         => await _gameSettings.GetByIdAsync(_owner, id, cancellation)
-           ?? throw new InvalidOperationException($"Game setting '{id}' was not found.");
+           ?? throw new InvalidOperationException($"GameSystem setting '{id}' was not found.");
 }

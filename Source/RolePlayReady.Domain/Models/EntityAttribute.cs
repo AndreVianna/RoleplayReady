@@ -1,16 +1,11 @@
 ﻿namespace RolePlayReady.Models;
 
-public abstract record EntityAttribute : IEntityAttribute {
-    public required IAttribute Attribute { get; init; }
-    public object? Value { get; init; }
-}
-
 public abstract record EntityAttribute<TSelf, TValue>
-    : EntityAttribute,
-      IEntityAttribute<TSelf, TValue>
+    : IEntityAttribute<TSelf, TValue>
     where TSelf : class, IEntityAttribute<TSelf, TValue> {
+    public required IAttributeDefinition AttributeDefinition { get; init; }
     object? IEntityAttribute.Value => Value;
-    public new TValue Value { get; set; } = default!;
+    public TValue Value { get; set; } = default!;
 }
 
 public record EntityFlagAttribute

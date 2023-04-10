@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Models.Contracts;
+﻿namespace RolePlayReady.Models.Abstractions;
 
 public interface IPersistent {
     DateTime Timestamp { get; }

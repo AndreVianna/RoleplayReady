@@ -8,4 +8,3 @@ global using Microsoft.Extensions.Logging;
 
 global using RolePlayReady.DataAccess.Models;
 global using RolePlayReady.Models;
-global using RolePlayReady.Models.Contracts;
