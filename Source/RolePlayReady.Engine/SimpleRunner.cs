@@ -7,7 +7,6 @@ public abstract class SimpleRunner<TContext, TOptions> : IRunner<TContext, TOpti
     private readonly IStepFactory _stepFactory;
     private readonly ILogger _logger;
 
-
     [SetsRequiredMembers]
     protected SimpleRunner(IConfiguration configuration, IStepFactory stepFactory, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger(GetType()) ?? NullLoggerFactory.Instance.CreateLogger(GetType());

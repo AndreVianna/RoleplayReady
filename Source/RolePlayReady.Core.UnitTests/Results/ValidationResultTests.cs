@@ -138,7 +138,6 @@ public class ValidationResultTests {
         validationResult1.Errors.Should().HaveCount(1);
     }
 
-
     [Fact]
     public void PlusOperator_AddNullValidationResult_ThrowsArgumentException() {
         // Arrange

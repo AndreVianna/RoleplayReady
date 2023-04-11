@@ -11,7 +11,6 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
 
     public string? ShortName { get; init; }
 
-
     public IList<string> Tags { get; init; } = new List<string>();
 
     public sealed override string ToString() => $"[{GetType().Name}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}";

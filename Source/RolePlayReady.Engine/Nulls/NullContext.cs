@@ -11,7 +11,6 @@ public sealed class NullContext : IContext {
     public int CurrentStepNumber => 0;
     public IStep? CurrentStep => default;
 
-
     public void Block() { }
     public Task InitializeAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
     public Task UpdateAsync(IStep currentStep, CancellationToken cancellationToken = default) => Task.CompletedTask;

@@ -45,6 +45,6 @@ public class GameSettingServiceTests {
         var result = await _settingService.LoadAsync(id);
 
         // Assert
-        result.Exception.Should().NotBeNull();
+        result.IsNull.Should().BeTrue();
     }
 }

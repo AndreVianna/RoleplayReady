@@ -11,7 +11,6 @@ public class Context : IContext {
     public int CurrentStepNumber { get; private set; }
     public IStep? CurrentStep { get; private set; }
 
-
     public void Block() => IsBlocked = true;
 
     public virtual Task InitializeAsync(CancellationToken cancellationToken = default) {

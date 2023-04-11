@@ -1,23 +1,21 @@
-using RolePlayReady.DataAccess.Repositories.GameSystemSettings;
-
 using static RolePlayReady.Constants.Common;
 
-namespace RolePlayReady.DataAccess.Repositories.GameSettings;
+namespace RolePlayReady.DataAccess.Repositories.GameSystemSettings;
 
-public class GameSettingsRepositoryTests {
-    private readonly ITrackedJsonFileRepository _trackedJsonFileRepository;
+public class GameSystemSettingsRepositoryTests {
+    private readonly ITrackedJsonFileRepository _files;
     private readonly GameSystemSettingsRepository _repository;
 
-    public GameSettingsRepositoryTests() {
-        _trackedJsonFileRepository = Substitute.For<ITrackedJsonFileRepository>();
-        _repository = new GameSystemSettingsRepository(_trackedJsonFileRepository);
+    public GameSystemSettingsRepositoryTests() {
+        _files = Substitute.For<ITrackedJsonFileRepository>();
+        _repository = new GameSystemSettingsRepository(_files);
     }
 
     [Fact]
     public async Task GetManyAsync_ReturnsAllSettings() {
         // Arrange
         var dataFiles = GenerateDataFiles();
-        _trackedJsonFileRepository.GetAllAsync<GameSystemSettingDataModel>(InternalUser, string.Empty).Returns(dataFiles);
+        _files.GetAllAsync<GameSystemSettingDataModel>(InternalUser, string.Empty).Returns(dataFiles);
 
         // Act
         var settings = await _repository.GetManyAsync(InternalUser);
@@ -32,7 +30,7 @@ public class GameSettingsRepositoryTests {
         // Arrange
         var dataFile = GenerateDataFile();
         var tokenSource = new CancellationTokenSource();
-        _trackedJsonFileRepository.GetByIdAsync<GameSystemSettingDataModel>(InternalUser, string.Empty, dataFile.Name, tokenSource.Token).Returns(dataFile);
+        _files.GetByIdAsync<GameSystemSettingDataModel>(InternalUser, string.Empty, dataFile.Name, tokenSource.Token).Returns(dataFile);
 
         // Act
         var setting = await _repository.GetByIdAsync(InternalUser, Guid.Parse(dataFile.Name), tokenSource.Token);
@@ -46,7 +44,7 @@ public class GameSettingsRepositoryTests {
     public async Task GetByIdAsync_SettingNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _trackedJsonFileRepository.GetByIdAsync<GameSystemSettingDataModel>(InternalUser, string.Empty, id.ToString(), Arg.Any<CancellationToken>()).Returns((DataFile<GameSystemSettingDataModel>?)null);
+        _files.GetByIdAsync<GameSystemSettingDataModel>(InternalUser, string.Empty, id.ToString(), Arg.Any<CancellationToken>()).Returns((DataFile<GameSystemSettingDataModel>?)null);
 
         // Act
         var setting = await _repository.GetByIdAsync(InternalUser, id);
@@ -62,7 +60,7 @@ public class GameSettingsRepositoryTests {
         var setting = GenerateSetting();
         var dataFile = GenerateDataFile();
         var tokenSource = new CancellationTokenSource();
-        _trackedJsonFileRepository.UpsertAsync(InternalUser, string.Empty, setting.Id.ToString(), dataFile, tokenSource.Token).Returns(DateTime.Now);
+        _files.UpsertAsync(InternalUser, string.Empty, setting.Id.ToString(), dataFile, tokenSource.Token).Returns(DateTime.Now);
 
         // Act
         var result = await _repository.InsertAsync(InternalUser, setting, tokenSource.Token);
@@ -88,6 +86,7 @@ public class GameSettingsRepositoryTests {
     public void Delete_RemovesSetting() {
         // Arrange
         var id = Guid.NewGuid();
+        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns(new Result<bool>(true));
 
         // Act
         var result = _repository.Delete(InternalUser, id);
@@ -116,7 +115,6 @@ public class GameSettingsRepositoryTests {
                 }
             }
         };
-
 
     private static GameSystemSetting GenerateSetting()
         => new GameSystemSetting() {

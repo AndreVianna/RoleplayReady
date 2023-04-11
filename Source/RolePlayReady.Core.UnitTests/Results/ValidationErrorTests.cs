@@ -21,7 +21,6 @@ public class ValidationErrorTests {
             Message = " "
         };
 
-
         //Assert
         action.Should().Throw<ArgumentException>().WithMessage("The value cannot be null or whitespaces. (Parameter 'Message')");
     }

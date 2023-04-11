@@ -1,5 +1,6 @@
 global using System.Abstractions;
 global using System.Globalization;
+global using System.Results;
 global using System.Text;
 
 global using FluentAssertions;

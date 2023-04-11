@@ -32,7 +32,6 @@ public class SimpleRunnerTests {
         context.IsBlocked.Should().BeFalse();
     }
 
-
     [Fact]
     public async Task RunAsync_FromInterface_ExecutesSteps() {
         // Arrange

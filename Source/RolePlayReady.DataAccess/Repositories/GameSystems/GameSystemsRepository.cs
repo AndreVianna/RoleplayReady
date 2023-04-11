@@ -25,7 +25,6 @@ public class GameSystemsRepository : IGameSystemsRepository {
         return file.Map(i => i.Map());
     }
 
-
     public async Task<Result<GameSystem>> InsertAsync(string owner, GameSystem input, CancellationToken cancellation = default) {
         var result = await _files.UpsertAsync(owner, string.Empty, Guid.NewGuid().ToString(), input.Map(), cancellation).ConfigureAwait(false);
         return input with { Timestamp = result.Value };
