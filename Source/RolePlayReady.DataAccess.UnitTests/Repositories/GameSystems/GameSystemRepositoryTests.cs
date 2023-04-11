@@ -1,4 +1,4 @@
-using static RolePlayReady.Constants.Common;
+using static RolePlayReady.Constants.Constants;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
@@ -110,7 +110,7 @@ public class GameSystemsRepositoryTests {
         };
 
     private static GameSystem GenerateSetting()
-        => new GameSystem() {
+        => new() {
             Id = Guid.NewGuid(),
             ShortName = "SomeId",
             Timestamp = DateTime.Now,

@@ -14,7 +14,7 @@ public class ResultTests {
 
     [Fact]
     public void ImplicitConversion_FromNull_ReturnsMethodResultWithException() {
-        Result<string> result = default(string);
+        Result<string> result = default(string)!;
 
         result.HasValue.Should().BeFalse();
         result.Exception.Should().NotBeNull();
@@ -100,7 +100,6 @@ public class ResultTests {
         result.HasValue.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
     }
-
 
     [Fact]
     public void Result_MapFromException_BecomesException() {

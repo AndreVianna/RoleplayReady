@@ -83,6 +83,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             _logger.LogError(ex, "Failed to add or update file '{path}/{id}'!", errorFolder, id);
             return ex;
         }
+
         return now;
     }
 
@@ -110,6 +111,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             _logger.LogError(ex, "Failed to delete file '{path}/{id}'!", errorFolder, id);
             return ex;
         }
+
         return true;
     }
 
@@ -135,6 +137,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             _logger.LogWarning(ex, "File '{filePath}' content is invalid.", filePath);
             return ex;
         }
+
         return result;
     }
 

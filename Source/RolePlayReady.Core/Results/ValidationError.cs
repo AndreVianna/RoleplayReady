@@ -1,11 +1,12 @@
 ﻿namespace System.Results;
 
 public record ValidationError {
-    private readonly string _message = string.Empty;
-    public required string Message {
-        get => _message;
-        init => _message = Throw.IfNullOrWhiteSpaces(value, "The value cannot be null or whitespaces.", nameof(Message));
+    [SetsRequiredMembers]
+    public ValidationError(string message, string source) {
+        Message = message;
+        Source = source;
     }
 
-    public string? Field { get; init; }
+    public required string Message { get; init; }
+    public required string Source { get; init; }
 }

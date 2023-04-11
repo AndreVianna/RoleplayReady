@@ -1,4 +1,4 @@
-using static RolePlayReady.Constants.Common;
+using static RolePlayReady.Constants.Constants;
 
 namespace RolePlayReady.Handlers;
 

@@ -4,7 +4,7 @@ public class InvalidTests {
     [Fact]
     public void Constructor_OneValidationError_SetsErrors() {
         // Arrange
-        var error = ResultFactory.Error("Error message");
+        var error = ResultFactory.Error("Error message", "Source");
 
         // Act
         var invalid = new Invalid(error);
@@ -26,8 +26,8 @@ public class InvalidTests {
     public void Constructor_MultipleValidationErrors_SetsErrors() {
         // Arrange
         var errors = new[] {
-            ResultFactory.Error("Error message 1"),
-            ResultFactory.Error("Error message 2"),
+            ResultFactory.Error("Error message 1", "Source"),
+            ResultFactory.Error("Error message 2", "Source"),
         };
 
         // Act
@@ -62,9 +62,9 @@ public class InvalidTests {
     public void Constructor_ValidationErrorCollectionWithNullElement_ThrowsArgumentException() {
         // Arrange
         var errors = new[] {
-            ResultFactory.Error("Error message 1"),
+            ResultFactory.Error("Error message 1", "Source"),
             null,
-            ResultFactory.Error("Error message 2"),
+            ResultFactory.Error("Error message 2", "Source"),
         };
 
         // Act
