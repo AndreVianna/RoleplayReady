@@ -86,7 +86,7 @@ public class GameSystemsRepositoryTests {
     public void Delete_RemovesSetting() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns(new Result<bool>(true));
+        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns<Result<bool>>(true);
 
         // Act
         var result = _repository.Delete(InternalUser, id);

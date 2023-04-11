@@ -34,7 +34,7 @@ public readonly struct Result<TObject> {
         : !input.IsNull
             ? new(input.Exception)
             : new(new InvalidCastException("The value cannot be null null."));
-    public static implicit operator Result<TObject>(TObject? input) => input is not null
+    public static implicit operator Result<TObject>(TObject input) => input is not null
         ? new(input)
         : new(new InvalidCastException("The value cannot be null null."));
     public static implicit operator Result<TObject>(Exception input) => new(input);

@@ -1,6 +1,4 @@
-﻿using System.Results;
-
-namespace RolePlayReady.DataAccess.Repositories;
+﻿namespace RolePlayReady.DataAccess.Repositories;
 
 public interface ITrackedJsonFileRepository {
     Task<Result<IEnumerable<IDataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default);
