@@ -1,6 +1,4 @@
-﻿using System.Validations.Abstractions;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
 
@@ -22,10 +20,10 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
 
     public virtual ValidationResult Validate() {
         var result = ValidationResult.Valid;
-        result += Name.Is().Required.And.NotEmptyOrWhiteSpace.And.NoLongerThan(MaxNameSize).Result;
-        result += Description.Is().Required.And.NotEmptyOrWhiteSpace.And.NoLongerThan(MaxDescriptionSize).Result;
-        result += ShortName.Is().NotEmptyOrWhiteSpace.And.NoLongerThan(MaxShortNameSize).Result;
-        result += Tags.Is().Required.And.AllAre(t => t.Required.And.NoLongerThan(MaxTagSize)).Result;
+        result += Name.Is().NotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxNameSize).Result;
+        result += Description.Is().NotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxDescriptionSize).Result;
+        result += ShortName.Is().NotEmptyOrWhiteSpace().And.NoLongerThan(MaxShortNameSize).Result;
+        result += Tags.ListIs().NotNull().And.ItemsAre(t => t.NotNull().And.NoLongerThan(MaxTagSize)).Result;
         return result;
     }
 

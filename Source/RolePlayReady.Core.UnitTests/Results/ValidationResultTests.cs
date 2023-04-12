@@ -47,7 +47,7 @@ public class ValidationResultTests {
     [Fact]
     public void ImplicitOperator_FromList_HasErrors() {
         // Arrange
-        var errors = new List<ValidationError?> { ResultFactory.Error("Error message", "Source") };
+        var errors = new List<ValidationError> { ResultFactory.Error("Error message", "Source") };
 
         // Act
         ValidationResult validationResult = errors;
@@ -91,6 +91,19 @@ public class ValidationResultTests {
 
         // Act
         validationResult += error;
+
+        // Assert
+        validationResult.HasErrors.Should().BeTrue();
+        validationResult.Errors.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void PlusOperator_AddValid_DoNotChange() {
+        // Arrange
+        ValidationResult validationResult = ResultFactory.Error("Error message", "Source");
+
+        // Act
+        validationResult += ResultFactory.Valid;
 
         // Assert
         validationResult.HasErrors.Should().BeTrue();

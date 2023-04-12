@@ -10,7 +10,7 @@ public class BaseTests {
     public void Constructor_WithDateTime_SetsTimestamp() {
         var dateTime = Substitute.For<IDateTime>();
         dateTime.Now.Returns(DateTime.Parse("2001-01-01 00:00:00"));
-        var testBase = new BaseTests.TestBase(dateTime) {
+        var testBase = new TestBase(dateTime) {
             Id = "TN",
             Name = "TestName",
             Description = "TestDescription",
@@ -28,7 +28,7 @@ public class BaseTests {
 
     [Fact]
     public void Constructor_WithoutDateTime_SetsTimestampToUtcNow() {
-        var testBase = new BaseTests.TestBase {
+        var testBase = new TestBase {
             Id = "TN",
             Name = "TestName",
             Description = "TestDescription",
@@ -41,7 +41,6 @@ public class BaseTests {
         testBase.ToString().Should().Be("[TestBase] TestName (TST)");
     }
 
-
     [Theory]
     [InlineData(null, null, null, null, 3)]
     [InlineData(0, 0, 0, 0, 3)]
@@ -49,14 +48,13 @@ public class BaseTests {
     [InlineData(1, 1, 1, 1, 0)]
     [InlineData(TestBase.MaxNameSize + 1, TestBase.MaxDescriptionSize + 1, TestBase.MaxShortNameSize + 1, TestBase.MaxShortNameSize + 1, 3)]
     public void Validate_Validates(int? nameSize, int? descriptionSize, int? shortNameSize, int? tagsSize, int expectedErrorCount) {
-        var testBase = new BaseTests.TestBase {
+        var testBase = new TestBase {
             Id = "TN",
             Name = TestDataHelpers.GenerateTestString(nameSize)!,
             Description = TestDataHelpers.GenerateTestString(descriptionSize)!,
             ShortName = TestDataHelpers.GenerateTestString(shortNameSize)!,
             Tags = TestDataHelpers.GenerateTestCollection(tagsSize, "Valid")!
         };
-
 
         var result = testBase.Validate();
 

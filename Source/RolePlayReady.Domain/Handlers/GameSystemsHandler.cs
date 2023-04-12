@@ -30,6 +30,5 @@ public class GameSystemsHandler {
         => await _repository.UpdateAsync(_owner, input, cancellation);
 
     public Result<bool> Remove(Guid id)
-        // Add validations here.
         => _repository.Delete(_owner, id);
 }
