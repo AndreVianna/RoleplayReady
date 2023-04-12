@@ -58,18 +58,8 @@ public class MaybeTests {
     }
 
     [Fact]
-    public void ImplicitConversion_ToException_BecomesException() {
-        var input = new Maybe<string>((Exception)new InvalidOperationException("Some error."));
-
-        Exception result = input;
-
-        result.Should().BeOfType<InvalidOperationException>();
-        result.Message.Should().Be("Some error.");
-    }
-
-    [Fact]
     public void ImplicitConversion_FromResult_Value_BecomesValue() {
-        var input = new Result<string>("TestValue");
+        var input = new Object<string>("TestValue");
 
         Maybe<string> result = input;
 
@@ -78,7 +68,7 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromResult_Null_BecomesException() {
-        var input = new Result<string>();
+        var input = new Object<string>();
 
         Maybe<string> result = input;
 
@@ -88,7 +78,7 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromResult_Exception_BecomesValue() {
-        var input = new Result<string>(new InvalidOperationException("Some Error"));
+        var input = new Object<string>(new InvalidOperationException("Some Error"));
 
         Maybe<string> result = input;
 

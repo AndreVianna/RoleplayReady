@@ -4,7 +4,7 @@ public class ValidTests {
     [Fact]
     public void Constructor_CanBeInstantiated() {
         // Act
-        var valid = Valid.Instance;
+        var valid = Success.Instance;
 
         // Assert
         valid.Should().NotBeNull();

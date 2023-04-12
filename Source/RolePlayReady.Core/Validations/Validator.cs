@@ -25,5 +25,5 @@ public abstract class Validator<TSubject, TChecks, TConnectors>
             Errors.Add(new(string.Format(ErrorMessages.Null, Source), Source));
         return (TConnectors)(IConnectors<TChecks>)this;
     }
-    public ValidationResult Result => Errors.ToArray();
+    public Validation Result => Errors.ToArray();
 }

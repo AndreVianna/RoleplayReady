@@ -1,51 +1,38 @@
-﻿namespace System.Results;
+﻿using OneOf.Types;
 
-public readonly struct Maybe<TObject> {
-    private readonly OneOf<TObject, Default<TObject>, Exception> _result;
+namespace System.Results;
 
-    public Maybe() {
-        _result = Default<TObject>.Instance;
+public class Maybe<TObject> : Result<Maybe<TObject>, TObject>
+{
+    public Maybe() : base(default(TObject)) {
     }
 
-    public Maybe(TObject result) {
-        _result = result;
+    public Maybe(TObject value) : base(value) {
     }
 
-    public Maybe(Exception exception) {
-        _result = exception;
+    public Maybe(ICollection<ValidationError> errors) : base(errors) {
     }
 
-    public bool HasValue => _result.IsT0;
-    public bool IsNull => _result.IsT1;
-
-    public TObject Value => _result.IsT0
-        ? _result.AsT0
-        : _result.IsT2
-            ? throw Exception
-            : throw new InvalidCastException($"Cannot return as 'Default<{typeof(TObject).Name}>' a '{typeof(TObject).Name}' value.");
-    public TObject? Default => _result.IsT1
-        ? _result.AsT1.Value
-        : _result.IsT2
-            ? throw Exception
-            : throw new InvalidCastException($"Cannot return as '{typeof(TObject).Name}' a 'Default<{typeof(TObject).Name}>' value.");
-    public Exception Exception => _result.IsT2
-        ? _result.AsT2
-        : throw new InvalidCastException($"Cannot return as 'Exception' a '{typeof(TObject).Name}?' value.");
-
-    public void Throw() {
-        if (_result.IsT2)
-            throw Exception;
+    public Maybe(Exception exception) : base(exception) {
     }
 
-    public static implicit operator Maybe<TObject>(Result<TObject> input) => input.HasValue
-        ? new(input.Value)
-        : new(input.Exception);
-    public static implicit operator Maybe<TObject>(TObject? input) => input is null
-        ? new()
-        : new(input);
-    public static implicit operator Maybe<TObject>(Exception input) => new(input);
-    public static implicit operator Exception(Maybe<TObject> input) => input.Exception;
-    public static implicit operator TObject?(Maybe<TObject> input) => input.IsNull
-        ? input.Default
-        : input.Value;
+    public override bool IsNull => base.IsSuccess && base.ObjectValue is null;
+
+    public override TObject? Default => IsNull
+        ? default
+        : throw (IsException ? Exception : new InvalidCastException(ResultIsNotNull));
+
+    public static implicit operator Maybe<TObject>(Object<TObject> @object) => CreateFor(@object);
+    public static implicit operator Maybe<TObject>(TObject? value) => CreateFor(value);
+    public static implicit operator Maybe<TObject>(Exception exception) => CreateFor(exception);
+    public static implicit operator Maybe<TObject>(Failure failure) => CreateFor(failure.Errors);
+    public static implicit operator Maybe<TObject>(List<ValidationError> errors) => CreateFor(errors);
+    public static implicit operator Maybe<TObject>(ValidationError[] errors) => CreateFor(errors);
+    public static implicit operator Maybe<TObject>(ValidationError error) => CreateFor(new[] { error });
+
+    public static implicit operator TObject?(Maybe<TObject> input) => input.ObjectValue;
+
+    public static Maybe<TObject> operator +(Maybe<TObject> left, Success _) => left;
+    public static Maybe<TObject> operator +(Maybe<TObject> left, ValidationError right) => left.AddErrors(new[] { right });
+    public static Maybe<TObject> operator +(Maybe<TObject> left, ICollection<ValidationError> right) => left.AddErrors(right);
 }

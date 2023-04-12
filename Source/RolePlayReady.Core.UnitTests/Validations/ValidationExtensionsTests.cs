@@ -26,12 +26,12 @@ public class ValidationExtensionsTests {
     }
 
     [Fact]
-    public void ItemsAre_ReturnsBuilder() {
+    public void IteIs_ReturnsBuilder() {
         // Arrange
         var subjects = new[] { "test" };
 
         // Act
-        var result = subjects.ItemsAre(v => v.NotNull());
+        var result = subjects.ItemIs(v => v.NotNull());
 
         // Assert
         result.Should().BeOfType<StringsValidator>();

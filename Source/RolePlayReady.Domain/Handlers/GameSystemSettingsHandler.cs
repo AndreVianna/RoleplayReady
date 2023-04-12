@@ -12,7 +12,7 @@ public class GameSystemSettingsHandler {
         _owner = user.Id;
     }
 
-    public async Task<Result<IEnumerable<GameSystemSetting>>> GetManyAsync(CancellationToken cancellation = default)
+    public async Task<Object<IEnumerable<GameSystemSetting>>> GetManyAsync(CancellationToken cancellation = default)
         // Add validations here.
         => await _repository.GetManyAsync(_owner, cancellation);
 
@@ -20,15 +20,15 @@ public class GameSystemSettingsHandler {
         // Add validations here.
         => await _repository.GetByIdAsync(_owner, id, cancellation);
 
-    public async Task<Result<GameSystemSetting>> AddAsync(GameSystemSetting input, CancellationToken cancellation = default)
+    public async Task<Object<GameSystemSetting>> AddAsync(GameSystemSetting input, CancellationToken cancellation = default)
         // Add validations here.
         => await _repository.InsertAsync(_owner, input, cancellation);
 
-    public async Task<Result<GameSystemSetting>> UpdateAsync(GameSystemSetting input, CancellationToken cancellation = default)
+    public async Task<Object<GameSystemSetting>> UpdateAsync(GameSystemSetting input, CancellationToken cancellation = default)
         // Add validations here.
         => await _repository.UpdateAsync(_owner, input, cancellation);
 
-    public Result<bool> Remove(Guid id)
+    public Object<bool> Remove(Guid id)
         // Add validations here.
         => _repository.Delete(_owner, id);
 }

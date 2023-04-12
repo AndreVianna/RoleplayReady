@@ -1,6 +1,10 @@
 ﻿namespace System.Constants;
 
 public static class Constants {
+    public static class Singletons {
+        public static readonly ReadOnlyCollection<ValidationError> NoErrors = new(Array.Empty<ValidationError>());
+    }
+
     public static class ErrorMessages {
         public const string Null = "'{0}' is required.";
         public const string Empty = "'{0}' cannot be empty.";
@@ -19,5 +23,13 @@ public static class Constants {
         public const string SmallerThan = "'{0}' cannot have less than {1} items.";
 
         public const string InvalidCount = "'{0}' cannot have less than {1} or more than {2} items.";
+
+
+
+        public const string ResultIsNotValid = "The result is not valid.";
+        public const string ResultHasNoValue = "The result is null or invalid.";
+        public const string ResultIsNotNull = "The result is not null.";
+        public const string ResultIsNotInvalid = "The result is not invalid.";
+        public const string ResultHasNoExceptions = "The result has no exceptions.";
     }
 }

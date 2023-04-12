@@ -1,27 +1,26 @@
 ﻿namespace System.Results;
 
-public static class Mapper
-{
-    public static Maybe<TResult> Map<TInput, TResult>(this Maybe<TInput> input, Func<TInput, TResult> map)
+public static class ResultExtensions {
+    public static Maybe<TOutput> Map<TInput, TOutput>(this Maybe<TInput> input, Func<TInput, TOutput> map)
         => input.HasValue
             ? new(map(input.Value))
             : input.IsNull
                 ? new()
                 : new(input.Exception);
 
-    public static Maybe<IEnumerable<TResult>> Map<TInput, TResult>(this Maybe<IEnumerable<TInput>> input, Func<TInput, TResult> map)
+    public static Maybe<IEnumerable<TOutput>> Map<TInput, TOutput>(this Maybe<IEnumerable<TInput>> input, Func<TInput, TOutput> map)
         => input.HasValue
             ? new(input.Value.Select(map))
             : input.IsNull
                 ? new()
                 : new(input.Exception);
 
-    public static Result<TResult> Map<TInput, TResult>(this Result<TInput> input, Func<TInput, TResult> map)
+    public static Object<TOutput> Map<TInput, TOutput>(this Object<TInput> input, Func<TInput, TOutput> map)
         => input.HasValue
             ? new(map(input.Value))
             : new(input.Exception);
 
-    public static Result<IEnumerable<TResult>> Map<TInput, TResult>(this Result<IEnumerable<TInput>> input, Func<TInput, TResult> map)
+    public static Object<IEnumerable<TOutput>> Map<TInput, TOutput>(this Object<IEnumerable<TInput>> input, Func<TInput, TOutput> map)
         => input.HasValue
             ? new(input.Value.Select(map))
             : new(input.Exception);

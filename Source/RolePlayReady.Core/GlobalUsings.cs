@@ -11,3 +11,6 @@ global using System.Text.RegularExpressions;
 global using System.Validations.Abstractions;
 
 global using OneOf;
+
+global using static System.Constants.Constants.ErrorMessages;
+global using static System.Constants.Constants.Singletons;

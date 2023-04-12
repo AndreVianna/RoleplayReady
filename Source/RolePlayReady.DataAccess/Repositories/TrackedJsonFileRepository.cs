@@ -23,7 +23,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         _baseFolderPath = Ensure.NotNullOrWhiteSpace(baseFolder, keyId).Trim();
     }
 
-    public async Task<Result<IEnumerable<IDataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
+    public async Task<Object<IEnumerable<IDataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting files from '{path}'...", folderPath);
@@ -66,7 +66,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         }
     }
 
-    public async Task<Result<DateTime>> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
+    public async Task<Object<DateTime>> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
         var now = _dateTime.Now;
         try {
             var folderPath = GetFolderFullPath(owner, path);
@@ -89,7 +89,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         return now;
     }
 
-    public Result<bool> Delete(string owner, string path, string id) {
+    public Object<bool> Delete(string owner, string path, string id) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Deleting file '{path}/{id}'...", folderPath, id);

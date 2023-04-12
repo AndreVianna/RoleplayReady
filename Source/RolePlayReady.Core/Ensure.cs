@@ -1,6 +1,4 @@
-﻿using static System.Constants.Constants.ErrorMessages;
-
-namespace System;
+﻿namespace System;
 
 public static class Ensure {
     [return: NotNull]

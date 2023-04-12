@@ -7,7 +7,7 @@ public class InvalidTests {
         var error = ResultFactory.Error("Error message", "Source");
 
         // Act
-        var invalid = new Invalid(error);
+        var invalid = new Failure(error);
 
         // Assert
         invalid.Errors.Should().ContainSingle().Which.Should().Be(error);
@@ -16,7 +16,7 @@ public class InvalidTests {
     [Fact]
     public void Constructor_NullValidationError_ThrowsArgumentNullException() {
         // Act
-        Action act = () => _ = new Invalid(default(ValidationError));
+        Action act = () => _ = new Failure(default(ValidationError));
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithMessage("'error' is required. (Parameter 'error')");
@@ -31,7 +31,7 @@ public class InvalidTests {
         };
 
         // Act
-        var invalid = new Invalid(errors);
+        var invalid = new Failure(errors);
 
         // Assert
         invalid.Errors.Should().BeEquivalentTo(errors);
@@ -40,7 +40,7 @@ public class InvalidTests {
     [Fact]
     public void Constructor_NullValidationErrorCollection_ThrowsArgumentException() {
         // Act
-        Action act = () => _ = new Invalid(default(ICollection<ValidationError?>)!);
+        Action act = () => _ = new Failure(default(ICollection<ValidationError?>)!);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("'errors' is required. (Parameter 'errors')");
@@ -52,7 +52,7 @@ public class InvalidTests {
         var errors = Array.Empty<ValidationError?>();
 
         // Act
-        Action act = () => _ = new Invalid(errors!);
+        Action act = () => _ = new Failure(errors!);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("'errors' cannot be empty. (Parameter 'errors')");
@@ -68,7 +68,7 @@ public class InvalidTests {
         };
 
         // Act
-        Action act = () => _ = new Invalid(errors!);
+        Action act = () => _ = new Failure(errors!);
 
         // Assert
         act.Should().Throw<ArgumentException>().WithMessage("'errors' cannot contain null items. (Parameter 'errors')");

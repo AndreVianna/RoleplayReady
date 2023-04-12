@@ -9,7 +9,7 @@ public class StringsValidator :
             : base(subject, source) {
     }
 
-    public IStringsConnectors ItemsAre(Func<StringValidator, IStringConnectors> validate) {
+    public IStringsConnectors EachItemIs(Func<StringValidator, IStringConnectors> validate) {
         if (Subject is null)
             return this;
         for (var index = 0; index < Subject.Count; index++) {
