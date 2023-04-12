@@ -8,7 +8,7 @@ public class GameSystemsRepositoryTests {
 
     public GameSystemsRepositoryTests() {
         _files = Substitute.For<ITrackedJsonFileRepository>();
-        _repository = new GameSystemsRepository(_files);
+        _repository = new(_files);
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class GameSystemsRepositoryTests {
         => new() {
             Name = Guid.NewGuid().ToString(),
             Timestamp = DateTime.Now,
-            Content = new GameSystemDataModel {
+            Content = new() {
                 Name = "Some Name",
                 Description = "Some Description",
                 Tags = new[] { "SomeTag" },

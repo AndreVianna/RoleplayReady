@@ -1,6 +1,6 @@
-﻿namespace System.Validations;
+﻿namespace System.Validations.Abstractions;
 
 public interface IStringValidationConnector<out TBuilder> {
     TBuilder And { get; }
-    ValidationError[] Errors { get; }
+    ValidationResult Result { get; }
 }

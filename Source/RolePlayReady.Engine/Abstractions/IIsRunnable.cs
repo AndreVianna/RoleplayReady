@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Engine.Contracts;
+﻿namespace RolePlayReady.Engine.Abstractions;
 
 public interface IIsRunnable<TContext, TResult> : IIsRunnable
     where TContext : class, IContext {

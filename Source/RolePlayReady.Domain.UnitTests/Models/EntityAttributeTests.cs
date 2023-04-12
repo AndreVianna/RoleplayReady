@@ -50,7 +50,7 @@ public class EntitySetAttributeTests {
 
         var entitySetAttribute = new EntitySetAttribute<int> {
             AttributeDefinition = attribute,
-            Value = new HashSet<int> { 1, 2, 3 }
+            Value = new() { 1, 2, 3 }
         };
 
         entitySetAttribute.AttributeDefinition.Should().Be(attribute);
@@ -69,7 +69,7 @@ public class EntityListAttributeTests {
 
         var entityListAttribute = new EntityListAttribute<int> {
             AttributeDefinition = attribute,
-            Value = new List<int> { 1, 2, 3 }
+            Value = new() { 1, 2, 3 }
         };
 
         entityListAttribute.AttributeDefinition.Should().Be(attribute);
@@ -88,7 +88,7 @@ public class EntityDictionaryAttributeTests {
 
         var entityDictionaryAttribute = new EntityDictionaryAttribute<string, int> {
             AttributeDefinition = attribute,
-            Value = new Dictionary<string, int> { { "one", 1 }, { "two", 2 }, { "three", 3 } }
+            Value = new() { { "one", 1 }, { "two", 2 }, { "three", 3 } }
         };
 
         entityDictionaryAttribute.AttributeDefinition.Should().Be(attribute);

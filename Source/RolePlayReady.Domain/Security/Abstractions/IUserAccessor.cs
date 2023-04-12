@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Security;
+﻿namespace RolePlayReady.Security.Abstractions;
 
 public interface IUserAccessor {
     string Id { get; }

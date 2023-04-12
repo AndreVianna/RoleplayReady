@@ -1,13 +1,15 @@
-﻿namespace RolePlayReady.Engine;
+﻿using RolePlayReady.Engine.Steps.Abstractions;
+
+namespace RolePlayReady.Engine.Steps;
 
 public class StepFactory : IStepFactory {
     private readonly IServiceProvider _services;
 
     public StepFactory(IServiceProvider services) {
-        _services = Throw.IfNull(services);
+        _services = Ensure.NotNull(services);
     }
 
     public virtual IStep Create(Type stepType)
-        => _services.GetService(Throw.IfNull(stepType)) as IStep
+        => _services.GetService(Ensure.NotNull(stepType)) as IStep
             ?? throw new InvalidOperationException($"Step '{stepType.Name}' not found.");
 }

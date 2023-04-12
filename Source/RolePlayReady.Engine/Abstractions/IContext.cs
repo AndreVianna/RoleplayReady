@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine.Contracts;
+﻿using RolePlayReady.Engine.Steps.Abstractions;
+
+namespace RolePlayReady.Engine.Abstractions;
 
 public interface IContext : IAsyncDisposable {
     IServiceProvider Services { get; }

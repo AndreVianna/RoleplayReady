@@ -9,5 +9,6 @@ global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Repositories;
 global using RolePlayReady.Security;
+global using RolePlayReady.Utilities;
 
 global using Xunit;

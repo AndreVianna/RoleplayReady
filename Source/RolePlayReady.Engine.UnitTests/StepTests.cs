@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine;
+﻿using RolePlayReady.Engine.Steps.Abstractions;
+
+namespace RolePlayReady.Engine;
 
 public class StepTests {
     private readonly IStepFactory _stepFactory;
@@ -135,7 +137,7 @@ public class StepTests {
         var step = new TestEndStep();
 
         // Act
-        await step.TestOnErrorAsync(new Exception("Some message."));
+        await step.TestOnErrorAsync(new("Some message."));
 
         // Assert
         // No exception should be thrown, and the test should pass.

@@ -1,7 +1,7 @@
 ﻿namespace System.Validations;
 
 public class StringCollectionValidationBuilder : IStringValidationConnector<IStringCollectionValidators>, IStringCollectionValidators {
-    private readonly IList<string> _subject;
+    private readonly IList<string>? _subject;
     private readonly string _source;
     private readonly List<ValidationError> _errors = new();
 
@@ -14,16 +14,17 @@ public class StringCollectionValidationBuilder : IStringValidationConnector<IStr
 
     public IStringValidationConnector<IStringCollectionValidators> Required {
         get {
-            if (_subject.Any())
-                _errors.Add(new ValidationError(Constants.Constants.ErrorMessages.NullOrEmpty, _source));
+            if (_subject is null)
+                _errors.Add(new(Constants.Constants.ErrorMessages.Null, _source));
             return this;
         }
     }
 
-    public IStringValidationConnector<IStringCollectionValidators> AreAll(Func<IStringValidators, IStringValidationConnector<IStringValidators>> validate) {
+    public IStringValidationConnector<IStringCollectionValidators> AllAre(Func<IStringValidators, IStringValidationConnector<IStringValidators>> validate) {
+        if (_subject is null) return this;
         for (var index = 0; index < _subject.Count; index++) {
             var validation = StringValidationBuilder.For(_subject[index], $"{_source}[{index}]");
-            _errors.AddRange(validate(validation).Errors);
+            _errors.AddRange(validate(validation).Result.Errors);
         }
 
         return this;
@@ -31,5 +32,5 @@ public class StringCollectionValidationBuilder : IStringValidationConnector<IStr
 
     public IStringCollectionValidators And => this;
 
-    public ValidationError[] Errors => _errors.ToArray();
+    public ValidationResult Result => _errors.ToArray();
 }

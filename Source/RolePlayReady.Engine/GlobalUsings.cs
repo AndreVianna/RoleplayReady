@@ -10,6 +10,5 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Logging.Abstractions;
 global using Microsoft.Extensions.Options;
 
-global using RolePlayReady.Engine.Contracts;
 global using RolePlayReady.Engine.Exceptions;
 global using RolePlayReady.Engine.Steps;

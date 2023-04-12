@@ -1,4 +1,6 @@
-﻿using DataModel = RolePlayReady.DataAccess.Repositories.GameSystemSettings.GameSystemSettingDataModel;
+﻿using RolePlayReady.Repositories.Abstractions;
+
+using DataModel = RolePlayReady.DataAccess.Repositories.GameSystemSettings.GameSystemSettingDataModel;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSystemSettings;
 

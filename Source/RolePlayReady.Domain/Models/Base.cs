@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Models;
+﻿using System.Validations.Abstractions;
+
+namespace RolePlayReady.Models;
 
 public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
 
@@ -6,26 +8,24 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
         : base(dateTime) {
     }
 
-    private const int _maxNameSize = 100;
+    public const int MaxNameSize = 100;
     public required string Name { get; init; }
-    private const int _maxDescriptionSize = 1000;
+
+    public const int MaxDescriptionSize = 1000;
     public required string Description { get; init; }
 
-    private const int _maxShortNameSize = 10;
+    public const int MaxShortNameSize = 10;
     public string? ShortName { get; init; }
 
-    private const int _maxTagSize = 20;
+    public const int MaxTagSize = 20;
     public IList<string> Tags { get; init; } = new List<string>();
 
-    public virtual ValidationResult Validate() => Validate<object>();
-
-    public virtual ValidationResult Validate<TContext>(TContext? context = null)
-        where TContext : class {
+    public virtual ValidationResult Validate() {
         var result = ValidationResult.Valid;
-        result += Name.Is().Required.And.NoLongerThan(_maxNameSize).Errors;
-        result += Description.Is().Required.And.NoLongerThan(_maxDescriptionSize).Errors;
-        result += ShortName.Is().NoLongerThan(_maxShortNameSize).Errors;
-        result += Tags.AreAll(t => t.Required.And.NoLongerThan(_maxTagSize)).Errors;
+        result += Name.Is().Required.And.NotEmptyOrWhiteSpace.And.NoLongerThan(MaxNameSize).Result;
+        result += Description.Is().Required.And.NotEmptyOrWhiteSpace.And.NoLongerThan(MaxDescriptionSize).Result;
+        result += ShortName.Is().NotEmptyOrWhiteSpace.And.NoLongerThan(MaxShortNameSize).Result;
+        result += Tags.Is().Required.And.AllAre(t => t.Required.And.NoLongerThan(MaxTagSize)).Result;
         return result;
     }
 

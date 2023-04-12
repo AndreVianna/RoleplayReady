@@ -3,7 +3,7 @@
 public static class String {
 
     //private static readonly Regex _splitIntoWordsRegex = new Regex(@"[^a-zA-Z0-9]+", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
-    private static readonly Regex _splitIntoWordsRegex = new Regex(@"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|[^a-zA-Z0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
+    private static readonly Regex _splitIntoWordsRegex = new(@"(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\d)|[^a-zA-Z0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
 
     public static string ToPascalCase(this string input) {
         var words = _splitIntoWordsRegex.Split(input.Trim().Replace("'", "")).Where(s => s != string.Empty).ToArray();

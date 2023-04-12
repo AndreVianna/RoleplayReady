@@ -19,7 +19,7 @@ public class InvalidTests {
         Action act = () => _ = new Invalid(default(ValidationError));
 
         // Assert
-        act.Should().Throw<ArgumentNullException>().WithMessage("The value cannot be null. (Parameter 'error')");
+        act.Should().Throw<ArgumentNullException>().WithMessage("'error' is required. (Parameter 'error')");
     }
 
     [Fact]
@@ -40,10 +40,10 @@ public class InvalidTests {
     [Fact]
     public void Constructor_NullValidationErrorCollection_ThrowsArgumentException() {
         // Act
-        Action act = () => _ = new Invalid(default(IEnumerable<ValidationError?>));
+        Action act = () => _ = new Invalid(default(ICollection<ValidationError?>)!);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("The collection cannot be null or empty. (Parameter 'errors')");
+        act.Should().Throw<ArgumentException>().WithMessage("'errors' is required. (Parameter 'errors')");
     }
 
     [Fact]
@@ -52,10 +52,10 @@ public class InvalidTests {
         var errors = Array.Empty<ValidationError?>();
 
         // Act
-        Action act = () => _ = new Invalid(errors);
+        Action act = () => _ = new Invalid(errors!);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("The collection cannot be null or empty. (Parameter 'errors')");
+        act.Should().Throw<ArgumentException>().WithMessage("'errors' cannot be empty. (Parameter 'errors')");
     }
 
     [Fact]
@@ -68,9 +68,9 @@ public class InvalidTests {
         };
 
         // Act
-        Action act = () => _ = new Invalid(errors);
+        Action act = () => _ = new Invalid(errors!);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("The collection cannot contain null items. (Parameter 'errors')");
+        act.Should().Throw<ArgumentException>().WithMessage("'errors' cannot contain null items. (Parameter 'errors')");
     }
 }

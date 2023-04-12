@@ -1,14 +1,14 @@
 ﻿namespace System.Results;
 
 public record Invalid {
-    public Invalid(IEnumerable<ValidationError?>? errors) {
-        var validationErrors = Throw.IfNullOrEmptyOrContainNulls(errors).ToArray();
+    public Invalid(ICollection<ValidationError> errors) {
+        var validationErrors = Ensure.NotNullOrEmptyOrHasNull(errors).ToArray();
         Errors = new ReadOnlyCollection<ValidationError>(validationErrors);
     }
 
     public Invalid(ValidationError? error)
-        : this(new[] { Throw.IfNull(error) }) {
+        : this(new[] { Ensure.NotNull(error) }) {
     }
 
-    public IEnumerable<ValidationError> Errors { get; }
+    public ICollection<ValidationError> Errors { get; }
 }

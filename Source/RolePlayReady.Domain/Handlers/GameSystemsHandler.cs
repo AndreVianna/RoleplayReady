@@ -1,4 +1,7 @@
-﻿namespace RolePlayReady.Handlers;
+﻿using RolePlayReady.Repositories.Abstractions;
+using RolePlayReady.Security.Abstractions;
+
+namespace RolePlayReady.Handlers;
 
 public class GameSystemsHandler {
     private readonly IGameSystemsRepository _repository;
@@ -19,7 +22,7 @@ public class GameSystemsHandler {
         var result = input.Validate();
         return result.IsValid
             ? await _repository.InsertAsync(_owner, input, cancellation)
-            : throw new Exception("Validation failed.");
+            : throw new("Validation failed.");
     }
 
     public async Task<Result<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default)

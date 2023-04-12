@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine;
+﻿using RolePlayReady.Engine.Steps.Abstractions;
+
+namespace RolePlayReady.Engine;
 
 public class SimpleRunnerTests {
     private readonly ServiceProvider _provider;
@@ -121,7 +123,7 @@ public class SimpleRunnerTests {
         var context = new Context(_provider);
 
         // Act
-        await step.TestOnErrorAsync(new Exception("Some message."), context);
+        await step.TestOnErrorAsync(new("Some message."), context);
 
         // Assert
         // No exception should be thrown, and the test should pass.

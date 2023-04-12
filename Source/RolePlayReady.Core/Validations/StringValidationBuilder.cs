@@ -1,4 +1,6 @@
-﻿namespace System.Validations;
+﻿using static System.Constants.Constants.ErrorMessages;
+
+namespace System.Validations;
 
 public class StringValidationBuilder : IStringValidationConnector<IStringValidators>, IStringValidators {
     private readonly string? _subject;
@@ -14,25 +16,28 @@ public class StringValidationBuilder : IStringValidationConnector<IStringValidat
 
     public IStringValidationConnector<IStringValidators> Required {
         get {
-            if (string.IsNullOrWhiteSpace(_subject))
-                _errors.Add(new ValidationError(Constants.Constants.ErrorMessages.NullOrWhiteSpaces, _source));
+            if (_subject is null)
+                _errors.Add(new(string.Format(Null, _source), _source));
+            return this;
+        }
+    }
+
+    public IStringValidationConnector<IStringValidators> NotEmptyOrWhiteSpace {
+        get {
+            if (_subject is null) return this;
+            if (_subject.Trim().Length == 0)
+                _errors.Add(new(string.Format(EmptyOrWhitespace, _source), _source));
             return this;
         }
     }
 
     public IStringValidationConnector<IStringValidators> NoLongerThan(int maximumLength) {
         if ((_subject?.Length ?? 0) > maximumLength)
-            _errors.Add(new ValidationError(Constants.Constants.ErrorMessages.LongerThan, _source));
-        return this;
-    }
-
-    public IStringValidationConnector<IStringValidators> NoShorterThan(int minimumLength) {
-        if ((_subject?.Length ?? 0) < minimumLength)
-            _errors.Add(new ValidationError(Constants.Constants.ErrorMessages.LongerThan, _source));
+            _errors.Add(new(string.Format(LongerThan, _source, maximumLength), _source));
         return this;
     }
 
     public IStringValidators And => this;
 
-    public ValidationError[] Errors => _errors.ToArray();
+    public ValidationResult Result => _errors.ToArray();
 }

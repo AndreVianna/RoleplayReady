@@ -1,4 +1,6 @@
-﻿using static System.Text.Json.JsonSerializer;
+﻿using Microsoft.Extensions.Configuration;
+
+using static System.Text.Json.JsonSerializer;
 
 namespace RolePlayReady.DataAccess.Repositories;
 
@@ -11,14 +13,14 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
 
     private const string _timestampFormat = "yyyyMMddHHmmss";
     private const string _baseFolderConfigurationKey = $"{nameof(TrackedJsonFileRepository)}:BaseFolder";
-    private const string _errorMessage = $"{_baseFolderConfigurationKey} configuration value is missing.";
 
     public TrackedJsonFileRepository(IConfiguration configuration, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger<TrackedJsonFileRepository>() ?? NullLogger<TrackedJsonFileRepository>.Instance;
         _io = io ?? new DefaultFileSystem();
         _dateTime = dateTime ?? new DefaultDateTime();
         var baseFolder = configuration[_baseFolderConfigurationKey];
-        _baseFolderPath = Throw.IfNullOrWhiteSpaces(baseFolder, _errorMessage, nameof(configuration)).Trim();
+        const string keyId = $"{nameof(configuration)}[{_baseFolderConfigurationKey}]";
+        _baseFolderPath = Ensure.NotNullOrWhiteSpace(baseFolder, keyId).Trim();
     }
 
     public async Task<Result<IEnumerable<IDataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
@@ -127,7 +129,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             await using var stream = _io.OpenFileForReading(filePath);
             var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
             _logger.LogDebug("Data from '{filePath}' retrieved.", filePath);
-            result = new DataFile<TData> {
+            result = new() {
                 Name = fileInfo.Name,
                 Timestamp = fileInfo.Timestamp,
                 Content = content!
@@ -146,7 +148,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         var match = FileNameMatcher().Match(fileName);
         if (!match.Success || !TryParseTimestamp(match.Groups["datetime"].Value, out var dateTime))
             return false;
-        fileInfo = new FileInfo { Name = match.Groups["id"].Value, Timestamp = dateTime };
+        fileInfo = new() { Name = match.Groups["id"].Value, Timestamp = dateTime };
         return true;
     }
 

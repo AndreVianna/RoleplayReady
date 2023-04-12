@@ -2,9 +2,23 @@
 
 public static class Constants {
     public static class ErrorMessages {
-        public const string NullOrWhiteSpaces = "The value cannot be null or whitespaces.";
-        public const string NullOrEmpty = "The value cannot be null or empty.";
-        public const string Null = "The value cannot be null.";
-        public const string LongerThan = "The value cannot be longer than {0} characters.";
+        public const string Null = "'{0}' is required.";
+        public const string Empty = "'{0}' cannot be empty.";
+        public const string Whitespace = "'{0}' cannot be whitespace.";
+        public const string EmptyOrWhitespace = "'{0}' cannot be empty or whitespace.";
+
+        public const string LongerThan = "'{0}' length cannot be greater than {1}.";
+        public const string ShorterThan = "'{0}' length cannot be less than {1}.";
+
+        public const string HasNull = "'{0}' cannot contain null items.";
+        public const string HasNullOrEmpty = "'{0}' cannot contain null or empty items.";
+        public const string HasNullOrWhitespace = "'{0}' cannot contain null or whitespace items.";
+
+
+        public const string InvalidLength = "'{0}' length cannot be less than {1} or greater than {2}.";
+        public const string LargerThan = "'{0}' cannot have more than {1} items.";
+        public const string SmallerThan = "'{0}' cannot have less than {1} items.";
+        
+        public const string InvalidCount = "'{0}' cannot have less than {1} or more than {2} items.";
     }
 }

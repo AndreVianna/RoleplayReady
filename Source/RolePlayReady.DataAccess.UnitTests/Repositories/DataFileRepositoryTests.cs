@@ -16,7 +16,7 @@ public class DataFileRepositoryTests {
         _dateTime = Substitute.For<IDateTime>();
         var configuration = Substitute.For<IConfiguration>();
         configuration[$"{nameof(TrackedJsonFileRepository)}:BaseFolder"].Returns(_baseFolder);
-        _repository = new TrackedJsonFileRepository(configuration, _io, _dateTime, NullLoggerFactory.Instance);
+        _repository = new(configuration, _io, _dateTime, NullLoggerFactory.Instance);
     }
 
     [Fact]

@@ -3,8 +3,8 @@
 public record ValidationError {
     [SetsRequiredMembers]
     public ValidationError(string message, string source) {
-        Message = message;
-        Source = source;
+        Message = Ensure.NotNullOrWhiteSpace(message);
+        Source = Ensure.NotNullOrWhiteSpace(source);
     }
 
     public required string Message { get; init; }

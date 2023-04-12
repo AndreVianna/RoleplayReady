@@ -1,3 +1,6 @@
+using RolePlayReady.Repositories.Abstractions;
+using RolePlayReady.Security.Abstractions;
+
 using static RolePlayReady.Constants.Constants;
 
 namespace RolePlayReady.Handlers;
@@ -10,7 +13,7 @@ public class GameSystemSettingsHandlerTests {
         _repository = Substitute.For<IGameSystemSettingsRepository>();
         var userAccessor = Substitute.For<IUserAccessor>();
         userAccessor.Id.Returns(InternalUser);
-        _handler = new GameSystemSettingsHandler(_repository, userAccessor);
+        _handler = new(_repository, userAccessor);
     }
 
     [Fact]

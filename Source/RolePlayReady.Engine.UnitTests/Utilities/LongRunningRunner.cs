@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine.Utilities;
+﻿using RolePlayReady.Engine.Steps.Abstractions;
+
+namespace RolePlayReady.Engine.Utilities;
 
 internal class LongRunningRunner : SimpleRunner<NullContext, RunnerOptions> {
     [SetsRequiredMembers]

@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine.Nulls;
+﻿using RolePlayReady.Engine.Steps.Abstractions;
+
+namespace RolePlayReady.Engine.Nulls;
 
 public sealed class NullStepFactory : IStepFactory {
     private NullStepFactory() { }

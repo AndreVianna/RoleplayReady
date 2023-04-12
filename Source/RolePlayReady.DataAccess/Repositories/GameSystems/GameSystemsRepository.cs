@@ -1,4 +1,5 @@
 ﻿using RolePlayReady.DataAccess.Repositories.GameSystems;
+using RolePlayReady.Repositories.Abstractions;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 

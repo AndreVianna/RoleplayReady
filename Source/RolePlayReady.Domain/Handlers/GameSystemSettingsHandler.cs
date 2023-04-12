@@ -1,4 +1,7 @@
-﻿namespace RolePlayReady.Handlers;
+﻿using RolePlayReady.Repositories.Abstractions;
+using RolePlayReady.Security.Abstractions;
+
+namespace RolePlayReady.Handlers;
 
 public class GameSystemSettingsHandler {
     private readonly IGameSystemSettingsRepository _repository;

@@ -8,29 +8,33 @@ public readonly struct ValidationResult {
         _result = ResultFactory.Valid;
     }
 
-    private ValidationResult(IEnumerable<ValidationError?>? errors) {
-        _result = ResultFactory.Invalid(errors);
+    private ValidationResult(ICollection<ValidationError> errors) {
+        _result = Ensure.NotNullOrHasNull(errors).Any() ? ResultFactory.Invalid(errors) : ResultFactory.Valid;
     }
 
     private ValidationResult(ValidationError? error) {
         _result = ResultFactory.Invalid(error);
     }
 
-    private ValidationResult AddErrors(IEnumerable<ValidationError?>? errors) {
-        var validationErrors = Throw.IfNullOrEmptyOrContainNulls(errors);
-        return new(_result.IsT1
-                    ? _result.AsT1.Errors.Concat(validationErrors).ToArray()
-                    : validationErrors);
+    private ValidationResult AddErrors(ICollection<ValidationError> errors) {
+        var validationErrors = Ensure.NotNullOrHasNull(errors);
+        return validationErrors.Any()
+            ? _result.IsT1
+                ? new(_result.AsT1.Errors.Concat(validationErrors).ToArray())
+                : new(validationErrors)
+            : this;
     }
 
     public static ValidationResult Valid => new();
 
     private ValidationResult AddError(ValidationError? error)
-        => AddErrors(new[] { Throw.IfNull(error) });
+        => AddErrors(new[] { Ensure.NotNull(error) });
 
     public bool IsValid => _result.IsT0;
     public bool HasErrors => _result.IsT1;
-    public IEnumerable<ValidationError> Errors => _result.IsT1 ? _result.AsT1.Errors : _noErrors;
+
+    public ICollection<ValidationError> Errors => _result.IsT1 ? _result.AsT1.Errors : _noErrors;
+    
     public bool TryGetErrors(out IEnumerable<ValidationError>? errors) {
         errors = _result.IsT1 ? _result.AsT1.Errors : null;
         return _result.IsT1;
@@ -38,8 +42,8 @@ public readonly struct ValidationResult {
 
     public static implicit operator ValidationResult(Valid _) => new();
     public static implicit operator ValidationResult(Invalid invalid) => new(invalid.Errors);
-    public static implicit operator ValidationResult(List<ValidationError?> errors) => new(errors);
-    public static implicit operator ValidationResult(ValidationError?[] errors) => new(errors);
+    public static implicit operator ValidationResult(List<ValidationError> errors) => new(errors);
+    public static implicit operator ValidationResult(ValidationError[] errors) => new(errors);
     public static implicit operator ValidationResult(ValidationError error) => new(error);
 
     public static ValidationResult operator +(ValidationResult left, Valid _) => left;

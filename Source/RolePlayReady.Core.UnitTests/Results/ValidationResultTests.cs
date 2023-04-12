@@ -145,10 +145,10 @@ public class ValidationResultTests {
         var validationResult2 = default(ValidationResult);
 
         // Act
-        var action = () => validationResult1 += validationResult2;
+        validationResult1 += validationResult2;
 
         // Assert
-        action.Should().Throw<ArgumentException>();
+        validationResult1.HasErrors.Should().BeFalse();
     }
 
     [Fact]

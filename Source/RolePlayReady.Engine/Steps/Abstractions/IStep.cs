@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine.Contracts;
+﻿using RolePlayReady.Engine.Abstractions;
+
+namespace RolePlayReady.Engine.Steps.Abstractions;
 
 public interface IStep : IAsyncDisposable {
     Task<IContext> RunAsync(IContext context, CancellationToken cancellation = default);

@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Repositories;
+﻿namespace RolePlayReady.Repositories.Abstractions;
 
 public interface IRepository<TEntity, in TKey> where TEntity : IPersistent<TKey> {
     Task<Result<IEnumerable<TEntity>>> GetManyAsync(string owner, CancellationToken cancellation = default);

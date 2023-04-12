@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine.Utilities;
+﻿using RolePlayReady.Engine.Steps.Abstractions;
+
+namespace RolePlayReady.Engine.Utilities;
 
 internal class FaultyStep : Step<NullContext> {
     [SetsRequiredMembers]
@@ -7,5 +9,5 @@ internal class FaultyStep : Step<NullContext> {
     }
 
     protected override Task<NullContext> OnStartAsync(NullContext context, CancellationToken cancellation = default)
-        => throw new Exception("Some exception.");
+        => throw new("Some exception.");
 }
