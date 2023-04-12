@@ -14,11 +14,10 @@ public static class Constants {
         public const string HasNullOrEmpty = "'{0}' cannot contain null or empty items.";
         public const string HasNullOrWhitespace = "'{0}' cannot contain null or whitespace items.";
 
-
         public const string InvalidLength = "'{0}' length cannot be less than {1} or greater than {2}.";
         public const string LargerThan = "'{0}' cannot have more than {1} items.";
         public const string SmallerThan = "'{0}' cannot have less than {1} items.";
-        
+
         public const string InvalidCount = "'{0}' cannot have less than {1} or more than {2} items.";
     }
 }

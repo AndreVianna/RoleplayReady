@@ -24,12 +24,16 @@ public static class Ensure {
             ? throw new ArgumentNullException(paramName, string.Format(HasNull, paramName))
             : argument!;
 
+    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
     public static ICollection<string> NotNullOrHasNullOrEmpty(ICollection<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
         => NotNull(argument, paramName).Any(i => string.IsNullOrEmpty(i))
             ? throw new ArgumentNullException(paramName, string.Format(HasNullOrEmpty, paramName))
             : argument!;
 
+    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
     public static ICollection<string> NotNullOrHasNullOrWhiteSpace(ICollection<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
         => NotNull(argument, paramName).Any(i => string.IsNullOrWhiteSpace(i))
             ? throw new ArgumentNullException(paramName, string.Format(HasNullOrWhitespace, paramName))
             : argument!;
@@ -44,12 +48,16 @@ public static class Ensure {
             ? throw new ArgumentException(string.Format(HasNull, paramName), paramName)
             : argument!;
 
+    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
     public static ICollection<string> NotNullOrEmptyOrHasNullOrEmpty(ICollection<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
         => NotNullOrEmpty(argument, paramName).Any(i => string.IsNullOrEmpty(i))
             ? throw new ArgumentException(string.Format(HasNullOrEmpty, paramName), paramName)
             : argument!;
 
+    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
     public static ICollection<string> NotNullOrEmptyOrHasNullOrWhiteSpace(ICollection<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
         => NotNullOrEmpty(argument, paramName).Any(i => string.IsNullOrWhiteSpace(i))
             ? throw new ArgumentException(string.Format(HasNullOrWhitespace, paramName), paramName)
             : argument!;
