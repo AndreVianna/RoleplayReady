@@ -108,14 +108,6 @@ public class GameSystemsRepositoryTests {
             }
         };
 
-    private static GameSystemDataModel GenerateDataModel()
-        => new() {
-            ShortName = "SomeId",
-            Name = "Some Name",
-            Description = "Some Description",
-            Tags = new[] { "SomeTag" },
-        };
-
     private static GameSystem GenerateSetting()
         => new() {
             Id = Guid.NewGuid(),

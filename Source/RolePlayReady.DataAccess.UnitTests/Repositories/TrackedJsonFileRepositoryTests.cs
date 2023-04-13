@@ -1,6 +1,6 @@
 namespace RolePlayReady.DataAccess.Repositories;
 
-public class DataFileRepositoryTests {
+public class TrackedJsonFileRepositoryTests {
     private readonly IFileSystem _io;
     private readonly IDateTime _dateTime;
     private readonly TrackedJsonFileRepository _repository;
@@ -11,7 +11,7 @@ public class DataFileRepositoryTests {
     private const string _id1 = "testId1";
     private const string _id2 = "testId2";
 
-    public DataFileRepositoryTests() {
+    public TrackedJsonFileRepositoryTests() {
         _io = Substitute.For<IFileSystem>();
         _dateTime = Substitute.For<IDateTime>();
         var configuration = Substitute.For<IConfiguration>();
@@ -127,6 +127,18 @@ public class DataFileRepositoryTests {
     }
 
     [Fact]
+    public async Task GetAllAsync_WithInternalError_ThrowsInvalidOperationException() {
+        // Arrange
+        _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
+
+        // Act
+        var action = () => _repository.GetAllAsync<TestData>(_owner, _path);
+
+        // Assert
+        await action.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
     public async Task GetByIdAsync_PathAndIdGiven_DataFileFound_ReturnsDataFile() {
         // Arrange
         const string filePath = $"{_baseFolder}/{_owner}/{_path}/+{_id1}_20220406123456.json";
@@ -151,7 +163,7 @@ public class DataFileRepositoryTests {
         // Assert
         result.HasValue.Should().BeTrue();
         result.Value.Should().NotBeNull();
-        result.Value.Name.Should().Be(_id1);
+        result.Value!.Name.Should().Be(_id1);
         result.Value.Timestamp.Should().Be(DateTime.Parse("2022-04-06 12:34:56"));
         result.Value.Content.Should().BeEquivalentTo(expectedData);
     }
@@ -236,6 +248,18 @@ public class DataFileRepositoryTests {
     }
 
     [Fact]
+    public async Task GetByIdAsync_WithInternalError_ThrowsInvalidOperationException() {
+        // Arrange
+        _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
+
+        // Act
+        var action = () => _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
+
+        // Assert
+        await action.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
     public async Task UpsertAsync_PathAndIdGiven_InsertsNewDataFile() {
         // Arrange
         var currentFilePath = $"{_baseFolder}/{_owner}/{_path}/+{_id1}_20220406120000.json";
@@ -259,6 +283,19 @@ public class DataFileRepositoryTests {
         result.HasValue.Should().BeTrue();
         _io.Received(1).MoveFile(currentFilePath, currentFilePath.Replace("+", ""));
         _io.Received(1).CreateNewFileAndOpenForWriting(newFilePath);
+    }
+
+    [Fact]
+    public async Task UpsertAsync_WithInternalError_ThrowsInvalidOperationException() {
+        // Arrange
+        var data = GenerateTestData();
+        _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
+
+        // Act
+        var action = () => _repository.UpsertAsync<TestData>(_owner, _path, _id1, data);
+
+        // Assert
+        await action.Should().ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
@@ -308,6 +345,18 @@ public class DataFileRepositoryTests {
         // Assert
         result.HasValue.Should().BeTrue();
         result.Value.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Delete_WithInternalError_ThrowsInvalidOperationException() {
+        // Arrange
+        _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
+
+        // Act
+        var action = () => _repository.Delete(_owner, _path, _id1);
+
+        // Assert
+        action.Should().Throw<InvalidOperationException>();
     }
 
     private static TestData GenerateTestData()

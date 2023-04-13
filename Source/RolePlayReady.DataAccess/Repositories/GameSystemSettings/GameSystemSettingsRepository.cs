@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Repositories.Abstractions;
-
-using DataModel = RolePlayReady.DataAccess.Repositories.GameSystemSettings.GameSystemSettingDataModel;
+﻿using DataModel = RolePlayReady.DataAccess.Repositories.GameSystemSettings.GameSystemSettingDataModel;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSystemSettings;
 
@@ -15,7 +13,7 @@ public class GameSystemSettingsRepository : IGameSystemSettingsRepository {
         var files = await _files
             .GetAllAsync<DataModel>(owner, string.Empty, cancellation)
             .ConfigureAwait(false);
-        return files.Map(i => i.Map());
+        return files.Map(i => i.Map()!);
     }
 
     public async Task<Maybe<GameSystemSetting>> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default) {

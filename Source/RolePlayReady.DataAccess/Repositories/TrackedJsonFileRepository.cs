@@ -28,8 +28,9 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             var filePaths = _io.GetFilesFrom(folderPath, "+*.json", SearchOption.TopDirectoryOnly);
             var fileInfos = new List<DataFile<TData>>();
             foreach (var filePath in filePaths) {
-                var result = await GetFileDataAsync<TData>(filePath, cancellation).ConfigureAwait(false);
-                if (result.HasValue) fileInfos.Add(result.Value!);
+                var result = await GetFileDataOrDefaultAsync<TData>(filePath, cancellation).ConfigureAwait(false);
+                if (result.HasValue)
+                    fileInfos.Add(result.Value!);
             }
 
             _logger.LogDebug("{fileCount} files retrieved from '{path}'.", fileInfos.Count, folderPath);
@@ -52,7 +53,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
                 return default(DataFile<TData>);
             }
 
-            var result = await GetFileDataAsync<TData>(filePath, cancellation).ConfigureAwait(false);
+            var result = await GetFileDataOrDefaultAsync<TData>(filePath, cancellation).ConfigureAwait(false);
             return result;
         }
         catch (Exception ex) {
@@ -75,13 +76,14 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             await SerializeAsync(stream, data, cancellationToken: cancellation);
 
             _logger.LogDebug("Date for '{path}/{id}' added or updated.", folderPath, id);
-            return now;
         }
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";
             _logger.LogError(ex, "Failed to add or update file '{path}/{id}'!", errorFolder, id);
             throw;
         }
+
+        return now;
     }
 
     public Result<bool> Delete(string owner, string path, string id) {
@@ -111,7 +113,8 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         }
     }
 
-    private async Task<Maybe<DataFile<TData>>> GetFileDataAsync<TData>(string filePath, CancellationToken cancellation) {
+    private async Task<Maybe<DataFile<TData>>> GetFileDataOrDefaultAsync<TData>(string filePath, CancellationToken cancellation) {
+        var result = default(DataFile<TData>);
         try {
             var fileName = _io.ExtractFileNameFrom(filePath);
             if (!TryParseFileName(fileName, out var fileInfo)) {
@@ -122,17 +125,17 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             await using var stream = _io.OpenFileForReading(filePath);
             var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
             _logger.LogDebug("Data from '{filePath}' retrieved.", filePath);
-            var result = new DataFile<TData>() {
+            result = new DataFile<TData>() {
                 Name = fileInfo.Name,
                 Timestamp = fileInfo.Timestamp,
                 Content = content!
             };
-            return result;
         }
         catch (Exception ex) {
             _logger.LogWarning(ex, "File '{filePath}' content is invalid.", filePath);
-            return default(DataFile<TData>);
         }
+
+        return result;
     }
 
     private bool TryParseFileName(string fileName, out FileInfo fileInfo) {

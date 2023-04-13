@@ -1,5 +1,4 @@
 ﻿using RolePlayReady.DataAccess.Repositories.GameSystems;
-using RolePlayReady.Repositories.Abstractions;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
@@ -14,7 +13,7 @@ public class GameSystemsRepository : IGameSystemsRepository {
         var files = await _files
             .GetAllAsync<GameSystemDataModel>(owner, string.Empty, cancellation)
             .ConfigureAwait(false);
-        return files.Map(i => i.Map());
+        return files.Map(i => i.Map()!);
     }
 
     public async Task<Maybe<GameSystem>> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default) {

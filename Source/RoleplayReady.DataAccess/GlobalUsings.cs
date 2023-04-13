@@ -13,3 +13,4 @@ global using RolePlayReady.DataAccess.Models;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Repositories;
+global using RolePlayReady.Repositories.Abstractions;
