@@ -21,12 +21,12 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         _baseFolderPath = Ensure.NotNullOrWhiteSpace(baseFolder, keyId).Trim();
     }
 
-    public async Task<ResultOf<IEnumerable<IDataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
+    public async Task<Result<IEnumerable<DataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting files from '{path}'...", folderPath);
             var filePaths = _io.GetFilesFrom(folderPath, "+*.json", SearchOption.TopDirectoryOnly);
-            var fileInfos = new List<IDataFile<TData>>();
+            var fileInfos = new List<DataFile<TData>>();
             foreach (var filePath in filePaths) {
                 var result = await GetFileDataAsync<TData>(filePath, cancellation).ConfigureAwait(false);
                 if (!result.HasValue)
@@ -40,11 +40,11 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";
             _logger.LogError(ex, "Failed to get files from '{path}'!", errorFolder);
-            return ex;
+            throw;
         }
     }
 
-    public async Task<ResultOf<IDataFile<TData>>> GetByIdAsync<TData>(string owner, string path, string id, CancellationToken cancellation = default) {
+    public async Task<Maybe<DataFile<TData>>> GetByIdAsync<TData>(string owner, string path, string id, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting latest data from '{path}/{id}'...", folderPath, id);
@@ -60,11 +60,11 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";
             _logger.LogError(ex, "Failed to get data from file '{path}/{id}'!", errorFolder, id);
-            return ex;
+            throw;
         }
     }
 
-    public async Task<ResultOf<DateTime>> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
+    public async Task<Result<DateTime>> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
         var now = _dateTime.Now;
         try {
             var folderPath = GetFolderFullPath(owner, path);
@@ -77,17 +77,16 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             await SerializeAsync(stream, data, cancellationToken: cancellation);
 
             _logger.LogDebug("Date for '{path}/{id}' added or updated.", folderPath, id);
+            return now;
         }
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";
             _logger.LogError(ex, "Failed to add or update file '{path}/{id}'!", errorFolder, id);
-            return ex;
+            throw;
         }
-
-        return now;
     }
 
-    public ResultOf<bool> Delete(string owner, string path, string id) {
+    public Result<bool> Delete(string owner, string path, string id) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Deleting file '{path}/{id}'...", folderPath, id);
@@ -105,18 +104,16 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             }
 
             _logger.LogDebug("File '{path}/{id}' deleted.", folderPath, id);
+            return true;
         }
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";
             _logger.LogError(ex, "Failed to delete file '{path}/{id}'!", errorFolder, id);
-            return ex;
+            throw;
         }
-
-        return true;
     }
 
-    private async Task<ResultOf<IDataFile<TData>>> GetFileDataAsync<TData>(string filePath, CancellationToken cancellation) {
-        DataFile<TData> result;
+    private async Task<Maybe<DataFile<TData>>> GetFileDataAsync<TData>(string filePath, CancellationToken cancellation) {
         try {
             var fileName = _io.ExtractFileNameFrom(filePath);
             if (!TryParseFileName(fileName, out var fileInfo)) {
@@ -127,18 +124,17 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             await using var stream = _io.OpenFileForReading(filePath);
             var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
             _logger.LogDebug("Data from '{filePath}' retrieved.", filePath);
-            result = new() {
+            var result = new DataFile<TData>() {
                 Name = fileInfo.Name,
                 Timestamp = fileInfo.Timestamp,
                 Content = content!
             };
+            return result;
         }
         catch (Exception ex) {
             _logger.LogWarning(ex, "File '{filePath}' content is invalid.", filePath);
-            return ex;
+            return default(DataFile<TData>);
         }
-
-        return result;
     }
 
     private bool TryParseFileName(string fileName, out FileInfo fileInfo) {

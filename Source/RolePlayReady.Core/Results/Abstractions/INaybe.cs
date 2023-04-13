@@ -1,6 +1,6 @@
 ﻿namespace System.Results.Abstractions;
 
-public interface INullableResultOf<out TObject> : IResultOf<TObject> {
+public interface INaybe<out TObject> : IResult<TObject> {
     bool IsNull { get; }
     TObject? Default { get; }
 }

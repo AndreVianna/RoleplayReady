@@ -1,6 +1,7 @@
 ﻿namespace System.Results.Abstractions;
 
-public interface IValidationResult : IResult {
+public interface IValidation {
+    bool IsSuccess { get; }
     bool HasErrors { get; }
     ICollection<ValidationError> Errors { get; }
 }

@@ -58,12 +58,10 @@ public class GameSystemsRepositoryTests {
     public async Task InsertAsync_InsertsNewSetting() {
         // Arrange
         var setting = GenerateSetting();
-        var dataFile = GenerateDataFile();
-        var tokenSource = new CancellationTokenSource();
-        _files.UpsertAsync(InternalUser, string.Empty, setting.Id.ToString(), dataFile, tokenSource.Token).Returns(DateTime.Now);
+        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<string>(), Arg.Any<GameSystemDataModel>()).Returns(DateTime.Now);
 
         // Act
-        var result = await _repository.InsertAsync(InternalUser, setting, tokenSource.Token);
+        var result = await _repository.InsertAsync(InternalUser, setting);
 
         // Assert
         result.HasValue.Should().BeTrue();
@@ -73,10 +71,10 @@ public class GameSystemsRepositoryTests {
     public async Task UpdateAsync_UpdatesExistingSetting() {
         // Arrange
         var setting = GenerateSetting();
-        var tokenSource = new CancellationTokenSource();
+        _files.UpsertAsync(InternalUser, string.Empty, setting.Id.ToString(), Arg.Any<GameSystemDataModel>()).Returns(DateTime.Now);
 
         // Act
-        var result = await _repository.UpdateAsync(InternalUser, setting, tokenSource.Token);
+        var result = await _repository.UpdateAsync(InternalUser, setting);
 
         // Assert
         result.HasValue.Should().BeTrue();
@@ -86,7 +84,7 @@ public class GameSystemsRepositoryTests {
     public void Delete_RemovesSetting() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns<ResultOf<bool>>(true);
+        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns<Result<bool>>(true);
 
         // Act
         var result = _repository.Delete(InternalUser, id);
@@ -103,10 +101,19 @@ public class GameSystemsRepositoryTests {
             Name = Guid.NewGuid().ToString(),
             Timestamp = DateTime.Now,
             Content = new() {
+                ShortName = "SomeId",
                 Name = "Some Name",
                 Description = "Some Description",
                 Tags = new[] { "SomeTag" },
             }
+        };
+
+    private static GameSystemDataModel GenerateDataModel()
+        => new() {
+            ShortName = "SomeId",
+            Name = "Some Name",
+            Description = "Some Description",
+            Tags = new[] { "SomeTag" },
         };
 
     private static GameSystem GenerateSetting()

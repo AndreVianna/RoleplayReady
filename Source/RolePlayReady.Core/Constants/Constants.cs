@@ -26,6 +26,7 @@ public static class Constants {
 
         public const string ResultInvalidType = "The value cannot be assined to result.";
         public const string ResultIsNotValid = "The result is not valid.";
+        public const string ResultIsNull = "The result cannot be null.";
         public const string ResultHasNoValue = "The result is null or failure.";
         public const string ResultIsNotNull = "The result is not null.";
         public const string ResultIsNotFailure = "The result is not failure.";

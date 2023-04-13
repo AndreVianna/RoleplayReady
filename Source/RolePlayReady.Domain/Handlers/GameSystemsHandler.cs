@@ -12,23 +12,23 @@ public class GameSystemsHandler {
         _owner = user.Id;
     }
 
-    public async Task<ResultOf<IEnumerable<GameSystem>>> GetManyAsync(CancellationToken cancellation = default)
+    public async Task<Result<IEnumerable<GameSystem>>> GetManyAsync(CancellationToken cancellation = default)
         => await _repository.GetManyAsync(_owner, cancellation);
 
-    public async Task<ResultOf<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default)
+    public async Task<Maybe<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default)
         => await _repository.GetByIdAsync(_owner, id, cancellation);
 
-    public async Task<ResultOf<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default) {
+    public async Task<Result<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        return result.HasErrors
+        return !result.HasErrors
             ? await _repository.InsertAsync(_owner, input, cancellation)
             : throw new("Validation failed.");
     }
 
-    public async Task<ResultOf<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default)
+    public async Task<Result<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default)
         // Add validations here.
         => await _repository.UpdateAsync(_owner, input, cancellation);
 
-    public ResultOf<bool> Remove(Guid id)
+    public Result<bool> Remove(Guid id)
         => _repository.Delete(_owner, id);
 }

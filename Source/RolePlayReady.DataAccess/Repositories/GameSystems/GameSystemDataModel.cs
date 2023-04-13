@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
-public class GameSystemDataModel {
+public record GameSystemDataModel {
     public string? ShortName { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }

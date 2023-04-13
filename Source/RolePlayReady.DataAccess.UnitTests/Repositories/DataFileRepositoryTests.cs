@@ -88,19 +88,6 @@ public class DataFileRepositoryTests {
     }
 
     [Fact]
-    public async Task GetAllAsync_WithException_ReturnsEmpty() {
-        // Arrange
-        _io.CombinePath(_baseFolder, _owner, _path).Throws<Exception>();
-
-        // Act
-        var result = await _repository.GetAllAsync<TestData>(_owner, _path);
-
-        // Assert
-        result.HasValue.Should().BeFalse();
-        result.Exception.Should().NotBeNull();
-    }
-
-    [Fact]
     public async Task GetAllAsync_WithInvalidFile_ReturnsOnlyValidOnes() {
         // Arrange
         const string testFolderPath = $"{_baseFolder}/{_owner}/{_path}";
@@ -223,7 +210,7 @@ public class DataFileRepositoryTests {
     }
 
     [Fact]
-    public async Task GetByIdAsync_WithInvalidFileContent_ReturnsException() {
+    public async Task GetByIdAsync_WithInvalidFileContent_ReturnsNull() {
         // Arrange
         var filePath = $"{_baseFolder}/+{_id1}_20220406123456.json";
 
@@ -244,23 +231,8 @@ public class DataFileRepositoryTests {
         var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
 
         // Assert
-        result.HasValue.Should().BeFalse();
-        result.IsNull.Should().BeFalse();
-        result.Exception.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_WithException_ReturnsNull() {
-        // Arrange
-        _io.CombinePath(_baseFolder, _owner, _path).Throws<Exception>();
-
-        // Act
-        var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
-
-        // Assert
-        result.HasValue.Should().BeFalse();
-        result.IsNull.Should().BeFalse();
-        result.Exception.Should().NotBeNull();
+        result.IsNull.Should().BeTrue();
+        result.Default.Should().BeNull();
     }
 
     [Fact]
@@ -287,19 +259,6 @@ public class DataFileRepositoryTests {
         result.HasValue.Should().BeTrue();
         _io.Received(1).MoveFile(currentFilePath, currentFilePath.Replace("+", ""));
         _io.Received(1).CreateNewFileAndOpenForWriting(newFilePath);
-    }
-
-    [Fact]
-    public async Task UpsertAsync_WithException_ReturnsFalse() {
-        // Arrange
-        _io.CombinePath(_baseFolder, _owner, _path).Throws<Exception>();
-
-        // Act
-        var result = await _repository.UpsertAsync<TestData>(_owner, _path, _id1, GenerateTestData());
-
-        // Assert
-        result.HasValue.Should().BeFalse();
-        result.Exception.Should().NotBeNull();
     }
 
     [Fact]
@@ -351,20 +310,7 @@ public class DataFileRepositoryTests {
         result.Value.Should().BeFalse();
     }
 
-    [Fact]
-    public void Delete_WithException_ReturnsFalse() {
-        // Arrange
-        _io.CombinePath(_baseFolder, _owner, _path).Throws<Exception>();
-
-        // Act
-        var result = _repository.Delete(_owner, _path, _id1);
-
-        // Assert
-        result.HasValue.Should().BeFalse();
-        result.Exception.Should().NotBeNull();
-    }
-
-    private TestData GenerateTestData()
+    private static TestData GenerateTestData()
         => new() {
             Name = "SomeName",
             Number = 42,

@@ -2,5 +2,5 @@
 
 public interface IConnectors<out TChecks> {
     TChecks And { get; }
-    ValidationResult Result { get; }
+    Validation Result { get; }
 }

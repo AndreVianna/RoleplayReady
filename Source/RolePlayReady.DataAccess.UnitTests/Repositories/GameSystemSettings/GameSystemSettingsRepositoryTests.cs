@@ -58,9 +58,8 @@ public class GameSystemSettingsRepositoryTests {
     public async Task InsertAsync_InsertsNewSetting() {
         // Arrange
         var setting = GenerateSetting();
-        var dataFile = GenerateDataFile();
         var tokenSource = new CancellationTokenSource();
-        _files.UpsertAsync(InternalUser, string.Empty, setting.Id.ToString(), dataFile, tokenSource.Token).Returns(DateTime.Now);
+        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<string>(), Arg.Any<GameSystemSettingDataModel>(), tokenSource.Token).Returns(DateTime.Now);
 
         // Act
         var result = await _repository.InsertAsync(InternalUser, setting, tokenSource.Token);
@@ -74,6 +73,7 @@ public class GameSystemSettingsRepositoryTests {
         // Arrange
         var setting = GenerateSetting();
         var tokenSource = new CancellationTokenSource();
+        _files.UpsertAsync(InternalUser, string.Empty, setting.Id.ToString(), Arg.Any<GameSystemSettingDataModel>(), tokenSource.Token).Returns(DateTime.Now);
 
         // Act
         var result = await _repository.UpdateAsync(InternalUser, setting, tokenSource.Token);
@@ -86,7 +86,7 @@ public class GameSystemSettingsRepositoryTests {
     public void Delete_RemovesSetting() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns<ResultOf<bool>>(true);
+        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns<Result<bool>>(true);
 
         // Act
         var result = _repository.Delete(InternalUser, id);
