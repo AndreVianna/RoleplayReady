@@ -1,6 +1,4 @@
-﻿using static System.Constants.Constants;
-
-namespace System.Validations;
+﻿namespace System.Validations;
 
 public abstract class Validator<TSubject, TChecks, TConnectors>
     : IValidator<TChecks, TConnectors>
@@ -22,8 +20,9 @@ public abstract class Validator<TSubject, TChecks, TConnectors>
 
     public TConnectors NotNull() {
         if (Subject is null)
-            Errors.Add(new(string.Format(ErrorMessages.Null, Source), Source));
+            Errors.Add(new(string.Format(Null, Source), Source));
         return (TConnectors)(IConnectors<TChecks>)this;
     }
-    public Validation Result => Errors.ToArray();
+
+    public Validation Result => new(Errors.ToArray());
 }

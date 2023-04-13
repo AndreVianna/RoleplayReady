@@ -2,8 +2,7 @@
 
 public class StringsValidator :
     Validator<IList<string>, IStringsChecks, IStringsConnectors>,
-    IStringsChecks,
-    IStringsConnectors {
+    IStringsValidator {
 
     public StringsValidator(IList<string> subject, string? source)
             : base(subject, source) {

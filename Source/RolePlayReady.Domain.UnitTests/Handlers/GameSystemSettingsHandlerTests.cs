@@ -1,7 +1,3 @@
-using System.Results;
-
-using NSubstitute;
-
 using RolePlayReady.Repositories.Abstractions;
 using RolePlayReady.Security.Abstractions;
 
@@ -24,7 +20,7 @@ public class GameSystemSettingsHandlerTests {
     public async Task GetManyAsync_ReturnsSettings() {
         // Arrange
         var expectedSettings = new[] { CreateInput() };
-        _repository.GetManyAsync(InternalUser, Arg.Any<CancellationToken>()).Returns(new Object<IEnumerable<GameSystemSetting>>(expectedSettings));
+        _repository.GetManyAsync(InternalUser, Arg.Any<CancellationToken>()).Returns(new Result<IEnumerable<GameSystemSetting>>(expectedSettings));
 
         // Act
         var result = await _handler.GetManyAsync();
@@ -39,7 +35,7 @@ public class GameSystemSettingsHandlerTests {
         var id = Guid.NewGuid();
         var expectedSetting = CreateInput(id);
 
-        _repository.GetByIdAsync(InternalUser, id, Arg.Any<CancellationToken>()).Returns(new Maybe<GameSystemSetting>(expectedSetting));
+        _repository.GetByIdAsync(InternalUser, id, Arg.Any<CancellationToken>()).Returns(new Result<GameSystemSetting>(expectedSetting));
 
         // Act
         var result = await _handler.GetByIdAsync(id);
@@ -52,12 +48,10 @@ public class GameSystemSettingsHandlerTests {
     public async Task AddAsync_ReturnsSetting() {
         // Arrange
         var input = CreateInput();
-        _repository.InsertAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(new Object<GameSystemSetting>(input));
+        _repository.InsertAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(new Result<GameSystemSetting>(input));
 
         // Act
         var result = await _handler.AddAsync(input);
-
-        result = input;
 
         // Assert
         result.HasValue.Should().BeTrue();
@@ -67,7 +61,7 @@ public class GameSystemSettingsHandlerTests {
     public async Task UpdateAsync_ReturnsSetting() {
         // Arrange
         var input = CreateInput();
-        _repository.UpdateAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(new Object<GameSystemSetting>(input));
+        _repository.UpdateAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(new Result<GameSystemSetting>(input));
 
         // Act
         var result = await _handler.UpdateAsync(input);
@@ -80,7 +74,7 @@ public class GameSystemSettingsHandlerTests {
     public void Remove_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Delete(InternalUser, id).Returns(new Object<bool>(true));
+        _repository.Delete(InternalUser, id).Returns(new Result<bool>(true));
 
         // Act
         var result = _handler.Remove(id);

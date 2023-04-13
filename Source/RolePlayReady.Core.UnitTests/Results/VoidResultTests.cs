@@ -1,30 +1,24 @@
 namespace System.Results;
 
-public class NothingTests {
+public class VoidResultTests {
     [Fact]
     public void Constructor_CanBeInstantiated() {
         // Act
-        var nothing = ResultFactory.Nothing;
+        VoidResult nothing = Success.Instance;
 
         // Assert
         nothing.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void ImplicitConversion_FromSuccess_ReturnsNothingWithSuccess() {
-        Nothing nothing = ResultFactory.Success;
-
-        nothing.IsSuccessful.Should().BeTrue();
-        nothing.Invoking(v => v.Exception).Should().Throw<InvalidOperationException>();
+        nothing.IsSuccess.Should().BeTrue();
+        nothing.Invoking(v => v.Exception).Should().Throw<InvalidCastException>();
         nothing.Invoking(v => v.Throw()).Should().NotThrow();
     }
 
     [Fact]
     public void ImplicitConversion_FromException_ReturnsNothingWithException() {
         var testException = new InvalidOperationException("test");
-        Nothing nothing = testException;
+        VoidResult nothing = testException;
 
-        nothing.IsSuccessful.Should().BeFalse();
+        nothing.IsSuccess.Should().BeFalse();
         nothing.Exception.Should().Be(testException);
         nothing.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
     }

@@ -4,110 +4,122 @@ public class ResultTests {
     [Fact]
     public void ImplicitConversion_FromValue_ReturnsMethodResultWithValue() {
         const string testValue = "testValue";
-        Object<string> @object = testValue;
+        Result<string> result = testValue;
 
-        @object.HasValue.Should().BeTrue();
-        @object.Value.Should().Be(testValue);
-        @object.Invoking(v => v.Exception).Should().Throw<InvalidCastException>();
-        @object.Invoking(v => v.Throw()).Should().NotThrow();
+        result.HasValue.Should().BeTrue();
+        result.IsNull.Should().BeFalse();
+        result.Value.Should().Be(testValue);
+        result.Invoking(v => v.Default).Should().Throw<InvalidCastException>();
+        result.Invoking(v => v.Exception).Should().Throw<InvalidCastException>();
+        result.Invoking(v => v.Throw()).Should().NotThrow();
     }
 
     [Fact]
     public void ImplicitConversion_FromNull_ReturnsMethodResultWithException() {
-        Object<string> @object = default(string)!;
+        Result<string> result = default(string);
 
-        @object.HasValue.Should().BeFalse();
-        @object.Exception.Should().NotBeNull();
-        @object.Invoking(v => v.Value).Should().Throw<InvalidCastException>();
-        @object.Invoking(v => v.Throw()).Should().Throw<InvalidCastException>();
+        result.HasValue.Should().BeFalse();
+        result.IsNull.Should().BeTrue();
+        result.Default.Should().BeNull();
+        result.Invoking(v => v.Value).Should().Throw<InvalidCastException>();
+        result.Invoking(v => v.Exception).Should().Throw<InvalidCastException>();
+        result.Invoking(v => v.Throw()).Should().NotThrow();
     }
 
     [Fact]
     public void ImplicitConversion_FromException_ReturnsMethodResultWithException() {
         var testException = new InvalidOperationException("test");
-        Object<string> @object = testException;
+        Result<string> result = testException;
 
-        @object.HasValue.Should().BeFalse();
-        @object.Exception.Should().Be(testException);
-        @object.Invoking(v => v.Value).Should().Throw<InvalidOperationException>();
-        @object.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
+        result.HasValue.Should().BeFalse();
+        result.IsNull.Should().BeFalse();
+        result.Exception.Should().NotBeNull();
+        result.Invoking(v => v.Value).Should().Throw<InvalidOperationException>();
+        result.Invoking(v => v.Default).Should().Throw<InvalidOperationException>();
+        result.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
     public void ImplicitConversion_ToValue_BecomesValue() {
-        var input = new Object<string>("testValue");
+        var input = new Result<string>("testValue");
 
-        string result = input;
+        string? result = input;
 
         result.Should().Be("testValue");
     }
 
     [Fact]
-    public void ImplicitConversion_FromMaybe_Value_BecomesValue() {
-        var input = new Maybe<string>("TestValue");
+    public void ImplicitConversion_ToValue_BecomesNull() {
+        var input = new Result<string>();
 
-        Object<string> @object = input;
+        string? result = input;
 
-        @object.HasValue.Should().BeTrue();
-    }
-
-    [Fact]
-    public void ImplicitConversion_FromMaybe_Null_BecomesException() {
-        var input = new Maybe<string>();
-
-        Object<string> @object = input;
-
-        @object.HasValue.Should().BeFalse();
-        @object.Invoking(v => v.Throw()).Should().Throw<InvalidCastException>();
-    }
-
-    [Fact]
-    public void ImplicitConversion_FromMaybe_Exception_BecomesValue() {
-        var input = new Maybe<string>(new InvalidOperationException("Some Error"));
-
-        Object<string> @object = input;
-
-        @object.HasValue.Should().BeFalse();
-        @object.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
+        result.Should().BeNull();
     }
 
     [Fact]
     public void Result_Map_BecomesNewType() {
-        var input = new Object<string>("42");
+        var input = new Result<string>("42");
 
         var result = input.Map(int.Parse);
 
         result.HasValue.Should().BeTrue();
+        result.IsNull.Should().BeFalse();
         result.Value.Should().Be(42);
     }
 
     [Fact]
     public void CollectionResult_Map_BecomesNewType() {
-        var input = new Object<IEnumerable<string>>(new[] { "42", "7" });
+        var input = new Result<IEnumerable<string>>(new[] { "42", "7" });
 
         var result = input.Map(int.Parse);
 
         result.HasValue.Should().BeTrue();
+        result.IsNull.Should().BeFalse();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
     }
 
     [Fact]
     public void Result_MapFromException_BecomesException() {
-        var input = new Object<string>(new InvalidOperationException("Some error."));
+        var input = new Result<string>(new InvalidOperationException("Some error."));
 
         var result = input.Map(int.Parse);
 
         result.HasValue.Should().BeFalse();
+        result.IsNull.Should().BeFalse();
         result.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
     public void CollectionResult_MapFromException_BecomesException() {
-        var input = new Object<IEnumerable<string>>(new InvalidOperationException("Some error."));
+        var input = new Result<IEnumerable<string>>(new InvalidOperationException("Some error."));
 
         var result = input.Map(int.Parse);
 
         result.HasValue.Should().BeFalse();
+        result.IsNull.Should().BeFalse();
         result.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void Result_MapFromNull_BecomesException() {
+        var input = new Result<string>();
+
+        var result = input.Map(int.Parse);
+
+        result.HasValue.Should().BeFalse();
+        result.IsNull.Should().BeTrue();
+        result.Invoking(v => v.Throw()).Should().NotThrow();
+    }
+
+    [Fact]
+    public void CollectionResult_MapFromNull_BecomesException() {
+        var input = new Result<IEnumerable<string>>();
+
+        var result = input.Map(int.Parse);
+
+        result.HasValue.Should().BeFalse();
+        result.IsNull.Should().BeTrue();
+        result.Invoking(v => v.Throw()).Should().NotThrow();
     }
 }

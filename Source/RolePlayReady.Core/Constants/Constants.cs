@@ -24,12 +24,11 @@ public static class Constants {
 
         public const string InvalidCount = "'{0}' cannot have less than {1} or more than {2} items.";
 
-
-
+        public const string ResultInvalidType = "The value cannot be assined to result.";
         public const string ResultIsNotValid = "The result is not valid.";
-        public const string ResultHasNoValue = "The result is null or invalid.";
+        public const string ResultHasNoValue = "The result is null or failure.";
         public const string ResultIsNotNull = "The result is not null.";
-        public const string ResultIsNotInvalid = "The result is not invalid.";
+        public const string ResultIsNotFailure = "The result is not failure.";
         public const string ResultHasNoExceptions = "The result has no exceptions.";
     }
 }

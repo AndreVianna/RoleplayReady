@@ -1,10 +1,10 @@
 namespace System.Results;
 
-public class InvalidTests {
+public class FailureTests {
     [Fact]
     public void Constructor_OneValidationError_SetsErrors() {
         // Arrange
-        var error = ResultFactory.Error("Error message", "Source");
+        var error = new ValidationError("Error message", "Source");
 
         // Act
         var invalid = new Failure(error);
@@ -26,8 +26,8 @@ public class InvalidTests {
     public void Constructor_MultipleValidationErrors_SetsErrors() {
         // Arrange
         var errors = new[] {
-            ResultFactory.Error("Error message 1", "Source"),
-            ResultFactory.Error("Error message 2", "Source"),
+            new ValidationError("Error message 1", "Source"),
+            new ValidationError("Error message 2", "Source"),
         };
 
         // Act
@@ -62,9 +62,9 @@ public class InvalidTests {
     public void Constructor_ValidationErrorCollectionWithNullElement_ThrowsArgumentException() {
         // Arrange
         var errors = new[] {
-            ResultFactory.Error("Error message 1", "Source"),
+            new ValidationError("Error message 1", "Source"),
             null,
-            ResultFactory.Error("Error message 2", "Source"),
+            new ValidationError("Error message 2", "Source"),
         };
 
         // Act

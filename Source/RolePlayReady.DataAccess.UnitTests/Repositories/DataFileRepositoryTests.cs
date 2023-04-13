@@ -126,7 +126,7 @@ public class DataFileRepositoryTests {
                 x[4] = DateTime.Parse("2022-04-06 13:00:00");
                 return true;
             });
-        _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("Invalid")));
+        _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("Failure")));
 
         // Act
         var result = await _repository.GetAllAsync<TestData>(_owner, _path);
@@ -237,7 +237,7 @@ public class DataFileRepositoryTests {
                 x[4] = DateTime.Parse("2022-04-06 12:34:56");
                 return true;
             });
-        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("Invalid file."));
+        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("Failure file."));
         _io.OpenFileForReading(filePath).Returns(memoryStream);
 
         // Act
