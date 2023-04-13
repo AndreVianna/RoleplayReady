@@ -2,14 +2,14 @@
 
 namespace System.Results;
 
-public class Validation : IValidation {
+public class ValidationResult : IValidationResult {
     private OneOf<Success, Failure, Exception> _result;
 
-    public Validation() { _result = Success.Instance; }
+    public ValidationResult() { _result = Success.Instance; }
 
-    public Validation(object? input) {
+    public ValidationResult(object? input) {
         _result = input switch {
-            Validation result => result._result,
+            ValidationResult result => result._result,
             ICollection<ValidationError> errors => new Failure(errors),
             ValidationError error => new Failure(error),
             Exception exception => exception,
@@ -35,7 +35,7 @@ public class Validation : IValidation {
 
     public void Throw() { if (_result.IsT2) throw _result.AsT2; }
 
-    protected Validation AddErrors(ICollection<ValidationError> errors) {
+    protected ValidationResult AddErrors(ICollection<ValidationError> errors) {
         var validationErrors = Ensure.NotNullOrHasNull(errors);
         if (!validationErrors.Any() || IsException)
             return this;
@@ -50,13 +50,13 @@ public class Validation : IValidation {
         return this;
     }
 
-    public static implicit operator Validation(Exception exception) => new(exception);
-    public static implicit operator Validation(Failure failure) => new(failure.Errors);
-    public static implicit operator Validation(List<ValidationError> errors) => new(errors);
-    public static implicit operator Validation(ValidationError[] errors) => new(errors);
-    public static implicit operator Validation(ValidationError error) => new(error);
+    public static implicit operator ValidationResult(Exception exception) => new(exception);
+    public static implicit operator ValidationResult(Failure failure) => new(failure.Errors);
+    public static implicit operator ValidationResult(List<ValidationError> errors) => new(errors);
+    public static implicit operator ValidationResult(ValidationError[] errors) => new(errors);
+    public static implicit operator ValidationResult(ValidationError error) => new(error);
 
-    public static Validation operator +(Validation left, Validation right) {
+    public static ValidationResult operator +(ValidationResult left, ValidationResult right) {
         if (right.IsException)
             left._result = right.Exception;
         else if (right.HasErrors)
@@ -64,7 +64,7 @@ public class Validation : IValidation {
         return left;
     }
 
-    public static Validation operator +(Validation left, Success _) => left;
-    public static Validation operator +(Validation left, ValidationError right) => left.AddErrors(new[] { right });
-    public static Validation operator +(Validation left, ICollection<ValidationError> right) => left.AddErrors(right);
+    public static ValidationResult operator +(ValidationResult left, Success _) => left;
+    public static ValidationResult operator +(ValidationResult left, ValidationError right) => left.AddErrors(new[] { right });
+    public static ValidationResult operator +(ValidationResult left, ICollection<ValidationError> right) => left.AddErrors(right);
 }

@@ -18,8 +18,8 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
     public const int MaxTagSize = 20;
     public IList<string> Tags { get; init; } = new List<string>();
 
-    public virtual Validation Validate() {
-        var result = new Validation(this);
+    public virtual ValidationResult Validate() {
+        var result = new ValidationResult(this);
         result += Name.Is().NotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxNameSize).Result;
         result += Description.Is().NotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxDescriptionSize).Result;
         result += ShortName.Is().NotEmptyOrWhiteSpace().And.NoLongerThan(MaxShortNameSize).Result;

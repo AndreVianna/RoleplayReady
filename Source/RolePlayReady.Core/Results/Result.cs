@@ -71,7 +71,7 @@ public class Result<TObject> : IResult<TObject> {
 
     public static implicit operator TObject?(Result<TObject> input) => input.HasValue ? input.Value : input.Default;
 
-    public static Result<TObject> operator +(Result<TObject> left, Validation right) {
+    public static Result<TObject> operator +(Result<TObject> left, ValidationResult right) {
         if (right.IsException)
             left._result = right.Exception;
         else if (right.HasErrors)

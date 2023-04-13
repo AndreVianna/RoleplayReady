@@ -24,5 +24,5 @@ public abstract class Validator<TSubject, TChecks, TConnectors>
         return (TConnectors)(IConnectors<TChecks>)this;
     }
 
-    public Validation Result => new(Errors.ToArray());
+    public ValidationResult Result => new(Errors.ToArray());
 }

@@ -2,7 +2,7 @@
 
 namespace System.Results;
 
-public class VoidResult : IResult {
+public class VoidResult : IVoidResult {
     private readonly OneOf<Success, Exception> _result;
 
     public VoidResult() { }
