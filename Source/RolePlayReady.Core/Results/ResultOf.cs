@@ -2,15 +2,15 @@
 
 namespace System.Results;
 
-public class Result<TObject> : IResult<TObject> {
+public class ResultOf<TObject> : IResultOf<TObject> {
     private OneOf<TObject?, Failure, Exception> _result;
 
-    public Result() { _result = default; }
+    public ResultOf() { _result = default; }
 
-    public Result(object? input) {
+    public ResultOf(object? input) {
         _result = input switch {
             null => default,
-            Result<TObject> result => result._result,
+            ResultOf<TObject> result => result._result,
             ICollection<ValidationError> errors => new Failure(errors),
             ValidationError error => new Failure(error),
             Exception exception => exception,
@@ -21,7 +21,6 @@ public class Result<TObject> : IResult<TObject> {
 
     public bool IsSuccess => _result.IsT0;
     public bool HasValue => _result.IsT0 && _result.AsT0 is not null;
-    public bool IsNull => _result.IsT0 && _result.AsT0 is null;
     public bool HasErrors => _result.IsT1;
     public bool IsException => _result.IsT2;
 
@@ -29,10 +28,6 @@ public class Result<TObject> : IResult<TObject> {
     public TObject Value => HasValue
         ? _result.AsT0!
         : throw (IsException ? Exception : new InvalidCastException(ResultHasNoValue));
-
-    public TObject? Default => IsNull
-        ? default
-        : throw (IsException ? Exception : new InvalidCastException(ResultIsNotNull));
 
     public ICollection<ValidationError> Errors
         => IsSuccess
@@ -47,7 +42,7 @@ public class Result<TObject> : IResult<TObject> {
 
     public void Throw() { if (_result.IsT2) throw _result.AsT2; }
 
-    protected Result<TObject> AddErrors(ICollection<ValidationError> errors) {
+    protected ResultOf<TObject> AddErrors(ICollection<ValidationError> errors) {
         var validationErrors = Ensure.NotNullOrHasNull(errors);
         if (!validationErrors.Any() || IsException)
             return this;
@@ -62,16 +57,16 @@ public class Result<TObject> : IResult<TObject> {
         return this;
     }
 
-    public static implicit operator Result<TObject>(TObject? value) => new(value);
-    public static implicit operator Result<TObject>(Exception exception) => new(exception);
-    public static implicit operator Result<TObject>(Failure failure) => new(failure.Errors);
-    public static implicit operator Result<TObject>(List<ValidationError> errors) => new(errors);
-    public static implicit operator Result<TObject>(ValidationError[] errors) => new(errors);
-    public static implicit operator Result<TObject>(ValidationError error) => new(error);
+    public static implicit operator ResultOf<TObject>(TObject? value) => new(value);
+    public static implicit operator ResultOf<TObject>(Exception exception) => new(exception);
+    public static implicit operator ResultOf<TObject>(Failure failure) => new(failure.Errors);
+    public static implicit operator ResultOf<TObject>(List<ValidationError> errors) => new(errors);
+    public static implicit operator ResultOf<TObject>(ValidationError[] errors) => new(errors);
+    public static implicit operator ResultOf<TObject>(ValidationError error) => new(error);
 
-    public static implicit operator TObject?(Result<TObject> input) => input.HasValue ? input.Value : input.Default;
+    public static implicit operator TObject(ResultOf<TObject> input) => input.Value;
 
-    public static Result<TObject> operator +(Result<TObject> left, ValidationResult right) {
+    public static ResultOf<TObject> operator +(ResultOf<TObject> left, ValidationResult right) {
         if (right.IsException)
             left._result = right.Exception;
         else if (right.HasErrors)
@@ -79,7 +74,7 @@ public class Result<TObject> : IResult<TObject> {
         return left;
     }
 
-    public static Result<TObject> operator +(Result<TObject> left, Success _) => left;
-    public static Result<TObject> operator +(Result<TObject> left, ValidationError right) => left.AddErrors(new[] { right });
-    public static Result<TObject> operator +(Result<TObject> left, ICollection<ValidationError> right) => left.AddErrors(right);
+    public static ResultOf<TObject> operator +(ResultOf<TObject> left, Success _) => left;
+    public static ResultOf<TObject> operator +(ResultOf<TObject> left, ValidationError right) => left.AddErrors(new[] { right });
+    public static ResultOf<TObject> operator +(ResultOf<TObject> left, ICollection<ValidationError> right) => left.AddErrors(right);
 }

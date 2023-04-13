@@ -4,44 +4,44 @@ public class ResultTests {
     [Fact]
     public void ImplicitConversion_FromValue_ReturnsMethodResultWithValue() {
         const string testValue = "testValue";
-        Result<string> result = testValue;
+        ResultOf<string> resultOf = testValue;
 
-        result.HasValue.Should().BeTrue();
-        result.IsNull.Should().BeFalse();
-        result.Value.Should().Be(testValue);
-        result.Invoking(v => v.Default).Should().Throw<InvalidCastException>();
-        result.Invoking(v => v.Exception).Should().Throw<InvalidCastException>();
-        result.Invoking(v => v.Throw()).Should().NotThrow();
+        resultOf.HasValue.Should().BeTrue();
+        resultOf.IsNull.Should().BeFalse();
+        resultOf.Value.Should().Be(testValue);
+        resultOf.Invoking(v => v.Default).Should().Throw<InvalidCastException>();
+        resultOf.Invoking(v => v.Exception).Should().Throw<InvalidCastException>();
+        resultOf.Invoking(v => v.Throw()).Should().NotThrow();
     }
 
     [Fact]
     public void ImplicitConversion_FromNull_ReturnsMethodResultWithException() {
-        Result<string> result = default(string);
+        ResultOf<string> resultOf = default(string);
 
-        result.HasValue.Should().BeFalse();
-        result.IsNull.Should().BeTrue();
-        result.Default.Should().BeNull();
-        result.Invoking(v => v.Value).Should().Throw<InvalidCastException>();
-        result.Invoking(v => v.Exception).Should().Throw<InvalidCastException>();
-        result.Invoking(v => v.Throw()).Should().NotThrow();
+        resultOf.HasValue.Should().BeFalse();
+        resultOf.IsNull.Should().BeTrue();
+        resultOf.Default.Should().BeNull();
+        resultOf.Invoking(v => v.Value).Should().Throw<InvalidCastException>();
+        resultOf.Invoking(v => v.Exception).Should().Throw<InvalidCastException>();
+        resultOf.Invoking(v => v.Throw()).Should().NotThrow();
     }
 
     [Fact]
     public void ImplicitConversion_FromException_ReturnsMethodResultWithException() {
         var testException = new InvalidOperationException("test");
-        Result<string> result = testException;
+        ResultOf<string> resultOf = testException;
 
-        result.HasValue.Should().BeFalse();
-        result.IsNull.Should().BeFalse();
-        result.Exception.Should().NotBeNull();
-        result.Invoking(v => v.Value).Should().Throw<InvalidOperationException>();
-        result.Invoking(v => v.Default).Should().Throw<InvalidOperationException>();
-        result.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
+        resultOf.HasValue.Should().BeFalse();
+        resultOf.IsNull.Should().BeFalse();
+        resultOf.Exception.Should().NotBeNull();
+        resultOf.Invoking(v => v.Value).Should().Throw<InvalidOperationException>();
+        resultOf.Invoking(v => v.Default).Should().Throw<InvalidOperationException>();
+        resultOf.Invoking(v => v.Throw()).Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
     public void ImplicitConversion_ToValue_BecomesValue() {
-        var input = new Result<string>("testValue");
+        var input = new ResultOf<string>("testValue");
 
         string? result = input;
 
@@ -50,7 +50,7 @@ public class ResultTests {
 
     [Fact]
     public void ImplicitConversion_ToValue_BecomesNull() {
-        var input = new Result<string>();
+        var input = new ResultOf<string>();
 
         string? result = input;
 
@@ -59,7 +59,7 @@ public class ResultTests {
 
     [Fact]
     public void Result_Map_BecomesNewType() {
-        var input = new Result<string>("42");
+        var input = new ResultOf<string>("42");
 
         var result = input.Map(int.Parse);
 
@@ -70,7 +70,7 @@ public class ResultTests {
 
     [Fact]
     public void CollectionResult_Map_BecomesNewType() {
-        var input = new Result<IEnumerable<string>>(new[] { "42", "7" });
+        var input = new ResultOf<IEnumerable<string>>(new[] { "42", "7" });
 
         var result = input.Map(int.Parse);
 
@@ -81,7 +81,7 @@ public class ResultTests {
 
     [Fact]
     public void Result_MapFromException_BecomesException() {
-        var input = new Result<string>(new InvalidOperationException("Some error."));
+        var input = new ResultOf<string>(new InvalidOperationException("Some error."));
 
         var result = input.Map(int.Parse);
 
@@ -92,7 +92,7 @@ public class ResultTests {
 
     [Fact]
     public void CollectionResult_MapFromException_BecomesException() {
-        var input = new Result<IEnumerable<string>>(new InvalidOperationException("Some error."));
+        var input = new ResultOf<IEnumerable<string>>(new InvalidOperationException("Some error."));
 
         var result = input.Map(int.Parse);
 
@@ -103,7 +103,7 @@ public class ResultTests {
 
     [Fact]
     public void Result_MapFromNull_BecomesException() {
-        var input = new Result<string>();
+        var input = new ResultOf<string>();
 
         var result = input.Map(int.Parse);
 
@@ -114,7 +114,7 @@ public class ResultTests {
 
     [Fact]
     public void CollectionResult_MapFromNull_BecomesException() {
-        var input = new Result<IEnumerable<string>>();
+        var input = new ResultOf<IEnumerable<string>>();
 
         var result = input.Map(int.Parse);
 
