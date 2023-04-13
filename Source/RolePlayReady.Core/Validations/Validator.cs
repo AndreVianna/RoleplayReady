@@ -20,7 +20,7 @@ public abstract class Validator<TSubject, TChecks, TConnectors>
 
     public TConnectors NotNull() {
         if (Subject is null)
-            Errors.Add(new(string.Format(Null, Source), Source));
+            Errors.Add(new(IsRequired, Source));
         return (TConnectors)(IConnectors<TChecks>)this;
     }
 

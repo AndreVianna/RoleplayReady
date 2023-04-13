@@ -29,9 +29,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             var fileInfos = new List<DataFile<TData>>();
             foreach (var filePath in filePaths) {
                 var result = await GetFileDataAsync<TData>(filePath, cancellation).ConfigureAwait(false);
-                if (!result.HasValue)
-                    continue;
-                fileInfos.Add(result.Value);
+                if (result.HasValue) fileInfos.Add(result.Value!);
             }
 
             _logger.LogDebug("{fileCount} files retrieved from '{path}'.", fileInfos.Count, folderPath);

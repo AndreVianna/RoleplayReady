@@ -2,6 +2,20 @@ namespace System;
 
 public class EnsureTests {
     [Fact]
+    public void IsOfType_WhenArgumentIsOfWrongType_ThrowsArgumentNullException() {
+        var input = 12;
+        var action = () => Ensure.OfType<string>(input);
+        action.Should().Throw<ArgumentException>().WithMessage("'input' is not of type 'string'. (Parameter 'input')");
+    }
+
+    [Fact]
+    public void IsOfType_WhenArgumentIsOfRightType_ReturnsInput() {
+        var input = "value";
+        var result = Ensure.OfType<string>(input);
+        result.Should().BeSameAs(input);
+    }
+
+    [Fact]
     public void NotNull_WhenArgumentIsNull_ThrowsArgumentNullException() {
         object? input = null;
         var action = () => Ensure.NotNull(input);
@@ -14,6 +28,7 @@ public class EnsureTests {
         var result = Ensure.NotNull(input);
         result.Should().BeSameAs(input);
     }
+
     [Fact]
     public void NotNullOrEmpty_WhenStringIsNull_ThrowsArgumentException() {
         string? input = null;

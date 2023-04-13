@@ -168,7 +168,7 @@ public class DataFileRepositoryTests {
 
         // Assert
         result.IsNull.Should().BeTrue();
-        result.Default.Should().BeNull();
+        result.Value.Should().BeNull();
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public class DataFileRepositoryTests {
 
         // Assert
         result.IsNull.Should().BeTrue();
-        result.Default.Should().BeNull();
+        result.Value.Should().BeNull();
     }
 
     [Fact]
@@ -206,7 +206,7 @@ public class DataFileRepositoryTests {
 
         // Assert
         result.IsNull.Should().BeTrue();
-        result.Default.Should().BeNull();
+        result.Value.Should().BeNull();
     }
 
     [Fact]
@@ -232,7 +232,7 @@ public class DataFileRepositoryTests {
 
         // Assert
         result.IsNull.Should().BeTrue();
-        result.Default.Should().BeNull();
+        result.Value.Should().BeNull();
     }
 
     [Fact]

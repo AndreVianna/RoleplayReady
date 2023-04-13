@@ -16,10 +16,10 @@ public class FailureTests {
     [Fact]
     public void Constructor_NullValidationError_ThrowsArgumentNullException() {
         // Act
-        Action act = () => _ = new Failure(default(ValidationError));
+        Action act = () => _ = new Failure(default(ValidationError)!);
 
         // Assert
-        act.Should().Throw<ArgumentNullException>().WithMessage("'error' is required. (Parameter 'error')");
+        act.Should().Throw<ArgumentNullException>().WithMessage("'validationError' is required. (Parameter 'validationError')");
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class FailureTests {
         Action act = () => _ = new Failure(default(ICollection<ValidationError?>)!);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("'errors' is required. (Parameter 'errors')");
+        act.Should().Throw<ArgumentException>().WithMessage("'validationErrors' is required. (Parameter 'validationErrors')");
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class FailureTests {
         Action act = () => _ = new Failure(errors!);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("'errors' cannot be empty. (Parameter 'errors')");
+        act.Should().Throw<ArgumentException>().WithMessage("'validationErrors' cannot be empty. (Parameter 'validationErrors')");
     }
 
     [Fact]
@@ -71,6 +71,6 @@ public class FailureTests {
         Action act = () => _ = new Failure(errors!);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("'errors' cannot contain null items. (Parameter 'errors')");
+        act.Should().Throw<ArgumentException>().WithMessage("'validationErrors' cannot contain null items. (Parameter 'validationErrors')");
     }
 }

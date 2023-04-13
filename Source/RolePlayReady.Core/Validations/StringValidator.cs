@@ -12,13 +12,13 @@ public class StringValidator
         if (Subject is null)
             return this;
         if (Subject.Trim().Length == 0)
-            Errors.Add(new(string.Format(EmptyOrWhitespace, Source), Source));
+            Errors.Add(new(CannotBeEmptyOrWhitespace, Source));
         return this;
     }
 
     public IStringConnectors NoLongerThan(int maximumLength) {
         if ((Subject?.Length ?? 0) > maximumLength)
-            Errors.Add(new(string.Format(LongerThan, Source, maximumLength), Source));
+            Errors.Add(new(CannotBeLongerThan, Source, maximumLength));
         return this;
     }
 }

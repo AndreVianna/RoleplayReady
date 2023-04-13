@@ -1,12 +1,15 @@
 ﻿namespace System.Results;
 
-public record ValidationError {
-    [SetsRequiredMembers]
-    public ValidationError(string message, string source) {
-        Message = Ensure.NotNullOrWhiteSpace(message);
-        Source = Ensure.NotNullOrWhiteSpace(source);
+public sealed record ValidationError {
+    public ValidationError(string messageTemplate, string source, params object?[] args ) {
+        MessageTemplate = Ensure.NotNullOrWhiteSpace(messageTemplate);
+        Arguments = new object?[args.Length + 1];
+        Arguments[0] = Ensure.NotNullOrWhiteSpace(source);
+        if (args.Length == 0) return;
+        Array.Copy(args, 0, Arguments, 1, args.Length);
     }
 
-    public required string Message { get; init; }
-    public required string Source { get; init; }
+    public string MessageTemplate { get; }
+    public object?[] Arguments { get; }
+    public string Message => string.Format(MessageTemplate, Arguments);
 }

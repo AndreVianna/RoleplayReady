@@ -4,20 +4,20 @@ public class ValidationErrorTests {
     [Fact]
     public void DefaultConstructor_WithObjectInitializer_SetsInitializedProperties() {
         //Act
-        var validationError = new ValidationError("Error message", "fieldName");
+        var validationError = new ValidationError("Error message for {0} at {1}.", "fieldName", 42);
 
         //Assert
-        validationError.Message.Should().Be("Error message");
-        validationError.Source.Should().Be("fieldName");
+        validationError.Message.Should().Be("Error message for fieldName at 42.");
+        validationError.Arguments.Should().BeEquivalentTo(new object?[] { "fieldName", 42 });
     }
 
     [Fact]
-    public void DefaultConstructor_WithInvalidMessage_ThrowsArgumentException() {
+    public void DefaultConstructor_WithInvalidMessageTemplate_ThrowsArgumentException() {
         //Act
         var action = () => _ = new ValidationError("   ", "fieldName");
 
         //Assert
-        action.Should().Throw<ArgumentException>().WithMessage("'message' cannot be whitespace. (Parameter 'message')");
+        action.Should().Throw<ArgumentException>().WithMessage("'messageTemplate' cannot be whitespace. (Parameter 'messageTemplate')");
     }
 
     [Fact]

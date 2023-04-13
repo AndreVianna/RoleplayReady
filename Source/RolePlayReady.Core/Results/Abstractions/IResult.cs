@@ -1,6 +1,6 @@
 ﻿namespace System.Results.Abstractions;
 
-public interface IResult<out TObject> : IValidation {
+public interface IResult<out TValue> : IValidation {
     bool HasValue { get; }
-    TObject Value { get; }
+    TValue Value { get; }
 }
