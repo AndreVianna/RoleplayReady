@@ -1,4 +1,4 @@
-﻿namespace System.Validations.Abstractions;
+﻿namespace System.Validators.Abstractions;
 
 public interface IValidator { }
 
@@ -9,4 +9,3 @@ public interface IValidator<out TChecks, out TConnectors>
     where TChecks : IChecks<TConnectors>
     where TConnectors : IConnectors<TChecks> {
 }
-

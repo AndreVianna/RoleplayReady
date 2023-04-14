@@ -129,7 +129,7 @@ public class ResultTests {
 
         result.HasValue.Should().BeTrue();
         result.Value.Should().Be(42);
-        result.Errors.Count.Should().Be(1);
+        result.Errors.Should().HaveCount(1);
     }
 
     [Fact]
@@ -150,6 +150,6 @@ public class ResultTests {
 
         result.HasValue.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
-        result.Errors.Count.Should().Be(1);
+        result.Errors.Should().HaveCount(1);
     }
 }

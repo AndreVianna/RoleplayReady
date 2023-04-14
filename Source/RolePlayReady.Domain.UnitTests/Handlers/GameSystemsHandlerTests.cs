@@ -57,6 +57,21 @@ public class GameSystemsHandlerTests {
     }
 
     [Fact]
+    public async Task AddAsync_WithValidationError_ReturnsFailure() {
+        // Arrange
+        var input = CreateInput();
+        input = input with { Name = "" };
+        _repository.InsertAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(input);
+
+        // Act
+        var result = await _handler.AddAsync(input);
+
+        // Assert
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+    }
+
+    [Fact]
     public async Task UpdateAsync_ReturnsSetting() {
         // Arrange
         var input = CreateInput();
@@ -67,6 +82,21 @@ public class GameSystemsHandlerTests {
 
         // Assert
         result.HasValue.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidationError_ReturnsFailure() {
+        // Arrange
+        var input = CreateInput();
+        input = input with { Name = "" };
+        _repository.UpdateAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(input);
+
+        // Act
+        var result = await _handler.UpdateAsync(input);
+
+        // Assert
+        result.HasErrors.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
     }
 
     [Fact]

@@ -1,8 +1,7 @@
-﻿namespace System.Validations;
+﻿namespace System.Validators;
 
 public abstract class Validator<TSubject, TChecks, TConnectors>
     : IValidator<TChecks, TConnectors>
-    where TSubject : class
     where TChecks : IChecks<TConnectors>
     where TConnectors : IConnectors<TChecks> {
 

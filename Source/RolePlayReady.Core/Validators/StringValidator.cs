@@ -1,8 +1,8 @@
-﻿namespace System.Validations;
+﻿namespace System.Validators;
 
 public class StringValidator
     : Validator<string, IStringChecks, IStringConnectors>,
-        IStringValidator {
+        IStringChecks, IStringConnectors {
 
     public StringValidator(string? subject, string? source)
         : base(subject, source) {

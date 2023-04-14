@@ -36,7 +36,7 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromValidationErrorArray_ReturnsFailure() {
-        Maybe<string> result = new [] { new ValidationError("Some error.", nameof(result)) };
+        Maybe<string> result = new[] { new ValidationError("Some error.", nameof(result)) };
 
         result.IsValid.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
@@ -142,7 +142,7 @@ public class MaybeTests {
         result.HasValue.Should().BeTrue();
         result.IsNull.Should().BeFalse();
         result.Value.Should().Be(42);
-        result.Errors.Count.Should().Be(1);
+        result.Errors.Should().HaveCount(1);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class MaybeTests {
         result.HasValue.Should().BeTrue();
         result.IsNull.Should().BeFalse();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
-        result.Errors.Count.Should().Be(1);
+        result.Errors.Should().HaveCount(1);
     }
 
     [Fact]
@@ -177,6 +177,6 @@ public class MaybeTests {
         result.HasValue.Should().BeFalse();
         result.IsNull.Should().BeTrue();
         result.Value.Should().BeNull();
-        result.Errors.Count.Should().Be(1);
+        result.Errors.Should().HaveCount(1);
     }
 }
