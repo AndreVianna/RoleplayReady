@@ -1,12 +1,11 @@
 ﻿namespace System.Validators;
 
 public class NumericValidator<TNumber>
-    : Validator<TNumber?, INumericChecks, INumericConnectors>,
+    : Validator<TNumber, INumericChecks, INumericConnectors>,
         INumericChecks,
-        INumericConnectors
-    where TNumber : INumber<TNumber> {
+        INumericConnectors {
 
-    public NumericValidator(TNumber? subject, string? source)
+    public NumericValidator(TNumber subject, string? source)
         : base(subject, source) {
     }
 }

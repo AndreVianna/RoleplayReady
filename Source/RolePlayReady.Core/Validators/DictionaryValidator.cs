@@ -15,7 +15,8 @@ public class DictionaryValidator<TKey, TValue> :
         foreach (var item in Subject) {
             var source = $"{Source}[{item.Key}]";
             foreach (var error in validateUsing(item.Value).Result.Errors) {
-                error.Arguments[0] = source;
+                var path = ((string)error.Arguments[0]!).Split('.');
+                error.Arguments[0] = path.Length > 1 ? $"{source}.{string.Join('.', path[1..])}" : source;
                 Errors.Add(error);
             }
         }

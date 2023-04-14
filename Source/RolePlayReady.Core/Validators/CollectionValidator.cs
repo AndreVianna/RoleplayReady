@@ -16,7 +16,8 @@ public class CollectionValidator<TItem> :
         foreach (var item in Subject) {
             var source = $"{Source}[{index++}]";
             foreach (var error in validateUsing(item).Result.Errors) {
-                error.Arguments[0] = source;
+                var path = ((string)error.Arguments[0]!).Split('.');
+                error.Arguments[0] = path.Length > 1 ? $"{source}.{string.Join('.', path[1..])}" : source;
                 Errors.Add(error);
             }
         }

@@ -11,7 +11,7 @@ public record GameSystemSetting : Entity<Guid>, IGameSystemSetting {
 
     public override Validation Validate() {
         var result = base.Validate();
-        result += AttributeDefinitions.ListIs().NotNull().And.EachItem(i => i.Is().NotNull().And.Valid()).Result;
+        result += AttributeDefinitions.CollectionIs().NotNull().And.EachItem(i => i.ValueIs().NotNull().And.Valid()).Result;
         return result;
     }
 }
