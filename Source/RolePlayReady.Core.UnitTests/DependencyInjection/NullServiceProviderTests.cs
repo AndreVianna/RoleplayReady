@@ -1,4 +1,4 @@
-namespace Microsoft.Extensions.DependencyInjection;
+namespace System.DependencyInjection;
 
 public class NullServiceProviderTests {
     [Fact]

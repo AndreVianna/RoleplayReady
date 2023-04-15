@@ -1,19 +1,19 @@
 using System.Results;
 
-namespace System.Validations;
+namespace System.Validators;
 
 public class ValidatorExtensionsTests {
     private class TestObject : IValidatable {
-        public string Text { get; set; } = string.Empty;
-        public int Integer1 { get; set; }
-        public int? Integer2 { get; set; }
-        public decimal Decimal1 { get; set; }
-        public decimal? Decimal2 { get; set; }
-        public DateTime DateTime1 { get; set; }
-        public DateTime? DateTime2 { get; set; }
-        public Type Type1 { get; set; }
-        public ICollection<TestObject> Children { get; set; } = new List<TestObject>();
-        public IDictionary<string, TestObject> Maps { get; set; } = new Dictionary<string, TestObject>();
+        public string Text { get; init; } = string.Empty;
+        public int Integer1 { get; init; }
+        public int? Integer2 { get; init; }
+        public decimal Decimal1 { get; init; }
+        public decimal? Decimal2 { get; init; }
+        public DateTime DateTime1 { get; init; }
+        public DateTime? DateTime2 { get; init; }
+        public Type Type1 { get; init; } = default!;
+        public ICollection<TestObject> Children { get; init; } = new List<TestObject>();
+        public IDictionary<string, TestObject> Maps { get; init; } = new Dictionary<string, TestObject>();
         public Validation Validate() {
             var result = new Validation();
             result += Text.ValueIs().NotNull().And.NotEmptyOrWhiteSpace().Result;
@@ -30,11 +30,14 @@ public class ValidatorExtensionsTests {
         }
     }
 
-    private TestObject GenerateGoodData() {
+    private static TestObject GenerateGoodData() {
         var testObject1 = new TestObject() {
             Text = "TestData1",
+            Integer1 = 1,
             Integer2 = 1,
+            Decimal1 = 1.0m,
             Decimal2 = 1.0m,
+            DateTime1 = DateTime.Now,
             DateTime2 = DateTime.Now,
             Type1 = typeof(string),
         };
@@ -78,9 +81,8 @@ public class ValidatorExtensionsTests {
         };
     }
 
-    private TestObject GenerateBadData() {
-        var testObject0 = new TestObject() {
-        };
+    private static TestObject GenerateBadData() {
+        var testObject0 = new TestObject();
         var testObject1 = new TestObject() {
             Text = null!,
             Integer2 = 1,
@@ -123,8 +125,8 @@ public class ValidatorExtensionsTests {
         };
         var map = new Dictionary<string, TestObject>() {
             ["Test1"] = testObject3,
-            ["Test1"] = null!,
-            ["Test2"] = testObject4,
+            ["Test2"] = null!,
+            ["Test3"] = testObject4,
         };
         return new TestObject() {
             Text = "",
@@ -150,7 +152,6 @@ public class ValidatorExtensionsTests {
         result.Errors.Should().HaveCount(0);
     }
 
-
     [Fact]
     public void Validators_WithBadData_ReturnsFailure() {
         // Arrange
@@ -161,7 +162,7 @@ public class ValidatorExtensionsTests {
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Select(i => i.Message).Should().BeEquivalentTo(new[] {
+        result.Errors.Select(i => i.Message).Should().BeEquivalentTo(
             "'Text' cannot be empty or whitespace.",
             "'Decimal2' is required.",
             "'Children[0].Text' is required.",
@@ -179,8 +180,12 @@ public class ValidatorExtensionsTests {
             "'Children[2].Maps[Test0].Decimal2' is required.",
             "'Children[2].Maps[Test0].DateTime2' is required.",
             "'Children[2].Maps[Test0].Type1' is required.",
-            "'Maps[Test1]' is required.",
-            "'Maps[Test2].Text' cannot be empty or whitespace.",
-        });
+            "'Maps[Test1].DateTime2' is required.",
+            "'Maps[Test1].Children[0].Text' is required.",
+            "'Maps[Test1].Children[0].Children' is required.",
+            "'Maps[Test1].Children[0].Maps' is required.",
+            "'Maps[Test2]' is required.",
+            "'Maps[Test3].Text' cannot be empty or whitespace."
+            );
     }
 }
