@@ -1,4 +1,4 @@
-﻿using System.Results.Abstractions;
+﻿using IValidation = System.Results.Abstractions.IValidation;
 
 namespace System.Results;
 
@@ -7,7 +7,7 @@ public abstract class ResultBase<TValue> : IValidation {
 
     protected ResultBase(object? input) {
         (InternalValue, _failure) = input switch {
-            Validation validation => (default, new(validation.Errors)),
+            ValidationResult validation => (default, new(validation.Errors)),
             ICollection<ValidationError> errors => (default, new(errors)),
             ValidationError error => (default, new(error)),
             TValue value => (value, default),
@@ -15,8 +15,8 @@ public abstract class ResultBase<TValue> : IValidation {
         };
     }
 
-    public bool IsValid => _failure is null;
-    public bool HasErrors => !IsValid;
+    public bool IsSuccessful => _failure is null;
+    public bool HasErrors => !IsSuccessful;
     protected TValue? InternalValue { get; }
 
     public ICollection<ValidationError> Errors => _failure?.Errors ?? new List<ValidationError>();
@@ -35,4 +35,25 @@ public abstract class ResultBase<TValue> : IValidation {
             _failure.Errors.Add(error);
         return this;
     }
+
+    public override bool Equals(object? other) {
+        if (other is null) return false;
+        if (other is Success && IsSuccessful) return true;
+        if (ReferenceEquals(this, other)) return true;
+        if (other is not ResultBase<TValue> otherResult) return false;
+        if (otherResult.IsSuccessful != IsSuccessful) return false;
+        if (!IsSuccessful && Errors.Count != otherResult.Errors.Count) return false;
+        if (!IsSuccessful && Errors.Zip(otherResult.Errors).Any(pair => !pair.First.Equals(pair.Second))) return false;
+        return true;
+    }
+
+    public override int GetHashCode() {
+        var hashCode = new HashCode();
+        hashCode.Add(IsSuccessful);
+        if (IsSuccessful) return hashCode.ToHashCode();
+        foreach (var error in Errors) hashCode.Add(error);
+        return hashCode.ToHashCode();
+    }
+
+    //public override bool Equals(Success? other) => other is not null && IsSuccessful;
 }

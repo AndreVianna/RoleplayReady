@@ -21,7 +21,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         _baseFolderPath = Ensure.NotNullOrWhiteSpace(baseFolder, keyId).Trim();
     }
 
-    public async Task<Result<IEnumerable<DataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
+    public async Task<ObjectResult<IEnumerable<DataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting files from '{path}'...", folderPath);
@@ -43,7 +43,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         }
     }
 
-    public async Task<Maybe<DataFile<TData>>> GetByIdAsync<TData>(string owner, string path, string id, CancellationToken cancellation = default) {
+    public async Task<NullableResult<DataFile<TData>>> GetByIdAsync<TData>(string owner, string path, string id, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting latest data from '{path}/{id}'...", folderPath, id);
@@ -63,7 +63,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         }
     }
 
-    public async Task<Result<DateTime>> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
+    public async Task<ObjectResult<DateTime>> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
         var now = _dateTime.Now;
         try {
             var folderPath = GetFolderFullPath(owner, path);
@@ -86,7 +86,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         return now;
     }
 
-    public Result<bool> Delete(string owner, string path, string id) {
+    public ObjectResult<bool> Delete(string owner, string path, string id) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Deleting file '{path}/{id}'...", folderPath, id);
@@ -113,7 +113,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         }
     }
 
-    private async Task<Maybe<DataFile<TData>>> GetFileDataOrDefaultAsync<TData>(string filePath, CancellationToken cancellation) {
+    private async Task<NullableResult<DataFile<TData>>> GetFileDataOrDefaultAsync<TData>(string filePath, CancellationToken cancellation) {
         var result = default(DataFile<TData>);
         try {
             var fileName = _io.ExtractFileNameFrom(filePath);

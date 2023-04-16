@@ -19,7 +19,7 @@ public class FailureTests {
         Action act = () => _ = new Failure(default(ValidationError)!);
 
         // Assert
-        act.Should().Throw<ArgumentNullException>().WithMessage("'validationError' is required. (Parameter 'validationError')");
+        act.Should().Throw<ArgumentNullException>().WithMessage("'validationError' cannot be null. (Parameter 'validationError')");
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class FailureTests {
         Action act = () => _ = new Failure(default(ICollection<ValidationError?>)!);
 
         // Assert
-        act.Should().Throw<ArgumentException>().WithMessage("'validationErrors' is required. (Parameter 'validationErrors')");
+        act.Should().Throw<ArgumentException>().WithMessage("'validationErrors' cannot be null. (Parameter 'validationErrors')");
     }
 
     [Fact]

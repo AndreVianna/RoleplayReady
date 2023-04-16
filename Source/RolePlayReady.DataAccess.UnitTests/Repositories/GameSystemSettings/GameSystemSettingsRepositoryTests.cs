@@ -1,3 +1,5 @@
+using RolePlayReady.Models.Attributes;
+
 using static RolePlayReady.Constants.Constants;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSystemSettings;
@@ -86,7 +88,7 @@ public class GameSystemSettingsRepositoryTests {
     public void Delete_RemovesSetting() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns<Result<bool>>(true);
+        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns<ObjectResult<bool>>(true);
 
         // Act
         var result = _repository.Delete(InternalUser, id);

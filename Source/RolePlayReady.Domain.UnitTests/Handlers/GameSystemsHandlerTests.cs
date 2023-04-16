@@ -103,7 +103,7 @@ public class GameSystemsHandlerTests {
     public void Remove_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Delete(InternalUser, id).Returns<Result<bool>>(true);
+        _repository.Delete(InternalUser, id).Returns<ObjectResult<bool>>(true);
 
         // Act
         var result = _handler.Remove(id);

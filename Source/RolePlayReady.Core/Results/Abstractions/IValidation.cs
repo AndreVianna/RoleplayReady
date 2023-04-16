@@ -1,7 +1,7 @@
 ﻿namespace System.Results.Abstractions;
 
 public interface IValidation {
-    bool IsValid { get; }
+    bool IsSuccessful { get; }
     bool HasErrors { get; }
     ICollection<ValidationError> Errors { get; }
 }

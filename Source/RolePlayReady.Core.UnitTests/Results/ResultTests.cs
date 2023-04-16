@@ -1,20 +1,22 @@
+using System.Results.Extensions;
+
 namespace System.Results;
 
 public class ResultTests {
     [Fact]
     public void ImplicitConversion_FromValue_ReturnsValid() {
-        Result<string> result = "testValue";
+        ObjectResult<string> objectResult = "testValue";
 
-        result.IsValid.Should().BeTrue();
-        result.HasErrors.Should().BeFalse();
-        result.HasValue.Should().BeTrue();
-        result.Value.Should().Be("testValue");
+        objectResult.IsSuccessful.Should().BeTrue();
+        objectResult.HasErrors.Should().BeFalse();
+        objectResult.HasValue.Should().BeTrue();
+        objectResult.Value.Should().Be("testValue");
     }
 
     [Fact]
     public void ImplicitConversion_FromNull_ReturnsValid() {
         var action = () => {
-            Result<string> result = default(string)!;
+            ObjectResult<string> objectResult = default(string)!;
         };
 
         action.Should().Throw<InvalidCastException>();
@@ -22,89 +24,89 @@ public class ResultTests {
 
     [Fact]
     public void ImplicitConversion_FromValidationError_ReturnsFailure() {
-        Result<string> result = new ValidationError("Some error.", nameof(result));
+        ObjectResult<string> objectResult = new ValidationError("Some error.", nameof(objectResult));
 
-        result.IsValid.Should().BeFalse();
-        result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeFalse();
-        result.Invoking(x => x.Value).Should().Throw<InvalidOperationException>();
+        objectResult.IsSuccessful.Should().BeFalse();
+        objectResult.HasErrors.Should().BeTrue();
+        objectResult.HasValue.Should().BeFalse();
+        objectResult.Invoking(x => x.Value).Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
     public void ImplicitConversion_FromValidationErrorArray_ReturnsFailure() {
-        Result<string> result = new[] { new ValidationError("Some error.", nameof(result)) };
+        ObjectResult<string> objectResult = new[] { new ValidationError("Some error.", nameof(objectResult)) };
 
-        result.IsValid.Should().BeFalse();
-        result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeFalse();
+        objectResult.IsSuccessful.Should().BeFalse();
+        objectResult.HasErrors.Should().BeTrue();
+        objectResult.HasValue.Should().BeFalse();
     }
 
     [Fact]
     public void ImplicitConversion_FromValidationErrorList_ReturnsFailure() {
-        Result<string> result = new List<ValidationError> { new("Some error.", nameof(result)) };
+        ObjectResult<string> objectResult = new List<ValidationError> { new("Some error.", nameof(objectResult)) };
 
-        result.IsValid.Should().BeFalse();
-        result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeFalse();
+        objectResult.IsSuccessful.Should().BeFalse();
+        objectResult.HasErrors.Should().BeTrue();
+        objectResult.HasValue.Should().BeFalse();
     }
 
     [Fact]
     public void ImplicitConversion_FromFailure_ReturnsFailure() {
-        Result<string> result = new Failure(new ValidationError("Some error.", "result"));
+        ObjectResult<string> objectResult = new Failure(new ValidationError("Some error.", "objectResult"));
 
-        result.IsValid.Should().BeFalse();
-        result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeFalse();
+        objectResult.IsSuccessful.Should().BeFalse();
+        objectResult.HasErrors.Should().BeTrue();
+        objectResult.HasValue.Should().BeFalse();
     }
 
     [Fact]
     public void ImplicitConversion_FromValidation_ReturnsFailure() {
-        Result<string> result = new Validation(new ValidationError("Some error.", "result"));
+        ObjectResult<string> objectResult = new ValidationResult(new ValidationError("Some error.", "objectResult"));
 
-        result.IsValid.Should().BeFalse();
-        result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeFalse();
+        objectResult.IsSuccessful.Should().BeFalse();
+        objectResult.HasErrors.Should().BeTrue();
+        objectResult.HasValue.Should().BeFalse();
     }
 
     [Fact]
     public void AddOperator_WithSuccess_ReturnsValid() {
-        Result<string> result = "testValue";
+        ObjectResult<string> objectResult = "testValue";
 
-        result += Success.Instance;
+        objectResult += Success.Instance;
 
-        result.IsValid.Should().BeTrue();
-        result.HasErrors.Should().BeFalse();
-        result.HasValue.Should().BeTrue();
-        result.Value.Should().Be("testValue");
+        objectResult.IsSuccessful.Should().BeTrue();
+        objectResult.HasErrors.Should().BeFalse();
+        objectResult.HasValue.Should().BeTrue();
+        objectResult.Value.Should().Be("testValue");
     }
 
     [Fact]
     public void AddOperator_WithError_ReturnsInvalid() {
-        Result<string> result = "testValue";
+        ObjectResult<string> objectResult = "testValue";
 
-        result += new ValidationError("Some error.", "result");
+        objectResult += new ValidationError("Some error.", "objectResult");
 
-        result.IsValid.Should().BeFalse();
-        result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeTrue();
-        result.Value.Should().Be("testValue");
+        objectResult.IsSuccessful.Should().BeFalse();
+        objectResult.HasErrors.Should().BeTrue();
+        objectResult.HasValue.Should().BeTrue();
+        objectResult.Value.Should().Be("testValue");
     }
 
     [Fact]
     public void AddOperator_WithErrors_ReturnsInvalid() {
-        Result<string> result = "testValue";
+        ObjectResult<string> objectResult = "testValue";
 
-        result += new [] { new ValidationError("Some error 1.", "result"), new ValidationError("Some error 2.", "result") } ;
+        objectResult += new [] { new ValidationError("Some error 1.", "objectResult"), new ValidationError("Some error 2.", "objectResult") } ;
 
-        result.IsValid.Should().BeFalse();
-        result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeTrue();
-        result.Value.Should().Be("testValue");
+        objectResult.IsSuccessful.Should().BeFalse();
+        objectResult.HasErrors.Should().BeTrue();
+        objectResult.HasValue.Should().BeTrue();
+        objectResult.Value.Should().Be("testValue");
     }
 
     [Fact]
     public void ImplicitConversion_ToValue_BecomesValue() {
-        var input = new Result<string>("testValue");
+        var input = new ObjectResult<string>("testValue");
 
         string result = input;
 
@@ -113,7 +115,7 @@ public class ResultTests {
 
     [Fact]
     public void Result_Map_BecomesNewType() {
-        var input = new Result<string>("42");
+        var input = new ObjectResult<string>("42");
 
         var result = input.Map(int.Parse);
 
@@ -123,7 +125,7 @@ public class ResultTests {
 
     [Fact]
     public void Result_Map_WithErrors_BecomesNewType() {
-        var input = new Result<string>("42") + new ValidationError("Some error.", "field");
+        var input = new ObjectResult<string>("42") + new ValidationError("Some error.", "field");
 
         var result = input.Map(int.Parse);
 
@@ -134,7 +136,7 @@ public class ResultTests {
 
     [Fact]
     public void CollectionResult_Map_BecomesNewType() {
-        var input = new Result<IEnumerable<string>>(new[] { "42", "7" });
+        var input = new ObjectResult<IEnumerable<string>>(new[] { "42", "7" });
 
         var result = input.Map(int.Parse);
 
@@ -144,7 +146,7 @@ public class ResultTests {
 
     [Fact]
     public void CollectionResult_Map_WithErrors_BecomesNewType() {
-        var input = new Result<IEnumerable<string>>(new[] { "42", "7" }) + new ValidationError("Some error.", "field");
+        var input = new ObjectResult<IEnumerable<string>>(new[] { "42", "7" }) + new ValidationError("Some error.", "field");
 
         var result = input.Map(int.Parse);
 

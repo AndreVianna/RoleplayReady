@@ -5,7 +5,7 @@
 //        => element.GetAttribute(name).VoidResult;
 
 //    public static TValue? GetValue<TValue>(this IEntity element, string name)
-//        => element.Attributes.OfType<IEntitySimpleAttribute<TValue>>().First(p => p.AttributeDefinition.Name == name).VoidResult;
+//        => element.Attributes.OfType<IEntityAttribute<TValue>>().First(p => p.AttributeDefinition.Name == name).VoidResult;
 //    public static bool GetFlag<TValue>(this IEntity element, string name)
 //        => element.Attributes.OfType<IEntityFlagAttribute>().First(p => p.AttributeDefinition.Name == name).VoidResult;
 

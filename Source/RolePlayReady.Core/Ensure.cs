@@ -4,7 +4,7 @@ public static class Ensure {
     [return: NotNull]
     public static TArgument NotNull<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         => argument is null
-            ? throw new ArgumentNullException(paramName, string.Format(IsRequired, paramName))
+            ? throw new ArgumentNullException(paramName, string.Format(CannotBeNull, paramName))
             : argument;
 
     [return: NotNull]

@@ -19,7 +19,7 @@ public class EnsureTests {
     public void NotNull_WhenArgumentIsNull_ThrowsArgumentNullException() {
         object? input = null;
         var action = () => Ensure.NotNull(input);
-        action.Should().Throw<ArgumentNullException>().WithMessage("'input' is required. (Parameter 'input')");
+        action.Should().Throw<ArgumentNullException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class EnsureTests {
     public void NotNullOrEmpty_WhenStringIsNull_ThrowsArgumentException() {
         string? input = null;
         var action = () => Ensure.NotNullOrEmpty(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' is required. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class EnsureTests {
     public void NotNullOrWhiteSpace_WhenStringIsNull_ThrowsArgumentException() {
         string? input = null;
         var action = () => Ensure.NotNullOrWhiteSpace(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' is required. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class EnsureTests {
     public void NotNullOrHasNull_WhenIsNull_ThrowsArgumentException() {
         ICollection<int> input = default!;
         var action = () => Ensure.NotNullOrHasNull(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' is required. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class EnsureTests {
     public void NotNullOrEmpty_WhenIsNull_ThrowsArgumentException() {
         ICollection<int> input = default!;
         var action = () => Ensure.NotNullOrEmpty(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' is required. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
 
     [Fact]

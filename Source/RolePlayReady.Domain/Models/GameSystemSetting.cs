@@ -1,4 +1,6 @@
-﻿using System.Validators.Extensions;
+﻿using System.Validations.Extensions;
+
+using RolePlayReady.Models.Attributes;
 
 namespace RolePlayReady.Models;
 
@@ -9,9 +11,9 @@ public record GameSystemSetting : Entity<Guid>, IGameSystemSetting {
 
     public IList<AttributeDefinition> AttributeDefinitions { get; init; } = new List<AttributeDefinition>();
 
-    public override Validation Validate() {
+    public override ValidationResult Validate() {
         var result = base.Validate();
-        result += AttributeDefinitions.CollectionIs().NotNull().And.EachItem(i => i.ValueIs().NotNull().And.Valid()).Result;
+        result += AttributeDefinitions.CollectionItems().Each(i => i.ValueIs().NotNull().And.Valid()).Result;
         return result;
     }
 }

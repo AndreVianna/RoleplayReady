@@ -1,11 +1,13 @@
+using System.Results.Extensions;
+
 namespace System.Results;
 
 public class MaybeTests {
     [Fact]
     public void ImplicitConversion_FromValue_ReturnsValid() {
-        Maybe<string> result = "testValue";
+        NullableResult<string> result = "testValue";
 
-        result.IsValid.Should().BeTrue();
+        result.IsSuccessful.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
         result.HasValue.Should().BeTrue();
         result.IsNull.Should().BeFalse();
@@ -14,9 +16,9 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromNull_ReturnsValid() {
-        Maybe<string> result = default(string);
+        NullableResult<string> result = default(string);
 
-        result.IsValid.Should().BeTrue();
+        result.IsSuccessful.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
         result.HasValue.Should().BeFalse();
         result.IsNull.Should().BeTrue();
@@ -25,9 +27,9 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromValidationError_ReturnsFailure() {
-        Maybe<string> result = new ValidationError("Some error.", nameof(result));
+        NullableResult<string> result = new ValidationError("Some error.", nameof(result));
 
-        result.IsValid.Should().BeFalse();
+        result.IsSuccessful.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeFalse();
         result.IsNull.Should().BeTrue();
@@ -36,9 +38,9 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromValidationErrorArray_ReturnsFailure() {
-        Maybe<string> result = new[] { new ValidationError("Some error.", nameof(result)) };
+        NullableResult<string> result = new[] { new ValidationError("Some error.", nameof(result)) };
 
-        result.IsValid.Should().BeFalse();
+        result.IsSuccessful.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeFalse();
         result.IsNull.Should().BeTrue();
@@ -47,9 +49,9 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromValidationErrorList_ReturnsFailure() {
-        Maybe<string> result = new List<ValidationError> { new("Some error.", nameof(result)) };
+        NullableResult<string> result = new List<ValidationError> { new("Some error.", nameof(result)) };
 
-        result.IsValid.Should().BeFalse();
+        result.IsSuccessful.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeFalse();
         result.IsNull.Should().BeTrue();
@@ -58,9 +60,9 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromFailure_ReturnsFailure() {
-        Maybe<string> result = new Failure(new ValidationError("Some error.", "result"));
+        NullableResult<string> result = new Failure(new ValidationError("Some error.", "result"));
 
-        result.IsValid.Should().BeFalse();
+        result.IsSuccessful.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeFalse();
         result.IsNull.Should().BeTrue();
@@ -69,9 +71,9 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_FromValidation_ReturnsFailure() {
-        Maybe<string> result = new Validation(new ValidationError("Some error.", "result"));
+        NullableResult<string> result = new ValidationResult(new ValidationError("Some error.", "result"));
 
-        result.IsValid.Should().BeFalse();
+        result.IsSuccessful.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeFalse();
         result.IsNull.Should().BeTrue();
@@ -80,11 +82,11 @@ public class MaybeTests {
 
     [Fact]
     public void AddOperator_WithSuccess_ReturnsValid() {
-        Maybe<string> result = "testValue";
+        NullableResult<string> result = "testValue";
 
         result += Success.Instance;
 
-        result.IsValid.Should().BeTrue();
+        result.IsSuccessful.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
         result.HasValue.Should().BeTrue();
         result.IsNull.Should().BeFalse();
@@ -93,11 +95,11 @@ public class MaybeTests {
 
     [Fact]
     public void AddOperator_WithError_ReturnsInvalid() {
-        Maybe<string> result = "testValue";
+        NullableResult<string> result = "testValue";
 
         result += new ValidationError("Some error.", "result");
 
-        result.IsValid.Should().BeFalse();
+        result.IsSuccessful.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeTrue();
         result.IsNull.Should().BeFalse();
@@ -106,7 +108,7 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_ToValue_BecomesValue() {
-        var input = new Maybe<string>("testValue");
+        var input = new NullableResult<string>("testValue");
 
         string? result = input;
 
@@ -115,7 +117,7 @@ public class MaybeTests {
 
     [Fact]
     public void ImplicitConversion_ToValue_BecomesNull() {
-        var input = new Maybe<string>();
+        var input = new NullableResult<string>();
 
         string? result = input;
 
@@ -124,7 +126,7 @@ public class MaybeTests {
 
     [Fact]
     public void Maybe_Map_BecomesNewType() {
-        var input = new Maybe<string>("42");
+        var input = new NullableResult<string>("42");
 
         var result = input.Map(int.Parse!);
 
@@ -135,7 +137,7 @@ public class MaybeTests {
 
     [Fact]
     public void Maybe_Map_WithError_BecomesNewType() {
-        var input = new Maybe<string>("42") + new ValidationError("Some error.", "result");
+        var input = new NullableResult<string>("42") + new ValidationError("Some error.", "result");
 
         var result = input.Map(int.Parse!);
 
@@ -147,7 +149,7 @@ public class MaybeTests {
 
     [Fact]
     public void CollectionMaybe_Map_BecomesNewType() {
-        var input = new Maybe<IEnumerable<string>>(new[] { "42", "7" });
+        var input = new NullableResult<IEnumerable<string>>(new[] { "42", "7" });
 
         var result = input.Map(int.Parse);
 
@@ -158,7 +160,7 @@ public class MaybeTests {
 
     [Fact]
     public void CollectionMaybe_Map_WithError_BecomesNewType() {
-        var input = new Maybe<IEnumerable<string>>(new[] { "42", "7" }) + new ValidationError("Some error.", "result");
+        var input = new NullableResult<IEnumerable<string>>(new[] { "42", "7" }) + new ValidationError("Some error.", "result");
 
         var result = input.Map(int.Parse);
 
@@ -170,7 +172,7 @@ public class MaybeTests {
 
     [Fact]
     public void CollectionMaybe_Map_WithNullAndError_BecomesNewType() {
-        var input = new Maybe<IEnumerable<string>>(default) + new ValidationError("Some error.", "result");
+        var input = new NullableResult<IEnumerable<string>>(default) + new ValidationError("Some error.", "result");
 
         var result = input.Map(int.Parse);
 

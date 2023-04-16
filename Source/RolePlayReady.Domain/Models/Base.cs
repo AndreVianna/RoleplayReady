@@ -1,4 +1,4 @@
-﻿using System.Validators.Extensions;
+﻿using System.Validations.Extensions;
 
 namespace RolePlayReady.Models;
 
@@ -20,12 +20,12 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
     public const int MaxTagSize = 20;
     public IList<string> Tags { get; init; } = new List<string>();
 
-    public virtual Validation Validate() {
-        var result = new Validation();
-        result += Name.ValueIs().NotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxNameSize).Result;
-        result += Description.ValueIs().NotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxDescriptionSize).Result;
-        result += ShortName.ValueIs().NotEmptyOrWhiteSpace().And.NoLongerThan(MaxShortNameSize).Result;
-        result += Tags.CollectionIs().NotNull().And.EachItem(t => t.ValueIs().NotNull().And.NoLongerThan(MaxTagSize)).Result;
+    public virtual ValidationResult Validate() {
+        var result = new ValidationResult();
+        result += Name.ValueIs().NotNull().And.NotEmptyOrWhiteSpace().And.MaximumLengthOf(MaxNameSize).Result;
+        result += Description.ValueIs().NotNull().And.NotEmptyOrWhiteSpace().And.MaximumLengthOf(MaxDescriptionSize).Result;
+        result += ShortName.ValueIs().NotEmptyOrWhiteSpace().And.MaximumLengthOf(MaxShortNameSize).Result;
+        result += Tags.CollectionItems().Each(t => t.ValueIs().NotNull().And.MaximumLengthOf(MaxTagSize)).Result;
         return result;
     }
 

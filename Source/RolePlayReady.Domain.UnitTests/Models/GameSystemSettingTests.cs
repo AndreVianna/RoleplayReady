@@ -44,11 +44,11 @@ public class GameSystemSettingTests {
             },
         };
         var attributes = new List<IEntityAttribute> {
-            new EntitySimpleAttribute<string> {
+            new EntityStringAttribute {
                 AttributeDefinition = attributeDefinitions[0],
                 Value = "TestValue",
             },
-            new EntitySimpleAttribute<int> {
+            new EntityIntegerAttribute {
                 AttributeDefinition = attributeDefinitions[1],
                 Value = 42,
             },
@@ -65,7 +65,7 @@ public class GameSystemSettingTests {
 
         var result = testBase.Validate();
 
-        result.IsValid.Should().BeTrue();
+        result.IsSuccessful.Should().BeTrue();
         result.Errors.Should().HaveCount(0);
     }
     [Fact]
@@ -74,10 +74,10 @@ public class GameSystemSettingTests {
 
         var result = subject.Validate();
 
-        result.IsValid.Should().BeFalse();
+        result.IsSuccessful.Should().BeFalse();
         result.Errors.Should().HaveCount(2);
-        result.Errors.First().Message.Should().Be("'AttributeDefinitions[0].Description' is required.");
-        result.Errors.Skip(1).First().Message.Should().Be("'AttributeDefinitions[1]' is required.");
+        result.Errors.First().Message.Should().Be("'AttributeDefinitions[0].Description' cannot be null.");
+        result.Errors.Skip(1).First().Message.Should().Be("'AttributeDefinitions[1]' cannot be null.");
     }
 
     private static GameSystemSetting GenerateTestGameSystemSetting() {
@@ -97,11 +97,11 @@ public class GameSystemSettingTests {
             },
         };
         var attributes = new List<IEntityAttribute> {
-            new EntitySimpleAttribute<string> {
+            new EntityStringAttribute {
                 AttributeDefinition = attributeDefinitions[0],
                 Value = "TestValue",
             },
-            new EntitySimpleAttribute<int> {
+            new EntityIntegerAttribute {
                 AttributeDefinition = attributeDefinitions[1],
                 Value = 42,
             },

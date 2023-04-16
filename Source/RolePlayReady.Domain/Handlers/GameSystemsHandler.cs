@@ -12,26 +12,26 @@ public class GameSystemsHandler {
         _owner = user.Id;
     }
 
-    public async Task<Result<IEnumerable<GameSystem>>> GetManyAsync(CancellationToken cancellation = default)
+    public async Task<ObjectResult<IEnumerable<GameSystem>>> GetManyAsync(CancellationToken cancellation = default)
         => await _repository.GetManyAsync(_owner, cancellation);
 
-    public async Task<Maybe<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default)
+    public async Task<NullableResult<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default)
         => await _repository.GetByIdAsync(_owner, id, cancellation);
 
-    public async Task<Result<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default) {
+    public async Task<ObjectResult<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        return result.IsValid
+        return result.IsSuccessful
             ? await _repository.InsertAsync(_owner, input, cancellation)
             : result;
     }
 
-    public async Task<Result<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
+    public async Task<ObjectResult<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        return result.IsValid
+        return result.IsSuccessful
             ? await _repository.UpdateAsync(_owner, input, cancellation)
             : result;
     }
 
-    public Result<bool> Remove(Guid id)
+    public ObjectResult<bool> Remove(Guid id)
         => _repository.Delete(_owner, id);
 }
