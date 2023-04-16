@@ -25,7 +25,7 @@ public class ValidationExtensionsTests {
             result += Integer1.ValueIs().GreaterThan(10).And.LessThan(20).Result;
             result += Integer2.ValueIs().NotNull().And.GreaterOrEqualTo(30).And.LessOrEqualTo(50).Result;
             result += Decimal1.ValueIs().GreaterThan(10).And.LessThan(20).Result;
-            result += Decimal2.ValueIs().NotNull().And.GreaterOrEqualTo(30).And.LessOrEqualtTo(50).Result;
+            result += Decimal2.ValueIs().NotNull().And.GreaterOrEqualTo(30).And.LessOrEqualTo(50).Result;
             result += DateTime1.ValueIs().After(baseDate).And.Before(baseDate.AddDays(1)).Result;
             result += DateTime2.ValueIs().NotNull().And.AtOrAftter(baseDate.AddDays(-2)).And.AtOrBefore(baseDate.AddDays(-1)).Result;
             result += Type.ValueIs().NotNull().Result;

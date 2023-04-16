@@ -33,7 +33,7 @@ public class DecimalValidation
     }
 
     // Equivalent to number <= upperLimit
-    public IConnectors<IDecimalValidations> LessOrEqualtTo(decimal upperLimit) {
+    public IConnectors<IDecimalValidations> LessOrEqualTo(decimal upperLimit) {
         if (Subject is not IComparable<decimal> subject) return this;
         if (subject.CompareTo(upperLimit) > 0)
             Errors.Add(new(CannotBeGreaterThan, Source, upperLimit, subject));
