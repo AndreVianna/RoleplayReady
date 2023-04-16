@@ -1,7 +1,7 @@
 ﻿//using RolePlayReady.Models;
 //using RolePlayReady.Utilities.Contracts;
 
-//using Each = RolePlayReady.Models.Each;
+//using Item = RolePlayReady.Models.Item;
 
 //namespace RolePlayReady.Utilities;
 
@@ -26,7 +26,7 @@
 //            //nameof(Node) => new Node(_parent, abbreviation, name, description),
 //            nameof(Power) => new Power(_parent, abbreviation, name, description),
 //            nameof(PowerSource) => new PowerSource(_parent, abbreviation, name, description),
-//            nameof(Each) => new Each(_parent, abbreviation, name, description, string.Empty),
+//            nameof(Item) => new Item(_parent, abbreviation, name, description, string.Empty),
 //            _ => throw new ArgumentException($"Unknown type: {type}", nameof(type))
 //        };
 //}

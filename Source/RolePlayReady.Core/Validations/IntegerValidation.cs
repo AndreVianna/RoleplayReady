@@ -1,45 +1,38 @@
 ﻿namespace System.Validations;
 
 public class IntegerValidation
-    : Validation<int?, IntegerValidation, IIntegerValidations>,
-      IIntegerValidations {
+    : Validation<int?, IIntegerValidation>,
+      IIntegerValidation {
 
     public IntegerValidation(int? subject, string? source, ICollection<ValidationError>? previousErrors = null)
         : base(subject, source, previousErrors) {
     }
 
-    // Equivalent to number >= lowerLimit
-    public IConnectors<IIntegerValidations> GreaterOrEqualTo(int lowerLimit) {
-        if (Subject is not IComparable<int> subject) return this;
-        if (subject.CompareTo(lowerLimit) < 0)
-            Errors.Add(new(CannotBeLessThan, Source, lowerLimit, subject));
+    public IIntegerValidation GreaterThan(int minimum) {
+        if (Subject is null) return this;
+        if (Subject.Value.CompareTo(minimum) <= 0)
+            Errors.Add(new(CannotBeLessOrEqualTo, Source, minimum, Subject.Value));
         return this;
     }
 
-    // Equivalent to number < upperLimit
-    public IConnectors<IIntegerValidations> LessThan(int upperLimit) {
-        if (Subject is not IComparable<int> subject)
-            return this;
-        if (subject.CompareTo(upperLimit) >= 0)
-            Errors.Add(new(CannotBeGreaterOrEqualTo, Source, upperLimit, subject));
+    public IIntegerValidation LessThan(int maximum) {
+        if (Subject is null) return this;
+        if (Subject.Value.CompareTo(maximum) >= 0)
+            Errors.Add(new(CannotBeGreaterOrEqualTo, Source, maximum, Subject.Value));
         return this;
     }
 
-    // Equivalent to number > lowerLimit
-    public IConnectors<IIntegerValidations> GreaterThan(int lowerLimit) {
-        if (Subject is not IComparable<int> subject)
-            return this;
-        if (subject.CompareTo(lowerLimit) <= 0)
-            Errors.Add(new(CannotBeLessOrEqualTo, Source, lowerLimit, subject));
+    public IIntegerValidation GreaterOrEqualTo(int minimum) {
+        if (Subject is null) return this;
+        if (Subject.Value.CompareTo(minimum) < 0)
+            Errors.Add(new(CannotBeLessThan, Source, minimum, Subject.Value));
         return this;
     }
 
-    // Equivalent to number <= upperLimit
-    public IConnectors<IIntegerValidations> LessOrEqualTo(int upperLimit) {
-        if (Subject is not IComparable<int> subject)
-            return this;
-        if (subject.CompareTo(upperLimit) > 0)
-            Errors.Add(new(CannotBeGreaterThan, Source, upperLimit, subject));
+    public IIntegerValidation LessOrEqualTo(int maximum) {
+        if (Subject is null) return this;
+        if (Subject.Value.CompareTo(maximum) > 0)
+            Errors.Add(new(CannotBeGreaterThan, Source, maximum, Subject.Value));
         return this;
     }
 }

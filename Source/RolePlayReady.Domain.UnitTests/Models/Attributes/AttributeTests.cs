@@ -14,6 +14,7 @@ public class AttributeTests {
         attribute.ShortName.Should().Be("TST");
         attribute.Description.Should().Be("TestDescription");
         attribute.DataType.Should().Be(typeof(int));
+        attribute.Constraints.Should().BeEmpty();
         attribute.ToString().Should().Be("[AttributeDefinition] TestName (TST): Int32");
     }
 
@@ -29,6 +30,7 @@ public class AttributeTests {
         attribute.ShortName.Should().BeNull();
         attribute.Description.Should().Be("TestDescription");
         attribute.DataType.Should().Be(typeof(int));
+        attribute.Constraints.Should().BeEmpty();
         attribute.ToString().Should().Be("[AttributeDefinition] TestName: Int32");
     }
 }

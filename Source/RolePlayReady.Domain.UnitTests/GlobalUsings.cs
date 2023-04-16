@@ -5,6 +5,7 @@ global using FluentAssertions;
 
 global using NSubstitute;
 
+global using RolePlayReady.AttributeConstraints;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;

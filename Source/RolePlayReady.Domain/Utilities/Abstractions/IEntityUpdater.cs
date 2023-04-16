@@ -3,7 +3,7 @@
 //public interface IEntityUpdater {
 //    public interface IMain {
 //        ISetter Let(string attribute);
-//        IValidations CheckIf(string attribute);
+//        IFinishesValidation CheckIf(string attribute);
 //        IConditional If(string attribute);
 
 //        IActionConnector AddJournalEntry(string section, string title, string text);
@@ -42,7 +42,7 @@
 //        IActionConnector Have<TValue>(Func<IEntity, IEnumerable<TValue>> getItemsFrom);
 //    }
 
-//    public interface IValidations {
+//    public interface IFinishesValidation {
 //        IActionConnector Contains<TValue>(TValue candidate, string message);
 //        IActionConnector ContainsKey<TKey>(TKey key, string message) where TKey : notnull;
 //        IActionConnector IsEqualTo<TValue>(TValue validValue, string message) where TValue : IEquatable<TValue>;

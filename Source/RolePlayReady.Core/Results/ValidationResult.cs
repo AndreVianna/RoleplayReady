@@ -1,11 +1,11 @@
 ﻿namespace System.Results;
 
-public sealed class ValidationResult : ResultBase<Success> {
-    public ValidationResult() : base(Success.Instance) { }
+public sealed class ValidationResult : ResultBase<SuccessfulResult> {
+    public ValidationResult() : base(SuccessfulResult.Success) { }
 
     public ValidationResult(object? input) : base(input) { }
 
-    public static implicit operator ValidationResult(Success _) => new();
+    public static implicit operator ValidationResult(SuccessfulResult _) => new();
     public static implicit operator ValidationResult(Failure failure) => new(failure.Errors);
     public static implicit operator ValidationResult(List<ValidationError> errors) => new(errors);
     public static implicit operator ValidationResult(ValidationError[] errors) => new(errors);

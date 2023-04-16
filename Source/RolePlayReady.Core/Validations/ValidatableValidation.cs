@@ -1,20 +1,20 @@
 ﻿namespace System.Validations;
 
-public class ValidatableObjectValidation
-    : Validation<IValidatable, ValidatableObjectValidation, IValidatableObjectValidations>,
-        IValidatableObjectValidations {
+public class ValidatableValidation
+    : Validation<IValidatable, IValidatableTypeValidation>,
+        IValidatableTypeValidation {
 
-    public ValidatableObjectValidation(IValidatable? subject, string? source, ICollection<ValidationError>? previousErrors = null)
+    public ValidatableValidation(IValidatable? subject, string? source, ICollection<ValidationError>? previousErrors = null)
         : base(subject, source, previousErrors) {
     }
 
-    public IConnectors<IValidatableObjectValidations> NotNull() {
+    public IValidatableTypeValidation NotNull() {
         if (Subject is null) 
             Errors.Add(new(CannotBeNull, Source));
         return this;
     }
 
-    public IConnectors<IReferenceTypeValidations> Valid() {
+    public IFinishesValidation Valid() {
         if (Subject is null) return new ReferenceTypeValidation(Subject, Source, Errors);
         foreach (var error in Subject.Validate().Errors) {
             error.Arguments[0] = $"{Source}.{error.Arguments[0]}";

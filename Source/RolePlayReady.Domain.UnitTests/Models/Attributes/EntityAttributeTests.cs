@@ -25,17 +25,19 @@ public class EntitySimpleAttributeTests {
         var attribute = new AttributeDefinition {
             Name = "TestName",
             Description = "TestDescription",
-            DataType = typeof(int)
+            DataType = typeof(int),
         };
+        attribute.Constraints.Add(new GreaterThan(10));
 
         var entitySimpleAttribute = new EntityIntegerAttribute {
             AttributeDefinition = attribute,
-            Value = 42
+            Value = 42,
         };
 
         ((IEntityAttribute)entitySimpleAttribute).Value.Should().Be(42);
         entitySimpleAttribute.AttributeDefinition.Should().Be(attribute);
         entitySimpleAttribute.Value.Should().Be(42);
+        entitySimpleAttribute.IsValid.Should().BeTrue();
     }
 }
 

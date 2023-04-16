@@ -36,24 +36,6 @@ public abstract class ResultBase<TValue> : IValidation {
         return this;
     }
 
-    public override bool Equals(object? other) {
-        if (other is null) return false;
-        if (other is Success && IsSuccessful) return true;
-        if (ReferenceEquals(this, other)) return true;
-        if (other is not ResultBase<TValue> otherResult) return false;
-        if (otherResult.IsSuccessful != IsSuccessful) return false;
-        if (!IsSuccessful && Errors.Count != otherResult.Errors.Count) return false;
-        if (!IsSuccessful && Errors.Zip(otherResult.Errors).Any(pair => !pair.First.Equals(pair.Second))) return false;
-        return true;
-    }
-
-    public override int GetHashCode() {
-        var hashCode = new HashCode();
-        hashCode.Add(IsSuccessful);
-        if (IsSuccessful) return hashCode.ToHashCode();
-        foreach (var error in Errors) hashCode.Add(error);
-        return hashCode.ToHashCode();
-    }
-
-    //public override bool Equals(Success? other) => other is not null && IsSuccessful;
+    public static bool operator !=(ResultBase<TValue> left, SuccessfulResult _) => !left.IsSuccessful;
+    public static bool operator ==(ResultBase<TValue> left, SuccessfulResult _) => left.IsSuccessful;
 }

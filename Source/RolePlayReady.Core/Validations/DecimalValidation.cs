@@ -1,42 +1,38 @@
 ﻿namespace System.Validations;
 
 public class DecimalValidation
-    : Validation<decimal?, DecimalValidation, IDecimalValidations>,
-      IDecimalValidations {
+    : Validation<decimal?, IDecimalValidation>,
+      IDecimalValidation {
 
     public DecimalValidation(decimal? subject, string? source, ICollection<ValidationError>? previousErrors = null)
         : base(subject, source, previousErrors) {
     }
 
-    // Equivalent to number >= lowerLimit
-    public IConnectors<IDecimalValidations> GreaterOrEqualTo(decimal lowerLimit) {
-        if (Subject is not IComparable<decimal> subject) return this;
-        if (subject.CompareTo(lowerLimit) < 0)
-            Errors.Add(new(CannotBeLessThan, Source, lowerLimit, subject));
+    public IDecimalValidation GreaterThan(decimal minimum) {
+        if (Subject is null) return this;
+        if (Subject.Value.CompareTo(minimum) <= 0)
+            Errors.Add(new(CannotBeLessOrEqualTo, Source, minimum, Subject.Value));
         return this;
     }
 
-    // Equivalent to number < upperLimit
-    public IConnectors<IDecimalValidations> LessThan(decimal upperLimit) {
-        if (Subject is not IComparable<decimal> subject) return this;
-        if (subject.CompareTo(upperLimit) >= 0)
-            Errors.Add(new(CannotBeGreaterOrEqualTo, Source, upperLimit, subject));
+    public IDecimalValidation LessThan(decimal maximum) {
+        if (Subject is null) return this;
+        if (Subject.Value.CompareTo(maximum) >= 0)
+            Errors.Add(new(CannotBeGreaterOrEqualTo, Source, maximum, Subject.Value));
         return this;
     }
 
-    // Equivalent to number > lowerLimit
-    public IConnectors<IDecimalValidations> GreaterThan(decimal lowerLimit) {
-        if (Subject is not IComparable<decimal> subject) return this;
-        if (subject.CompareTo(lowerLimit) <= 0)
-            Errors.Add(new(CannotBeLessOrEqualTo, Source, lowerLimit, subject));
+    public IDecimalValidation GreaterOrEqualTo(decimal minimum) {
+        if (Subject is null) return this;
+        if (Subject.Value.CompareTo(minimum) < 0)
+            Errors.Add(new(CannotBeLessThan, Source, minimum, Subject.Value));
         return this;
     }
 
-    // Equivalent to number <= upperLimit
-    public IConnectors<IDecimalValidations> LessOrEqualTo(decimal upperLimit) {
-        if (Subject is not IComparable<decimal> subject) return this;
-        if (subject.CompareTo(upperLimit) > 0)
-            Errors.Add(new(CannotBeGreaterThan, Source, upperLimit, subject));
+    public IDecimalValidation LessOrEqualTo(decimal maximum) {
+        if (Subject is null) return this;
+        if (Subject.Value.CompareTo(maximum) > 0)
+            Errors.Add(new(CannotBeGreaterThan, Source, maximum, Subject.Value));
         return this;
     }
 }

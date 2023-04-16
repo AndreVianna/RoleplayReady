@@ -1,5 +1,5 @@
 ﻿namespace System.Validations.Abstractions;
 
-public interface IFinishValidation {
+public interface IFinishesValidation {
     ValidationResult Result { get; }
 }

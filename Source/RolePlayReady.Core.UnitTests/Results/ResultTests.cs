@@ -72,7 +72,7 @@ public class ResultTests {
     public void AddOperator_WithSuccess_ReturnsValid() {
         ObjectResult<string> objectResult = "testValue";
 
-        objectResult += Success.Instance;
+        objectResult += SuccessfulResult.Success;
 
         objectResult.IsSuccessful.Should().BeTrue();
         objectResult.HasErrors.Should().BeFalse();

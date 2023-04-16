@@ -8,8 +8,10 @@ public static class Constants {
         public const string CannotBeWhitespace = "'{0}' cannot be whitespace.";
         public const string CannotBeEmptyOrWhitespace = "'{0}' cannot be empty or whitespace.";
 
-        public const string CannotBeLongerThan = "'{0}' length cannot be greater than {1}. Found: {2}.";
         public const string CannotBeShorterThan = "'{0}' length cannot be less than {1}. Found: {2}.";
+        public const string CannotBeLongerThan = "'{0}' length cannot be greater than {1}. Found: {2}.";
+        public const string CannotHaveLessThan = "'{0}' count cannot be less than {1}. Found: {2}.";
+        public const string CannotHaveMoreThan = "'{0}' count cannot be greater than {1}. Found: {2}.";
 
         public const string CannotBeLessThan = "'{0}' value cannot be less then {1}. Found: {2}.";
         public const string CannotBeGreaterThan = "'{0}' value cannot be greater then {1}. Found: {2}.";

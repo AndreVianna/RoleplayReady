@@ -4,7 +4,7 @@ public class SuccessTests {
     [Fact]
     public void Constructor_CanBeInstantiated() {
         // Act
-        var success = Success.Instance;
+        var success = SuccessfulResult.Success;
 
         // Assert
         success.Should().NotBeNull();

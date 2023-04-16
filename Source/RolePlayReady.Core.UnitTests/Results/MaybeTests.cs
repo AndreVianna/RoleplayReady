@@ -84,7 +84,7 @@ public class MaybeTests {
     public void AddOperator_WithSuccess_ReturnsValid() {
         NullableResult<string> result = "testValue";
 
-        result += Success.Instance;
+        result += SuccessfulResult.Success;
 
         result.IsSuccessful.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
