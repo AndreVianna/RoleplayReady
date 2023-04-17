@@ -13,7 +13,7 @@ public record GameSystemSetting : Entity<Guid>, IGameSystemSetting {
 
     public override ValidationResult Validate() {
         var result = base.Validate();
-        result += AttributeDefinitions.ForEach(item => item.Is().NotNull().And.Valid()).Result;
+        result += AttributeDefinitions.IsNotNull().And.ForEach(item => item.IsNotNull().And.Valid()).Result;
         return result;
     }
 }

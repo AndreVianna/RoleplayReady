@@ -4,30 +4,25 @@ public class StringValidation
     : Validation<string, IStringValidation>,
         IStringValidation {
 
-    public StringValidation(string? subject, string? source, ICollection<ValidationError>? previousErrors = null)
+    public StringValidation(string? subject, string? source, IEnumerable<ValidationError>? previousErrors = null)
     : base(subject, source, previousErrors) {
     }
 
-    public IStringValidation NotNull() {
-        if (Subject is null) Errors.Add(new(CannotBeNull, Source));
-        return this;
-    }
-
-    public IStringValidation NotEmptyOrWhiteSpace() {
+    public IConnectsToOrFinishes<IStringValidation> NotEmptyOrWhiteSpace() {
         if (Subject is null) return this;
         if (Subject.Trim().Length == 0) Errors.Add(new(CannotBeEmptyOrWhitespace, Source));
         return this;
     }
 
-    public IStringValidation NotShorterThan(int minimumLength) {
-        var length = Subject?.Length ?? 0;
-        if (length < minimumLength) Errors.Add(new(CannotBeShorterThan, Source, minimumLength, length));
+    public IConnectsToOrFinishes<IStringValidation> NotShorterThan(int minimumLength) {
+        if (Subject is null) return this;
+        if (Subject.Length < minimumLength) Errors.Add(new(CannotBeShorterThan, Source, minimumLength, Subject.Length));
         return this;
     }
 
-    public IStringValidation NotLongerThan(int maximumLength) {
-        var length = Subject?.Length ?? 0;
-        if (length > maximumLength) Errors.Add(new(CannotBeLongerThan, Source, maximumLength, length));
+    public IConnectsToOrFinishes<IStringValidation> NotLongerThan(int maximumLength) {
+        if (Subject is null) return this;
+        if (Subject.Length > maximumLength) Errors.Add(new(CannotBeLongerThan, Source, maximumLength, Subject.Length));
         return this;
     }
 }

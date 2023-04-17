@@ -22,10 +22,10 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
 
     public virtual ValidationResult Validate() {
         var result = new ValidationResult();
-        result += Name.Is().NotNull().And.NotEmptyOrWhiteSpace().And.NotLongerThan(MaxNameSize).Result;
-        result += Description.Is().NotNull().And.NotEmptyOrWhiteSpace().And.NotLongerThan(MaxDescriptionSize).Result;
-        result += ShortName.Is().NotEmptyOrWhiteSpace().And.NotLongerThan(MaxShortNameSize).Result;
-        result += Tags.ForEach(item => item.Is().NotNull().And.NotLongerThan(MaxTagSize)).Result;
+        result += Name.IsNotNull().And.NotEmptyOrWhiteSpace().And.NotLongerThan(MaxNameSize).Result;
+        result += Description.IsNotNull().And.NotEmptyOrWhiteSpace().And.NotLongerThan(MaxDescriptionSize).Result;
+        result += ShortName.IsNullOr().NotEmptyOrWhiteSpace().And.NotLongerThan(MaxShortNameSize).Result;
+        result += Tags.IsNotNull().And.ForEach(item => item.IsNotNull().And.NotLongerThan(MaxTagSize)).Result;
         return result;
     }
 

@@ -1,42 +1,42 @@
 ﻿namespace System.Validations;
 
 public class DateTimeValidation
-    : Validation<DateTime?, IDateTimeValidation>,
+    : Validation<IComparable<DateTime>?, IDateTimeValidation>,
       IDateTimeValidation {
 
-    public DateTimeValidation(DateTime? subject, string? source, ICollection<ValidationError>? previousErrors = null)
+    public DateTimeValidation(IComparable<DateTime>? subject, string? source, IEnumerable<ValidationError>? previousErrors = null)
         : base(subject, source, previousErrors) {
     }
 
     // Equivalent to dateTime > reference
-    public IDateTimeValidation After(DateTime reference) {
-        if (Subject is not IComparable<DateTime> subject) return this;
-        if (subject.CompareTo(reference) <= 0)
-            Errors.Add(new(CannotBeAtOrBefore, Source, reference, subject));
+    public IConnectsToOrFinishes<IDateTimeValidation> After(DateTime reference) {
+        if (Subject is null) return this;
+        if (Subject.CompareTo(reference) <= 0)
+            Errors.Add(new(CannotBeAtOrBefore, Source, reference, Subject));
         return this;
     }
 
     // Equivalent to dateTime < reference
-    public IDateTimeValidation Before(DateTime reference) {
-        if (Subject is not IComparable<DateTime> subject) return this;
-        if (subject.CompareTo(reference) >= 0)
-            Errors.Add(new(CannotBeAtOrAfter, Source, reference, subject));
+    public IConnectsToOrFinishes<IDateTimeValidation> Before(DateTime reference) {
+        if (Subject is null) return this;
+        if (Subject.CompareTo(reference) >= 0)
+            Errors.Add(new(CannotBeAtOrAfter, Source, reference, Subject));
         return this;
     }
 
     // Equivalent to dateTime >= reference
-    public IDateTimeValidation StartsOn(DateTime reference) {
-        if (Subject is not IComparable<DateTime> subject) return this;
-        if (subject.CompareTo(reference) < 0)
-            Errors.Add(new(CannotBeBefore, Source, reference, subject));
+    public IConnectsToOrFinishes<IDateTimeValidation> StartsOn(DateTime reference) {
+        if (Subject is null) return this;
+        if (Subject.CompareTo(reference) < 0)
+            Errors.Add(new(CannotBeBefore, Source, reference, Subject));
         return this;
     }
 
     // Equivalent to dateTime <= reference
-    public IDateTimeValidation EndsOn(DateTime reference) {
-        if (Subject is not IComparable<DateTime> subject) return this;
-        if (subject.CompareTo(reference) > 0)
-            Errors.Add(new(CannotBeAfter, Source, reference, subject));
+    public IConnectsToOrFinishes<IDateTimeValidation> EndsOn(DateTime reference) {
+        if (Subject is null) return this;
+        if (Subject.CompareTo(reference) > 0)
+            Errors.Add(new(CannotBeAfter, Source, reference, Subject));
         return this;
     }
 }

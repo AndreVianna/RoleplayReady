@@ -1,10 +1,8 @@
 ﻿namespace System.Validations.Abstractions;
 
 public interface IStringValidation
-    : IFinishesValidation, 
-      IConnectsToValidation<IStringValidation> {
-    IStringValidation NotNull();
-    IStringValidation NotEmptyOrWhiteSpace();
-    IStringValidation NotShorterThan(int minimumLength);
-    IStringValidation NotLongerThan(int maximumLength);
+    : IConnectsToOrFinishes<IStringValidation> {
+    IConnectsToOrFinishes<IStringValidation> NotEmptyOrWhiteSpace();
+    IConnectsToOrFinishes<IStringValidation> NotShorterThan(int minimumLength);
+    IConnectsToOrFinishes<IStringValidation> NotLongerThan(int maximumLength);
 }

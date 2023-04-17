@@ -1,8 +1,12 @@
 ﻿namespace System.Validations;
 
 public static class CollectionValidation {
-    public static IFinishesValidation ForEachItemIn<TItem>(IValidation<ICollection<TItem>> validation, Func<TItem, IFinishesValidation> validateUsing) {
-        if (validation.Subject is null) return validation;
+    public static IFinishesValidation ForEachItemIn<TItem>(IValidation<ICollection<TItem>?> validation, Func<TItem, IFinishesValidation> validateUsing, bool addIsNullError = true) {
+        if (validation.Subject is null) {
+            if (addIsNullError) validation.Errors.Add(new ValidationError(CannotBeNull, validation.Source));
+            return validation;
+        }
+
         var dictionary = validation.Subject as IDictionary;
         var index = 0;
         foreach (var item in validation.Subject) {
@@ -21,30 +25,33 @@ public static class CollectionValidation {
 }
 
 public class CollectionValidation<TItem> :
-    Validation<ICollection<TItem>, ICollectionValidation>,
-    ICollectionValidation {
+    Validation<ICollection<TItem>?, ICollectionValidation<TItem>>,
+    ICollectionValidation<TItem> {
 
-    public CollectionValidation(ICollection<TItem> subject, string? source, ICollection<ValidationError>? previousErrors = null)
+    public CollectionValidation(ICollection<TItem>? subject, string? source, IEnumerable<ValidationError>? previousErrors = null)
         : base(subject, source, previousErrors) {
     }
 
-    public ICollectionValidation NotEmpty() {
+    public IConnectsToOrFinishes<ICollectionValidation<TItem>> NotEmpty() {
         if (Subject is null) return this;
         if (!Subject.Any()) Errors.Add(new(CannotBeEmpty, Source));
         return this;
     }
 
-    public ICollectionValidation NotShorterThan(int minimumCount) {
-        var count = Subject?.Count ?? 0;
-        if (count < minimumCount)
-            Errors.Add(new(CannotHaveLessThan, Source, minimumCount, count));
+    public IConnectsToOrFinishes<ICollectionValidation<TItem>> NotShorterThan(int minimumCount) {
+        if (Subject is null) return this;
+        if (Subject.Count < minimumCount)
+            Errors.Add(new(CannotHaveLessThan, Source, minimumCount, Subject.Count));
         return this;
     }
 
-    public ICollectionValidation NotLongerThan(int maximumCount) {
-        var count = Subject?.Count ?? 0;
-        if (count > maximumCount)
-            Errors.Add(new(CannotHaveMoreThan, Source, maximumCount, count));
+    public IConnectsToOrFinishes<ICollectionValidation<TItem>> NotLongerThan(int maximumCount) {
+        if (Subject is null) return this;
+        if (Subject.Count > maximumCount)
+            Errors.Add(new(CannotHaveMoreThan, Source, maximumCount, Subject.Count));
         return this;
     }
+
+    public IFinishesValidation ForEach(Func<TItem, IFinishesValidation> validateUsing)
+        => CollectionValidation.ForEachItemIn(this, validateUsing, false);
 }

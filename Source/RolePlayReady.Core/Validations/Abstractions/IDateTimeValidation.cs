@@ -1,10 +1,9 @@
 ﻿namespace System.Validations.Abstractions;
 
 public interface IDateTimeValidation
-    : IFinishesValidation,
-      IConnectsToValidation<IDateTimeValidation> {
-    IDateTimeValidation After(DateTime reference);
-    IDateTimeValidation Before(DateTime reference);
-    IDateTimeValidation StartsOn(DateTime reference);
-    IDateTimeValidation EndsOn(DateTime reference);
+    : IConnectsToOrFinishes<IDateTimeValidation> {
+    IConnectsToOrFinishes<IDateTimeValidation> After(DateTime reference);
+    IConnectsToOrFinishes<IDateTimeValidation> Before(DateTime reference);
+    IConnectsToOrFinishes<IDateTimeValidation> StartsOn(DateTime reference);
+    IConnectsToOrFinishes<IDateTimeValidation> EndsOn(DateTime reference);
 }

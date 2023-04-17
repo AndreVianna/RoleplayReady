@@ -1,10 +1,9 @@
 ﻿namespace System.Validations.Abstractions;
 
 public interface IIntegerValidation
-    : IFinishesValidation,
-      IConnectsToValidation<IIntegerValidation> {
-    IIntegerValidation LessOrEqualTo(int maximum);
-    IIntegerValidation GreaterOrEqualTo(int minimum);
-    IIntegerValidation LessThan(int maximum);
-    IIntegerValidation GreaterThan(int minimum);
+    : IConnectsToOrFinishes<IIntegerValidation> {
+    IConnectsToOrFinishes<IIntegerValidation> LessOrEqualTo(int maximum);
+    IConnectsToOrFinishes<IIntegerValidation> GreaterOrEqualTo(int minimum);
+    IConnectsToOrFinishes<IIntegerValidation> LessThan(int maximum);
+    IConnectsToOrFinishes<IIntegerValidation> GreaterThan(int minimum);
 }

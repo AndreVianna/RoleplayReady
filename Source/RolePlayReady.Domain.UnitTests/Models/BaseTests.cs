@@ -42,7 +42,7 @@ public class BaseTests {
     }
 
     [Theory]
-    [InlineData(null, null, null, null, 2)]
+    [InlineData(null, null, null, null, 3)]
     [InlineData(0, 0, 0, 0, 3)]
     [InlineData(-1, -1, -1, -1, 4)]
     [InlineData(1, 1, 1, 1, 0)]
