@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Engine.Abstractions;
-
-namespace RolePlayReady.Engine;
+﻿namespace RolePlayReady.Engine;
 
 public class RunnerOptions : IRunnerOptions<RunnerOptions> {
     public string Name => GetType().Name;

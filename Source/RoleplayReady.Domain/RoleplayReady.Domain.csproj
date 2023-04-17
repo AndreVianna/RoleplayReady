@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OneOf" Version="3.0.243" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RolePlayReady.Core\RolePlayReady.Core.csproj" />
   </ItemGroup>
 

@@ -2,9 +2,9 @@
 
 public sealed record ValidationError {
     public ValidationError(string messageTemplate, string source, params object?[] args ) {
-        MessageTemplate = Ensure.NotNullOrWhiteSpace(messageTemplate);
+        MessageTemplate = Ensure.IsNotNullOrWhiteSpace(messageTemplate);
         Arguments = new object?[args.Length + 1];
-        Arguments[0] = Ensure.NotNullOrWhiteSpace(source);
+        Arguments[0] = Ensure.IsNotNullOrWhiteSpace(source);
         if (args.Length == 0) return;
         Array.Copy(args, 0, Arguments, 1, args.Length);
     }
@@ -12,4 +12,9 @@ public sealed record ValidationError {
     public string MessageTemplate { get; }
     public object?[] Arguments { get; }
     public string Message => string.Format(MessageTemplate, Arguments);
+
+    public bool Equals(ValidationError? other)
+        => other is not null
+           && MessageTemplate == other.MessageTemplate
+           && Arguments.SequenceEqual(other.Arguments);
 }

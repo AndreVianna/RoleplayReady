@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Engine.Abstractions;
-
-namespace RolePlayReady.Engine.Nulls;
+﻿namespace RolePlayReady.Engine.Nulls;
 
 public sealed class NullRunner : IRunner<IContext, RunnerOptions> {
     private NullRunner() { }

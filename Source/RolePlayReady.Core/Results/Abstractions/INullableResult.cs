@@ -1,6 +1,6 @@
 ﻿namespace System.Results.Abstractions;
 
-public interface IMaybe<out TValue> : IValidation {
+public interface INullableResult<out TValue> : IResult {
     bool IsNull { get; }
     bool HasValue { get; }
     TValue? Value { get; }

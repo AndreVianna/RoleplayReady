@@ -1,7 +1,4 @@
-﻿using RolePlayReady.Engine.Abstractions;
-using RolePlayReady.Engine.Steps.Abstractions;
-
-namespace RolePlayReady.Engine;
+﻿namespace RolePlayReady.Engine;
 
 public abstract class Step<TContext> : IStep<TContext>
     where TContext : class, IContext {
@@ -26,11 +23,11 @@ public abstract class Step<TContext> : IStep<TContext>
 
     async Task<IContext> IStep.RunAsync(IContext context, CancellationToken cancellation)
         => await RunAsync(
-            Ensure.NotNull(context as TContext, $"Context must be of type '{typeof(TContext).Name}'."),
+            Ensure.IsNotNull(context as TContext, $"Context must be of type '{typeof(TContext).Name}'."),
             cancellation);
     public async Task<TContext> RunAsync(TContext context, CancellationToken cancellation = default) {
         try {
-            Ensure.NotNull(context);
+            Ensure.IsNotNull(context);
             await context.UpdateAsync(this, cancellation).ConfigureAwait(false);
 
             _logger.LogDebug("Running step {StepNumber}: '{Type}'...", context.CurrentStepNumber, _stepType.Name);

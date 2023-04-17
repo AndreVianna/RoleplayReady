@@ -2,7 +2,7 @@
 
 public static class Constants {
     public static class ErrorMessages {
-        public const string IsNotOfType = "'{0}' is not of type '{1}'.";
+        public const string IsNotOfType = "'{0}' is not of type '{1}'. Found: '{2}'.";
         public const string CannotBeNull = "'{0}' cannot be null.";
         public const string CannotBeEmpty = "'{0}' cannot be empty.";
         public const string CannotBeWhitespace = "'{0}' cannot be whitespace.";

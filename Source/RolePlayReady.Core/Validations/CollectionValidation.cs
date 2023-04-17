@@ -1,9 +1,9 @@
 ﻿namespace System.Validations;
 
 public static class CollectionValidation {
-    public static IFinishesValidation ForEachItemIn<TItem>(IValidation<ICollection<TItem>?> validation, Func<TItem, IFinishesValidation> validateUsing, bool addIsNullError = true) {
+    public static IFinishesValidation ForEachItemIn<TItem>(IValidation<IEnumerable<TItem>?> validation, Func<TItem, IFinishesValidation> validateUsing, bool addIsNullError = true) {
         if (validation.Subject is null) {
-            if (addIsNullError) validation.Errors.Add(new ValidationError(CannotBeNull, validation.Source));
+            if (addIsNullError) validation.Errors.Add(new(CannotBeNull, validation.Source));
             return validation;
         }
 

@@ -18,10 +18,10 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         _dateTime = dateTime ?? new DefaultDateTime();
         var baseFolder = configuration[_baseFolderConfigurationKey];
         const string keyId = $"{nameof(configuration)}[{_baseFolderConfigurationKey}]";
-        _baseFolderPath = Ensure.NotNullOrWhiteSpace(baseFolder, keyId).Trim();
+        _baseFolderPath = Ensure.IsNotNullOrWhiteSpace(baseFolder, keyId).Trim();
     }
 
-    public async Task<ObjectResult<IEnumerable<DataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
+    public async Task<Result<IEnumerable<DataFile<TData>>>> GetAllAsync<TData>(string owner, string path, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting files from '{path}'...", folderPath);
@@ -63,7 +63,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         }
     }
 
-    public async Task<ObjectResult<DateTime>> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
+    public async Task<Result<DateTime>> UpsertAsync<TData>(string owner, string path, string id, TData data, CancellationToken cancellation = default) {
         var now = _dateTime.Now;
         try {
             var folderPath = GetFolderFullPath(owner, path);
@@ -86,7 +86,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
         return now;
     }
 
-    public ObjectResult<bool> Delete(string owner, string path, string id) {
+    public Result<bool> Delete(string owner, string path, string id) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Deleting file '{path}/{id}'...", folderPath, id);

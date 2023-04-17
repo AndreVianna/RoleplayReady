@@ -6,3 +6,5 @@ global using System.Validations.Abstractions;
 
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
+global using RolePlayReady.Repositories.Abstractions;
+global using RolePlayReady.Security.Abstractions;

@@ -1,4 +1,6 @@
-﻿namespace System.Validations;
+﻿using static System.Results.ValidationResult;
+
+namespace System.Validations;
 
 public static class Validation {
     public static IEnumerable<ValidationError> EnsureNotNull(object? subject, string? source)
@@ -24,5 +26,5 @@ public abstract class Validation<TSubject, TValidation>
 
     public TValidation And => (this as TValidation)!;
 
-    public ValidationResult Result => Errors.Any() ? new(Errors.ToArray()) : new();
+    public ValidationResult Result => Success + Errors.ToArray();
 }

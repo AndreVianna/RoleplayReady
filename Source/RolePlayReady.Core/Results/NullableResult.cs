@@ -1,26 +1,36 @@
-﻿using System.Results.Abstractions;
+﻿namespace System.Results;
 
-namespace System.Results;
-
-public class NullableResult<TValue> : ResultBase<TValue>, IMaybe<TValue> {
-    public NullableResult() : base(default) { }
-
-    public NullableResult(object? input) : base(input) {
+public record NullableResult<TValue> : ResultBase, INullableResult<TValue> {
+    public NullableResult(TValue? input = default)
+        : this(input, Array.Empty<ValidationError>()) {
     }
 
-    public bool HasValue => InternalValue is not null;
-    public bool IsNull => InternalValue is null;
+    private NullableResult(object? input, IEnumerable<ValidationError> errors) {
+        Value = input is null or TValue
+            ? (TValue?)input
+            : throw new InvalidCastException(string.Format(IsNotOfType, nameof(input), typeof(TValue).Name, input.GetType().Name));
+        foreach (var error in errors)
+            Errors.Add(error);
+    }
 
-    public TValue? Value => InternalValue;
+    public bool IsNull => Value is null;
+    public bool HasValue => Value is not null;
 
-    public static implicit operator NullableResult<TValue>(TValue? value) => new(value);
-    public static implicit operator NullableResult<TValue>(ValidationResult validationResult) => new(validationResult);
-    public static implicit operator NullableResult<TValue>(Failure failure) => new(failure.Errors);
-    public static implicit operator NullableResult<TValue>(List<ValidationError> errors) => new(errors);
-    public static implicit operator NullableResult<TValue>(ValidationError[] errors) => new(errors);
-    public static implicit operator NullableResult<TValue>(ValidationError error) => new(error);
+    public TValue? Value { get; }
 
+    public static implicit operator NullableResult<TValue>(Result<TValue> value) => new(value.Value, value.Errors);
+    public static implicit operator NullableResult<TValue>(NullableResult<object> value) => new(value.Value, value.Errors);
+    public static implicit operator NullableResult<TValue>(TValue? value) => new(value, Array.Empty<ValidationError>());
     public static implicit operator TValue?(NullableResult<TValue> input) => input.Value;
 
-    public static NullableResult<TValue> operator +(NullableResult<TValue> left, ValidationResult right) => (NullableResult<TValue>)left.AddErrors(right.Errors);
+    public static NullableResult<TValue> operator +(NullableResult<TValue> left, ValidationResult right) => left with { Errors = left.Errors.Union(right.Errors).ToList() };
+    public static NullableResult<TValue> operator +(ValidationResult left, NullableResult<TValue> right) => right with { Errors = right.Errors.Union(left.Errors).ToList() };
+    public static bool operator ==(NullableResult<TValue> left, ValidationResult right) => ReferenceEquals(right, ValidationResult.Success) && left.IsSuccessful;
+    public static bool operator !=(NullableResult<TValue> left, ValidationResult right) => !ReferenceEquals(right, ValidationResult.Success) || !left.IsSuccessful;
+
+    public virtual bool Equals(NullableResult<TValue>? other)
+        => other is not null
+           && (Value is not null
+            ? other.Value is not null && Value.Equals(other.Value) && Errors.SequenceEqual(other.Errors)
+            : other.Value is null && Errors.SequenceEqual(other.Errors));
 }

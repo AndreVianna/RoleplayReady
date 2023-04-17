@@ -1,7 +1,4 @@
-﻿using RolePlayReady.Engine.Abstractions;
-using RolePlayReady.Engine.Steps.Abstractions;
-
-namespace RolePlayReady.Engine;
+﻿namespace RolePlayReady.Engine;
 
 public abstract class SimpleRunner<TContext, TOptions> : IRunner<TContext, TOptions>
     where TContext : class, IContext
@@ -16,7 +13,7 @@ public abstract class SimpleRunner<TContext, TOptions> : IRunner<TContext, TOpti
 
         var options = Activator.CreateInstance<TOptions>();
         configuration.GetSection(options.Name).Bind(options);
-        _stepFactory = Ensure.NotNull(stepFactory);
+        _stepFactory = Ensure.IsNotNull(stepFactory);
         Options = options;
     }
 
