@@ -3,7 +3,7 @@
 public interface ICollectionValidation<out TItem>
     : IConnectsToOrFinishes<ICollectionValidation<TItem>> {
     IConnectsToOrFinishes<ICollectionValidation<TItem>> NotEmpty();
-    IConnectsToOrFinishes<ICollectionValidation<TItem>> NotShorterThan(int minimumCount);
-    IConnectsToOrFinishes<ICollectionValidation<TItem>> NotLongerThan(int maximumCount);
+    IConnectsToOrFinishes<ICollectionValidation<TItem>> NotSmallerThan(int size);
+    IConnectsToOrFinishes<ICollectionValidation<TItem>> NotBiggerThan(int size);
     IFinishesValidation ForEach(Func<TItem, IFinishesValidation> validateUsing);
 }

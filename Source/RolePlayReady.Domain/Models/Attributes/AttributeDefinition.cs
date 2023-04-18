@@ -20,9 +20,9 @@ public record AttributeDefinition : IAttributeDefinition, IValidatable {
     
     public ValidationResult Validate() {
         var result = new ValidationResult();
-        result += Name.IsNotNull().And.NotEmptyOrWhiteSpace().And.NotLongerThan(MaxNameSize).Result;
-        result += Description.IsNotNull().And.NotEmptyOrWhiteSpace().And.NotLongerThan(MaxDescriptionSize).Result;
-        result += ShortName.IsNullOr().NotEmptyOrWhiteSpace().And.NotLongerThan(MaxShortNameSize).Result;
+        result += Name.IsNotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxNameSize).Result;
+        result += Description.IsNotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxDescriptionSize).Result;
+        result += ShortName.IsNullOr().NotEmptyOrWhiteSpace().And.NoLongerThan(MaxShortNameSize).Result;
         return result;
     }
 }

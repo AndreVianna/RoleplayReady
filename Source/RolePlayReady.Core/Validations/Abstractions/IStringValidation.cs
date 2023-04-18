@@ -3,6 +3,7 @@
 public interface IStringValidation
     : IConnectsToOrFinishes<IStringValidation> {
     IConnectsToOrFinishes<IStringValidation> NotEmptyOrWhiteSpace();
-    IConnectsToOrFinishes<IStringValidation> NotShorterThan(int minimumLength);
-    IConnectsToOrFinishes<IStringValidation> NotLongerThan(int maximumLength);
+    IConnectsToOrFinishes<IStringValidation> NoShorterThan(int length);
+    IConnectsToOrFinishes<IStringValidation> NoLongerThan(int length);
+    IConnectsToOrFinishes<IStringValidation> Exactly(int length);
 }

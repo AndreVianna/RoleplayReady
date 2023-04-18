@@ -10,16 +10,16 @@ public abstract class NumberValidator<TNumber> : IValidator
         _threshold = threshold;
     }
 
-    public ValidationResult Validate<TValue>(TValue? input) {
+    public ValidationResult Validate(object? input) {
         if (input is TNumber value) {
             var validation = new NumberValidation<TNumber>(value, _source);
-            return ValidateNumber(validation, _threshold);
+            return ValidateValue(validation, _threshold);
         }
 
         return input is null
             ? new ValidationError(CannotBeNull, _source)
-            : new ValidationError(IsNotOfType, _source, typeof(TValue).Name, input.GetType().Name);
+            : new ValidationError(IsNotOfType, _source, typeof(TNumber).Name, input.GetType().Name);
     }
 
-    protected abstract ValidationResult ValidateNumber(NumberValidation<TNumber> validation, TNumber threshold);
+    protected abstract ValidationResult ValidateValue(NumberValidation<TNumber> validation, TNumber threshold);
 }

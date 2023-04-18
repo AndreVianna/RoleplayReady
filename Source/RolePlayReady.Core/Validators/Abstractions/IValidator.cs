@@ -1,5 +1,5 @@
 ﻿namespace System.Validators.Abstractions;
 
 public interface IValidator {
-    ValidationResult Validate<TValue>(TValue value);
+    ValidationResult Validate(object? value);
 }

@@ -14,15 +14,22 @@ public class StringValidation
         return this;
     }
 
-    public IConnectsToOrFinishes<IStringValidation> NotShorterThan(int minimumLength) {
+    public IConnectsToOrFinishes<IStringValidation> NoShorterThan(int length) {
         if (Subject is null) return this;
-        if (Subject.Length < minimumLength) Errors.Add(new(CannotBeShorterThan, Source, minimumLength, Subject.Length));
+        if (Subject.Length < length) Errors.Add(new(MinimumLengthIs, Source, length, Subject.Length));
         return this;
     }
 
-    public IConnectsToOrFinishes<IStringValidation> NotLongerThan(int maximumLength) {
+    public IConnectsToOrFinishes<IStringValidation> NoLongerThan(int length) {
         if (Subject is null) return this;
-        if (Subject.Length > maximumLength) Errors.Add(new(CannotBeLongerThan, Source, maximumLength, Subject.Length));
+        if (Subject.Length > length) Errors.Add(new(MaximumLengthIs, Source, length, Subject.Length));
+        return this;
+    }
+
+    public IConnectsToOrFinishes<IStringValidation> Exactly(int length) {
+        if (Subject is null) return this;
+        if (Subject.Length != length)
+            Errors.Add(new(LengthMustBe, Source, length, Subject.Length));
         return this;
     }
 }

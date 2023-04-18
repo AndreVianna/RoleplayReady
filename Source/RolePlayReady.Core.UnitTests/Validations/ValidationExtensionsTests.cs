@@ -22,8 +22,8 @@ public class ValidationExtensionsTests {
             var result = new ValidationResult();
             result += Text.IsNotNull()
                           .And.NotEmptyOrWhiteSpace()
-                          .And.NotShorterThan(3)
-                          .And.NotLongerThan(10).Result;
+                          .And.NoShorterThan(3)
+                          .And.NoLongerThan(10).Result;
             result += Integer.Is().GreaterThan(10).And.LessThan(20).Result;
             result += Integer1.IsNullOr().GreaterThan(10).And.LessThan(20).Result;
             result += Integer2.IsNotNull().And.GreaterOrEqualTo(10).And.LessOrEqualTo(20).Result;
@@ -37,7 +37,7 @@ public class ValidationExtensionsTests {
             result += TestObjects.ForEach(item => item.IsNotNull().And.Valid()).Result;
             result += Integers.IsNotNull().And.NotEmpty().And.ForEach(entry => entry.Is().GreaterOrEqualTo(0)).Result;
             result += Map.IsNotNull().And.ForEach(entry => entry.Value.IsNotNull().And.Valid()).Result;
-            result += Links.IsNotNull().And.NotShorterThan(3).And.NotLongerThan(5).Result;
+            result += Links.IsNotNull().And.NotSmallerThan(3).And.NotBiggerThan(5).Result;
             return result;
         }
     }

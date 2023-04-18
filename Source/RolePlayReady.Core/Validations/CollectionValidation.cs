@@ -38,17 +38,25 @@ public class CollectionValidation<TItem> :
         return this;
     }
 
-    public IConnectsToOrFinishes<ICollectionValidation<TItem>> NotShorterThan(int minimumCount) {
+    public IConnectsToOrFinishes<ICollectionValidation<TItem>> NotSmallerThan(int size) {
         if (Subject is null) return this;
-        if (Subject.Count < minimumCount)
-            Errors.Add(new(CannotHaveLessThan, Source, minimumCount, Subject.Count));
+        if (Subject.Count < size)
+            Errors.Add(new(CannotHaveLessThan, Source, size, Subject.Count));
         return this;
     }
 
-    public IConnectsToOrFinishes<ICollectionValidation<TItem>> NotLongerThan(int maximumCount) {
+    public IConnectsToOrFinishes<ICollectionValidation<TItem>> NotBiggerThan(int size) {
         if (Subject is null) return this;
-        if (Subject.Count > maximumCount)
-            Errors.Add(new(CannotHaveMoreThan, Source, maximumCount, Subject.Count));
+        if (Subject.Count > size)
+            Errors.Add(new(CannotHaveMoreThan, Source, size, Subject.Count));
+        return this;
+    }
+
+    public IConnectsToOrFinishes<ICollectionValidation<TItem>> Exactly(int size) {
+        if (Subject is null)
+            return this;
+        if (Subject.Count != size)
+            Errors.Add(new(MustHave, Source, size, Subject.Count));
         return this;
     }
 

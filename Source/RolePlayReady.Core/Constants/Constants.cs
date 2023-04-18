@@ -8,27 +8,25 @@ public static class Constants {
         public const string CannotBeWhitespace = "'{0}' cannot be whitespace.";
         public const string CannotBeEmptyOrWhitespace = "'{0}' cannot be empty or whitespace.";
 
-        public const string CannotBeShorterThan = "'{0}' length cannot be less than {1}. Found: {2}.";
-        public const string CannotBeLongerThan = "'{0}' length cannot be greater than {1}. Found: {2}.";
-        public const string CannotHaveLessThan = "'{0}' count cannot be less than {1}. Found: {2}.";
-        public const string CannotHaveMoreThan = "'{0}' count cannot be greater than {1}. Found: {2}.";
+        public const string MinimumLengthIs = "'{0}' minimum length is {1} character(s). Found: {2}.";
+        public const string MaximumLengthIs = "'{0}' maximum length is {1} character(s). Found: {2}.";
+        public const string LengthMustBe = "'{0}' length must be exactly {1} character(s). Found: {2}.";
+        public const string CannotHaveLessThan = "'{0}' cannot have less than {1} item(s). Found: {2}.";
+        public const string CannotHaveMoreThan = "'{0}' cannot have more than {1} item(s). Found: {2}.";
+        public const string MustHave = "'{0}' must have exactly {1} item(s). Found: {2}.";
 
-        public const string CannotBeLessThan = "'{0}' value cannot be less then {1}. Found: {2}.";
-        public const string CannotBeGreaterThan = "'{0}' value cannot be greater then {1}. Found: {2}.";
-        public const string CannotBeGreaterOrEqualTo = "'{0}' value cannot be greater or equal to {1}. Found: {2}.";
-        public const string CannotBeLessOrEqualTo = "'{0}' value cannot be less or equal to {1}. Found: {2}.";
-        public const string CannotBeBefore = "'{0}' value cannot be before then {1}. Found: {2}.";
-        public const string CannotBeAfter = "'{0}' value cannot be after then {1}. Found: {2}.";
-        public const string CannotBeAtOrAfter = "'{0}' value cannot be {1} or after. Found: {2}.";
-        public const string CannotBeAtOrBefore = "'{0}' value cannot be {1} or before. Found: {2}.";
+        public const string CannotBeLessThan = "'{0}' cannot be less then {1}. Found: {2}.";
+        public const string MustBeLessThan = "'{0}' must be less than {1}. Found: {2}.";
+        public const string CannotBeGreaterThan = "'{0}' cannot be greater then {1}. Found: {2}.";
+        public const string MustBeGraterThan = "'{0}' must be grather than {1}. Found: {2}.";
+        public const string CannotBeBefore = "'{0}' cannot be before {1}. Found: {2}.";
+        public const string MustBeBefore = "'{0}' must be befor {1}. Found: {2}.";
+        public const string CannotBeAfter = "'{0}' cannot be after {1}. Found: {2}.";
+        public const string MustBeAfter = "'{0}' must be after {1}. Found: {2}.";
 
         public const string CannotContainNull = "'{0}' cannot contain null items.";
         public const string CannotContainNullOrEmpty = "'{0}' cannot contain null or empty items.";
         public const string CannotContainNullOrWhitespace = "'{0}' cannot contain null or whitespace items.";
-
-        public const string LengthOutOfRange = "'{0}' length cannot be less than {1} or greater than {2}. Found: {3}.";
-        public const string LengthAboveMaximum = "'{0}' cannot have more than {1} items. Found: {2}.";
-        public const string LengthBelowMinimum = "'{0}' cannot have less than {1} items. Found: {2}.";
 
         public const string CountOutOfRange = "'{0}' cannot have less than {1} or more than {2} items. Found: {3}.";
 

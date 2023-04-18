@@ -8,35 +8,35 @@ public class DateTimeValidation
         : base(subject, source, previousErrors) {
     }
 
-    // Equivalent to dateTime > reference
-    public IConnectsToOrFinishes<IDateTimeValidation> After(DateTime reference) {
+    // Equivalent to dateTime > threshold
+    public IConnectsToOrFinishes<IDateTimeValidation> After(DateTime threshold) {
         if (Subject is null) return this;
-        if (Subject.CompareTo(reference) <= 0)
-            Errors.Add(new(CannotBeAtOrBefore, Source, reference, Subject));
+        if (Subject.CompareTo(threshold) <= 0)
+            Errors.Add(new(MustBeAfter, Source, threshold, Subject));
         return this;
     }
 
-    // Equivalent to dateTime < reference
-    public IConnectsToOrFinishes<IDateTimeValidation> Before(DateTime reference) {
+    // Equivalent to dateTime < threshold
+    public IConnectsToOrFinishes<IDateTimeValidation> Before(DateTime threshold) {
         if (Subject is null) return this;
-        if (Subject.CompareTo(reference) >= 0)
-            Errors.Add(new(CannotBeAtOrAfter, Source, reference, Subject));
+        if (Subject.CompareTo(threshold) >= 0)
+            Errors.Add(new(MustBeBefore, Source, threshold, Subject));
         return this;
     }
 
-    // Equivalent to dateTime >= reference
-    public IConnectsToOrFinishes<IDateTimeValidation> StartsOn(DateTime reference) {
+    // Equivalent to dateTime >= threshold
+    public IConnectsToOrFinishes<IDateTimeValidation> StartsOn(DateTime threshold) {
         if (Subject is null) return this;
-        if (Subject.CompareTo(reference) < 0)
-            Errors.Add(new(CannotBeBefore, Source, reference, Subject));
+        if (Subject.CompareTo(threshold) < 0)
+            Errors.Add(new(CannotBeBefore, Source, threshold, Subject));
         return this;
     }
 
-    // Equivalent to dateTime <= reference
-    public IConnectsToOrFinishes<IDateTimeValidation> EndsOn(DateTime reference) {
+    // Equivalent to dateTime <= threshold
+    public IConnectsToOrFinishes<IDateTimeValidation> EndsOn(DateTime threshold) {
         if (Subject is null) return this;
-        if (Subject.CompareTo(reference) > 0)
-            Errors.Add(new(CannotBeAfter, Source, reference, Subject));
+        if (Subject.CompareTo(threshold) > 0)
+            Errors.Add(new(CannotBeAfter, Source, threshold, Subject));
         return this;
     }
 }

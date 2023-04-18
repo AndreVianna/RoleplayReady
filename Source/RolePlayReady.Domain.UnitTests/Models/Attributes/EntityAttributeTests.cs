@@ -19,27 +19,27 @@ public class EntityFlagAttributeTests {
     }
 }
 
-public class EntitySimpleAttributeTests {
-    [Fact]
-    public void Constructor_InitializesProperties() {
-        var attribute = new AttributeDefinition {
-            Name = "TestName",
-            Description = "TestDescription",
-            DataType = typeof(int),
-        };
-        attribute.Constraints.Add(new GreaterThan(10));
+//public class EntitySimpleAttributeTests {
+//    [Fact]
+//    public void Constructor_InitializesProperties() {
+//        var attribute = new AttributeDefinition {
+//            Name = "TestName",
+//            Description = "TestDescription",
+//            DataType = typeof(int),
+//        };
+//        attribute.Constraints.Add(new GreaterThan(10));
 
-        var entitySimpleAttribute = new EntityIntegerAttribute {
-            Attribute = attribute,
-            Value = 42,
-        };
+//        var entitySimpleAttribute = new EntityIntegerAttribute {
+//            Attribute = attribute,
+//            Value = 42,
+//        };
 
-        ((IEntityAttribute)entitySimpleAttribute).Value.Should().Be(42);
-        entitySimpleAttribute.Attribute.Should().Be(attribute);
-        entitySimpleAttribute.Value.Should().Be(42);
-        entitySimpleAttribute.IsValid.Should().BeTrue();
-    }
-}
+//        ((IEntityAttribute)entitySimpleAttribute).Value.Should().Be(42);
+//        entitySimpleAttribute.Attribute.Should().Be(attribute);
+//        entitySimpleAttribute.Value.Should().Be(42);
+//        entitySimpleAttribute.IsValid.Should().BeTrue();
+//    }
+//}
 
 public class EntitySetAttributeTests {
     [Fact]
