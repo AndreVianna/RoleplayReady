@@ -1,8 +1,4 @@
-using System.Results;
-using System.Validations.Abstractions;
-using System.Validations.Extensions;
-
-namespace System.Validators;
+namespace System.Validations;
 
 public class ValidationExtensionsTests {
     private class TestObject : IValidatable {

@@ -45,11 +45,11 @@ public class GameSystemSettingTests {
         };
         var attributes = new List<IEntityAttribute> {
             new EntityStringAttribute {
-                AttributeDefinition = attributeDefinitions[0],
+                Attribute = attributeDefinitions[0],
                 Value = "TestValue",
             },
             new EntityIntegerAttribute {
-                AttributeDefinition = attributeDefinitions[1],
+                Attribute = attributeDefinitions[1],
                 Value = 42,
             },
         };
@@ -98,11 +98,11 @@ public class GameSystemSettingTests {
         };
         var attributes = new List<IEntityAttribute> {
             new EntityStringAttribute {
-                AttributeDefinition = attributeDefinitions[0],
+                Attribute = attributeDefinitions[0],
                 Value = "TestValue",
             },
             new EntityIntegerAttribute {
-                AttributeDefinition = attributeDefinitions[1],
+                Attribute = attributeDefinitions[1],
                 Value = 42,
             },
         };

@@ -104,7 +104,7 @@
 //            (typeof(HashSet<string>), "Weapons", "[Add description here]"),
 //        };
 //        //foreach (var attribute in attributes) {
-//        //    ruleSet.AttributeDefinitions.Add(new AttributeDefinition {
+//        //    ruleSet.AttributeDefinitions.Add(new Attribute {
 //        //        Procedure = ruleSet,
 //        //        GameSystemSetting = ruleSet,
 //        //        Owner = "System",

@@ -5,12 +5,9 @@ global using FluentAssertions;
 
 global using NSubstitute;
 
-global using RolePlayReady.AttributeConstraints;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;
-global using RolePlayReady.Repositories;
-global using RolePlayReady.Security;
 global using RolePlayReady.Utilities;
 
 global using Xunit;

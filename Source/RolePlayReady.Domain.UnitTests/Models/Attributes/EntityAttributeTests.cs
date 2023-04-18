@@ -10,11 +10,11 @@ public class EntityFlagAttributeTests {
         };
 
         var entityFlagAttribute = new EntityFlagAttribute {
-            AttributeDefinition = attribute,
+            Attribute = attribute,
             Value = true
         };
 
-        entityFlagAttribute.AttributeDefinition.Should().Be(attribute);
+        entityFlagAttribute.Attribute.Should().Be(attribute);
         entityFlagAttribute.Value.Should().Be(true);
     }
 }
@@ -30,12 +30,12 @@ public class EntitySimpleAttributeTests {
         attribute.Constraints.Add(new GreaterThan(10));
 
         var entitySimpleAttribute = new EntityIntegerAttribute {
-            AttributeDefinition = attribute,
+            Attribute = attribute,
             Value = 42,
         };
 
         ((IEntityAttribute)entitySimpleAttribute).Value.Should().Be(42);
-        entitySimpleAttribute.AttributeDefinition.Should().Be(attribute);
+        entitySimpleAttribute.Attribute.Should().Be(attribute);
         entitySimpleAttribute.Value.Should().Be(42);
         entitySimpleAttribute.IsValid.Should().BeTrue();
     }
@@ -51,11 +51,11 @@ public class EntitySetAttributeTests {
         };
 
         var entitySetAttribute = new EntitySetAttribute<int> {
-            AttributeDefinition = attribute,
+            Attribute = attribute,
             Value = new() { 1, 2, 3 }
         };
 
-        entitySetAttribute.AttributeDefinition.Should().Be(attribute);
+        entitySetAttribute.Attribute.Should().Be(attribute);
         entitySetAttribute.Value.Should().BeEquivalentTo(new HashSet<int> { 1, 2, 3 });
     }
 }
@@ -70,11 +70,11 @@ public class EntityListAttributeTests {
         };
 
         var entityListAttribute = new EntityListAttribute<int> {
-            AttributeDefinition = attribute,
+            Attribute = attribute,
             Value = new() { 1, 2, 3 }
         };
 
-        entityListAttribute.AttributeDefinition.Should().Be(attribute);
+        entityListAttribute.Attribute.Should().Be(attribute);
         entityListAttribute.Value.Should().BeEquivalentTo(new List<int> { 1, 2, 3 });
     }
 }
@@ -89,11 +89,11 @@ public class EntityDictionaryAttributeTests {
         };
 
         var entityDictionaryAttribute = new EntityDictionaryAttribute<string, int> {
-            AttributeDefinition = attribute,
+            Attribute = attribute,
             Value = new() { { "one", 1 }, { "two", 2 }, { "three", 3 } }
         };
 
-        entityDictionaryAttribute.AttributeDefinition.Should().Be(attribute);
+        entityDictionaryAttribute.Attribute.Should().Be(attribute);
         entityDictionaryAttribute.Value.Should().BeEquivalentTo(
             new Dictionary<string, int> { { "one", 1 }, { "two", 2 }, { "three", 3 } }
         );
