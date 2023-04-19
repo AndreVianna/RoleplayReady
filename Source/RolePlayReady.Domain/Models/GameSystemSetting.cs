@@ -1,7 +1,5 @@
 ﻿using System.Validations.Extensions;
 
-using RolePlayReady.Models.Attributes;
-
 namespace RolePlayReady.Models;
 
 public record GameSystemSetting : Entity<Guid>, IGameSystemSetting {
@@ -9,7 +7,7 @@ public record GameSystemSetting : Entity<Guid>, IGameSystemSetting {
         : base(dateTime) {
     }
 
-    public IList<AttributeDefinition> AttributeDefinitions { get; init; } = new List<AttributeDefinition>();
+    public IList<IAttributeDefinition> AttributeDefinitions { get; init; } = new List<IAttributeDefinition>();
 
     public override ValidationResult Validate() {
         var result = base.Validate();

@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Models.Attributes;
 
-public record EntityComplexTypeAttribute<TValue>
+public record EntityValidatableAttribute<TValue>
     : EntityAttribute<TValue>
     where TValue : class, IValidatable;

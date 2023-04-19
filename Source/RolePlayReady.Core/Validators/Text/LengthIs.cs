@@ -1,8 +1,8 @@
 ﻿namespace System.Validators.Text;
 
-public sealed class ExactLength : TextValidator {
+public sealed class LengthIs : TextValidator {
 
-    public ExactLength(string source, int length)
+    public LengthIs(string source, int length)
         : base(source, length) {
     }
 

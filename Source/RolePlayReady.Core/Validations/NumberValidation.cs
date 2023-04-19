@@ -8,29 +8,41 @@ public class NumberValidation<TValue>
         : base(subject, source, previousErrors) {
     }
 
-    public IConnectsToOrFinishes<INumberValidation<TValue>> GreaterThan(TValue threshold) {
-        if (Subject is null) return this;
-        if (Subject.CompareTo(threshold) <= 0)
-            Errors.Add(new(MustBeGraterThan, Source, threshold, Subject));
-        return this;
-    }
-
-    public IConnectsToOrFinishes<INumberValidation<TValue>> LessThan(TValue threshold) {
-        if (Subject is null) return this;
-        if (Subject.CompareTo(threshold) >= 0)
-            Errors.Add(new(MustBeLessThan, Source, threshold, Subject));
-        return this;
-    }
-
     public IConnectsToOrFinishes<INumberValidation<TValue>> GreaterOrEqualTo(TValue threshold) {
-        if (Subject is null) return this;
+        if (Subject is null)
+            return this;
         if (Subject.CompareTo(threshold) < 0)
             Errors.Add(new(CannotBeLessThan, Source, threshold, Subject));
         return this;
     }
 
+    public IConnectsToOrFinishes<INumberValidation<TValue>> GreaterThan(TValue threshold) {
+        if (Subject is null)
+            return this;
+        if (Subject.CompareTo(threshold) <= 0)
+            Errors.Add(new(MustBeGraterThan, Source, threshold, Subject));
+        return this;
+    }
+
+    public IConnectsToOrFinishes<INumberValidation<TValue>> EqualTo(TValue threshold) {
+        if (Subject is null)
+            return this;
+        if (Subject.CompareTo(threshold) != 0)
+            Errors.Add(new(MustBeEqualTo, Source, threshold, Subject));
+        return this;
+    }
+
+    public IConnectsToOrFinishes<INumberValidation<TValue>> LessThan(TValue threshold) {
+        if (Subject is null)
+            return this;
+        if (Subject.CompareTo(threshold) >= 0)
+            Errors.Add(new(MustBeLessThan, Source, threshold, Subject));
+        return this;
+    }
+
     public IConnectsToOrFinishes<INumberValidation<TValue>> LessOrEqualTo(TValue threshold) {
-        if (Subject is null) return this;
+        if (Subject is null)
+            return this;
         if (Subject.CompareTo(threshold) > 0)
             Errors.Add(new(CannotBeGreaterThan, Source, threshold, Subject));
         return this;

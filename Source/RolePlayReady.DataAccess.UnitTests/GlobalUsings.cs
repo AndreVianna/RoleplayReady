@@ -13,6 +13,8 @@ global using NSubstitute.ExceptionExtensions;
 
 global using RolePlayReady.DataAccess.Models;
 global using RolePlayReady.Models;
+global using RolePlayReady.Models.Abstractions;
+global using RolePlayReady.Models.Attributes;
 global using RolePlayReady.Repositories;
 
 global using Xunit;

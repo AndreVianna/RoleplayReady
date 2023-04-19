@@ -1,4 +1,7 @@
-﻿using System.Validators.Collection;
+﻿using static System.StringSplitOptions;
+
+using MaximumLengthIs = System.Validators.Text.MaximumLengthIs;
+using MinimumLengthIs = System.Validators.Text.MinimumLengthIs;
 
 namespace System.Validators;
 
@@ -11,63 +14,69 @@ public partial class ValidatorFactory {
 
     public static ValidatorFactory For(string source) => new(source);
 
-    public IValidator Create(string typeDescription, string validator, params object?[] args) {
-        var types = typeDescription.Split(new []{ '<', ',', ' ', '>' }, StringSplitOptions.RemoveEmptyEntries);
-        return types switch {
-            ["int"] => CreateNumericValidator<int>(validator, args),
-            ["decimal"] => CreateNumericValidator<decimal>(validator, args),
-            ["sting"] => CreateStringValidator(validator, args),
-            ["list", "int"] => CreateCollectionValidator<int>(validator, args),
-            ["list", "string"] => CreateCollectionValidator<string>(validator, args),
-            ["map", "string", "int"] => CreateDictionaryValidator<string, int>(validator, args),
-            ["map", "string", "decimal"] => CreateDictionaryValidator<string, decimal>(validator, args),
-            ["map", "string", "string"] => CreateDictionaryValidator<string, string>(validator, args),
-            _ => throw new ArgumentException($"Unsupported data type: {typeDescription}"),
+    public IValidator Create(Type valueType, string validator, object?[] args) {
+        return GetTypeComponents() switch {
+            ["Integer"] => CreateNumericValidator<int>(validator, args),
+            ["Decimal"] => CreateNumericValidator<decimal>(validator, args),
+            ["String"] => CreateStringValidator(validator, args),
+            ["List", "Integer"] => CreateCollectionValidator<int>(validator, args),
+            ["List", "String"] => CreateCollectionValidator<string>(validator, args),
+            ["Dictionary", "String", "Integer"] => CreateDictionaryValidator<string, int>(validator, args),
+            ["Dictionary", "String", "Decimal"] => CreateDictionaryValidator<string, decimal>(validator, args),
+            ["Dictionary", "String", "String"] => CreateDictionaryValidator<string, string>(validator, args),
+            _ => throw new ArgumentException($"Unsupported data type: {valueType.GetFriendlyName()}"),
         };
+
+        string[] GetTypeComponents()
+            => valueType
+              .GetFriendlyName()
+              .Split(new[] { '<', ',', ' ', '>' }, RemoveEmptyEntries)
+              .ToArray();
     }
 
     private IValidator CreateNumericValidator<TValue>(string validator, IReadOnlyList<object?> args)
         where TValue : IComparable<TValue> {
-        if (args.Count == 0 || args[0] is not TValue threshold) throw new InvalidOperationException();
+        var limit = Ensure.ArgumentExistsAndIsOfType<TValue>(validator, 0, args);
         return validator switch {
-            nameof(MaximumValueExclusive<TValue>) => new MaximumValueExclusive<TValue>(_source, threshold),
-            nameof(MaximumValue<TValue>) => new MaximumValue<TValue>(_source, threshold),
-            nameof(MinimumValueExclusive<TValue>) => new MinimumValueExclusive<TValue>(_source, threshold),
-            nameof(MinimumValue<TValue>) => new MinimumValue<TValue>(_source, threshold),
-            _ => throw new ArgumentException($"Invalid validation type for a number: {validator}({string.Join(", ", args.Select(i => i is string ? $"'{i}'" : $"{i}").ToArray())}).")
+            nameof(LessThan<TValue>) => new LessThan<TValue>(_source, limit),
+            nameof(MinimumValueIs<TValue>) => new MinimumValueIs<TValue>(_source, limit),
+            nameof(EqualTo<TValue>) => new EqualTo<TValue>(_source, limit),
+            nameof(MaximumValueIs<TValue>) => new MaximumValueIs<TValue>(_source, limit),
+            nameof(GreaterThan<TValue>) => new GreaterThan<TValue>(_source, limit),
+            _ => throw new ArgumentException($"Unsupported validator: {validator}.")
         };
     }
 
     private IValidator CreateStringValidator(string validator, IReadOnlyList<object?> args) {
-        if (args.Count == 0) throw new InvalidOperationException();
+        var length = Ensure.ArgumentExistsAndIsOfType<int>(validator, 0, args);
         return validator switch {
-            nameof(MinimumLength) when args[0] is int length => new MinimumLength(_source, length),
-            nameof(MaximumLength) when args[0] is int length => new MaximumLength(_source, length),
-            nameof(ExactLength) when args[0] is int length => new ExactLength(_source, length),
+            nameof(MinimumLengthIs) => new MinimumLengthIs(_source, length),
+            nameof(MaximumLengthIs) => new MaximumLengthIs(_source, length),
+            nameof(LengthIs) => new LengthIs(_source, length),
             //nameof(OneOf) => new OneOf(_source, args.OfType<string>()),
-            _ => throw new ArgumentException($"Invalid validation type for a text: {validator}({string.Join(", ", args.Select(i => i is string ? $"'{i}'" : $"{i}").ToArray())}).")
+            _ => throw new ArgumentException($"Unsupported validator: {validator}.")
         };
     }
 
     private IValidator CreateCollectionValidator<TItem>(string validator, IReadOnlyList<object?> args) {
-        if (args.Count == 0) throw new InvalidOperationException();
+        var count = Ensure.ArgumentExistsAndIsOfType<int>(validator, 0, args);
         return validator switch {
-            nameof(MinimumCount<TItem>) when args[0] is int size => new MinimumCount<TItem>(_source, size),
-            nameof(MaximumCount<TItem>) when args[0] is int size => new MaximumCount<TItem>(_source, size),
-            nameof(ExactCount<TItem>) when args[0] is int size => new ExactCount<TItem>(_source, size),
+            nameof(MinimumCountIs<TItem>) => new MinimumCountIs<TItem>(_source, count),
+            nameof(MaximumCountIs<TItem>) => new MaximumCountIs<TItem>(_source, count),
+            nameof(CountIs<TItem>) => new CountIs<TItem>(_source, count),
             //nameof(Contains<TItem>) => new Contains<TItem>(_source, args.OfType<TItem>()),
-            _ => throw new ArgumentException($"Invalid validation type for a text: {validator}({string.Join(", ", args.Select(i => i is string ? $"'{i}'" : $"{i}").ToArray())}).")
+            _ => throw new ArgumentException($"Unsupported validator: {validator}.")
         };
     }
 
     private IValidator CreateDictionaryValidator<TKey, TValue>(string validator, IReadOnlyList<object?> args) {
-        if (args.Count == 0) throw new InvalidOperationException();
+        var count = Ensure.ArgumentExistsAndIsOfType<int>(validator, 0, args);
         return validator switch {
-            nameof(MinimumCount<KeyValuePair<TKey, TValue>>) when args[0] is int size => new MinimumCount<KeyValuePair<TKey, TValue>>(_source, size),
-            nameof(MaximumCount<KeyValuePair<TKey, TValue>>) when args[0] is int size => new MaximumCount<KeyValuePair<TKey, TValue>>(_source, size),
-            nameof(ExactCount<KeyValuePair<TKey, TValue>>) when args[0] is int size => new ExactCount<KeyValuePair<TKey, TValue>>(_source, size),
+            nameof(MinimumCountIs<KeyValuePair<TKey, TValue>>) => new MinimumCountIs<KeyValuePair<TKey, TValue>>(_source, count),
+            nameof(MaximumCountIs<KeyValuePair<TKey, TValue>>) => new MaximumCountIs<KeyValuePair<TKey, TValue>>(_source, count),
+            nameof(CountIs<KeyValuePair<TKey, TValue>>) => new CountIs<KeyValuePair<TKey, TValue>>(_source, count),
             //nameof(Contains<TItem>) => new Contains<TItem>(_source, args.OfType<TItem>()),
-            _ => throw new ArgumentException($"Invalid validation type for a text: {validator}({string.Join(", ", args.Select(i => i is string ? $"'{i}'" : $"{i}").ToArray())}).")
+            _ => throw new ArgumentException($"Unsupported validator: {validator}.")
         };
     }
 

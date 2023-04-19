@@ -2,7 +2,7 @@
 
 namespace RolePlayReady.Models.Attributes;
 
-public record AttributeDefinition : IAttributeDefinition, IValidatable {
+public record AttributeDefinition<TValue> : IAttributeDefinition {
     public const int MaxNameSize = 100;
     public required string Name { get; init; }
 
@@ -12,9 +12,9 @@ public record AttributeDefinition : IAttributeDefinition, IValidatable {
     public const int MaxShortNameSize = 10;
     public string? ShortName { get; init; }
 
-    public required Type DataType { get; init; }
+    public Type DataType => typeof(TValue);
 
-    public sealed override string ToString() => $"[{GetType().Name}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}: {DataType.Name}";
+    public sealed override string ToString() => $"[{nameof(AttributeDefinition<TValue>)}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}: {typeof(TValue).GetFriendlyName()}";
 
     public ICollection<IAttributeConstraint> Constraints { get; } = new List<IAttributeConstraint>();
     

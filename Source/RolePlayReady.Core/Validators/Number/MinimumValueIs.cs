@@ -1,9 +1,9 @@
 ﻿namespace System.Validators.Number;
 
-public sealed class MinimumValue<TValue> : NumberValidator<TValue>
+public sealed class MinimumValueIs<TValue> : NumberValidator<TValue>
     where TValue : IComparable<TValue> {
 
-    public MinimumValue(string source, TValue threshold)
+    public MinimumValueIs(string source, TValue threshold)
         : base(source, threshold) {
     }
 

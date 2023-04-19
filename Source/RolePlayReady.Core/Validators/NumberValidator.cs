@@ -11,14 +11,9 @@ public abstract class NumberValidator<TNumber> : IValidator
     }
 
     public ValidationResult Validate(object? input) {
-        if (input is TNumber value) {
-            var validation = new NumberValidation<TNumber>(value, _source);
-            return ValidateValue(validation, _threshold);
-        }
-
-        return input is null
-            ? new ValidationError(CannotBeNull, _source)
-            : new ValidationError(IsNotOfType, _source, typeof(TNumber).Name, input.GetType().Name);
+        var value = (TNumber)input!;
+        var validation = new NumberValidation<TNumber>(value, _source);
+        return ValidateValue(validation, _threshold);
     }
 
     protected abstract ValidationResult ValidateValue(NumberValidation<TNumber> validation, TNumber threshold);

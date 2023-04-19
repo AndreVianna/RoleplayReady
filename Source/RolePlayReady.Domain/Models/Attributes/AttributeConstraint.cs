@@ -1,10 +1,10 @@
 ﻿namespace RolePlayReady.Models.Attributes;
 
-public sealed class AttributeConstraint : IAttributeConstraint {
+public sealed record AttributeConstraint : IAttributeConstraint {
 
-    public AttributeConstraint(string validatorName, IEnumerable<object?> arguments) {
+    public AttributeConstraint(string validatorName, params object?[] arguments) {
         ValidatorName = validatorName;
-        Arguments = new List<object?>(arguments);
+        Arguments = arguments;
     }
     public string ValidatorName { get; }
     public ICollection<object?> Arguments { get; }

@@ -16,13 +16,13 @@ public class StringValidation
 
     public IConnectsToOrFinishes<IStringValidation> NoShorterThan(int length) {
         if (Subject is null) return this;
-        if (Subject.Length < length) Errors.Add(new(MinimumLengthIs, Source, length, Subject.Length));
+        if (Subject.Length < length) Errors.Add(new(Constants.Constants.ErrorMessages.MinimumLengthIs, Source, length, Subject.Length));
         return this;
     }
 
     public IConnectsToOrFinishes<IStringValidation> NoLongerThan(int length) {
         if (Subject is null) return this;
-        if (Subject.Length > length) Errors.Add(new(MaximumLengthIs, Source, length, Subject.Length));
+        if (Subject.Length > length) Errors.Add(new(Constants.Constants.ErrorMessages.MaximumLengthIs, Source, length, Subject.Length));
         return this;
     }
 

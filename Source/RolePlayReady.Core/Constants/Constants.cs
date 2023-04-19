@@ -19,6 +19,7 @@ public static class Constants {
         public const string MustBeLessThan = "'{0}' must be less than {1}. Found: {2}.";
         public const string CannotBeGreaterThan = "'{0}' cannot be greater then {1}. Found: {2}.";
         public const string MustBeGraterThan = "'{0}' must be grather than {1}. Found: {2}.";
+        public const string MustBeEqualTo = "'{0}' must be equal to {1}. Found: {2}.";
         public const string CannotBeBefore = "'{0}' cannot be before {1}. Found: {2}.";
         public const string MustBeBefore = "'{0}' must be befor {1}. Found: {2}.";
         public const string CannotBeAfter = "'{0}' cannot be after {1}. Found: {2}.";

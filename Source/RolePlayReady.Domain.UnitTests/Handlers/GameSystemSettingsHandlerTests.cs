@@ -89,6 +89,6 @@ public class GameSystemSettingsHandlerTests {
             ShortName = "SM",
             Name = "Some Name",
             Description = "Some description.",
-            AttributeDefinitions = Array.Empty<AttributeDefinition>(),
+            AttributeDefinitions = Array.Empty<IAttributeDefinition>(),
         };
 }

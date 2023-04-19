@@ -53,8 +53,7 @@ public class CollectionValidation<TItem> :
     }
 
     public IConnectsToOrFinishes<ICollectionValidation<TItem>> Exactly(int size) {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (Subject.Count != size)
             Errors.Add(new(MustHave, Source, size, Subject.Count));
         return this;

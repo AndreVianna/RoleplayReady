@@ -10,7 +10,7 @@ public class GameSystemSettingTests {
             Id = Guid.NewGuid(),
             Name = "TestName",
             Description = "TestDescription",
-            AttributeDefinitions = new List<AttributeDefinition>(),
+            AttributeDefinitions = new List<IAttributeDefinition>(),
         };
 
         agent.AttributeDefinitions.Should().BeEmpty();
@@ -29,27 +29,25 @@ public class GameSystemSettingTests {
 
     [Fact]
     public void Validate_Validates() {
-        var attributeDefinitions = new List<AttributeDefinition> {
-            new AttributeDefinition {
+        var attributeDefinitions = new List<IAttributeDefinition> {
+            new AttributeDefinition<string> {
                 Name = "TestAttribute1",
                 Description = "TestDescription1",
                 ShortName = "TA1",
-                DataType = typeof(string),
             },
-            new AttributeDefinition {
+            new AttributeDefinition<int> {
                 Name = "TestAttribute2",
                 Description = "TestDescription2",
                 ShortName = "TA2",
-                DataType = typeof(int),
             },
         };
         var attributes = new List<IEntityAttribute> {
             new EntityStringAttribute {
-                Attribute = attributeDefinitions[0],
+                Attribute = (AttributeDefinition<string>)attributeDefinitions[0],
                 Value = "TestValue",
             },
-            new EntityIntegerAttribute {
-                Attribute = attributeDefinitions[1],
+            new EntityNumberAttribute<int> {
+                Attribute = (AttributeDefinition<int>)attributeDefinitions[1],
                 Value = 42,
             },
         };
@@ -81,28 +79,21 @@ public class GameSystemSettingTests {
     }
 
     private static GameSystemSetting GenerateTestGameSystemSetting() {
-        var attributeDefinitions = new List<AttributeDefinition> {
-            new AttributeDefinition {
+        var attributeDefinitions = new List<IAttributeDefinition> {
+            new AttributeDefinition<string> {
                 Name = "TestAttribute1",
                 Description = null!,
                 ShortName = "TA1",
-                DataType = typeof(string),
             },
             null!,
-            new AttributeDefinition {
-                Name = "TestAttribute2",
-                Description = "TestDescription2",
-                ShortName = "TA2",
-                DataType = typeof(int),
-            },
         };
         var attributes = new List<IEntityAttribute> {
             new EntityStringAttribute {
-                Attribute = attributeDefinitions[0],
+                Attribute = (AttributeDefinition<string>)attributeDefinitions[0],
                 Value = "TestValue",
             },
-            new EntityIntegerAttribute {
-                Attribute = attributeDefinitions[1],
+            new EntityNumberAttribute<int> {
+                Attribute = (AttributeDefinition<int>?)attributeDefinitions[1]!,
                 Value = 42,
             },
         };

@@ -31,8 +31,7 @@ public static class Ensure {
     }
 
     [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
-    public static ICollection<string> IsNotNullAndHasNoNullOrEmptyItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
-    {
+    public static ICollection<string> IsNotNullAndHasNoNullOrEmptyItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
         var collection = IsOfType<ICollection<string>>(argument, paramName);
         // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
         return collection.Any(i => string.IsNullOrEmpty(i))
@@ -41,8 +40,7 @@ public static class Ensure {
     }
 
     [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
-    public static ICollection<string> IsNotNullAndHasNoNullOrWhiteSpaceItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
-    {
+    public static ICollection<string> IsNotNullAndHasNoNullOrWhiteSpaceItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
         var collection = IsOfType<ICollection<string>>(argument, paramName);
         // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
         return collection.Any(i => string.IsNullOrWhiteSpace(i))
@@ -65,8 +63,7 @@ public static class Ensure {
     }
 
     [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
-    public static ICollection<string> IsNotNullOrEmptyAndHasNoNullOrEmptyItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
-    {
+    public static ICollection<string> IsNotNullOrEmptyAndHasNoNullOrEmptyItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
         var collection = IsNotNullOrEmpty(argument, paramName);
         // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
         return collection.Any(i => string.IsNullOrEmpty(i))
@@ -75,12 +72,21 @@ public static class Ensure {
     }
 
     [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
-    public static ICollection<string> IsNotNullOrEmptyAndHasNoNullOrWhiteSpaceItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
-    {
+    public static ICollection<string> IsNotNullOrEmptyAndHasNoNullOrWhiteSpaceItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
         var collection = IsNotNullOrEmpty(argument, paramName);
         // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
         return IsNotNullOrEmpty(collection, paramName).Any(i => string.IsNullOrWhiteSpace(i))
             ? throw new ArgumentException(string.Format(CannotContainNullOrWhitespace, paramName), paramName)
             : collection;
-        }
+    }
+
+    public static TItem ArgumentExistsAndIsOfType<TItem>(string methodName, uint argumentIndex, IReadOnlyList<object?> arguments)
+        => argumentIndex >= arguments.Count
+            ? throw new ArgumentException($"Invalid number of arguments for {methodName}. Missing argument {argumentIndex}.", $"{methodName}({GetArguments(arguments)})")
+            : arguments[(int)argumentIndex] is not TItem value
+                ? throw new ArgumentException($"Invalid type for {methodName} argument {argumentIndex}. Expected: {typeof(TItem).GetFriendlyName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetFriendlyName()}", $"{methodName}({GetArguments(arguments)})")
+                : value;
+
+    private static string GetArguments(IEnumerable<object?> arguments)
+        => string.Join(", ", arguments.Select(i => i is string ? $"'{i}'" : $"{i}").ToArray());
 }

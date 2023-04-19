@@ -10,14 +10,9 @@ public abstract class CollectionValidator<TItem> : IValidator {
     }
 
     public ValidationResult Validate(object? input) {
-        if (input is ICollection<TItem> value) {
-            var validation = new CollectionValidation<TItem>(value, _source);
-            return ValidateValue(validation, _size);
-        }
-
-        return input is null
-            ? new ValidationError(CannotBeNull, _source)
-            : new ValidationError(IsNotOfType, _source, typeof(TItem).Name, input.GetType().Name);
+        var value = (ICollection<TItem>)input!;
+        var validation = new CollectionValidation<TItem>(value, _source);
+        return ValidateValue(validation, _size);
     }
 
     protected abstract ValidationResult ValidateValue(CollectionValidation<TItem> validation, int threshold);

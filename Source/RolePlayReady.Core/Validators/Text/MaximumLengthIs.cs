@@ -1,8 +1,8 @@
 ﻿namespace System.Validators.Text;
 
-public sealed class MinimumLength : TextValidator {
+public sealed class MaximumLengthIs : TextValidator {
 
-    public MinimumLength(string source, int length)
+    public MaximumLengthIs(string source, int length)
         : base(source, length) {
     }
 

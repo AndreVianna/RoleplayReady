@@ -1,7 +1,5 @@
-﻿using RolePlayReady.Models.Attributes;
-
-namespace RolePlayReady.Models.Abstractions;
+﻿namespace RolePlayReady.Models.Abstractions;
 
 public interface IGameSystemSetting : IBase<Guid> {
-    IList<AttributeDefinition> AttributeDefinitions { get; }
+    IList<IAttributeDefinition> AttributeDefinitions { get; }
 }

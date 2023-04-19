@@ -10,14 +10,9 @@ public abstract class TextValidator : IValidator {
     }
 
     public ValidationResult Validate(object? input) {
-        if (input is string value) {
-            var validation = new StringValidation(value.Trim(), _source);
-            return ValidateValue(validation, _length);
-        }
-
-        return input is null
-            ? new ValidationError(CannotBeNull, _source)
-            : new ValidationError(IsNotOfType, _source, nameof(DateTime), input.GetType().Name);
+        var value = (string)input!;
+        var validation = new StringValidation(value.Trim(), _source);
+        return ValidateValue(validation, _length);
     }
 
     protected abstract ValidationResult ValidateValue(StringValidation validation, int length);

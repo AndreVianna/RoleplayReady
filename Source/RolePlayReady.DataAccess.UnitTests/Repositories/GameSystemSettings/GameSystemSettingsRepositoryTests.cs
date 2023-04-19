@@ -1,5 +1,3 @@
-using RolePlayReady.Models.Attributes;
-
 using static RolePlayReady.Constants.Constants;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSystemSettings;
@@ -112,7 +110,7 @@ public class GameSystemSettingsRepositoryTests {
                     new GameSystemSettingDataModel.AttributeDefinition {
                         Name = "Some Name",
                         Description = "Some Description",
-                        DataType = nameof(Int32)
+                        DataType = typeof(int).GetFriendlyName()
                     },
                 }
             }
@@ -126,13 +124,12 @@ public class GameSystemSettingsRepositoryTests {
             Name = "Some Name",
             Description = "Some Description",
             Tags = new[] { "SomeTag" },
-            AttributeDefinitions = new AttributeDefinition[] {
-            new() {
-                Name = "Some Name",
-                Description = "Some Description",
-                DataType = typeof(int)
-            },
-        }
+            AttributeDefinitions = new IAttributeDefinition[] {
+                new AttributeDefinition<int> {
+                    Name = "Some Name",
+                    Description = "Some Description",
+                },
+            }
         };
 
 }

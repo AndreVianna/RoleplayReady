@@ -1,5 +1,3 @@
-using System.Results;
-
 namespace System;
 
 public class EnsureTests {
@@ -211,5 +209,29 @@ public class EnsureTests {
         var input = new[] { "Hello" };
         var result = Ensure.IsNotNullOrEmptyAndHasNoNullOrWhiteSpaceItems(input);
         result.Should().BeSameAs(input);
+    }
+
+    [Fact]
+    public void ArgumentExistsAndIsOfType_WhenEmpty_ThrowsArgumentException() {
+        var method = "MethodName";
+        var arguments = new object?[] { };
+        var action = () => Ensure.ArgumentExistsAndIsOfType<string>(method, 0, arguments);
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid number of arguments for MethodName. Missing argument 0. (Parameter 'MethodName()')");
+    }
+
+    [Fact]
+    public void ArgumentExistsAndIsOfType_WhenWrongType_ThrowsArgumentException() {
+        var method = "MethodName";
+        var arguments = new object?[] { 1, "2", 3 };
+        var action = () => Ensure.ArgumentExistsAndIsOfType<string>(method, 0, arguments);
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid type for MethodName argument 0. Expected: String. Found: Integer (Parameter 'MethodName(1, '2', 3)')");
+    }
+
+    [Fact]
+    public void ArgumentExistsAndIsOfType_WhenValid_ReturnsItem() {
+        var method = "MethodName";
+        var arguments = new object?[] { 1, "2", 3.0m };
+        var value = Ensure.ArgumentExistsAndIsOfType<int>(method, 0, arguments);
+        value.Should().Be(1);
     }
 }
