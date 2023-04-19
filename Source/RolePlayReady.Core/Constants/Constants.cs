@@ -8,6 +8,8 @@ public static class Constants {
         public const string CannotBeWhitespace = "'{0}' cannot be whitespace.";
         public const string CannotBeEmptyOrWhitespace = "'{0}' cannot be empty or whitespace.";
 
+        public const string IsNotEqual = "'{0}' is not equal to {1}. Found: {2}.";
+
         public const string MinimumLengthIs = "'{0}' minimum length is {1} character(s). Found: {2}.";
         public const string MaximumLengthIs = "'{0}' maximum length is {1} character(s). Found: {2}.";
         public const string LengthMustBe = "'{0}' length must be exactly {1} character(s). Found: {2}.";

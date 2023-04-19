@@ -1,8 +1,6 @@
-﻿using System.Validations.Extensions;
+﻿namespace RolePlayReady.Models.Attributes;
 
-namespace RolePlayReady.Models.Attributes;
-
-public record AttributeDefinition<TValue> : IAttributeDefinition {
+public record AttributeDefinition : IAttributeDefinition {
     public const int MaxNameSize = 100;
     public required string Name { get; init; }
 
@@ -12,17 +10,17 @@ public record AttributeDefinition<TValue> : IAttributeDefinition {
     public const int MaxShortNameSize = 10;
     public string? ShortName { get; init; }
 
-    public Type DataType => typeof(TValue);
+    public required Type DataType { get; init; }
 
-    public sealed override string ToString() => $"[{nameof(AttributeDefinition<TValue>)}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}: {typeof(TValue).GetFriendlyName()}";
+    public sealed override string ToString() => $"[{nameof(AttributeDefinition)}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}: {DataType.GetFriendlyName()}";
 
     public ICollection<IAttributeConstraint> Constraints { get; } = new List<IAttributeConstraint>();
     
     public ValidationResult Validate() {
         var result = new ValidationResult();
-        result += Name.IsNotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxNameSize).Result;
-        result += Description.IsNotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxDescriptionSize).Result;
-        result += ShortName.IsNullOr().NotEmptyOrWhiteSpace().And.NoLongerThan(MaxShortNameSize).Result;
+        result += Name.IsNotNull().And.IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaxNameSize).Result;
+        result += Description.IsNotNull().And.IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaxDescriptionSize).Result;
+        result += ShortName.IsNullOr().IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaxShortNameSize).Result;
         return result;
     }
 }

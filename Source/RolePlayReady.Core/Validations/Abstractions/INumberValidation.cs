@@ -1,11 +1,14 @@
 ﻿namespace System.Validations.Abstractions;
 
 public interface INumberValidation<in TValue>
-    : IConnectsToOrFinishes<INumberValidation<TValue>>
-    where TValue : IComparable<TValue> {
-    IConnectsToOrFinishes<INumberValidation<TValue>> GreaterOrEqualTo(TValue minimum);
-    IConnectsToOrFinishes<INumberValidation<TValue>> GreaterThan(TValue minimum);
-    IConnectsToOrFinishes<INumberValidation<TValue>> EqualTo(TValue value);
-    IConnectsToOrFinishes<INumberValidation<TValue>> LessThan(TValue maximum);
-    IConnectsToOrFinishes<INumberValidation<TValue>> LessOrEqualTo(TValue maximum);
+    : IConnectsToOrFinishes<INumberValidators<TValue>>,
+        INumberValidators<TValue> {
+}
+
+public interface INumberValidators<in TValue> {
+    IConnectsToOrFinishes<INumberValidators<TValue>> MinimumIs(TValue minimum);
+    IConnectsToOrFinishes<INumberValidators<TValue>> IsGreaterThan(TValue minimum);
+    IConnectsToOrFinishes<INumberValidators<TValue>> IsEqualTo(TValue value);
+    IConnectsToOrFinishes<INumberValidators<TValue>> IsLessThan(TValue maximum);
+    IConnectsToOrFinishes<INumberValidators<TValue>> MaximumIs(TValue maximum);
 }

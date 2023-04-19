@@ -38,11 +38,11 @@ public partial class ValidatorFactory {
         where TValue : IComparable<TValue> {
         var limit = Ensure.ArgumentExistsAndIsOfType<TValue>(validator, 0, args);
         return validator switch {
-            nameof(LessThan<TValue>) => new LessThan<TValue>(_source, limit),
-            nameof(MinimumValueIs<TValue>) => new MinimumValueIs<TValue>(_source, limit),
-            nameof(EqualTo<TValue>) => new EqualTo<TValue>(_source, limit),
-            nameof(MaximumValueIs<TValue>) => new MaximumValueIs<TValue>(_source, limit),
-            nameof(GreaterThan<TValue>) => new GreaterThan<TValue>(_source, limit),
+            nameof(IsLessThan<TValue>) => new IsLessThan<TValue>(_source, limit),
+            nameof(MinimumIs<TValue>) => new MinimumIs<TValue>(_source, limit),
+            nameof(IsEqualTo<TValue>) => new IsEqualTo<TValue>(_source, limit),
+            nameof(MaximumIs<TValue>) => new MaximumIs<TValue>(_source, limit),
+            nameof(IsGreaterThan<TValue>) => new IsGreaterThan<TValue>(_source, limit),
             _ => throw new ArgumentException($"Unsupported validator: {validator}.")
         };
     }

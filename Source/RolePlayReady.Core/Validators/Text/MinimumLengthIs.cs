@@ -7,5 +7,5 @@ public sealed class MinimumLengthIs : TextValidator {
     }
 
     protected override ValidationResult ValidateValue(StringValidation validation, int length)
-        => validation.NoShorterThan(length).Result;
+        => validation.MinimumLengthIs(length).Result;
 }

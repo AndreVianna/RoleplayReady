@@ -7,5 +7,5 @@ public sealed class MaximumCountIs<TItem> : CollectionValidator<TItem> {
     }
 
     protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation, int size)
-        => validation.NotBiggerThan(size).Result;
+        => validation.MaximumCountIs(size).Result;
 }

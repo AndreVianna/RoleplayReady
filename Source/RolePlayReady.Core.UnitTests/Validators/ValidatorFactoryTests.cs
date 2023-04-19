@@ -18,12 +18,12 @@ public class ValidatorFactoryTests {
 
     public class TestData : TheoryData<Type, string, Type, object?[]> {
         public TestData() {
-            Add(typeof(decimal), nameof(LessThan<decimal>), typeof(LessThan<decimal>), new object?[] { 20.0m });
-            Add(typeof(int), nameof(LessThan<int>), typeof(LessThan<int>), new object?[] { 20 } );
-            Add(typeof(int), nameof(GreaterThan<int>), typeof(GreaterThan<int>), new object?[] { 20 });
-            Add(typeof(int), nameof(MinimumValueIs<int>), typeof(MinimumValueIs<int>), new object?[] { 20 });
-            Add(typeof(int), nameof(MaximumValueIs<int>), typeof(MaximumValueIs<int>), new object?[] { 20 });
-            Add(typeof(int), nameof(EqualTo<int>), typeof(EqualTo<int>), new object?[] { 20 });
+            Add(typeof(decimal), nameof(IsLessThan<decimal>), typeof(IsLessThan<decimal>), new object?[] { 20.0m });
+            Add(typeof(int), nameof(IsLessThan<int>), typeof(IsLessThan<int>), new object?[] { 20 } );
+            Add(typeof(int), nameof(IsGreaterThan<int>), typeof(IsGreaterThan<int>), new object?[] { 20 });
+            Add(typeof(int), nameof(MinimumIs<int>), typeof(MinimumIs<int>), new object?[] { 20 });
+            Add(typeof(int), nameof(MaximumIs<int>), typeof(MaximumIs<int>), new object?[] { 20 });
+            Add(typeof(int), nameof(IsEqualTo<int>), typeof(IsEqualTo<int>), new object?[] { 20 });
 
             Add(typeof(string), nameof(LengthIs), typeof(LengthIs), new object?[] { 20 });
             Add(typeof(string), nameof(MaximumLengthIs), typeof(MaximumLengthIs), new object?[] { 20 });

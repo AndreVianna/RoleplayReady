@@ -7,5 +7,5 @@ public sealed class CountIs<TItem> : CollectionValidator<TItem> {
     }
 
     protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation, int size)
-        => validation.Exactly(size).Result;
+        => validation.CountIs(size).Result;
 }

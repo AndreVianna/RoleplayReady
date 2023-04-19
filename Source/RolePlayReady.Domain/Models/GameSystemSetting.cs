@@ -1,6 +1,4 @@
-﻿using System.Validations.Extensions;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public record GameSystemSetting : Entity<Guid>, IGameSystemSetting {
     public GameSystemSetting(IDateTime? dateTime = null)
@@ -11,7 +9,7 @@ public record GameSystemSetting : Entity<Guid>, IGameSystemSetting {
 
     public override ValidationResult Validate() {
         var result = base.Validate();
-        result += AttributeDefinitions.IsNotNull().And.ForEach(item => item.IsNotNull().And.Valid()).Result;
+        result += AttributeDefinitions.ForEach(item => item.IsNotNull().And.IsValid()).Result;
         return result;
     }
 }

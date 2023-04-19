@@ -35,24 +35,11 @@ public static class GameSystemSettingMapper {
                 AttributeDefinitions = input.Content.AttributeDefinitions.Select(Map).ToArray(),
             };
 
-    private static IAttributeDefinition Map(this DataModelAttribute input) {
-        return input.DataType switch {
-            "Integer" => CreateAttributeDefinition<int>(),
-            "Decimal" => CreateAttributeDefinition<decimal>(),
-            "String" => CreateAttributeDefinition<string>(),
-            "List<Integer>" => CreateAttributeDefinition<List<int>>(),
-            "List<String>" => CreateAttributeDefinition<List<string>>(),
-            "Dictionary<Integer,String>" => CreateAttributeDefinition<Dictionary<int,string>>(),
-            "Dictionary<String,Integer>" => CreateAttributeDefinition<Dictionary<string,int>>(),
-            "Dictionary<String,String>" => CreateAttributeDefinition<Dictionary<string,string>>(),
-            _ => throw new NotSupportedException($"Data type '{input.DataType}' is not supported."),
+    private static IAttributeDefinition Map(this DataModelAttribute input)
+        => new AttributeDefinition {
+            ShortName = input.ShortName,
+            Name = input.Name,
+            Description = input.Description,
+            DataType = Make.TypeFrom(input.DataType),
         };
-
-        IAttributeDefinition CreateAttributeDefinition<TValue>()
-            => new AttributeDefinition<TValue> {
-                ShortName = input.ShortName,
-                Name = input.Name,
-                Description = input.Description,
-            };
-        }
 }

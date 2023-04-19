@@ -7,5 +7,5 @@ public sealed class MinimumCountIs<TItem> : CollectionValidator<TItem> {
     }
 
     protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation, int size)
-        => validation.NotSmallerThan(size).Result;
+        => validation.MinimumCountIs(size).Result;
 }

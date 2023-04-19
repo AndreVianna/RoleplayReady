@@ -7,5 +7,5 @@ public sealed class LengthIs : TextValidator {
     }
 
     protected override ValidationResult ValidateValue(StringValidation validation, int length)
-        => validation.Exactly(length).Result;
+        => validation.LengthIs(length).Result;
 }

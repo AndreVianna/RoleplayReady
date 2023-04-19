@@ -1,6 +1,4 @@
-﻿using System.Validations.Extensions;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
 
@@ -22,10 +20,10 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
 
     public virtual ValidationResult Validate() {
         var result = new ValidationResult();
-        result += Name.IsNotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxNameSize).Result;
-        result += Description.IsNotNull().And.NotEmptyOrWhiteSpace().And.NoLongerThan(MaxDescriptionSize).Result;
-        result += ShortName.IsNullOr().NotEmptyOrWhiteSpace().And.NoLongerThan(MaxShortNameSize).Result;
-        result += Tags.IsNotNull().And.ForEach(item => item.IsNotNull().And.NoLongerThan(MaxTagSize)).Result;
+        result += Name.IsNotNull().And.IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaxNameSize).Result;
+        result += Description.IsNotNull().And.IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaxDescriptionSize).Result;
+        result += ShortName.IsNullOr().IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaxShortNameSize).Result;
+        result += Tags.ForEach(item => item.IsNotNull().And.MaximumLengthIs(MaxTagSize)).Result;
         return result;
     }
 

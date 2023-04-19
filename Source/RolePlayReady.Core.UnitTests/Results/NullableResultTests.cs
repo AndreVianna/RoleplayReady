@@ -190,7 +190,6 @@ public class NullableResultTests {
     [InlineData(false, true, true, true, true)]
     [InlineData(false, false, true, true, true)]
     [InlineData(false, false, false, true, false)]
-    [InlineData(false, false, false, true, false)]
     public void Equals_WithValue_ReturnsAsExpected(bool isNull, bool isSame, bool hasSameValue, bool otherValueIsNull, bool expectedResult) {
         NullableResult<string> subject = "testValue";
         NullableResult<string> sameValue = "testValue";

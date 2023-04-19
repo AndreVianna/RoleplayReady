@@ -9,10 +9,10 @@ public static class Validation {
             : Array.Empty<ValidationError>();
 }
 
-public abstract class Validation<TSubject, TValidation>
+public abstract class Validation<TSubject, TValidators>
     : IValidation<TSubject>,
-      IConnectsTo<TValidation>
-    where TValidation : class, IFinishesValidation {
+      IConnectsTo<TValidators>
+    where TValidators : class {
 
     protected Validation(TSubject? subject, string? source, IEnumerable<ValidationError>? previousErrors = null) {
         Subject = subject;
@@ -24,7 +24,7 @@ public abstract class Validation<TSubject, TValidation>
     public string Source { get; }
     public ICollection<ValidationError> Errors { get; }
 
-    public TValidation And => (this as TValidation)!;
+    public TValidators And => (this as TValidators)!;
 
     public ValidationResult Result => Success + Errors.ToArray();
 }

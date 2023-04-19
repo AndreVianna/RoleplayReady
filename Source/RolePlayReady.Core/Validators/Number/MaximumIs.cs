@@ -1,12 +1,12 @@
 ﻿namespace System.Validators.Number;
 
-public sealed class MaximumValueIs<TValue> : NumberValidator<TValue>
+public sealed class MaximumIs<TValue> : NumberValidator<TValue>
     where TValue : IComparable<TValue> {
 
-    public MaximumValueIs(string source, TValue threshold)
+    public MaximumIs(string source, TValue threshold)
         : base(source, threshold) {
     }
 
     protected override ValidationResult ValidateValue(NumberValidation<TValue> validation, TValue threshold)
-        => validation.LessOrEqualTo(threshold).Result;
+        => validation.MaximumIs(threshold).Result;
 }

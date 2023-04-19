@@ -1,13 +1,14 @@
 namespace RolePlayReady.Models.Attributes;
 
 public class EntityFlagAttributeTests {
-    private readonly AttributeDefinition<bool> _definition;
+    private readonly AttributeDefinition _definition;
     private readonly EntityFlagAttribute _attribute;
 
     public EntityFlagAttributeTests() {
-        _definition = new AttributeDefinition<bool> {
+        _definition = new AttributeDefinition {
             Name = "TestName",
             Description = "TestDescription",
+            DataType = typeof(bool),
         };
 
         _attribute = new EntityFlagAttribute {
@@ -20,6 +21,6 @@ public class EntityFlagAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Attribute.Should().Be(_definition);
         _attribute.Value.Should().Be(true);
-        _attribute.IsValid.Should().BeTrue();
+        _attribute.Validate().IsSuccessful.Should().BeTrue();
     }
 }

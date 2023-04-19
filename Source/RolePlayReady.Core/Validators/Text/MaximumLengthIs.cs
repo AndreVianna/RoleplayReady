@@ -7,5 +7,5 @@ public sealed class MaximumLengthIs : TextValidator {
     }
 
     protected override ValidationResult ValidateValue(StringValidation validation, int length)
-        => validation.NoShorterThan(length).Result;
+        => validation.MaximumLengthIs(length).Result;
 }

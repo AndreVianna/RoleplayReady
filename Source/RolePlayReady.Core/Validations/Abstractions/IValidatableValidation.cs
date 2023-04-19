@@ -1,6 +1,10 @@
 ﻿namespace System.Validations.Abstractions;
 
 public interface IValidatableValidation
-    : IConnectsToOrFinishes<IValidatableValidation> {
-    IFinishesValidation Valid();
+    : IConnectsToOrFinishes<IValidatableValidators>,
+        IValidatableValidators {
+}
+
+public interface IValidatableValidators {
+    IFinishesValidation IsValid();
 }

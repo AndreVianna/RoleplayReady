@@ -125,9 +125,10 @@ public class GameSystemSettingsRepositoryTests {
             Description = "Some Description",
             Tags = new[] { "SomeTag" },
             AttributeDefinitions = new IAttributeDefinition[] {
-                new AttributeDefinition<int> {
+                new AttributeDefinition {
                     Name = "Some Name",
                     Description = "Some Description",
+                    DataType = typeof(int)
                 },
             }
         };
