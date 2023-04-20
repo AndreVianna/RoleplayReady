@@ -7,8 +7,8 @@ public record Result<TValue> : ResultBase, IResult<TValue> {
     private Result(object? input, IEnumerable<ValidationError> errors) {
         Value = input switch {
             TValue value => value,
-            null => throw new InvalidCastException(string.Format(IsNotOfType, nameof(input), typeof(TValue).Name, "null")),
-            _ => throw new InvalidCastException(string.Format(IsNotOfType, nameof(input), typeof(TValue).Name, input.GetType().Name))
+            null => throw new InvalidCastException(string.Format(CannotAssignNull, $"Result<{typeof(TValue).GetFriendlyName()}>")),
+            _ => throw new InvalidCastException(string.Format(CannotAssign, $"Result<{typeof(TValue).GetFriendlyName()}>", $"Result<{input.GetType().GetFriendlyName()}>"))
         };
 
         foreach (var error in errors) Errors.Add(error);
@@ -25,11 +25,14 @@ public record Result<TValue> : ResultBase, IResult<TValue> {
 
     public static Result<TValue> operator +(Result<TValue> left, ValidationResult right) => left with { Errors = left.Errors.Union(right.Errors).ToList() };
     public static Result<TValue> operator +(ValidationResult left, Result<TValue> right) => right with { Errors = right.Errors.Union(left.Errors).ToList() };
-    public static bool operator ==(Result<TValue> left, ValidationResult right) => ReferenceEquals(right, ValidationResult.Success) && left.IsSuccessful;
-    public static bool operator !=(Result<TValue> left, ValidationResult right) => !ReferenceEquals(right, ValidationResult.Success) || !left.IsSuccessful;
+    public static bool operator ==(Result<TValue> left, ValidationResult right) => ReferenceEquals(right, ValidationResult.Success) && left.IsSuccess;
+    public static bool operator !=(Result<TValue> left, ValidationResult right) => !ReferenceEquals(right, ValidationResult.Success) || !left.IsSuccess;
 
     public virtual bool Equals(Result<TValue>? other)
         => other is not null
            && Value.Equals(other.Value)
            && Errors.SequenceEqual(other.Errors);
+
+    public override int GetHashCode()
+        => HashCode.Combine(base.GetHashCode(), Value);
 }

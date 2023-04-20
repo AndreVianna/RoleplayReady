@@ -1,5 +1,3 @@
-using NSubstitute.Core;
-
 namespace RolePlayReady.Models.Attributes;
 
 public class EntityStringAttributeTests {
@@ -23,50 +21,50 @@ public class EntityStringAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Attribute.Should().Be(_definition);
         _attribute.Value.Should().Be("TestValue");
-        _attribute.Validate().IsSuccessful.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
     [Theory]
     [InlineData("LengthIs", 9)]
     [InlineData("MinimumLengthIs", 2)]
     [InlineData("MaximumLengthIs", 20)]
-    public void IsValid_WithValidConstraint_ReturnsTrue(string validator, int argument) {
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, int argument) {
         _definition.Constraints.Add(new AttributeConstraint(validator, argument));
 
-        _attribute.Validate().IsSuccessful.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
     [Fact]
-    public void IsValid_FailedConstraint_ReturnsFalse() {
+    public void Validate_FailedConstraint_ReturnsFalse() {
         _definition.Constraints.Add(new AttributeConstraint("LengthIs", 20));
 
-        _attribute.Validate().IsSuccessful.Should().BeFalse();
+        _attribute.Validate().IsSuccess.Should().BeFalse();
     }
 
     [Fact]
-    public void IsValid_WithInvalidArgument_ThrowsArgumentException() {
+    public void Validate_WithInvalidArgument_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("LengthIs", "wrong"));
 
-        var action = () => _attribute.Validate().IsSuccessful.Should().BeFalse();
+        var action = _attribute.Validate;
 
-        action.Should().Throw<ArgumentException>();
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid type of arguments[0] of 'LengthIs'. Expected: Integer. Found: String. (Parameter 'arguments[0]')");
     }
 
     [Fact]
-    public void IsValid_WithInvalidNumberOfArguments_ThrowsArgumentException() {
+    public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("LengthIs"));
 
-        var action = () => _attribute.Validate().IsSuccessful;
+        var action = _attribute.Validate;
 
-        action.Should().Throw<ArgumentException>();
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid number of arguments for 'LengthIs'. Missing argument 0. (Parameter 'arguments')");
     }
 
     [Fact]
-    public void IsValid_WithInvalidConstraint_ThrowsArgumentException() {
+    public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("Invalid", 20));
 
-        var action = () => _attribute.Validate().IsSuccessful;
+        var action = _attribute.Validate;
 
-        action.Should().Throw<ArgumentException>();
+        action.Should().Throw<InvalidOperationException>().WithMessage("Unsupported validator 'Invalid'.");
     }
 }

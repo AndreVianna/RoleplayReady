@@ -216,7 +216,7 @@ public class EnsureTests {
         var method = "MethodName";
         var arguments = new object?[] { };
         var action = () => Ensure.ArgumentExistsAndIsOfType<string>(method, 0, arguments);
-        action.Should().Throw<ArgumentException>().WithMessage("Invalid number of arguments for MethodName. Missing argument 0. (Parameter 'MethodName()')");
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid number of arguments for 'MethodName'. Missing argument 0. (Parameter 'arguments')");
     }
 
     [Fact]
@@ -224,7 +224,7 @@ public class EnsureTests {
         var method = "MethodName";
         var arguments = new object?[] { 1, "2", 3 };
         var action = () => Ensure.ArgumentExistsAndIsOfType<string>(method, 0, arguments);
-        action.Should().Throw<ArgumentException>().WithMessage("Invalid type for MethodName argument 0. Expected: String. Found: Integer (Parameter 'MethodName(1, '2', 3)')");
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid type of arguments[0] of 'MethodName'. Expected: String. Found: Integer. (Parameter 'arguments[0]')");
     }
 
     [Fact]

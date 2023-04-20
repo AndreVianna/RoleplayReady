@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Engine.Steps.Abstractions;
-
-namespace RolePlayReady.Engine.Utilities;
+﻿namespace RolePlayReady.Engine.Utilities;
 
 internal class LongRunningStep : Step<NullContext> {
     public LongRunningStep(IStepFactory stepFactory) : base(stepFactory, null) { }

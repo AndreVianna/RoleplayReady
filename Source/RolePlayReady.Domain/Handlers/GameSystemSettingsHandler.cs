@@ -17,14 +17,14 @@ public class GameSystemSettingsHandler {
 
     public async Task<Result<GameSystemSetting>> AddAsync(GameSystemSetting input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        return result.IsSuccessful
+        return result.IsSuccess
             ? await _repository.InsertAsync(_owner, input, cancellation)
             : result + input;
     }
 
     public async Task<Result<GameSystemSetting>> UpdateAsync(GameSystemSetting input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        return result.IsSuccessful
+        return result.IsSuccess
             ? await _repository.UpdateAsync(_owner, input, cancellation)
             : result + input;
     }

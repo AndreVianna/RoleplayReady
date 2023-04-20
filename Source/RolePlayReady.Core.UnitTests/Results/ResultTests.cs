@@ -9,7 +9,7 @@ public class ResultTests {
     public void ImplicitConversion_FromValue_ReturnsValid() {
         Result<string> result = "testValue";
 
-        result.IsSuccessful.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
         result.HasValue.Should().BeTrue();
         result.Value.Should().Be("testValue");
@@ -21,7 +21,7 @@ public class ResultTests {
             Result<string> result = default(string)!;
         };
 
-        action.Should().Throw<InvalidCastException>();
+        action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign null to 'Result<String>'.");
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class ResultTests {
 
         result += Success;
 
-        result.IsSuccessful.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
         result.HasValue.Should().BeTrue();
         result.Value.Should().Be("testValue");
@@ -100,7 +100,6 @@ public class ResultTests {
         result.Should().Be(expectedResult);
     }
 
-
     [Theory]
     [InlineData(true, true, true, false)]
     [InlineData(false, true, true, true)]
@@ -115,7 +114,6 @@ public class ResultTests {
 
         result.Should().Be(expectedResult);
     }
-
 
     [Theory]
     [InlineData(true, true, false)]
@@ -137,7 +135,7 @@ public class ResultTests {
 
         result += new ValidationError("Some error.", "objectResult");
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeTrue();
         result.Value.Should().Be("testValue");
@@ -149,7 +147,7 @@ public class ResultTests {
 
         Result<string> subject = result + "testValue";
 
-        subject.IsSuccessful.Should().BeTrue();
+        subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
         subject.HasValue.Should().BeTrue();
         subject.Value.Should().Be("testValue");
@@ -161,7 +159,7 @@ public class ResultTests {
 
         Result<string> subject = result + "testValue";
 
-        subject.IsSuccessful.Should().BeFalse();
+        subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
         subject.HasValue.Should().BeTrue();
         subject.Value.Should().Be("testValue");
@@ -176,7 +174,7 @@ public class ResultTests {
         };
         
 
-        action.Should().Throw<InvalidCastException>();
+        action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign 'Result<Integer>' to 'Result<String>'.");
     }
 
     [Fact]
@@ -186,7 +184,7 @@ public class ResultTests {
 
         var subject = fail + result;
 
-        subject.IsSuccessful.Should().BeFalse();
+        subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
         subject.HasValue.Should().BeTrue();
         subject.Value.Should().Be("testValue");
@@ -201,7 +199,7 @@ public class ResultTests {
 
         result += new [] { new ValidationError("Some error 1.", "objectResult"), new ValidationError("Some error 2.", "objectResult") } ;
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeTrue();
         result.Value.Should().Be("testValue");
@@ -212,6 +210,51 @@ public class ResultTests {
         string result = new Result<string>("testValue");
 
         result.Should().Be("testValue");
+    }
+
+    [Theory]
+    [InlineData(true, true, false)]
+    [InlineData(false, true, true)]
+    [InlineData(false, false, false)]
+    public void Equality_ShouldReturnAsExpected(bool isNull, bool isSame, bool expectedResult) {
+        var subject = new Result<string>("TestValue");
+        var same = new Result<string>("TestValue");
+        var other = new Result<string>("OtherValue");
+
+        //Act
+        var result = subject == (isNull ? default : isSame ? same : other);
+
+        //Assert
+        result.Should().Be(expectedResult);
+    }
+
+    private record TestRecord<TValue>(TValue Name, ICollection<ValidationError> Errors);
+
+    [Theory]
+    [InlineData(true, true, false)]
+    [InlineData(false, true, true)]
+    [InlineData(false, false, false)]
+    public void Equality_WithError_ShouldReturnAsExpected(bool isNull, bool isSame, bool expectedResult) {
+        var subject = new Result<string>("TestValue") + new ValidationError("Some error.", "field");
+        var same = new Result<string>("TestValue") + new ValidationError("Some error.", "field");
+        var other = new Result<string>("TestValue") + new ValidationError("Other error.", "field");
+
+        //Act
+        var result = subject == (isNull ? default : isSame ? same : other);
+    }
+
+    [Fact]
+    public void GetHashCode_ShouldCompareCorrectly() {
+        var subject1 = new Result<string>("TestValue") + new ValidationError("Test error.", "field");
+        var subject2 = new Result<string>("TestValue") + new ValidationError("Test error.", "field");
+        var subject3 = new Result<string>("TestValue") + new ValidationError("Other error.", "field");
+        var subject4 = new Result<string>("OtherValue") + new ValidationError("Test error.", "field");
+        var subject5 = new Result<string>("OtherValue") + new ValidationError("Other error.", "field");
+
+        //Act
+        var list = new HashSet<Result<string>> { subject1, subject1, subject2, subject3, subject4, subject5, };
+
+        list.Should().HaveCount(4);
     }
 
     [Fact]

@@ -17,4 +17,7 @@ public sealed record ValidationError {
         => other is not null
            && MessageTemplate == other.MessageTemplate
            && Arguments.SequenceEqual(other.Arguments);
+
+    public override int GetHashCode()
+        => Arguments.Aggregate(MessageTemplate.GetHashCode(), HashCode.Combine);
 }

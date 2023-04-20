@@ -11,6 +11,7 @@ global using RolePlayReady.Engine.Exceptions;
 global using RolePlayReady.Engine.Extensions;
 global using RolePlayReady.Engine.Nulls;
 global using RolePlayReady.Engine.Steps;
+global using RolePlayReady.Engine.Steps.Abstractions;
 global using RolePlayReady.Engine.Utilities;
 
 global using Xunit;

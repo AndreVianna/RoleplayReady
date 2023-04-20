@@ -26,7 +26,7 @@ public sealed record ValidationResult : ResultBase {
     public bool Equals(ValidationResult? other) 
         => other is not null 
            && (ReferenceEquals(other, Success) 
-               ? IsSuccessful 
+               ? IsSuccess 
                : Errors.SequenceEqual(other.Errors));
 #pragma warning restore CS8851
 }

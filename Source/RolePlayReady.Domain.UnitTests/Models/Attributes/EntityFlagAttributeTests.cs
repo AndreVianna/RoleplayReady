@@ -21,6 +21,6 @@ public class EntityFlagAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Attribute.Should().Be(_definition);
         _attribute.Value.Should().Be(true);
-        _attribute.Validate().IsSuccessful.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 }

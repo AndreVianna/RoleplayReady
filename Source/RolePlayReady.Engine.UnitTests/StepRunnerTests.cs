@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Engine.Steps.Abstractions;
-
-namespace RolePlayReady.Engine;
+﻿namespace RolePlayReady.Engine;
 
 public class StepRunnerTests {
     private readonly ServiceProvider _provider;

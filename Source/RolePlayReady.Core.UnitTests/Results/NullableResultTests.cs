@@ -9,7 +9,7 @@ public class NullableResultTests {
     public void ImplicitConversion_FromValue_ReturnsValid() {
         NullableResult<string> result = "testValue";
 
-        result.IsSuccessful.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
         result.HasValue.Should().BeTrue();
         result.IsNull.Should().BeFalse();
@@ -20,7 +20,7 @@ public class NullableResultTests {
     public void ImplicitConversion_FromNull_ReturnsValid() {
         NullableResult<string> result = default(string);
 
-        result.IsSuccessful.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
         result.HasValue.Should().BeFalse();
         result.IsNull.Should().BeTrue();
@@ -33,7 +33,7 @@ public class NullableResultTests {
 
         NullableResult<string> subject = result;
 
-        subject.IsSuccessful.Should().BeTrue();
+        subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
         subject.HasValue.Should().BeTrue();
         subject.IsNull.Should().BeFalse();
@@ -46,7 +46,7 @@ public class NullableResultTests {
 
         NullableResult<string> subject = result + "testValue";
 
-        subject.IsSuccessful.Should().BeTrue();
+        subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
         subject.HasValue.Should().BeTrue();
         subject.IsNull.Should().BeFalse();
@@ -59,7 +59,7 @@ public class NullableResultTests {
 
         NullableResult<string> subject = result + default(string)!;
 
-        subject.IsSuccessful.Should().BeTrue();
+        subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
         subject.HasValue.Should().BeFalse();
         subject.IsNull.Should().BeTrue();
@@ -72,7 +72,7 @@ public class NullableResultTests {
 
         NullableResult<string> subject = result + "testValue";
 
-        subject.IsSuccessful.Should().BeFalse();
+        subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
         subject.HasValue.Should().BeTrue();
         subject.Value.Should().Be("testValue");
@@ -86,8 +86,7 @@ public class NullableResultTests {
             NullableResult<string> subject = result + 43;
         };
 
-
-        action.Should().Throw<InvalidCastException>();
+        action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign 'Result<Integer>' to 'Result<String>'.");
     }
 
     [Fact]
@@ -96,13 +95,12 @@ public class NullableResultTests {
 
         result += new ValidationError("Some error.", "result");
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
         result.HasValue.Should().BeTrue();
         result.IsNull.Should().BeFalse();
         result.Value.Should().Be("testValue");
     }
-
 
     [Fact]
     public void AddOperator_FromValidation_WithError_ReturnsInvalid() {
@@ -111,7 +109,7 @@ public class NullableResultTests {
 
         var subject = fail + result;
 
-        subject.IsSuccessful.Should().BeFalse();
+        subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
         subject.HasValue.Should().BeTrue();
         subject.IsNull.Should().BeFalse();
@@ -131,7 +129,6 @@ public class NullableResultTests {
 
         result.Should().BeNull();
     }
-
 
     [Fact]
     public void Equals_WithSelf_ReturnsTrue() {
@@ -307,6 +304,20 @@ public class NullableResultTests {
         result.IsNull.Should().BeFalse();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
         result.Errors.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void GetHashCode_ShouldCompareCorrectly() {
+        var subject1 = new NullableResult<string>("TestValue") + new ValidationError("Test error.", "field");
+        var subject2 = new NullableResult<string>("TestValue") + new ValidationError("Test error.", "field");
+        var subject3 = new NullableResult<string>("TestValue") + new ValidationError("Other error.", "field");
+        var subject4 = new NullableResult<string>("OtherValue") + new ValidationError("Test error.", "field");
+        var subject5 = new NullableResult<string>("OtherValue") + new ValidationError("Other error.", "field");
+
+        //Act
+        var list = new HashSet<NullableResult<string>> { subject1, subject1, subject2, subject3, subject4, subject5, };
+
+        list.Should().HaveCount(4);
     }
 
     [Fact]

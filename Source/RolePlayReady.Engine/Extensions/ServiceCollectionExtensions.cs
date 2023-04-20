@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace RolePlayReady.Engine.Extensions;
+﻿namespace RolePlayReady.Engine.Extensions;
 public static class ServiceCollectionExtensions {
     public static IServiceCollection AddStepEngine(this IServiceCollection services)
         => services

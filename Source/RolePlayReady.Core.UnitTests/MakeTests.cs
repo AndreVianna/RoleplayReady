@@ -22,6 +22,6 @@ public class MakeTests {
         
         var action = () => Make.TypeFrom("Long");
         
-        action.Should().Throw<InvalidOperationException>();
+        action.Should().Throw<InvalidOperationException>().WithMessage("Unsupported type 'Long'.");
     }
 }

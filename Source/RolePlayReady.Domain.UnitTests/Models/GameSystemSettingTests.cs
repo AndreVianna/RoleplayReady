@@ -65,7 +65,7 @@ public class GameSystemSettingTests {
 
         var result = testBase.Validate();
 
-        result.IsSuccessful.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
         result.Errors.Should().HaveCount(0);
     }
     [Fact]
@@ -74,7 +74,7 @@ public class GameSystemSettingTests {
 
         var result = subject.Validate();
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(2);
         result.Errors.First().Message.Should().Be("'AttributeDefinitions[0].Description' cannot be null.");
         result.Errors.Skip(1).First().Message.Should().Be("'AttributeDefinitions[1]' cannot be null.");

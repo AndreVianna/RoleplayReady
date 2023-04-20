@@ -7,7 +7,7 @@ public class ValidationResultTests {
     public void ImplicitConversion_FromValidationError_ReturnsFailure() {
         ValidationResult result = new ValidationError("Some error.", nameof(result));
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
     }
 
@@ -15,7 +15,7 @@ public class ValidationResultTests {
     public void ImplicitConversion_FromValidationErrorArray_ReturnsFailure() {
         ValidationResult result = new[] { new ValidationError("Some error.", nameof(result)) };
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
     }
 
@@ -23,13 +23,13 @@ public class ValidationResultTests {
     public void ImplicitConversion_FromValidationErrorList_ReturnsFailure() {
         ValidationResult result = new List<ValidationError> { new("Some error.", nameof(result)) };
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
     }
 
     [Fact]
     public void Success_ReturnsSuccess()
-        => Success.IsSuccessful.Should().BeTrue();
+        => Success.IsSuccess.Should().BeTrue();
 
     [Theory]
     [InlineData(false, false)]
@@ -66,7 +66,7 @@ public class ValidationResultTests {
 
         result += new ValidationError("Some error.", "result");
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
     }
 
@@ -76,7 +76,7 @@ public class ValidationResultTests {
 
         result += new[] { new ValidationError("Some error 1.", "result"), new ValidationError("Some error 2.", "result") };
 
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
     }
 

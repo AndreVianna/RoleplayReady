@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Engine.Steps.Abstractions;
-
-namespace RolePlayReady.Engine.Utilities;
+﻿namespace RolePlayReady.Engine.Utilities;
 
 internal class TestStep : Step<Context> {
     public TestStep(IStepFactory stepFactory, ILoggerFactory? loggerFactory) : base(stepFactory, loggerFactory) { }

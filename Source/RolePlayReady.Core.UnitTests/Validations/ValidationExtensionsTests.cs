@@ -1,5 +1,3 @@
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-
 namespace System.Validations;
 
 public class ValidationExtensionsTests {
@@ -150,7 +148,7 @@ public class ValidationExtensionsTests {
         var result = subject.Validate();
 
         // Assert
-        result.IsSuccessful.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
         result.Errors.Should().HaveCount(0);
     }
 
@@ -163,7 +161,7 @@ public class ValidationExtensionsTests {
         var result = subject.Validate();
 
         // Assert
-        result.IsSuccessful.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
         result.Errors.Should().HaveCount(90);
     }
 }

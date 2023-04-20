@@ -12,8 +12,7 @@ public class ValidatorFactoryTests {
     [Fact]
     public void Create_ForUnsupportedType_Throws() {
         var action = () => ValidatorFactory.For("Attribute").Create(typeof(Dictionary<int, int>), "Anything", Array.Empty<object?>());
-
-        action.Should().Throw<ArgumentException>();
+        action.Should().Throw<InvalidOperationException>().WithMessage("Unsupported validator data type 'Dictionary<Integer,Integer>'.");
     }
 
     public class TestData : TheoryData<Type, string, Type, object?[]> {

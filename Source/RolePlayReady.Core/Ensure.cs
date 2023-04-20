@@ -82,11 +82,8 @@ public static class Ensure {
 
     public static TItem ArgumentExistsAndIsOfType<TItem>(string methodName, uint argumentIndex, IReadOnlyList<object?> arguments)
         => argumentIndex >= arguments.Count
-            ? throw new ArgumentException($"Invalid number of arguments for {methodName}. Missing argument {argumentIndex}.", $"{methodName}({GetArguments(arguments)})")
+            ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", nameof(arguments))
             : arguments[(int)argumentIndex] is not TItem value
-                ? throw new ArgumentException($"Invalid type for {methodName} argument {argumentIndex}. Expected: {typeof(TItem).GetFriendlyName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetFriendlyName()}", $"{methodName}({GetArguments(arguments)})")
+                ? throw new ArgumentException($"Invalid type of arguments[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetFriendlyName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetFriendlyName()}.", $"{nameof(arguments)}[{argumentIndex}]")
                 : value;
-
-    private static string GetArguments(IEnumerable<object?> arguments)
-        => string.Join(", ", arguments.Select(i => i is string ? $"'{i}'" : $"{i}").ToArray());
 }

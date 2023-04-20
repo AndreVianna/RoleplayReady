@@ -21,7 +21,7 @@ public class EntityNumberAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Attribute.Should().Be(_definition);
         _attribute.Value.Should().Be(42);
-        _attribute.Validate().IsSuccessful.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
     [Theory]
@@ -30,36 +30,36 @@ public class EntityNumberAttributeTests {
     [InlineData("MaximumIs", 99)]
     [InlineData("IsLessThan", 99)]
     [InlineData("IsGreaterThan", 2)]
-    public void IsValid_WithValidConstraint_ReturnsTrue(string validator, int argument) {
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, int argument) {
         _definition.Constraints.Add(new AttributeConstraint(validator, argument));
 
-        _attribute.Validate().IsSuccessful.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
     [Fact]
-    public void IsValid_WithInvalidArgument_ThrowsArgumentException() {
+    public void Validate_WithInvalidArgument_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("EqualTo", "wrong"));
 
-        var action = () => _attribute.Validate().IsSuccessful.Should().BeFalse();
+        var action = _attribute.Validate;
 
         action.Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void IsValid_WithInvalidNumberOfArguments_ThrowsArgumentException() {
+    public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("EqualTo"));
 
-        var action = () => _attribute.Validate().IsSuccessful;
+        var action = _attribute.Validate;
 
         action.Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void IsValid_WithInvalidConstraint_ThrowsArgumentException() {
+    public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("Invalid", 20));
 
-        var action = () => _attribute.Validate().IsSuccessful;
+        var action = _attribute.Validate;
 
-        action.Should().Throw<ArgumentException>();
+        action.Should().Throw<InvalidOperationException>();
     }
 }

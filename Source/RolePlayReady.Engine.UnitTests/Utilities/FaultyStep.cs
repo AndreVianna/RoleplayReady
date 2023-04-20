@@ -1,6 +1,4 @@
-﻿using RolePlayReady.Engine.Steps.Abstractions;
-
-namespace RolePlayReady.Engine.Utilities;
+﻿namespace RolePlayReady.Engine.Utilities;
 
 internal class FaultyStep : Step<NullContext> {
     [SetsRequiredMembers]
