@@ -3,7 +3,6 @@
 public class DateTimeValidation
     : Validation<IComparable<DateTime>?, IDateTimeValidators>,
       IDateTimeValidation {
-
     public DateTimeValidation(IComparable<DateTime>? subject, string? source, IEnumerable<ValidationError>? previousErrors = null)
         : base(subject, source, previousErrors) {
     }
@@ -28,7 +27,8 @@ public class DateTimeValidation
 
     // Equivalent to dateTime <= threshold
     public IConnectsToOrFinishes<IDateTimeValidators> EndsOn(DateTime threshold) {
-        if (Subject is null) return this;
+        if (Subject is null)
+            return this;
         if (Subject.CompareTo(threshold) > 0)
             Errors.Add(new(CannotBeAfter, Source, threshold, Subject));
         return this;

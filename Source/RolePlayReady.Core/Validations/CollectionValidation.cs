@@ -3,7 +3,8 @@
 public static class CollectionValidation {
     public static IFinishesValidation ForEachItemIn<TItem>(IValidation<IEnumerable<TItem>?> validation, Func<TItem, IFinishesValidation> validateUsing, bool addIsNullError = true) {
         if (validation.Subject is null) {
-            if (addIsNullError) validation.Errors.Add(new(CannotBeNull, validation.Source));
+            if (addIsNullError)
+                validation.Errors.Add(new(CannotBeNull, validation.Source));
             return validation;
         }
 
@@ -27,26 +28,29 @@ public static class CollectionValidation {
 public class CollectionValidation<TItem> :
     Validation<ICollection<TItem>?, ICollectionValidators<TItem>>,
     ICollectionValidation<TItem> {
-
     public CollectionValidation(ICollection<TItem>? subject, string? source, IEnumerable<ValidationError>? previousErrors = null)
         : base(subject, source, previousErrors) {
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> IsNotEmpty() {
-        if (Subject is null) return this;
-        if (!Subject.Any()) Errors.Add(new(CannotBeEmpty, Source));
+        if (Subject is null)
+            return this;
+        if (!Subject.Any())
+            Errors.Add(new(CannotBeEmpty, Source));
         return this;
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> MinimumCountIs(int size) {
-        if (Subject is null) return this;
+        if (Subject is null)
+            return this;
         if (Subject.Count < size)
             Errors.Add(new(CannotHaveLessThan, Source, size, Subject.Count));
         return this;
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> CountIs(int size) {
-        if (Subject is null) return this;
+        if (Subject is null)
+            return this;
         if (Subject.Count != size)
             Errors.Add(new(MustHave, Source, size, Subject.Count));
         return this;

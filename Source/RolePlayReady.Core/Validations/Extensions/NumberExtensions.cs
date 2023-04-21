@@ -9,7 +9,7 @@ public static class NumberExtensions {
         => new NumberValidation<int>(subject, source);
     public static IConnectsToOrFinishes<INumberValidators<int>> IsNotNull(this int? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
         => new NumberValidation<int>(subject, source, Validation.EnsureNotNull(subject, source));
-    
+
     public static INumberValidators<decimal> ValueIsNullOr(this decimal? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
         => new NumberValidation<decimal>(subject, source);
     public static IConnectsToOrFinishes<INumberValidators<decimal>> IsNotNull(this decimal? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)

@@ -29,7 +29,6 @@ public class ValidationErrorTests {
         action.Should().Throw<ArgumentException>().WithMessage("'source' cannot be whitespace. (Parameter 'source')");
     }
 
-
     [Theory]
     [InlineData(true, true, false)]
     [InlineData(false, true, true)]

@@ -11,7 +11,8 @@ public record Result<TValue> : ResultBase, IResult<TValue> {
             _ => throw new InvalidCastException(string.Format(CannotAssign, $"Result<{typeof(TValue).GetFriendlyName()}>", $"Result<{input.GetType().GetFriendlyName()}>"))
         };
 
-        foreach (var error in errors) Errors.Add(error);
+        foreach (var error in errors)
+            Errors.Add(error);
     }
 
     public bool HasValue => true;

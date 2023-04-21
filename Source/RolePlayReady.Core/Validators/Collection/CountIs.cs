@@ -1,7 +1,6 @@
 ﻿namespace System.Validators.Collection;
 
 public sealed class CountIs<TItem> : CollectionValidator<TItem> {
-
     public CountIs(string source, int size)
         : base(source, size) {
     }

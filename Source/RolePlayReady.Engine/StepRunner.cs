@@ -3,7 +3,6 @@
 public abstract class StepRunner<TContext, TOptions> : IRunner<TContext, TOptions>
     where TContext : class, IContext
     where TOptions : class, IRunnerOptions<TOptions> {
-
     private readonly IStepFactory _stepFactory;
     private readonly ILogger _logger;
 

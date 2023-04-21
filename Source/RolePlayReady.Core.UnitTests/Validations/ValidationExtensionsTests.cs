@@ -122,7 +122,7 @@ public class ValidationExtensionsTests {
             DateTime = _baseDate.AddDays(3),
             DateTime2 = _baseDate.AddDays(3),
             Type = typeof(int),
-            TestObjects = new [] { allNulls },
+            TestObjects = new[] { allNulls },
             Integers = new[] { 1, 2, 3 },
             Items = new Dictionary<string, TestObject> { ["Test0"] = null!, ["Test1"] = allNulls, ["Test2"] = emptyLists },
             Pairs = new Dictionary<int, string> { [0] = null!, [1] = "A", [2] = "B", [3] = "C", [4] = "D", [5] = "E", [6] = "F" }

@@ -1,7 +1,6 @@
 ﻿namespace System.Validators.Collection;
 
 public sealed class MinimumCountIs<TItem> : CollectionValidator<TItem> {
-
     public MinimumCountIs(string source, int size)
         : base(source, size) {
     }

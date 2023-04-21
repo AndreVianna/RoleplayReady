@@ -1,7 +1,6 @@
 ﻿namespace System;
 
 public static partial class StringExtensions {
-
     private static readonly Regex _splitIntoWordsRegex = SplitIntoWords();
 
     public static string ToPascalCase(this string input) {

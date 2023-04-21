@@ -3,21 +3,21 @@ namespace System;
 public class EnsureTests {
     [Fact]
     public void IsOfType_WhenArgumentIsOfWrongType_ThrowsArgumentNullException() {
-        var input = 12;
+        const int input = 12;
         var action = () => Ensure.IsOfType<string>(input);
         action.Should().Throw<ArgumentException>().WithMessage("'input' is not of type 'String'. Found: 'Int32'. (Parameter 'input')");
     }
 
     [Fact]
     public void IsOfType_WhenArgumentIsOfRightType_ReturnsInput() {
-        var input = "value";
+        const string input = "value";
         var result = Ensure.IsOfType<string>(input);
         result.Should().BeSameAs(input);
     }
 
     [Fact]
     public void NotNull_WhenArgumentIsNull_ThrowsArgumentNullException() {
-        object? input = null;
+        const object? input = null;
         var action = () => Ensure.IsNotNull(input);
         action.Should().Throw<ArgumentNullException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
@@ -31,7 +31,7 @@ public class EnsureTests {
 
     [Fact]
     public void NotNullOrEmpty_WhenStringIsNull_ThrowsArgumentException() {
-        string? input = null;
+        const string? input = null;
         var action = () => Ensure.IsNotNullOrEmpty(input);
         action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
@@ -45,14 +45,14 @@ public class EnsureTests {
 
     [Fact]
     public void NotNullOrEmpty_WhenStringIsNotEmpty_ReturnsInput() {
-        var input = "Hello";
+        const string input = "Hello";
         var result = Ensure.IsNotNullOrEmpty(input);
         result.Should().Be(input);
     }
 
     [Fact]
     public void NotNullOrWhiteSpace_WhenStringIsNull_ThrowsArgumentException() {
-        string? input = null;
+        const string? input = null;
         var action = () => Ensure.IsNotNullOrWhiteSpace(input);
         action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
@@ -66,21 +66,21 @@ public class EnsureTests {
 
     [Fact]
     public void NotNullOrWhiteSpace_WhenStringIsWhiteSpace_ThrowsArgumentException() {
-        var input = " ";
+        const string input = " ";
         var action = () => Ensure.IsNotNullOrWhiteSpace(input);
         action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be whitespace. (Parameter 'input')");
     }
 
     [Fact]
     public void NotNullOrWhiteSpace_WhenStringIsNotEmpty_ReturnsInput() {
-        var input = "Hello";
+        const string input = "Hello";
         var result = Ensure.IsNotNullOrWhiteSpace(input);
         result.Should().Be(input);
     }
 
     [Fact]
     public void NotNullOrHasNull_WhenIsNull_ThrowsArgumentException() {
-        ICollection<int> input = default!;
+        const ICollection<int> input = default!;
         var action = () => Ensure.IsNotNullAndHasNoNullItems(input);
         action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
@@ -129,7 +129,7 @@ public class EnsureTests {
 
     [Fact]
     public void NotNullOrEmpty_WhenIsNull_ThrowsArgumentException() {
-        ICollection<int> input = default!;
+        const ICollection<int> input = default!;
         var action = () => Ensure.IsNotNullOrEmpty(input);
         action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be null. (Parameter 'input')");
     }
@@ -192,8 +192,8 @@ public class EnsureTests {
 
     [Fact]
     public void NotNullOrEmptyOrHasNullOrWhiteSpace_WhenHasNull_ThrowsArgumentException() {
-        var input = new[] { default(string) };
-        var action = () => Ensure.IsNotNullOrEmptyAndHasNoNullOrWhiteSpaceItems(input!);
+        string[] input = { default! };
+        var action = () => Ensure.IsNotNullOrEmptyAndHasNoNullOrWhiteSpaceItems(input);
         action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace items. (Parameter 'input')");
     }
 
@@ -213,15 +213,15 @@ public class EnsureTests {
 
     [Fact]
     public void ArgumentExistsAndIsOfType_WhenEmpty_ThrowsArgumentException() {
-        var method = "MethodName";
-        var arguments = new object?[] { };
+        const string method = "MethodName";
+        var arguments = Array.Empty<object?>();
         var action = () => Ensure.ArgumentExistsAndIsOfType<string>(method, 0, arguments);
         action.Should().Throw<ArgumentException>().WithMessage("Invalid number of arguments for 'MethodName'. Missing argument 0. (Parameter 'arguments')");
     }
 
     [Fact]
     public void ArgumentExistsAndIsOfType_WhenWrongType_ThrowsArgumentException() {
-        var method = "MethodName";
+        const string method = "MethodName";
         var arguments = new object?[] { 1, "2", 3 };
         var action = () => Ensure.ArgumentExistsAndIsOfType<string>(method, 0, arguments);
         action.Should().Throw<ArgumentException>().WithMessage("Invalid type of arguments[0] of 'MethodName'. Expected: String. Found: Integer. (Parameter 'arguments[0]')");
@@ -229,7 +229,7 @@ public class EnsureTests {
 
     [Fact]
     public void ArgumentExistsAndIsOfType_WhenValid_ReturnsItem() {
-        var method = "MethodName";
+        const string method = "MethodName";
         var arguments = new object?[] { 1, "2", 3.0m };
         var value = Ensure.ArgumentExistsAndIsOfType<int>(method, 0, arguments);
         value.Should().Be(1);

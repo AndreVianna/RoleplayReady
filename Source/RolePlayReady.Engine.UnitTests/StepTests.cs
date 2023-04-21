@@ -90,7 +90,6 @@ public class StepTests {
 
         public Task TestOnErrorAsync(Exception ex, CancellationToken cancellation = default)
             => OnErrorAsync(ex, NullContext.Instance, cancellation);
-
     }
 
     [Fact]

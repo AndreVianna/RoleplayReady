@@ -1,6 +1,6 @@
-namespace System;
+namespace System.Extensions;
 
-public class StringTests {
+public class StringExtensionsTests {
     [Theory]
     [InlineData("shadow", "Shadow")]
     [InlineData("hello world", "HelloWorld")]
@@ -15,7 +15,7 @@ public class StringTests {
         var result = input.ToPascalCase();
 
         // Assert
-        result.Should().Be(expectedResult, result);
+        result.Should().Be(expectedResult);
     }
 
     [Theory]
@@ -32,7 +32,7 @@ public class StringTests {
         var result = input.ToCamelCase();
 
         // Assert
-        result.Should().Be(expectedResult, result);
+        result.Should().Be(expectedResult);
     }
 
     [Theory]
@@ -48,6 +48,6 @@ public class StringTests {
         var result = input.ToAcronym();
 
         // Assert
-        result.Should().Be(expectedResult, result);
+        result.Should().Be(expectedResult);
     }
 }

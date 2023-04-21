@@ -53,7 +53,8 @@ public class ResultTests {
     [InlineData(true, false)]
     public void Equals_WithSuccess_ReturnsAsExpected(bool hasError, bool expectedResult) {
         Result<string> subject = "testValue";
-        if (hasError) subject += new ValidationError("Some error.", "objectResult");
+        if (hasError)
+            subject += new ValidationError("Some error.", "objectResult");
 
         var result = subject == Success;
 
@@ -66,7 +67,8 @@ public class ResultTests {
     public void Equals_WithOtherValidation_ReturnsAsExpected(bool hasError, bool expectedResult) {
         Result<string> subject = "testValue";
         var other = new ValidationResult();
-        if (hasError) subject += new ValidationError("Some error.", "objectResult");
+        if (hasError)
+            subject += new ValidationError("Some error.", "objectResult");
 
         var result = subject == other;
 
@@ -172,7 +174,6 @@ public class ResultTests {
         var action = () => {
             Result<string> subject = result + 43;
         };
-        
 
         action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign 'Result<Integer>' to 'Result<String>'.");
     }
@@ -197,7 +198,7 @@ public class ResultTests {
 
         result += fail;
 
-        result += new [] { new ValidationError("Some error 1.", "objectResult"), new ValidationError("Some error 2.", "objectResult") } ;
+        result += new[] { new ValidationError("Some error 1.", "objectResult"), new ValidationError("Some error 2.", "objectResult") };
 
         result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
@@ -241,6 +242,8 @@ public class ResultTests {
 
         //Act
         var result = subject == (isNull ? default : isSame ? same : other);
+
+        result.Should().Be(expectedResult);
     }
 
     [Fact]

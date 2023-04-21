@@ -161,7 +161,8 @@ public class NullableResultTests {
     public void Equals_WithOtherValidation_ReturnsAsExpected(bool hasError, bool expectedResult) {
         NullableResult<string> subject = "testValue";
         var other = new ValidationResult();
-        if (hasError) subject += new ValidationError("Some error.", "objectResult");
+        if (hasError)
+            subject += new ValidationError("Some error.", "objectResult");
 
         var result = subject == other;
 

@@ -18,7 +18,7 @@ public class ValidatorFactoryTests {
     public class TestData : TheoryData<Type, string, Type, object?[]> {
         public TestData() {
             Add(typeof(decimal), nameof(IsLessThan<decimal>), typeof(IsLessThan<decimal>), new object?[] { 20.0m });
-            Add(typeof(int), nameof(IsLessThan<int>), typeof(IsLessThan<int>), new object?[] { 20 } );
+            Add(typeof(int), nameof(IsLessThan<int>), typeof(IsLessThan<int>), new object?[] { 20 });
             Add(typeof(int), nameof(IsGreaterThan<int>), typeof(IsGreaterThan<int>), new object?[] { 20 });
             Add(typeof(int), nameof(MinimumIs<int>), typeof(MinimumIs<int>), new object?[] { 20 });
             Add(typeof(int), nameof(MaximumIs<int>), typeof(MaximumIs<int>), new object?[] { 20 });

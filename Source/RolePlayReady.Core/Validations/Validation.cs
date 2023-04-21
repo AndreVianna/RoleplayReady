@@ -13,7 +13,6 @@ public abstract class Validation<TSubject, TValidators>
     : IValidation<TSubject>,
       IConnectsTo<TValidators>
     where TValidators : class {
-
     protected Validation(TSubject? subject, string? source, IEnumerable<ValidationError>? previousErrors = null) {
         Subject = subject;
         Source = source!;

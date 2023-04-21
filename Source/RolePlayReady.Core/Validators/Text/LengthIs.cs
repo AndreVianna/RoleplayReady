@@ -1,7 +1,6 @@
 ﻿namespace System.Validators.Text;
 
 public sealed class LengthIs : TextValidator {
-
     public LengthIs(string source, int length)
         : base(source, length) {
     }

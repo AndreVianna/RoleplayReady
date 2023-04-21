@@ -5,7 +5,7 @@ using MinimumLengthIs = System.Validators.Text.MinimumLengthIs;
 
 namespace System.Validators;
 
-public partial class ValidatorFactory {
+public sealed partial class ValidatorFactory {
     private readonly string _source;
 
     private ValidatorFactory(string source) {

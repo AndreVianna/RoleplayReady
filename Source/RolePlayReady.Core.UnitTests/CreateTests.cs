@@ -1,7 +1,6 @@
 namespace System;
 
 public class CreateTests {
-
     private class TestClass { }
 
     [Fact]

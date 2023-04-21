@@ -10,7 +10,8 @@ public sealed record ValidationResult : ResultBase {
             _ => Array.Empty<ValidationError>()
         };
 
-        foreach (var error in errors) Errors.Add(error);
+        foreach (var error in errors)
+            Errors.Add(error);
     }
 
     public static ValidationResult Success { get; } = new();
@@ -23,10 +24,10 @@ public sealed record ValidationResult : ResultBase {
     public static NullableResult<object> operator +(ValidationResult left, object? right) => new NullableResult<object>(right) + left;
 
 #pragma warning disable CS8851 // Not required
-    public bool Equals(ValidationResult? other) 
-        => other is not null 
-           && (ReferenceEquals(other, Success) 
-               ? IsSuccess 
+    public bool Equals(ValidationResult? other)
+        => other is not null
+           && (ReferenceEquals(other, Success)
+               ? IsSuccess
                : Errors.SequenceEqual(other.Errors));
 #pragma warning restore CS8851
 }

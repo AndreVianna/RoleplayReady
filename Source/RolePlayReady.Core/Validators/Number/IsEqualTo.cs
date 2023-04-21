@@ -2,7 +2,6 @@
 
 public sealed class IsEqualTo<TValue> : NumberValidator<TValue>
     where TValue : IComparable<TValue> {
-
     public IsEqualTo(string source, TValue value)
         : base(source, value) {
     }

@@ -1,7 +1,6 @@
 ﻿namespace RolePlayReady.Models;
 
 public abstract record Persistent<TKey> : IPersistent<TKey> {
-
     protected Persistent(IDateTime? dateTime = null) {
         dateTime ??= new DefaultDateTime();
         Timestamp = dateTime.Now;

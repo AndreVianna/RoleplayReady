@@ -1,7 +1,6 @@
 ﻿namespace System.Validators.Collection;
 
 public sealed class MaximumCountIs<TItem> : CollectionValidator<TItem> {
-
     public MaximumCountIs(string source, int size)
         : base(source, size) {
     }

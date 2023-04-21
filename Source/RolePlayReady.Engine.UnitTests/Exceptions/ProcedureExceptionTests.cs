@@ -1,10 +1,8 @@
 ﻿namespace RolePlayReady.Engine.Exceptions;
 
-public class ProcedureExceptionTests
-{
+public class ProcedureExceptionTests {
     [Fact]
-    public void Constructor_WithMessage_SetsMessage()
-    {
+    public void Constructor_WithMessage_SetsMessage() {
         // Arrange
         const string message = "Test message";
 
@@ -16,8 +14,7 @@ public class ProcedureExceptionTests
     }
 
     [Fact]
-    public void Constructor_WithMessageAndInnerException_SetsMessageAndInnerException()
-    {
+    public void Constructor_WithMessageAndInnerException_SetsMessageAndInnerException() {
         // Arrange
         const string message = "Test message";
         var innerException = new Exception("Inner exception");

@@ -2,7 +2,6 @@
 
 public class EndStep<TContext> : Step<TContext>
     where TContext : class, IContext {
-
     public EndStep(IStepFactory stepFactory, ILoggerFactory? loggerFactory = null)
         : base(stepFactory, loggerFactory) {
     }

@@ -3,13 +3,13 @@
 public class ValidatableValidation
     : Validation<IValidatable, IValidatableValidators>,
         IValidatableValidation {
-
     public ValidatableValidation(IValidatable? subject, string? source, IEnumerable<ValidationError>? previousErrors = null)
         : base(subject, source, previousErrors) {
     }
 
     public IFinishesValidation IsValid() {
-        if (Subject is null) return this;
+        if (Subject is null)
+            return this;
         foreach (var error in Subject.Validate().Errors) {
             error.Arguments[0] = $"{Source}.{error.Arguments[0]}";
             Errors.Add(error);

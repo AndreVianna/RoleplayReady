@@ -59,7 +59,6 @@ public class ValidationResultTests {
         result.Should().Be(expectedResult);
     }
 
-
     [Fact]
     public void AddOperator_WithError_ReturnsInvalid() {
         var result = new ValidationResult();

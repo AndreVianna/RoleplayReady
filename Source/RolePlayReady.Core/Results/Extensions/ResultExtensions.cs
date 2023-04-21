@@ -2,8 +2,7 @@
 
 namespace System.Results.Extensions;
 
-public static class ResultExtensions
-{
+public static class ResultExtensions {
     public static Result<TOutput> Map<TInput, TOutput>(this Result<TInput> input, Func<TInput, TOutput> map)
         => new Result<TOutput>(map(input.Value)) + (input.HasErrors ? input.Errors.ToArray() : Success);
 
