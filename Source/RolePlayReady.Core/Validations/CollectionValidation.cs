@@ -56,6 +56,20 @@ public class CollectionValidation<TItem> :
         return this;
     }
 
+    public IConnectsToOrFinishes<ICollectionValidators<TItem>> Contains(TItem item) {
+        if (Subject is null) return this;
+        if (Subject.Contains(item))
+            Errors.Add(new(MustContain, Source, item));
+        return this;
+    }
+
+    public IConnectsToOrFinishes<ICollectionValidators<TItem>> NotContains(TItem item) {
+        if (Subject is null) return this;
+        if (Subject.Contains(item))
+            Errors.Add(new(MustNotContain, Source, item));
+        return this;
+    }
+
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> MaximumCountIs(int size) {
         if (Subject is null)
             return this;

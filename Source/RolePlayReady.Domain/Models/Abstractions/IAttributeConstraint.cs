@@ -2,5 +2,5 @@
 
 public interface IAttributeConstraint {
     string ValidatorName { get; }
-    ICollection<object?> Arguments { get; }
+    ICollection<object> Arguments { get; }
 }

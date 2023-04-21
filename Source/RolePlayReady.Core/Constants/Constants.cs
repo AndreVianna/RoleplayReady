@@ -14,10 +14,13 @@ public static class Constants {
 
         public const string MinimumLengthIs = "'{0}' minimum length is {1} character(s). Found: {2}.";
         public const string MaximumLengthIs = "'{0}' maximum length is {1} character(s). Found: {2}.";
+        public const string MustBeIn = "'{0}' must be in [{1}]. Found: {2}.";
         public const string LengthMustBe = "'{0}' length must be exactly {1} character(s). Found: {2}.";
         public const string CannotHaveLessThan = "'{0}' cannot have less than {1} item(s). Found: {2}.";
         public const string CannotHaveMoreThan = "'{0}' cannot have more than {1} item(s). Found: {2}.";
         public const string MustHave = "'{0}' must have exactly {1} item(s). Found: {2}.";
+        public const string MustContain = "'{0}' must contain {1}, but it was not found.";
+        public const string MustNotContain = "'{0}' must not contain {1}, but it was found.";
 
         public const string CannotBeLessThan = "'{0}' cannot be less then {1}. Found: {2}.";
         public const string MustBeLessThan = "'{0}' must be less than {1}. Found: {2}.";

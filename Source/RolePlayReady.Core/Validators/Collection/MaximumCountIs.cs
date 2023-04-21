@@ -1,10 +1,13 @@
 ﻿namespace System.Validators.Collection;
 
 public sealed class MaximumCountIs<TItem> : CollectionValidator<TItem> {
-    public MaximumCountIs(string source, int size)
-        : base(source, size) {
+    private readonly int _count;
+
+    public MaximumCountIs(string source, int count)
+        : base(source) {
+        _count = count;
     }
 
-    protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation, int size)
-        => validation.MaximumCountIs(size).Result;
+    protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation)
+        => validation.MaximumCountIs(_count).Result;
 }

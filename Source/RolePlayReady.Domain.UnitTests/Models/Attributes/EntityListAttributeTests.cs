@@ -43,7 +43,7 @@ public class EntityListAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("CuntIs", "wrong"));
+        _definition.Constraints.Add(new AttributeConstraint("CountIs", "wrong"));
 
         var action = _attribute.Validate;
 

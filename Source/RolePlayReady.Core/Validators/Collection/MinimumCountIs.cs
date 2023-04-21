@@ -1,10 +1,13 @@
 ﻿namespace System.Validators.Collection;
 
 public sealed class MinimumCountIs<TItem> : CollectionValidator<TItem> {
-    public MinimumCountIs(string source, int size)
-        : base(source, size) {
+    private readonly int _count;
+
+    public MinimumCountIs(string source, int count)
+        : base(source) {
+        _count = count;
     }
 
-    protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation, int size)
-        => validation.MinimumCountIs(size).Result;
+    protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation)
+        => validation.MinimumCountIs(_count).Result;
 }

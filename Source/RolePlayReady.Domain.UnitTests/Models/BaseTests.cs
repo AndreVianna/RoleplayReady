@@ -59,7 +59,6 @@ public class BaseTests {
             Description = TestDataHelpers.GenerateTestString(descriptionSize)!,
             ShortName = TestDataHelpers.GenerateTestString(shortNameSize)!,
             Tags = TestDataHelpers.GenerateTestCollection(tagListCount, TestDataHelpers.GenerateTestString(tagsSize))!,
-            Temp = TestDataHelpers.GenerateTestDictionary<string, int>(tagListCount, 3)!
         };
 
         var result = testBase.Validate();

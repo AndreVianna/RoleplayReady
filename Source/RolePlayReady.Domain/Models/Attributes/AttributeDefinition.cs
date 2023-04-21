@@ -8,7 +8,7 @@ public record AttributeDefinition : IAttributeDefinition {
     public string? ShortName { get; init; }
     public required Type DataType { get; init; }
 
-    public sealed override string ToString() => $"[{nameof(AttributeDefinition)}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}: {DataType.GetFriendlyName()}";
+    public sealed override string ToString() => $"[{nameof(AttributeDefinition)}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}: {DataType.GetName()}";
 
     public ICollection<IAttributeConstraint> Constraints { get; } = new List<IAttributeConstraint>();
 

@@ -215,7 +215,7 @@ public class EnsureTests {
     public void ArgumentExistsAndIsOfType_WhenEmpty_ThrowsArgumentException() {
         const string method = "MethodName";
         var arguments = Array.Empty<object?>();
-        var action = () => Ensure.ArgumentExistsAndIsOfType<string>(method, 0, arguments);
+        var action = () => Ensure.ArgumentExistsAndIsOfType<string>(arguments, method, 0);
         action.Should().Throw<ArgumentException>().WithMessage("Invalid number of arguments for 'MethodName'. Missing argument 0. (Parameter 'arguments')");
     }
 
@@ -223,7 +223,7 @@ public class EnsureTests {
     public void ArgumentExistsAndIsOfType_WhenWrongType_ThrowsArgumentException() {
         const string method = "MethodName";
         var arguments = new object?[] { 1, "2", 3 };
-        var action = () => Ensure.ArgumentExistsAndIsOfType<string>(method, 0, arguments);
+        var action = () => Ensure.ArgumentExistsAndIsOfType<string>(arguments, method, 0);
         action.Should().Throw<ArgumentException>().WithMessage("Invalid type of arguments[0] of 'MethodName'. Expected: String. Found: Integer. (Parameter 'arguments[0]')");
     }
 
@@ -231,7 +231,7 @@ public class EnsureTests {
     public void ArgumentExistsAndIsOfType_WhenValid_ReturnsItem() {
         const string method = "MethodName";
         var arguments = new object?[] { 1, "2", 3.0m };
-        var value = Ensure.ArgumentExistsAndIsOfType<int>(method, 0, arguments);
+        var value = Ensure.ArgumentExistsAndIsOfType<int>(arguments, method, 0);
         value.Should().Be(1);
     }
 }

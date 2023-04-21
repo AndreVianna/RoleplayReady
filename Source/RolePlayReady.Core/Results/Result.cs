@@ -7,8 +7,8 @@ public record Result<TValue> : ResultBase, IResult<TValue> {
     private Result(object? input, IEnumerable<ValidationError> errors) {
         Value = input switch {
             TValue value => value,
-            null => throw new InvalidCastException(string.Format(CannotAssignNull, $"Result<{typeof(TValue).GetFriendlyName()}>")),
-            _ => throw new InvalidCastException(string.Format(CannotAssign, $"Result<{typeof(TValue).GetFriendlyName()}>", $"Result<{input.GetType().GetFriendlyName()}>"))
+            null => throw new InvalidCastException(string.Format(CannotAssignNull, $"Result<{typeof(TValue).GetName()}>")),
+            _ => throw new InvalidCastException(string.Format(CannotAssign, $"Result<{typeof(TValue).GetName()}>", $"Result<{input.GetType().GetName()}>"))
         };
 
         foreach (var error in errors)

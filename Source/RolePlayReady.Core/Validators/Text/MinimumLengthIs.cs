@@ -1,10 +1,13 @@
 ﻿namespace System.Validators.Text;
 
 public sealed class MinimumLengthIs : TextValidator {
+    private readonly int _length;
+
     public MinimumLengthIs(string source, int length)
-        : base(source, length) {
+        : base(source) {
+        _length = length;
     }
 
-    protected override ValidationResult ValidateValue(StringValidation validation, int length)
-        => validation.MinimumLengthIs(length).Result;
+    protected override ValidationResult ValidateValue(TextValidation validation)
+        => validation.MinimumLengthIs(_length).Result;
 }

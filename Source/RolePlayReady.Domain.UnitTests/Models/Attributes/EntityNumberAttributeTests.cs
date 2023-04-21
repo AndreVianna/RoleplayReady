@@ -38,7 +38,7 @@ public class EntityNumberAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("EqualTo", "wrong"));
+        _definition.Constraints.Add(new AttributeConstraint("IsEqualTo", "wrong"));
 
         var action = _attribute.Validate;
 
@@ -47,7 +47,7 @@ public class EntityNumberAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("EqualTo"));
+        _definition.Constraints.Add(new AttributeConstraint("IsEqualTo"));
 
         var action = _attribute.Validate;
 

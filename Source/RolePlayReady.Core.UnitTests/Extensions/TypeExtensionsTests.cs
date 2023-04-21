@@ -17,9 +17,12 @@ public class TypeExtensionsTests {
     [InlineData(typeof(Dictionary<decimal, int>), "Dictionary<Decimal,Integer>")]
     [InlineData(typeof(Dictionary<decimal, string>), "Dictionary<Decimal,String>")]
     [InlineData(typeof(Dictionary<decimal, decimal>), "Dictionary<Decimal,Decimal>")]
+    [InlineData(typeof(int[]), "Integer[]")]
+    [InlineData(typeof(string[]), "String[]")]
+    [InlineData(typeof(decimal[]), "Decimal[]")]
     public void ToFriendlyName_CorrectlyConvertsInput(Type input, string expectedResult) {
         // Act
-        var name = input.GetFriendlyName();
+        var name = input.GetName();
         var type = Make.TypeFrom(name);
 
         // Assert

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using static RolePlayReady.Constants.Constants.Validation.Base;
+﻿using static RolePlayReady.Constants.Constants.Validation.Base;
 
 namespace RolePlayReady.Models;
 
@@ -16,7 +14,6 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
     public string? ShortName { get; init; }
 
     public ICollection<string> Tags { get; init; } = new List<string>();
-    public IDictionary<string, int> Temp { get; init; } = new Dictionary<string, int>();
 
     public virtual ValidationResult Validate() {
         var result = new ValidationResult();

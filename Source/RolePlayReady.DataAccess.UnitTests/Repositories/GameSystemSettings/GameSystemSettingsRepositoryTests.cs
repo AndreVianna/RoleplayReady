@@ -110,7 +110,7 @@ public class GameSystemSettingsRepositoryTests {
                     new GameSystemSettingDataModel.AttributeDefinition {
                         Name = "Some Name",
                         Description = "Some Description",
-                        DataType = typeof(int).GetFriendlyName()
+                        DataType = typeof(int).GetName()
                     },
                 }
             }

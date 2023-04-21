@@ -18,7 +18,7 @@ public static class GameSystemSettingMapper {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
-            DataType = input.DataType.GetFriendlyName(),
+            DataType = input.DataType.GetName(),
         };
 
     public static GameSystemSetting? Map(this DataFile<DataModel>? input)

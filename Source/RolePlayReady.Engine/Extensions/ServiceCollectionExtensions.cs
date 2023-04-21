@@ -5,8 +5,8 @@ public static class ServiceCollectionExtensions {
             .AddSingleton<IStepFactory, StepFactory>()
             .RegisterAllStepsWith<StepFactory>();
 
-    public static IServiceCollection RegisterAllStepsWith<TMarker>(this IServiceCollection services) =>
-        services.RegisterAllStepsIn(typeof(TMarker).Assembly);
+    public static IServiceCollection RegisterAllStepsWith<TMarker>(this IServiceCollection services)
+        => services.RegisterAllStepsIn(typeof(TMarker).Assembly);
 
     public static IServiceCollection RegisterAllStepsIn(this IServiceCollection services, Assembly assembly) {
         assembly.GetTypes()

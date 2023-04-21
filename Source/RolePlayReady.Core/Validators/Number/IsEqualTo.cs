@@ -2,10 +2,13 @@
 
 public sealed class IsEqualTo<TValue> : NumberValidator<TValue>
     where TValue : IComparable<TValue> {
+    private readonly TValue _value;
+
     public IsEqualTo(string source, TValue value)
-        : base(source, value) {
+        : base(source) {
+        _value = value;
     }
 
-    protected override ValidationResult ValidateValue(NumberValidation<TValue> validation, TValue value)
-        => validation.IsEqualTo(value).Result;
+    protected override ValidationResult ValidateValue(NumberValidation<TValue> validation)
+        => validation.IsEqualTo(_value).Result;
 }

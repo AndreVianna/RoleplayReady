@@ -75,15 +75,27 @@ public static class Ensure {
     public static ICollection<string> IsNotNullOrEmptyAndHasNoNullOrWhiteSpaceItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
         var collection = IsNotNullOrEmpty(argument, paramName);
         // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
-        return IsNotNullOrEmpty(collection, paramName).Any(i => string.IsNullOrWhiteSpace(i))
+        return collection.Any(i => string.IsNullOrWhiteSpace(i))
             ? throw new ArgumentException(string.Format(CannotContainNullOrWhitespace, paramName), paramName)
             : collection;
     }
 
-    public static TItem ArgumentExistsAndIsOfType<TItem>(string methodName, uint argumentIndex, IReadOnlyList<object?> arguments)
+    public static TItem ArgumentExistsAndIsOfType<TItem>(IReadOnlyList<object?> arguments, string methodName, uint argumentIndex)
         => argumentIndex >= arguments.Count
             ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", nameof(arguments))
             : arguments[(int)argumentIndex] is not TItem value
-                ? throw new ArgumentException($"Invalid type of arguments[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetFriendlyName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetFriendlyName()}.", $"{nameof(arguments)}[{argumentIndex}]")
+                ? throw new ArgumentException($"Invalid type of arguments[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{nameof(arguments)}[{argumentIndex}]")
                 : value;
+
+    public static ICollection<TItem> ArgumentsAreAllOfType<TItem>(IReadOnlyList<object?> arguments, string methodName) {
+        var list = (IReadOnlyList<object?>)IsNotNullOrEmptyAndHasNoNullItems(arguments, methodName);
+        var result = new List<TItem>();
+        for (var index = 0; index < list.Count; index++) {
+            var item = list[index];
+            if (item is TItem value) result.Add(value);
+            else throw new ArgumentException($"At least one argument of '{methodName}' is of an invalid type. Expected: '{typeof(TItem).GetName()}'.  Found: {list[index]!.GetType().GetName()}.", $"{nameof(arguments)}[{index}]");
+        }        
+
+        return result;
+    }
 }

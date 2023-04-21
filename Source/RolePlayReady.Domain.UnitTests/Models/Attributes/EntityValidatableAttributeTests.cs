@@ -5,7 +5,7 @@ namespace RolePlayReady.Models.Attributes;
 public class EntityValidatableAttributeTests {
     private readonly AttributeDefinition _definition;
     private readonly EntityValidatableAttribute<TestObject> _attribute;
-    private readonly TestObject _testObject = new TestObject("Hello");
+    private readonly TestObject _testObject = new("Hello");
 
     private record TestObject(string Name) : IValidatable {
         public ValidationResult Validate() => Success;

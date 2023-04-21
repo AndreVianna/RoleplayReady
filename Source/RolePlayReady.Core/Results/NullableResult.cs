@@ -8,7 +8,7 @@ public record NullableResult<TValue> : ResultBase, INullableResult<TValue> {
     private NullableResult(object? input, IEnumerable<ValidationError> errors) {
         Value = input is null or TValue
             ? (TValue?)input
-            : throw new InvalidCastException(string.Format(CannotAssign, $"Result<{typeof(TValue).GetFriendlyName()}>", $"Result<{input.GetType().GetFriendlyName()}>"));
+            : throw new InvalidCastException(string.Format(CannotAssign, $"Result<{typeof(TValue).GetName()}>", $"Result<{input.GetType().GetName()}>"));
         foreach (var error in errors)
             Errors.Add(error);
     }
