@@ -80,22 +80,20 @@ public static class Ensure {
             : collection;
     }
 
-    public static TItem ArgumentExistsAndIsOfType<TItem>(IReadOnlyList<object?> arguments, string methodName, uint argumentIndex)
+    public static TItem ArgumentExistsAndIsOfType<TItem>(IReadOnlyList<object?> arguments, string methodName, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))] string? paramName = null)
         => argumentIndex >= arguments.Count
-            ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", nameof(arguments))
+            ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", paramName)
             : arguments[(int)argumentIndex] is not TItem value
-                ? throw new ArgumentException($"Invalid type of arguments[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{nameof(arguments)}[{argumentIndex}]")
+                ? throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]")
                 : value;
 
-    public static ICollection<TItem> ArgumentsAreAllOfType<TItem>(IReadOnlyList<object?> arguments, string methodName) {
-        var list = (IReadOnlyList<object?>)IsNotNullOrEmptyAndHasNoNullItems(arguments, methodName);
-        var result = new List<TItem>();
+    public static TItem[] ArgumentsAreAllOfType<TItem>(IReadOnlyList<object?> arguments, string methodName, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {
+        var list = (IReadOnlyList<object>)IsNotNullOrEmptyAndHasNoNullItems(arguments, paramName);
         for (var index = 0; index < list.Count; index++) {
-            var item = list[index];
-            if (item is TItem value) result.Add(value);
-            else throw new ArgumentException($"At least one argument of '{methodName}' is of an invalid type. Expected: '{typeof(TItem).GetName()}'.  Found: {list[index]!.GetType().GetName()}.", $"{nameof(arguments)}[{index}]");
-        }        
+            if (list[index] is not TItem )
+                throw new ArgumentException($"At least one argument of '{methodName}' is of an invalid type. Expected: {typeof(TItem).GetName()}.  Found: {list[index]!.GetType().GetName()}.", $"{nameof(arguments)}[{index}]");
+        }
 
-        return result;
+        return list.Cast<TItem>().ToArray();
     }
 }

@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace RolePlayReady.Utilities;
 
 public static class TestDataHelpers {
@@ -23,8 +21,8 @@ public static class TestDataHelpers {
         where TKey : notnull => count switch {
             null => default,
             0 => new Dictionary<TKey, TValue>(),
-            < 0 when typeof(TKey) == typeof(string) => GenerateTestDictionaryWithStringKey<TKey, TValue>(-(count.Value), default), // negative size means use default
-            < 0 when typeof(TKey) == typeof(int) => GenerateTestDictionaryWithIntKey<TKey, TValue>(-(count.Value), default), // negative size means use default
+            < 0 when typeof(TKey) == typeof(string) => GenerateTestDictionaryWithStringKey<TKey, TValue>(-count.Value, default), // negative size means use default
+            < 0 when typeof(TKey) == typeof(int) => GenerateTestDictionaryWithIntKey<TKey, TValue>(-count.Value, default), // negative size means use default
             _ when typeof(TKey) == typeof(string) => GenerateTestDictionaryWithStringKey<TKey, TValue>(count.Value, value), // positive size means use value
             _ => GenerateTestDictionaryWithIntKey<TKey, TValue>(count.Value, value), // positive size means use value
         };

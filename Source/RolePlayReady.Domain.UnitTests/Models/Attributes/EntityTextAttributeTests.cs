@@ -1,17 +1,21 @@
+using System.Validators.Collection;
+using System.Validators.Number;
+using System.Validators.Text;
+
 namespace RolePlayReady.Models.Attributes;
 
-public class EntityStringAttributeTests {
+public class EntityTextAttributeTests {
     private readonly AttributeDefinition _definition;
-    private readonly EntityStringAttribute _attribute;
+    private readonly EntityTextAttribute _attribute;
 
-    public EntityStringAttributeTests() {
-        _definition = new AttributeDefinition {
+    public EntityTextAttributeTests() {
+        _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
             DataType = typeof(string)
         };
 
-        _attribute = new EntityStringAttribute {
+        _attribute = new() {
             Attribute = _definition,
             Value = "TestValue"
         };
@@ -25,20 +29,24 @@ public class EntityStringAttributeTests {
     }
 
     [Theory]
-    [InlineData("LengthIs", 9)]
-    [InlineData("MinimumLengthIs", 2)]
-    [InlineData("MaximumLengthIs", 20)]
-    public void Validate_WithValidConstraint_ReturnsTrue(string validator, int argument) {
-        _definition.Constraints.Add(new AttributeConstraint(validator, argument));
+    [ClassData(typeof(TestData))]
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
+        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
 
-        _attribute.Validate().IsSuccess.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
     }
 
-    [Fact]
-    public void Validate_FailedConstraint_ReturnsFalse() {
-        _definition.Constraints.Add(new AttributeConstraint("LengthIs", 20));
-
-        _attribute.Validate().IsSuccess.Should().BeFalse();
+    private class TestData : TheoryData<string, object[], bool> {
+        public TestData() {
+            Add("MaximumLengthIs", new object[] { 20 }, true);
+            Add("MaximumLengthIs", new object[] { 2 }, false);
+            Add("MinimumLengthIs", new object[] { 2 }, true);
+            Add("MinimumLengthIs", new object[] { 20 }, false);
+            Add("LengthIs", new object[] { 9 }, true);
+            Add("LengthIs", new object[] { 20 }, false);
+            Add("IsOneOf", new object[] { "One", "TestValue", "Three" }, true);
+            Add("IsOneOf", new object[] { "One", "Two", "Three" }, false);
+        }
     }
 
     [Fact]
@@ -61,7 +69,7 @@ public class EntityStringAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("Invalid", 20));
+        _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
         var action = _attribute.Validate;
 

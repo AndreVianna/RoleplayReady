@@ -12,15 +12,15 @@ public class EntityValidatableAttributeTests {
     }
 
     public EntityValidatableAttributeTests() {
-        _definition = new AttributeDefinition {
+        _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
             DataType = typeof(TestObject)
         };
 
-        _attribute = new EntityValidatableAttribute<TestObject> {
+        _attribute = new() {
             Attribute = _definition,
-            Value = new TestObject("Hello")
+            Value = new("Hello")
         };
     }
 
@@ -33,7 +33,7 @@ public class EntityValidatableAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("Invalid", 20));
+        _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
         var action = _attribute.Validate;
 

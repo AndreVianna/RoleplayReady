@@ -125,7 +125,7 @@ public partial class TrackedJsonFileRepository : ITrackedJsonFileRepository {
             await using var stream = _io.OpenFileForReading(filePath);
             var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
             _logger.LogDebug("Data from '{filePath}' retrieved.", filePath);
-            result = new DataFile<TData>() {
+            result = new() {
                 Name = fileInfo.Name,
                 Timestamp = fileInfo.Timestamp,
                 Content = content!

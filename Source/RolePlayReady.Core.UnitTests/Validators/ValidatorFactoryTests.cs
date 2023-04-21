@@ -15,7 +15,7 @@ public class ValidatorFactoryTests {
         action.Should().Throw<InvalidOperationException>().WithMessage("Unsupported validator data type 'Dictionary<Integer,Integer>'.");
     }
 
-    public class TestData : TheoryData<Type, string, Type, object[]> {
+    private class TestData : TheoryData<Type, string, Type, object[]> {
         public TestData() {
             Add(typeof(decimal), nameof(IsLessThan<decimal>), typeof(IsLessThan<decimal>), new object[] { 20.0m });
             Add(typeof(int), nameof(IsLessThan<int>), typeof(IsLessThan<int>), new object[] { 20 });

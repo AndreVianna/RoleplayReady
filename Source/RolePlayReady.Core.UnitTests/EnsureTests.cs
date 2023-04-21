@@ -234,4 +234,28 @@ public class EnsureTests {
         var value = Ensure.ArgumentExistsAndIsOfType<int>(arguments, method, 0);
         value.Should().Be(1);
     }
+
+    [Fact]
+    public void ArgumentsAreAllOfType_WhenEmpty_ThrowsArgumentException() {
+        const string method = "MethodName";
+        var arguments = Array.Empty<object?>();
+        var action = () => Ensure.ArgumentsAreAllOfType<string>(arguments, method);
+        action.Should().Throw<ArgumentException>().WithMessage("'arguments' cannot be empty. (Parameter 'arguments')");
+    }
+
+    [Fact]
+    public void ArgumentsAreAllOfType_WhenWrongType_ThrowsArgumentException() {
+        const string method = "MethodName";
+        var arguments = new object?[] { 1, "2", 3 };
+        var action = () => Ensure.ArgumentsAreAllOfType<int>(arguments, method);
+        action.Should().Throw<ArgumentException>().WithMessage("At least one argument of 'MethodName' is of an invalid type. Expected: Integer.  Found: String. (Parameter 'arguments[1]')");
+    }
+
+    [Fact]
+    public void ArgumentsAreAllOfType_WhenValid_ReturnsItem() {
+        const string method = "MethodName";
+        var arguments = new object?[] { 1, 2, 3 };
+        var value = Ensure.ArgumentsAreAllOfType<int>(arguments, method);
+        value.Should().BeOfType<int[]>().Subject.Should().BeEquivalentTo(arguments);
+    }
 }

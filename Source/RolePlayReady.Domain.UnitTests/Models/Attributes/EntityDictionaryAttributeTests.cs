@@ -5,45 +5,51 @@ public class EntityDictionaryAttributeTests {
     private readonly EntityDictionaryAttribute<string, int> _attribute;
 
     public EntityDictionaryAttributeTests() {
-        _definition = new AttributeDefinition {
+        _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
             DataType = typeof(Dictionary<string, int>),
         };
 
-        _attribute = new EntityDictionaryAttribute<string, int> {
+        _attribute = new() {
             Attribute = _definition,
-            Value = new Dictionary<string, int> { ["TestValue"] = 42, ["OtherValue"] = 7 }
+            Value = new() { ["TestValue1"] = 1, ["TestValue2"] = 2, ["TestValue3"] = 3 }
         };
     }
 
     [Fact]
     public void Constructor_InitializesProperties() {
         _attribute.Attribute.Should().Be(_definition);
-        _attribute.Value.Should().BeEquivalentTo(new Dictionary<string, int> { ["TestValue"] = 42, ["OtherValue"] = 7 });
+        _attribute.Value.Should().BeEquivalentTo(new Dictionary<string, int> { ["TestValue1"] = 1, ["TestValue2"] = 2, ["TestValue3"] = 3 });
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
     [Theory]
-    [InlineData("CountIs", 2)]
-    [InlineData("MinimumCountIs", 1)]
-    [InlineData("MaximumCountIs", 10)]
-    public void Validate_WithValidConstraint_ReturnsTrue(string validator, int argument) {
-        _definition.Constraints.Add(new AttributeConstraint(validator, argument));
+    [ClassData(typeof(TestData))]
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
+        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
 
-        _attribute.Validate().IsSuccess.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
     }
 
-    [Fact]
-    public void Validate_FailedConstraint_ReturnsFalse() {
-        _definition.Constraints.Add(new AttributeConstraint("CountIs", 20));
-
-        _attribute.Validate().IsSuccess.Should().BeFalse();
+    private class TestData : TheoryData<string, object[], bool> {
+        public TestData() {
+            Add("CountIs", new object[] { 3 }, true);
+            Add("CountIs", new object[] { 13 }, false);
+            Add("MinimumCountIs", new object[] { 1 }, true);
+            Add("MinimumCountIs", new object[] { 99 }, false);
+            Add("MaximumCountIs", new object[] { 99 }, true);
+            Add("MaximumCountIs", new object[] { 1 }, false);
+            Add("Contains", new object[] { 2 }, true);
+            Add("Contains", new object[] { 13 }, false);
+            Add("NotContains", new object[] { 13 }, true);
+            Add("NotContains", new object[] { 2 }, false);
+        }
     }
 
     [Fact]
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("CuntIs", "wrong"));
+        _definition.Constraints.Add(new AttributeConstraint("CountIs", "wrong"));
 
         var action = _attribute.Validate;
 
@@ -61,7 +67,7 @@ public class EntityDictionaryAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("Invalid", 20));
+        _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
         var action = _attribute.Validate;
 

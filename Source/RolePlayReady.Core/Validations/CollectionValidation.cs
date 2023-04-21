@@ -33,8 +33,7 @@ public class CollectionValidation<TItem> :
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> IsNotEmpty() {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (!Subject.Any())
             Errors.Add(new(CannotBeEmpty, Source));
         return this;
@@ -57,14 +56,16 @@ public class CollectionValidation<TItem> :
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> Contains(TItem item) {
-        if (Subject is null) return this;
-        if (Subject.Contains(item))
+        if (Subject is null)
+            return this;
+        if (!Subject.Contains(item))
             Errors.Add(new(MustContain, Source, item));
         return this;
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> NotContains(TItem item) {
-        if (Subject is null) return this;
+        if (Subject is null)
+            return this;
         if (Subject.Contains(item))
             Errors.Add(new(MustNotContain, Source, item));
         return this;

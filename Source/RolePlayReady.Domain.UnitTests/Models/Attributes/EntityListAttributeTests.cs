@@ -5,40 +5,46 @@ public class EntityListAttributeTests {
     private readonly EntityListAttribute<string> _attribute;
 
     public EntityListAttributeTests() {
-        _definition = new AttributeDefinition {
+        _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
             DataType = typeof(List<string>),
         };
 
-        _attribute = new EntityListAttribute<string> {
+        _attribute = new() {
             Attribute = _definition,
-            Value = new List<string> { "TestValue" }
+            Value = new() { "TestValue1", "TestValue2", "TestValue3" }
         };
     }
 
     [Fact]
     public void Constructor_InitializesProperties() {
         _attribute.Attribute.Should().Be(_definition);
-        _attribute.Value.Should().BeEquivalentTo("TestValue");
+        _attribute.Value.Should().BeEquivalentTo("TestValue1", "TestValue2", "TestValue3");
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
     [Theory]
-    [InlineData("CountIs", 1)]
-    [InlineData("MinimumCountIs", 1)]
-    [InlineData("MaximumCountIs", 10)]
-    public void Validate_WithValidConstraint_ReturnsTrue(string validator, int argument) {
-        _definition.Constraints.Add(new AttributeConstraint(validator, argument));
+    [ClassData(typeof(TestData))]
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
+        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
 
-        _attribute.Validate().IsSuccess.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
     }
 
-    [Fact]
-    public void Validate_FailedConstraint_ReturnsFalse() {
-        _definition.Constraints.Add(new AttributeConstraint("CountIs", 20));
-
-        _attribute.Validate().IsSuccess.Should().BeFalse();
+    private class TestData : TheoryData<string, object[], bool> {
+        public TestData() {
+            Add("CountIs", new object[] { 3 }, true);
+            Add("CountIs", new object[] { 13 }, false);
+            Add("MinimumCountIs", new object[] { 1 }, true);
+            Add("MinimumCountIs", new object[] { 99 }, false);
+            Add("MaximumCountIs", new object[] { 99 }, true);
+            Add("MaximumCountIs", new object[] { 1 }, false);
+            Add("Contains", new object[] { "TestValue2" }, true);
+            Add("Contains", new object[] { "TestValue13" }, false);
+            Add("NotContains", new object[] { "TestValue13" }, true);
+            Add("NotContains", new object[] { "TestValue2" }, false);
+        }
     }
 
     [Fact]
@@ -61,7 +67,7 @@ public class EntityListAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("Invalid", 20));
+        _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
         var action = _attribute.Validate;
 

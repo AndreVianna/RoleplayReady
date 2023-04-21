@@ -5,13 +5,13 @@ public class EntityFlagAttributeTests {
     private readonly EntityFlagAttribute _attribute;
 
     public EntityFlagAttributeTests() {
-        _definition = new AttributeDefinition {
+        _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
             DataType = typeof(bool),
         };
 
-        _attribute = new EntityFlagAttribute {
+        _attribute = new() {
             Attribute = _definition,
             Value = true
         };

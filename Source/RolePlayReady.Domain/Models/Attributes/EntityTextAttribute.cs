@@ -1,4 +1,4 @@
 ﻿namespace RolePlayReady.Models.Attributes;
 
-public record EntityStringAttribute
+public record EntityTextAttribute
     : EntityAttribute<string>;
