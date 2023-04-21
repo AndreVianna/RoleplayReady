@@ -40,40 +40,35 @@ public class CollectionValidation<TItem> :
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> MinimumCountIs(int size) {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (Subject.Count < size)
             Errors.Add(new(CannotHaveLessThan, Source, size, Subject.Count));
         return this;
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> CountIs(int size) {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (Subject.Count != size)
             Errors.Add(new(MustHave, Source, size, Subject.Count));
         return this;
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> Contains(TItem item) {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (!Subject.Contains(item))
             Errors.Add(new(MustContain, Source, item));
         return this;
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> NotContains(TItem item) {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (Subject.Contains(item))
             Errors.Add(new(MustNotContain, Source, item));
         return this;
     }
 
     public IConnectsToOrFinishes<ICollectionValidators<TItem>> MaximumCountIs(int size) {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (Subject.Count > size)
             Errors.Add(new(CannotHaveMoreThan, Source, size, Subject.Count));
         return this;

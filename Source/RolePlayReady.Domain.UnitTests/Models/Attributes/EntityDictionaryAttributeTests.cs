@@ -40,10 +40,6 @@ public class EntityDictionaryAttributeTests {
             Add("MinimumCountIs", new object[] { 99 }, false);
             Add("MaximumCountIs", new object[] { 99 }, true);
             Add("MaximumCountIs", new object[] { 1 }, false);
-            Add("Contains", new object[] { 2 }, true);
-            Add("Contains", new object[] { 13 }, false);
-            Add("NotContains", new object[] { 13 }, true);
-            Add("NotContains", new object[] { 2 }, false);
         }
     }
 

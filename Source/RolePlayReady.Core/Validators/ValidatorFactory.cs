@@ -80,12 +80,9 @@ public sealed class ValidatorFactory {
             nameof(MinimumCountIs<KeyValuePair<TKey, TValue>>) => new MinimumCountIs<KeyValuePair<TKey, TValue>>(_source, GetCount()),
             nameof(MaximumCountIs<KeyValuePair<TKey, TValue>>) => new MaximumCountIs<KeyValuePair<TKey, TValue>>(_source, GetCount()),
             nameof(CountIs<KeyValuePair<TKey, TValue>>) => new CountIs<KeyValuePair<TKey, TValue>>(_source, GetCount()),
-            nameof(Contains<TKey>) => new Contains<TKey>(_source, GetItem().Key),
-            nameof(NotContains<TKey>) => new NotContains<TKey>(_source, GetItem().Key),
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
         int GetCount() => Ensure.ArgumentExistsAndIsOfType<int>(arguments, validator, 0);
-        KeyValuePair<TKey, TValue> GetItem() => Ensure.ArgumentExistsAndIsOfType<KeyValuePair<TKey, TValue>>(arguments, validator, 0);
     }
 }
