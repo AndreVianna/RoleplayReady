@@ -19,8 +19,10 @@ public static class Constants {
         public const string CannotHaveLessThan = "'{0}' cannot have less than {1} item(s). Found: {2}.";
         public const string CannotHaveMoreThan = "'{0}' cannot have more than {1} item(s). Found: {2}.";
         public const string MustHave = "'{0}' must have exactly {1} item(s). Found: {2}.";
-        public const string MustContain = "'{0}' must contain {1}, but it was not found.";
-        public const string MustNotContain = "'{0}' must not contain {1}, but it was found.";
+        public const string MustContain = "'{0}' must contain {1}.";
+        public const string MustNotContain = "'{0}' must not contain {1}.";
+        public const string MustContainKey = "'{0}' must contain key '{1}'.";
+        public const string MustNotContainKey = "'{0}' must not contain key '{1}'.";
 
         public const string CannotBeLessThan = "'{0}' cannot be less then {1}. Found: {2}.";
         public const string MustBeLessThan = "'{0}' must be less than {1}. Found: {2}.";
