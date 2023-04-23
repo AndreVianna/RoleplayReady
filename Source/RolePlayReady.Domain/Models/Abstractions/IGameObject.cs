@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
-public interface IInventoryItem : IEntity<Guid> {
+public interface IGameObject : IEntity {
     string Unit { get; }
 }

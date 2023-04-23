@@ -1,25 +1,9 @@
 namespace RolePlayReady.Models;
 
-public class GameSystemSettingTests {
-    [Fact]
-    public void Constructor_WithDateTime_InitializesProperties() {
-        var dateTime = Substitute.For<IDateTime>();
-        dateTime.Now.Returns(DateTime.Parse("2001-01-01 00:00:00"));
-
-        var agent = new GameSystemSetting(dateTime) {
-            Id = Guid.NewGuid(),
-            Name = "TestName",
-            Description = "TestDescription",
-            AttributeDefinitions = new List<IAttributeDefinition>(),
-        };
-
-        agent.AttributeDefinitions.Should().BeEmpty();
-    }
-
+public class DomainTests {
     [Fact]
     public void Constructor_CreatesInstance() {
-        var agent = new GameSystemSetting {
-            Id = Guid.NewGuid(),
+        var agent = new Domain {
             Name = "TestName",
             Description = "TestDescription"
         };
@@ -53,8 +37,7 @@ public class GameSystemSettingTests {
                 Value = 42,
             },
         };
-        var testBase = new GameSystemSetting {
-            Id = Guid.NewGuid(),
+        var testBase = new Domain {
             Name = "TestName",
             Description = "TestDescription",
             ShortName = "GSS",
@@ -68,9 +51,10 @@ public class GameSystemSettingTests {
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().HaveCount(0);
     }
+
     [Fact]
     public void Validate_WithErrors_Validates() {
-        var subject = GenerateTestGameSystemSetting();
+        var subject = GenerateTestDomain();
 
         var result = subject.Validate();
 
@@ -80,7 +64,7 @@ public class GameSystemSettingTests {
         result.Errors.Skip(1).First().Message.Should().Be("'AttributeDefinitions[1]' cannot be null.");
     }
 
-    private static GameSystemSetting GenerateTestGameSystemSetting() {
+    private static Domain GenerateTestDomain() {
         var attributeDefinitions = new List<IAttributeDefinition> {
             new AttributeDefinition {
                 Name = "TestAttribute1",
@@ -100,8 +84,7 @@ public class GameSystemSettingTests {
                 Value = 42,
             },
         };
-        var testBase = new GameSystemSetting {
-            Id = Guid.NewGuid(),
+        var testBase = new Domain {
             Name = "TestName",
             Description = "TestDescription",
             ShortName = "GSS",

@@ -1,46 +1,25 @@
-using static RolePlayReady.Constants.Constants.Validation.Base;
+using static RolePlayReady.Constants.Constants.Validation.Definition;
 
 namespace RolePlayReady.Models;
 
 public class BaseTests {
-    private record TestBase : Base<string> {
-        public TestBase(IDateTime? dateTime = null)
-            : base(dateTime) { }
+    private record TestBase : Base {
+        public override string ToString() => base.ToString();
     }
 
     [Fact]
-    public void Constructor_WithDateTime_SetsTimestamp() {
-        var dateTime = Substitute.For<IDateTime>();
-        dateTime.Now.Returns(DateTime.Parse("2001-01-01 00:00:00"));
-        var testBase = new TestBase(dateTime) {
-            Id = "TN",
+    public void Constructor_CreatesObject() {
+        var testBase = new TestBase {
             Name = "TestName",
             Description = "TestDescription",
-            Tags = new List<string>()
+            Tags = new List<string> { "tag1", "tag2" }
         };
 
-        testBase.Id.Should().Be("TN");
-        testBase.Timestamp.Should().Be(dateTime.Now);
         testBase.Name.Should().Be("TestName");
         testBase.Description.Should().Be("TestDescription");
         testBase.ShortName.Should().BeNull();
-        testBase.Tags.Should().BeEmpty();
+        testBase.Tags.Should().BeEquivalentTo("tag1", "tag2");
         testBase.ToString().Should().Be("[TestBase] TestName");
-    }
-
-    [Fact]
-    public void Constructor_WithoutDateTime_SetsTimestampToUtcNow() {
-        var testBase = new TestBase {
-            Id = "TN",
-            Name = "TestName",
-            Description = "TestDescription",
-            ShortName = "TST"
-        };
-
-        testBase.Should().NotBeNull();
-        testBase.ShortName.Should().Be("TST");
-        testBase.Id.Should().Be("TN");
-        testBase.ToString().Should().Be("[TestBase] TestName (TST)");
     }
 
     [Theory]
@@ -54,7 +33,6 @@ public class BaseTests {
     [InlineData(MaxNameSize + 1, MaxDescriptionSize + 1, MaxShortNameSize + 1, 1, MaxTagSize + 1, 4)]
     public void Validate_Validates(int? nameSize, int? descriptionSize, int? shortNameSize, int? tagListCount, int? tagsSize, int expectedErrorCount) {
         var testBase = new TestBase {
-            Id = "TN",
             Name = TestDataHelpers.GenerateTestString(nameSize)!,
             Description = TestDataHelpers.GenerateTestString(descriptionSize)!,
             ShortName = TestDataHelpers.GenerateTestString(shortNameSize)!,

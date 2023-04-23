@@ -1,5 +1,8 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
-public interface IBase<out TKey> : IDescribed, IPersistent<TKey>, IValidatable {
+public interface IBase : IValidatable {
+    string Name { get; }
+    string? ShortName { get; }
+    string Description { get; }
     ICollection<string> Tags { get; }
 }

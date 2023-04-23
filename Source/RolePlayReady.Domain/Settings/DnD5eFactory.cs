@@ -1,7 +1,7 @@
 ﻿//using RolePlayReady.Models;
 //using RolePlayReady.Utilities.Contracts;
 
-//using GameSystemSetting = RolePlayReady.Models.GameSystemSetting;
+//using Domain = RolePlayReady.Models.Domain;
 //using Source = RolePlayReady.Models.Source;
 
 //namespace RolePlayReady.RuleSets;
@@ -10,8 +10,8 @@
 //// ReSharper disable once InconsistentNaming - DnD5e is the official name of the system.
 //public static partial class DnD5eFactory {
 
-//    public static GameSystemSetting Create() {
-//        var ruleSet = new GameSystemSetting {
+//    public static Domain Create() {
+//        var ruleSet = new Domain {
 //            Owner = "System",
 //            Name = "Dungeons & Dragons 5th Edition",
 //            ShortName = "DnD5e",
@@ -106,7 +106,7 @@
 //        //foreach (var attribute in attributes) {
 //        //    ruleSet.AttributeDefinitions.Add(new Attribute {
 //        //        Procedure = ruleSet,
-//        //        GameSystemSetting = ruleSet,
+//        //        Domain = ruleSet,
 //        //        Owner = "System",
 //        //        Name = attribute.Name,
 //        //        DataType = attribute.EntityType,

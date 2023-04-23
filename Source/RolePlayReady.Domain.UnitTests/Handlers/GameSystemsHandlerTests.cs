@@ -6,7 +6,7 @@ using static RolePlayReady.Constants.Constants;
 namespace RolePlayReady.Handlers;
 
 public class GameSystemsHandlerTests {
-    private readonly GameSystemsHandler _handler;
+    private readonly GameSystemHandler _handler;
     private readonly IGameSystemsRepository _repository;
 
     public GameSystemsHandlerTests() {
@@ -19,7 +19,7 @@ public class GameSystemsHandlerTests {
     [Fact]
     public async Task GetManyAsync_ReturnsSettings() {
         // Arrange
-        var expectedSettings = new[] { CreateInput() };
+        var expectedSettings = new[] { CreateRow() };
         _repository.GetManyAsync(InternalUser, Arg.Any<CancellationToken>()).Returns(expectedSettings);
 
         // Act
@@ -33,8 +33,9 @@ public class GameSystemsHandlerTests {
     public async Task GetByIdAsync_ReturnsSetting() {
         // Arrange
         var id = Guid.NewGuid();
-        var expectedSetting = CreateInput(id);
-        _repository.GetByIdAsync(InternalUser, id, Arg.Any<CancellationToken>()).Returns(expectedSetting);
+        var record = CreateInput();
+        var expected = CreatePersisted(record, id);
+        _repository.GetByIdAsync(InternalUser, id, Arg.Any<CancellationToken>()).Returns(expected);
 
         // Act
         var result = await _handler.GetByIdAsync(id);
@@ -47,7 +48,8 @@ public class GameSystemsHandlerTests {
     public async Task AddAsync_ReturnsSetting() {
         // Arrange
         var input = CreateInput();
-        _repository.InsertAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(input);
+        var expected = CreatePersisted(input);
+        _repository.InsertAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(expected);
 
         // Act
         var result = await _handler.AddAsync(input);
@@ -61,7 +63,6 @@ public class GameSystemsHandlerTests {
         // Arrange
         var input = CreateInput();
         input = input with { Name = "" };
-        _repository.InsertAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(input);
 
         // Act
         var result = await _handler.AddAsync(input);
@@ -75,10 +76,12 @@ public class GameSystemsHandlerTests {
     public async Task UpdateAsync_ReturnsSetting() {
         // Arrange
         var input = CreateInput();
-        _repository.UpdateAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(input);
+        var id = Guid.NewGuid();
+        var expected = CreatePersisted(input, id);
+        _repository.UpdateAsync(InternalUser, id, input, Arg.Any<CancellationToken>()).Returns(expected);
 
         // Act
-        var result = await _handler.UpdateAsync(input);
+        var result = await _handler.UpdateAsync(id, input);
 
         // Assert
         result.HasValue.Should().BeTrue();
@@ -89,10 +92,9 @@ public class GameSystemsHandlerTests {
         // Arrange
         var input = CreateInput();
         input = input with { Name = "" };
-        _repository.UpdateAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(input);
 
         // Act
-        var result = await _handler.UpdateAsync(input);
+        var result = await _handler.UpdateAsync(Guid.NewGuid(), input);
 
         // Assert
         result.HasErrors.Should().BeTrue();
@@ -112,11 +114,22 @@ public class GameSystemsHandlerTests {
         result.HasValue.Should().BeTrue();
     }
 
-    private static GameSystem CreateInput(Guid? id = null)
+    private static Row CreateRow(Guid? id = null)
         => new() {
             Id = id ?? Guid.NewGuid(),
-            ShortName = "SM",
             Name = "Some Name",
+        };
+
+    private static GameSystem CreateInput()
+        => new() {
+            Name = "Some Name",
+            ShortName = "SM",
             Description = "Some description."
+        };
+
+    private static Persisted<GameSystem> CreatePersisted(GameSystem content, Guid? id = null)
+        => new() {
+            Id = id ?? Guid.NewGuid(),
+            Content = content,
         };
 }

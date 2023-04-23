@@ -10,7 +10,7 @@
 //        Section = section;
 //        SectionItem = Section switch {
 //            nameof(Node.Traits) => nameof(Trait),
-//            nameof(GameSystemSetting.PowerSources) => nameof(PowerSource),
+//            nameof(Domain.PowerSources) => nameof(PowerSource),
 //            _ => throw new NotImplementedException()
 //        };
 //    }
@@ -24,7 +24,7 @@
 //    protected INode? Find(string existing)
 //        => Section switch {
 //            nameof(Node.Traits) when Target is Node element => element.Traits.FirstOrDefault(i => i.Name == existing),
-//            nameof(GameSystemSetting.PowerSources) when Target is GameSystemSetting ruleSet => ruleSet.PowerSources.FirstOrDefault(i => i.Name == existing),
+//            nameof(Domain.PowerSources) when Target is Domain ruleSet => ruleSet.PowerSources.FirstOrDefault(i => i.Name == existing),
 //            _ => throw new NotImplementedException()
 //        };
 
@@ -33,7 +33,7 @@
 //            case Node element when item is Trait trait:
 //                element.Traits.Add(trait);
 //                return;
-//            case GameSystemSetting ruleSet when item is PowerSource powerSource:
+//            case Domain ruleSet when item is PowerSource powerSource:
 //                ruleSet.PowerSources.Add(powerSource);
 //                return;
 //            default:
@@ -46,7 +46,7 @@
 //            case nameof(Node.Traits) when Target is Node element:
 //                element.Traits.Remove((ITrait)item);
 //                return;
-//            case nameof(GameSystemSetting.PowerSources) when Target is GameSystemSetting ruleSet:
+//            case nameof(Domain.PowerSources) when Target is Domain ruleSet:
 //                ruleSet.PowerSources.Remove((IPowerSource)item);
 //                return;
 //            default:

@@ -3,19 +3,19 @@ namespace RolePlayReady.DataAccess.Repositories;
 public class TrackedJsonFileRepositoryTests {
     private readonly IFileSystem _io;
     private readonly IDateTime _dateTime;
-    private readonly TrackedJsonFileRepository _repository;
+    private readonly TrackedJsonFileRepository<TestData> _repository;
 
     private const string _baseFolder = "testBaseFolder";
     private const string _owner = "owner";
     private const string _path = "testPath";
-    private const string _id1 = "testId1";
-    private const string _id2 = "testId2";
+    private readonly Guid _id1 = Guid.NewGuid();
+    private readonly Guid _id2 = Guid.NewGuid();
 
     public TrackedJsonFileRepositoryTests() {
         _io = Substitute.For<IFileSystem>();
         _dateTime = Substitute.For<IDateTime>();
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(TrackedJsonFileRepository)}:BaseFolder"].Returns(_baseFolder);
+        configuration[$"{nameof(TrackedJsonFileRepository<TestData>)}:BaseFolder"].Returns(_baseFolder);
         _repository = new(configuration, _io, _dateTime, NullLoggerFactory.Instance);
     }
 
@@ -23,10 +23,10 @@ public class TrackedJsonFileRepositoryTests {
     public void Constructor_WithNulls_CreatesInstance() {
         // Arrange
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(TrackedJsonFileRepository)}:BaseFolder"].Returns(_baseFolder);
+        configuration[$"{nameof(TrackedJsonFileRepository<TestData>)}:BaseFolder"].Returns(_baseFolder);
 
         // Act
-        var result = new TrackedJsonFileRepository(configuration, null, null, null);
+        var result = new TrackedJsonFileRepository<TestData>(configuration, null, null, null);
 
         // Assert
         result.Should().NotBeNull();
@@ -36,10 +36,10 @@ public class TrackedJsonFileRepositoryTests {
     public void Constructor_WithConfigurationMissing_Throws() {
         // Arrange
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(TrackedJsonFileRepository)}:BaseFolder"].Returns(default(string));
+        configuration[$"{nameof(TrackedJsonFileRepository<TestData>)}:BaseFolder"].Returns(default(string));
 
         // Act
-        var action = () => new TrackedJsonFileRepository(configuration, null, null, null);
+        var action = () => new TrackedJsonFileRepository<TestData>(configuration, null, null, null);
 
         // Assert
         action.Should().Throw<ArgumentException>();
@@ -63,7 +63,7 @@ public class TrackedJsonFileRepositoryTests {
                 x[4] = DateTime.Parse("2022-04-06 12:00:00");
                 return true;
             });
-        _io.OpenFileForReading(filePaths[0]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\":\"SomeName\",\"Number\":42}")));
+        _io.OpenFileForReading(filePaths[0]).Returns(new MemoryStream("{\"Name\":\"SomeName\",\"Number\":42}"u8.ToArray()));
 
         _io.ExtractFileNameFrom(filePaths[1]).Returns($"+{_id2}_20220406130000.json");
         _dateTime.TryParseExact("20220406130000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
@@ -71,18 +71,18 @@ public class TrackedJsonFileRepositoryTests {
                 x[4] = DateTime.Parse("2022-04-06 13:00:00");
                 return true;
             });
-        _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\":\"OtherName\",\"Number\":7}")));
+        _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream("{\"Name\":\"OtherName\",\"Number\":7}"u8.ToArray()));
 
         // Act
-        var result = await _repository.GetAllAsync<TestData>(_owner, _path);
+        var result = await _repository.GetAllAsync(_owner, _path);
 
         // Assert
         result.HasValue.Should().BeTrue();
         result.Value.Should().HaveCount(2);
-        result.Value.First().Name.Should().Be(_id1);
+        result.Value.First().Id.Should().Be(_id1);
         result.Value.First().Content.Name.Should().Be("SomeName");
         result.Value.First().Content.Number.Should().Be(42);
-        result.Value.Last().Name.Should().Be(_id2);
+        result.Value.Last().Id.Should().Be(_id2);
         result.Value.Last().Content.Name.Should().Be("OtherName");
         result.Value.Last().Content.Number.Should().Be(7);
     }
@@ -105,7 +105,8 @@ public class TrackedJsonFileRepositoryTests {
                 x[4] = DateTime.Parse("2022-04-06 12:00:00");
                 return true;
             });
-        _io.OpenFileForReading(filePaths[0]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\":\"SomeName\",\"Number\":42}")));
+        using var memoryStream = new MemoryStream("{\"Name\":\"SomeName\",\"Number\":42}"u8.ToArray());
+        _io.OpenFileForReading(filePaths[0]).Returns(memoryStream);
 
         _io.ExtractFileNameFrom(filePaths[1]).Returns($"+{_id2}_20220406130000.json");
         _dateTime.TryParseExact("20220406130000", Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
@@ -113,15 +114,15 @@ public class TrackedJsonFileRepositoryTests {
                 x[4] = DateTime.Parse("2022-04-06 13:00:00");
                 return true;
             });
-        _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream(Encoding.UTF8.GetBytes("Failure")));
+        _io.OpenFileForReading(filePaths[1]).Returns(new MemoryStream("Failure"u8.ToArray()));
 
         // Act
-        var result = await _repository.GetAllAsync<TestData>(_owner, _path);
+        var result = await _repository.GetAllAsync(_owner, _path);
 
         // Assert
         result.HasValue.Should().BeTrue();
         result.Value.Should().HaveCount(1);
-        result.Value.First().Name.Should().Be(_id1);
+        result.Value.First().Id.Should().Be(_id1);
         result.Value.First().Content.Name.Should().Be("SomeName");
         result.Value.First().Content.Number.Should().Be(42);
     }
@@ -132,7 +133,7 @@ public class TrackedJsonFileRepositoryTests {
         _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.GetAllAsync<TestData>(_owner, _path);
+        var action = () => _repository.GetAllAsync(_owner, _path);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>();
@@ -141,7 +142,7 @@ public class TrackedJsonFileRepositoryTests {
     [Fact]
     public async Task GetByIdAsync_PathAndIdGiven_DataFileFound_ReturnsDataFile() {
         // Arrange
-        const string filePath = $"{_baseFolder}/{_owner}/{_path}/+{_id1}_20220406123456.json";
+        var filePath = $"{_baseFolder}/{_owner}/{_path}/+{_id1}_20220406123456.json";
         var expectedData = GenerateTestData();
 
         _io.CombinePath(_baseFolder, _owner, _path).Returns($"{_baseFolder}/{_owner}/{_path}");
@@ -154,16 +155,16 @@ public class TrackedJsonFileRepositoryTests {
                 x[4] = DateTime.Parse("2022-04-06 12:34:56");
                 return true;
             });
-        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("{\"Name\":\"SomeName\",\"Number\":42}"));
+        using var memoryStream = new MemoryStream("{\"Name\":\"SomeName\",\"Number\":42}"u8.ToArray());
         _io.OpenFileForReading(filePath).Returns(memoryStream);
 
         // Act
-        var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
+        var result = await _repository.GetByIdAsync(_owner, _path, _id1);
 
         // Assert
         result.HasValue.Should().BeTrue();
         result.Value.Should().NotBeNull();
-        result.Value!.Name.Should().Be(_id1);
+        result.Value!.Id.Should().Be(_id1);
         result.Value.Timestamp.Should().Be(DateTime.Parse("2022-04-06 12:34:56"));
         result.Value.Content.Should().BeEquivalentTo(expectedData);
     }
@@ -176,7 +177,7 @@ public class TrackedJsonFileRepositoryTests {
             .Returns(Array.Empty<string>());
 
         // Act
-        var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
+        var result = await _repository.GetByIdAsync(_owner, _path, _id1);
 
         // Assert
         result.IsNull.Should().BeTrue();
@@ -195,7 +196,7 @@ public class TrackedJsonFileRepositoryTests {
         _io.ExtractFileNameFrom(filePath).Returns($"+{_id1}_invalid.json");
 
         // Act
-        var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
+        var result = await _repository.GetByIdAsync(_owner, _path, _id1);
 
         // Assert
         result.IsNull.Should().BeTrue();
@@ -214,7 +215,7 @@ public class TrackedJsonFileRepositoryTests {
         _io.ExtractFileNameFrom(filePath).Returns($"+{_id1}_99999999999999.json");
 
         // Act
-        var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
+        var result = await _repository.GetByIdAsync(_owner, _path, _id1);
 
         // Assert
         result.IsNull.Should().BeTrue();
@@ -236,11 +237,11 @@ public class TrackedJsonFileRepositoryTests {
                 x[4] = DateTime.Parse("2022-04-06 12:34:56");
                 return true;
             });
-        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("Failure file."));
+        using var memoryStream = new MemoryStream("Failure file."u8.ToArray());
         _io.OpenFileForReading(filePath).Returns(memoryStream);
 
         // Act
-        var result = await _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
+        var result = await _repository.GetByIdAsync(_owner, _path, _id1);
 
         // Assert
         result.IsNull.Should().BeTrue();
@@ -253,7 +254,7 @@ public class TrackedJsonFileRepositoryTests {
         _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.GetByIdAsync<TestData>(_owner, _path, _id1);
+        var action = () => _repository.GetByIdAsync(_owner, _path, _id1);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>();
@@ -276,6 +277,15 @@ public class TrackedJsonFileRepositoryTests {
         using var memoryStream = new MemoryStream(buffer, true);
         _io.CreateNewFileAndOpenForWriting(newFilePath).Returns(memoryStream);
 
+        _io.ExtractFileNameFrom(newFilePath).Returns($"+{_id1}_20220406230000.json");
+        _dateTime.TryParseExact("20220406230000", "yyyyMMddHHmmss", null, DateTimeStyles.None, out Arg.Any<DateTime>())
+                 .Returns(x => {
+                      x[4] = DateTime.Parse("2022-04-06 23:00:00");
+                      return true;
+                  });
+        using var newMemoryStream = new MemoryStream("{\"Name\":\"SomeName\",\"Number\":42}"u8.ToArray());
+        _io.OpenFileForReading(newFilePath).Returns(newMemoryStream);
+
         // Act
         var result = await _repository.UpsertAsync(_owner, _path, _id1, data);
 
@@ -292,7 +302,7 @@ public class TrackedJsonFileRepositoryTests {
         _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.UpsertAsync<TestData>(_owner, _path, _id1, data);
+        var action = () => _repository.UpsertAsync(_owner, _path, _id1, data);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>();

@@ -1,26 +1,33 @@
-﻿using DataModel = RolePlayReady.DataAccess.Repositories.GameSystems.GameSystemDataModel;
-
-namespace RolePlayReady.DataAccess.Repositories.GameSystems;
+﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
 public static class GameSystemMapper {
-    public static DataModel Map(this GameSystem input)
+    public static GameSystemData Map(this GameSystem input)
         => new() {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
             Tags = input.Tags.ToArray(),
+            Domains = input.Domains.Select(x => x.Name).ToArray(),
         };
 
-    public static GameSystem? Map(this DataFile<DataModel>? input)
+    public static Row MapToRow(this Persisted<GameSystemData> input)
+        => new() {
+            Id = input.Id,
+            Name = input.Content.Name,
+        };
+
+    public static Persisted<GameSystem>? Map(this Persisted<GameSystemData>? input)
         => input is null
             ? null
             : new() {
-                Id = Guid.Parse(input.Name),
-                ShortName = input.Content.ShortName,
-                Name = input.Content.Name,
-                Description = input.Content.Description,
+                Id = input.Id,
                 Timestamp = input.Timestamp,
                 State = State.Pending,
-                Tags = input.Content.Tags,
+                Content = new() {
+                    ShortName = input.Content.ShortName,
+                    Name = input.Content.Name,
+                    Description = input.Content.Description,
+                    Tags = input.Content.Tags,
+                },
             };
 }

@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
-public interface IEntity<out TKey> : IBase<TKey> {
+public interface IEntity : IBase {
     IList<IEntityAttribute> Attributes { get; }
 }

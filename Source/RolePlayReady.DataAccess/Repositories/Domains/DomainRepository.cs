@@ -1,9 +1,9 @@
-﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
+﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
 
-public class GameSystemsRepository : IGameSystemsRepository {
-    private readonly ITrackedJsonFileRepository<GameSystemData> _files;
+public class DomainRepository : IDomainRepository {
+    private readonly ITrackedJsonFileRepository<DomainData> _files;
 
-    public GameSystemsRepository(ITrackedJsonFileRepository<GameSystemData> files) {
+    public DomainRepository(ITrackedJsonFileRepository<DomainData> files) {
         _files = files;
     }
 
@@ -11,22 +11,22 @@ public class GameSystemsRepository : IGameSystemsRepository {
         var files = await _files
             .GetAllAsync(owner, string.Empty, cancellation)
             .ConfigureAwait(false);
-        return files.Map(i => i.MapToRow());
+        return files.Map(i => i.MapToRow()!);
     }
 
-    public async Task<NullableResult<Persisted<GameSystem>>> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default) {
+    public async Task<NullableResult<Persisted<Domain>>> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default) {
         var file = await _files
             .GetByIdAsync(owner, string.Empty, id, cancellation)
             .ConfigureAwait(false);
         return file.Map(i => i.Map());
     }
 
-    public async Task<Result<Persisted<GameSystem>>> InsertAsync(string owner, GameSystem input, CancellationToken cancellation = default) {
+    public async Task<Result<Persisted<Domain>>> InsertAsync(string owner, Domain input, CancellationToken cancellation = default) {
         var result = await _files.UpsertAsync(owner, string.Empty, Guid.NewGuid(), input.Map(), cancellation).ConfigureAwait(false);
         return result.Map(i => i.Map()!);
     }
 
-    public async Task<Result<Persisted<GameSystem>>> UpdateAsync(string owner, Guid id, GameSystem input, CancellationToken cancellation = default) {
+    public async Task<Result<Persisted<Domain>>> UpdateAsync(string owner, Guid id, Domain input, CancellationToken cancellation = default) {
         var result = await _files.UpsertAsync(owner, string.Empty, id, input.Map(), cancellation);
         return result.Map(i => i.Map()!);
     }

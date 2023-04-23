@@ -1,3 +1,5 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
-public interface IGameSystem : IBase<Guid> { }
+public interface IKey {
+    Guid Id { get; }
+}

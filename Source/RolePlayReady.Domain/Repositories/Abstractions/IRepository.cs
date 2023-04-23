@@ -1,9 +1,11 @@
 ﻿namespace RolePlayReady.Repositories.Abstractions;
 
-public interface IRepository<TEntity, in TKey> where TEntity : IPersistent<TKey> {
-    Task<Result<IEnumerable<TEntity>>> GetManyAsync(string owner, CancellationToken cancellation = default);
-    Task<NullableResult<TEntity>> GetByIdAsync(string owner, TKey id, CancellationToken cancellation = default);
-    Task<Result<TEntity>> InsertAsync(string owner, TEntity input, CancellationToken cancellation = default);
-    Task<Result<TEntity>> UpdateAsync(string owner, TEntity input, CancellationToken cancellation = default);
-    Result<bool> Delete(string owner, TKey id);
+public interface IRepository<TEntity, TEntityRow>
+    where TEntity : class
+    where TEntityRow : Row {
+    Task<Result<IEnumerable<TEntityRow>>> GetManyAsync(string owner, CancellationToken cancellation = default);
+    Task<NullableResult<Persisted<TEntity>>> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default);
+    Task<Result<Persisted<TEntity>>> InsertAsync(string owner, TEntity input, CancellationToken cancellation = default);
+    Task<Result<Persisted<TEntity>>> UpdateAsync(string owner, Guid id, TEntity input, CancellationToken cancellation = default);
+    Result<bool> Delete(string owner, Guid id);
 }

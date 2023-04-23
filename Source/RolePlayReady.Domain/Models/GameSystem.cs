@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.Models;
 
-public record GameSystem : Base<Guid>, IGameSystem {
-    public GameSystem(IDateTime? dateTime = null)
-        : base(dateTime) {
-    }
+public record GameSystem : Base {
+    public ICollection<Domain> Domains { get; init; } = new List<Domain>();
+
+    public ICollection<Base> ComponentDefinitions { get; init; } = new List<Base>();
 }

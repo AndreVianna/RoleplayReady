@@ -1,10 +1,6 @@
 ﻿namespace RolePlayReady.Models;
 
-public record GameSystemSetting : Entity<Guid>, IGameSystemSetting {
-    public GameSystemSetting(IDateTime? dateTime = null)
-        : base(dateTime) {
-    }
-
+public record Domain : Entity {
     public IList<IAttributeDefinition> AttributeDefinitions { get; init; } = new List<IAttributeDefinition>();
 
     public override ValidationResult Validate() {

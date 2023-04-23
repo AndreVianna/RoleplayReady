@@ -3,19 +3,19 @@ using static RolePlayReady.Constants.Constants;
 namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
 public class GameSystemsRepositoryTests {
-    private readonly ITrackedJsonFileRepository _files;
+    private readonly ITrackedJsonFileRepository<GameSystemData> _files;
     private readonly GameSystemsRepository _repository;
 
     public GameSystemsRepositoryTests() {
-        _files = Substitute.For<ITrackedJsonFileRepository>();
+        _files = Substitute.For<ITrackedJsonFileRepository<GameSystemData>>();
         _repository = new(_files);
     }
 
     [Fact]
     public async Task GetManyAsync_ReturnsAllSettings() {
         // Arrange
-        var dataFiles = GenerateDataFiles();
-        _files.GetAllAsync<GameSystemDataModel>(InternalUser, string.Empty).Returns(dataFiles);
+        var dataFiles = GenerateList();
+        _files.GetAllAsync(InternalUser, string.Empty).Returns(dataFiles);
 
         // Act
         var settings = await _repository.GetManyAsync(InternalUser);
@@ -28,12 +28,12 @@ public class GameSystemsRepositoryTests {
     [Fact]
     public async Task GetByIdAsync_SettingFound_ReturnsSetting() {
         // Arrange
-        var dataFile = GenerateDataFile();
+        var dataFile = GeneratePersisted();
         var tokenSource = new CancellationTokenSource();
-        _files.GetByIdAsync<GameSystemDataModel>(InternalUser, string.Empty, dataFile.Name, tokenSource.Token).Returns(dataFile);
+        _files.GetByIdAsync(InternalUser, string.Empty, dataFile.Id, tokenSource.Token).Returns(dataFile);
 
         // Act
-        var setting = await _repository.GetByIdAsync(InternalUser, Guid.Parse(dataFile.Name), tokenSource.Token);
+        var setting = await _repository.GetByIdAsync(InternalUser, dataFile.Id, tokenSource.Token);
 
         // Assert
         setting.HasValue.Should().BeTrue();
@@ -44,7 +44,7 @@ public class GameSystemsRepositoryTests {
     public async Task GetByIdAsync_SettingNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.GetByIdAsync<GameSystemDataModel>(InternalUser, string.Empty, id.ToString(), Arg.Any<CancellationToken>()).Returns((DataFile<GameSystemDataModel>?)null);
+        _files.GetByIdAsync(InternalUser, string.Empty, id, Arg.Any<CancellationToken>()).Returns((Persisted<GameSystemData>?)null);
 
         // Act
         var setting = await _repository.GetByIdAsync(InternalUser, id);
@@ -57,11 +57,12 @@ public class GameSystemsRepositoryTests {
     [Fact]
     public async Task InsertAsync_InsertsNewSetting() {
         // Arrange
-        var setting = GenerateSetting();
-        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<string>(), Arg.Any<GameSystemDataModel>()).Returns(DateTime.Now);
+        var input = GenerateInput();
+        var expected = GeneratePersisted();
+        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<Guid>(), Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
-        var result = await _repository.InsertAsync(InternalUser, setting);
+        var result = await _repository.InsertAsync(InternalUser, input);
 
         // Assert
         result.HasValue.Should().BeTrue();
@@ -70,11 +71,12 @@ public class GameSystemsRepositoryTests {
     [Fact]
     public async Task UpdateAsync_UpdatesExistingSetting() {
         // Arrange
-        var setting = GenerateSetting();
-        _files.UpsertAsync(InternalUser, string.Empty, setting.Id.ToString(), Arg.Any<GameSystemDataModel>()).Returns(DateTime.Now);
+        var input = GenerateInput();
+        var expected = GeneratePersisted();
+        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<Guid>(), Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
-        var result = await _repository.UpdateAsync(InternalUser, setting);
+        var result = await _repository.UpdateAsync(InternalUser, Guid.NewGuid(), input);
 
         // Assert
         result.HasValue.Should().BeTrue();
@@ -84,7 +86,7 @@ public class GameSystemsRepositoryTests {
     public void Delete_RemovesSetting() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(InternalUser, string.Empty, id.ToString()).Returns<Result<bool>>(true);
+        _files.Delete(InternalUser, string.Empty, id).Returns<Result<bool>>(true);
 
         // Act
         var result = _repository.Delete(InternalUser, id);
@@ -93,28 +95,31 @@ public class GameSystemsRepositoryTests {
         result.HasValue.Should().BeTrue();
     }
 
-    private static DataFile<GameSystemDataModel>[] GenerateDataFiles()
-        => new[] { GenerateDataFile() };
+    private static Persisted<GameSystemData>[] GenerateList()
+        => new[] { GeneratePersisted() };
 
-    private static DataFile<GameSystemDataModel> GenerateDataFile()
+    private static Persisted<GameSystemData> GeneratePersisted()
         => new() {
-            Name = Guid.NewGuid().ToString(),
+            Id = Guid.NewGuid(),
             Timestamp = DateTime.Now,
             Content = new() {
                 ShortName = "SomeId",
-                Name = "Some Name",
+                Name = "Some Id",
                 Description = "Some Description",
                 Tags = new[] { "SomeTag" },
+                Domains = new[] { "SomeDomain" },
             }
         };
 
-    private static GameSystem GenerateSetting()
+    private static GameSystem GenerateInput()
         => new() {
-            Id = Guid.NewGuid(),
             ShortName = "SomeId",
-            Timestamp = DateTime.Now,
-            Name = "Some Name",
+            Name = "Some Id",
             Description = "Some Description",
             Tags = new[] { "SomeTag" },
+            Domains = new[] { new Domain {
+                Name = "SomeName",
+                Description = "SomeDescription",
+            } },
         };
 }

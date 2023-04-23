@@ -1,4 +1,4 @@
 ﻿namespace RolePlayReady.Repositories.Abstractions;
 
-public interface IGameSystemsRepository : IRepository<GameSystem, Guid> {
+public interface IGameSystemsRepository : IRepository<GameSystem, Row> {
 }

@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
 public interface IInventoryEntry {
-    IInventoryItem Item { get; }
+    IGameObject Item { get; }
     decimal Quantity { get; }
 }

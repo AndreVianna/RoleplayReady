@@ -3,8 +3,7 @@ namespace RolePlayReady.Models;
 public class InventoryEntryTests {
     [Fact]
     public void Constructor_InitializesProperties() {
-        var item = new GameItem {
-            Id = Guid.NewGuid(),
+        var item = new GameObject {
             Name = "TestName",
             ShortName = "TST",
             Description = "TestDescription",

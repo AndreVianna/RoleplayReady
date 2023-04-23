@@ -1,15 +1,15 @@
 namespace RolePlayReady.Models;
 
-public class EntityTests {
-    private record TestEntity : Entity;
-
+public class GameObjectTests {
     [Fact]
     public void Constructor_CreatesInstance() {
-        var testEntity = new TestEntity {
+        var item = new GameObject {
             Name = "TestName",
             Description = "TestDescription",
+            Unit = "m",
         };
 
-        testEntity.Attributes.Should().BeEmpty();
+        item.Should().NotBeNull();
+        item.Unit.Should().Be("m");
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.DataAccess.Models;
 
-public interface IDataFile<out TData> {
-    string Name { get; }
-    DateTime Timestamp { get; }
-    TData Content { get; }
-}
+//public interface IDataFile<out TData> {
+//    Guid Id { get; }
+//    DateTime Timestamp { get; }
+//    TData Content { get; }
+//}

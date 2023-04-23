@@ -1,19 +1,14 @@
-﻿using static RolePlayReady.Constants.Constants.Validation.Base;
+﻿using static RolePlayReady.Constants.Constants.Validation.Definition;
 
 namespace RolePlayReady.Models;
 
-public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
-    protected Base(IDateTime? dateTime = null)
-        : base(dateTime) {
-    }
-
+public record Base : IBase {
     public required string Name { get; init; }
-
     public required string Description { get; init; }
-
     public string? ShortName { get; init; }
-
     public ICollection<string> Tags { get; init; } = new List<string>();
+
+    public override string ToString() => $"[{GetType().Name}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}";
 
     public virtual ValidationResult Validate() {
         var result = new ValidationResult();
@@ -23,6 +18,4 @@ public abstract record Base<TKey> : Persistent<TKey>, IBase<TKey> {
         result += Tags.ForEach(item => item.IsNotNull().And.IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaxTagSize)).Result;
         return result;
     }
-
-    public sealed override string ToString() => $"[{GetType().Name}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}";
 }

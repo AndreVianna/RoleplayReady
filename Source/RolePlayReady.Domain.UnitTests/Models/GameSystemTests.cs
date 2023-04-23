@@ -2,27 +2,26 @@ namespace RolePlayReady.Models;
 
 public class GameSystemTests {
     [Fact]
-    public void Constructor_WithDateTime_CreatesInstance() {
-        var dateTime = Substitute.For<IDateTime>();
-        dateTime.Now.Returns(DateTime.Parse("2001-01-01 00:00:00"));
-
-        var agent = new GameSystem(dateTime) {
-            Id = Guid.NewGuid(),
-            Name = "TestName",
-            Description = "TestDescription"
-        };
-
-        agent.Should().NotBeNull();
-    }
-
-    [Fact]
     public void Constructor_CreatesInstance() {
-        var agent = new GameSystem {
-            Id = Guid.NewGuid(),
+        var system = new GameSystem {
             Name = "TestName",
-            Description = "TestDescription"
+            Description = "TestDescription",
+            Domains = new List<Domain> {
+                new Domain {
+                    Name = "TestDomainName",
+                    Description = "TestDomainDescription",
+                }
+            },
+            ComponentDefinitions = new List<Base> {
+                new Base {
+                    Name = "TestDomainName",
+                    Description = "TestDomainDescription",
+                }
+            },
         };
 
-        agent.Should().NotBeNull();
+        system.Should().NotBeNull();
+        system.Domains.Should().HaveCount(1);
+        system.ComponentDefinitions.Should().HaveCount(1);
     }
 }

@@ -1,0 +1,16 @@
+﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
+
+public class DomainData {
+    public string? ShortName { get; init; }
+    public required string Name { get; init; }
+    public required string Description { get; init; }
+    public required string[] Tags { get; init; }
+    public required AttributeDefinitionData[] AttributeDefinitions { get; init; }
+
+    public class AttributeDefinitionData {
+        public string? ShortName { get; init; }
+        public required string Name { get; init; }
+        public required string Description { get; init; }
+        public required string DataType { get; init; }
+    }
+}
