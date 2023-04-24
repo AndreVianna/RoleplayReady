@@ -6,5 +6,5 @@ public interface ITypeValidation
 }
 
 public interface ITypeValidators {
-    IConnectsToOrFinishes<ITypeValidators> IsEqualTo(Type otherType);
+    IConnectsToOrFinishes<ITypeValidators> IsEqualTo<TType>();
 }

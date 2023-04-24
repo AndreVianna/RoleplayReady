@@ -71,7 +71,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
             if (currentFile is not null)
                 _io.MoveFile(currentFile, currentFile.Replace("+", ""));
             var newFilePath = _io.CombinePath(folderPath, $"+{data.Id}_{_dateTimeProvider.Now:yyyyMMddHHmmss}.json");
-            await WriteToFileAsync(data, newFilePath, cancellation);
+            await WriteToFileAsync(data, newFilePath, cancellation).ConfigureAwait(false);
 
             _logger.LogDebug("Date for '{path}/{id}' added or updated.", folderPath, data.Id);
 
@@ -84,9 +84,9 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    private Task WriteToFileAsync(TData data, string newFilePath, CancellationToken cancellation) {
-        using var stream = _io.CreateNewFileAndOpenForWriting(newFilePath);
-        return SerializeAsync(stream, data, cancellationToken: cancellation);
+    private async Task WriteToFileAsync(TData data, string newFilePath, CancellationToken cancellation) {
+        await using var stream = _io.CreateNewFileAndOpenForWriting(newFilePath);
+        await SerializeAsync(stream, data, cancellationToken: cancellation);
     }
 
     public Result<bool> Delete(string owner, string path, Guid id) {

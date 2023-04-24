@@ -7,11 +7,11 @@ public class TypeValidation
         : base(subject, source, previousErrors) {
     }
 
-    public IConnectsToOrFinishes<ITypeValidators> IsEqualTo(Type otherType) {
+    public IConnectsToOrFinishes<ITypeValidators> IsEqualTo<TType>() {
         if (Subject is null)
             return this;
-        if (Subject != otherType)
-            Errors.Add(new(IsNotEqual, Source, otherType, Subject));
+        if (Subject != typeof(TType))
+            Errors.Add(new(IsNotEqual, Source, typeof(TType), Subject));
         return this;
     }
 }

@@ -11,8 +11,7 @@ public static class DictionaryItemValidation {
             var source = $"{validation.Source}[{key}]";
             foreach (var error in validateUsing(validation.Subject[key]).Result.Errors) {
                 var path = ((string)error.Arguments[0]!).Split('.');
-                var skip = path.Length > 1 && path[1] == "Value" ? 2 : 1;
-                error.Arguments[0] = path.Length > skip ? $"{source}.{string.Join('.', path[skip..])}" : source;
+                error.Arguments[0] = $"{source}.{string.Join('.', path[1..])}";
                 validation.Errors.Add(error);
             }
         }
