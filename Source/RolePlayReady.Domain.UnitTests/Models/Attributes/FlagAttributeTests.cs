@@ -1,10 +1,10 @@
 namespace RolePlayReady.Models.Attributes;
 
-public class EntityFlagAttributeTests {
+public class FlagAttributeTests {
     private readonly AttributeDefinition _definition;
-    private readonly EntityFlagAttribute _attribute;
+    private readonly FlagAttribute _attribute;
 
-    public EntityFlagAttributeTests() {
+    public FlagAttributeTests() {
         _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
@@ -12,14 +12,14 @@ public class EntityFlagAttributeTests {
         };
 
         _attribute = new() {
-            Attribute = _definition,
+            Definition = _definition,
             Value = true
         };
     }
 
     [Fact]
     public void Constructor_InitializesProperties() {
-        _attribute.Attribute.Should().Be(_definition);
+        _attribute.Definition.Should().Be(_definition);
         _attribute.Value.Should().Be(true);
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }

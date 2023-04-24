@@ -5,7 +5,7 @@
 
 //public class SectionBuilder : ISectionBuilder {
 
-//    private SectionBuilder(IEntity entity, string section) {
+//    private SectionBuilder(IPersisted entity, string section) {
 //        Target = entity;
 //        Section = section;
 //        SectionItem = Section switch {
@@ -15,9 +15,9 @@
 //        };
 //    }
 
-//    public static ISectionBuilder.IMainCommands For(IEntity entity, string section) => new MainCommands(entity, section);
+//    public static ISectionBuilder.IMainCommands For(IPersisted entity, string section) => new MainCommands(entity, section);
 
-//    protected IEntity Target { get; }
+//    protected IPersisted Target { get; }
 //    protected string Section { get; }
 //    protected string SectionItem { get; }
 
@@ -55,13 +55,13 @@
 //    }
 
 //    private class MainCommands : SectionBuilder, ISectionBuilder.IMainCommands {
-//        public MainCommands(IEntity entity, string section) : base(entity, section) {
+//        public MainCommands(IPersisted entity, string section) : base(entity, section) {
 //        }
 
 //        public ISectionBuilder.IConnector Add(string name, string description, Action<IEntityUpdater.IMain> configure)
 //            => Add(name, description, (_, x) => configure(x));
 
-//        public ISectionBuilder.IConnector Add(string name, string description, Action<IEntity, IEntityUpdater.IMain> configure) {
+//        public ISectionBuilder.IConnector Add(string name, string description, Action<IPersisted, IEntityUpdater.IMain> configure) {
 //            var factory = ComponentFactory.For(Target, Target.Owner);
 //            var item = factory.Create(SectionItem, name, description);
 //            configure(Target, EntityUpdater.For(item));
@@ -87,14 +87,14 @@
 //    }
 
 //    private class Connector : SectionBuilder, ISectionBuilder.IConnector {
-//        public Connector(IEntity entity, string section) : base(entity, section) {
+//        public Connector(IPersisted entity, string section) : base(entity, section) {
 //        }
 
 //        public ISectionBuilder.IMainCommands And() => new MainCommands(Target, Section);
 //    }
 
 //    private class ReplaceWith : SectionBuilder, ISectionBuilder.IReplaceWith {
-//        public ReplaceWith(IEntity entity, string section) : base(entity, section) {
+//        public ReplaceWith(IPersisted entity, string section) : base(entity, section) {
 //        }
 
 //        public ISectionBuilder.IConnector With(string name, string description, Action<IEntityUpdater.IMain> configure) {
@@ -102,7 +102,7 @@
 //            return mainCommands.Add(name, description, (_, x) => configure(x));
 //        }
 
-//        public ISectionBuilder.IConnector With(string name, string description, Action<IEntity, IEntityUpdater.IMain> configure) {
+//        public ISectionBuilder.IConnector With(string name, string description, Action<IPersisted, IEntityUpdater.IMain> configure) {
 //            var mainCommands = new MainCommands(Target, Section);
 //            return mainCommands.Add(name, description, configure);
 //        }
@@ -111,14 +111,14 @@
 //    private class AppendWith : SectionBuilder, ISectionBuilder.IAppendWith {
 //        private INode _original;
 
-//        public AppendWith(IEntity entity, string section, INode original) : base(entity, section) {
+//        public AppendWith(IPersisted entity, string section, INode original) : base(entity, section) {
 //            _original = original;
 //        }
 
 //        public ISectionBuilder.IConnector With(string additionalDescription, Action<IEntityUpdater.IMain> configure)
 //            => With(additionalDescription, (_, e) => configure(e));
 
-//        public ISectionBuilder.IConnector With(string additionalDescription, Action<IEntity, IEntityUpdater.IMain> configure) {
+//        public ISectionBuilder.IConnector With(string additionalDescription, Action<IPersisted, IEntityUpdater.IMain> configure) {
 //            _original = (Node)_original with {
 //                Description = $"{_original.Description}\n{additionalDescription}",
 //            };
@@ -128,7 +128,7 @@
 //        public ISectionBuilder.IConnector With(Action<IEntityUpdater.IMain> configure)
 //                => With((_, x) => configure(x));
 
-//        public ISectionBuilder.IConnector With(Action<IEntity, IEntityUpdater.IMain> configure) {
+//        public ISectionBuilder.IConnector With(Action<IPersisted, IEntityUpdater.IMain> configure) {
 //            configure(Target, EntityUpdater.For(_original));
 //            Add(_original);
 //            return new Connector(Target, Section);

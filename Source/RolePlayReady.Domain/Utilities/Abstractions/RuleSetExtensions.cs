@@ -1,11 +1,11 @@
 ﻿//namespace RolePlayReady.Utilities.Contracts;
 
 //internal static class RuleSetExtensions {
-//    //public static IEntity GetComponent(this IGameSetting ruleSet, string name)
-//    //    => ruleSet.Children.OfType<IEntity>().First(p => p.Name == name);
+//    //public static IPersisted GetComponent(this IGameSetting ruleSet, string name)
+//    //    => ruleSet.Children.OfType<IPersisted>().First(p => p.Name == name);
 
-//    //public static IEntity? FindComponent(this IGameSetting ruleSet, string name)
-//    //    => ruleSet.Children.OfType<IEntity>().FirstOrDefault(p => p.Name == name);
+//    //public static IPersisted? FindComponent(this IGameSetting ruleSet, string name)
+//    //    => ruleSet.Children.OfType<IPersisted>().FirstOrDefault(p => p.Name == name);
 
 //    //public static ISource GetSource(this IGameSetting ruleSet, string abbreviation)
 //    //    => ruleSet.Sources.First(p => p.ShortName == abbreviation);

@@ -1,4 +1,6 @@
-﻿namespace System.Results;
+﻿using System.Extensions;
+
+namespace System.Results;
 
 public record NullableResult<TValue> : ResultBase, INullableResult<TValue> {
     public NullableResult(TValue? input = default)

@@ -1,3 +1,5 @@
+using System.Extensions;
+
 namespace RolePlayReady.Utilities;
 
 public static class TestDataHelpers {

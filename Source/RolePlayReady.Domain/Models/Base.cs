@@ -1,14 +1,16 @@
-﻿using static RolePlayReady.Constants.Constants.Validation.Definition;
+﻿using System.Diagnostics;
+
+using static RolePlayReady.Constants.Constants.Validation.Definition;
 
 namespace RolePlayReady.Models;
 
-public record Base : IBase {
+public record Base : IBase, IValidatable {
     public required string Name { get; init; }
     public required string Description { get; init; }
     public string? ShortName { get; init; }
-    public ICollection<string> Tags { get; init; } = new List<string>();
 
-    public override string ToString() => $"[{GetType().Name}] {Name}{(ShortName is not null ? $" ({ShortName})" : string.Empty)}";
+    [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+    public ICollection<string> Tags { get; init; } = new List<string>();
 
     public virtual ValidationResult Validate() {
         var result = new ValidationResult();

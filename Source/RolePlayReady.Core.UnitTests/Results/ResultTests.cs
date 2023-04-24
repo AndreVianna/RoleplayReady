@@ -16,7 +16,7 @@ public class ResultTests {
     }
 
     [Fact]
-    public void ImplicitConversion_FromNull_ReturnsValid() {
+    public void ImplicitConversion_FromNull_Throws() {
         var action = () => {
             Result<string> result = default(string)!;
         };

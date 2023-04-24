@@ -1,6 +1,8 @@
 global using System.Abstractions;
+global using System.Extensions;
 global using System.Globalization;
 global using System.Results;
+global using System.Text;
 
 global using FluentAssertions;
 
@@ -15,3 +17,5 @@ global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;
 
 global using Xunit;
+
+global using static System.Text.Json.JsonSerializer;

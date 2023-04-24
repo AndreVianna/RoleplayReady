@@ -1,4 +1,6 @@
-﻿namespace System;
+﻿using System.Extensions;
+
+namespace System;
 
 public static class Ensure {
     [return: NotNull]

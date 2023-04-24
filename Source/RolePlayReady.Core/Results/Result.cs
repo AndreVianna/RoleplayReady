@@ -1,4 +1,6 @@
-﻿namespace System.Results;
+﻿using System.Extensions;
+
+namespace System.Results;
 
 public record Result<TValue> : ResultBase, IResult<TValue> {
     public Result(TValue input) : this(Ensure.IsNotNull(input), Array.Empty<ValidationError>()) {

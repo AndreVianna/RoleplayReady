@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Models.Attributes;
 
-public record EntityValidatableAttribute<TValue>
-    : EntityAttribute<TValue>
+public record ValidatableAttribute<TValue>
+    : Attribute<TValue>
     where TValue : class, IValidatable;

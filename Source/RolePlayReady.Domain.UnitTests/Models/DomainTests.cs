@@ -13,28 +13,30 @@ public class DomainTests {
 
     [Fact]
     public void Validate_Validates() {
-        var attributeDefinitions = new List<IAttributeDefinition> {
-            new AttributeDefinition {
+        var attributeDefinitions = new List<AttributeDefinition> {
+            new() {
                 Name = "TestAttribute1",
                 Description = "TestDescription1",
                 ShortName = "TA1",
                 DataType = typeof(string)
             },
-            new AttributeDefinition {
+            new() {
                 Name = "TestAttribute2",
                 Description = "TestDescription2",
                 ShortName = "TA2",
                 DataType = typeof(int)
             },
         };
-        var attributes = new List<IEntityAttribute> {
-            new EntityTextAttribute {
-                Attribute = attributeDefinitions[0],
-                Value = "TestValue",
+        var components = new List<Base> {
+            new() {
+                Name = "TestComponent1",
+                Description = "TestDescription1",
+                ShortName = "TC1",
             },
-            new EntityNumberAttribute<int> {
-                Attribute = attributeDefinitions[1],
-                Value = 42,
+            new() {
+                Name = "TestComponent2",
+                Description = "TestDescription2",
+                ShortName = "TC2",
             },
         };
         var testBase = new Domain {
@@ -43,7 +45,7 @@ public class DomainTests {
             ShortName = "GSS",
             Tags = new[] { "Tag1", "Tag2" },
             AttributeDefinitions = attributeDefinitions,
-            Attributes = attributes,
+            Components = components,
         };
 
         var result = testBase.Validate();
@@ -59,14 +61,16 @@ public class DomainTests {
         var result = subject.Validate();
 
         result.IsSuccess.Should().BeFalse();
-        result.Errors.Should().HaveCount(2);
-        result.Errors.First().Message.Should().Be("'AttributeDefinitions[0].Description' cannot be null.");
-        result.Errors.Skip(1).First().Message.Should().Be("'AttributeDefinitions[1]' cannot be null.");
+        result.Errors.Select(i => i.Message).Should().BeEquivalentTo(
+        "'AttributeDefinitions[0].Description' cannot be null.",
+        "'AttributeDefinitions[1]' cannot be null.",
+        "'Components[0].Name' cannot be null.",
+        "'Components[1]' cannot be null.");
     }
 
     private static Domain GenerateTestDomain() {
-        var attributeDefinitions = new List<IAttributeDefinition> {
-            new AttributeDefinition {
+        var attributeDefinitions = new List<AttributeDefinition> {
+            new() {
                 Name = "TestAttribute1",
                 Description = null!,
                 ShortName = "TA1",
@@ -74,15 +78,13 @@ public class DomainTests {
             },
             null!,
         };
-        var attributes = new List<IEntityAttribute> {
-            new EntityTextAttribute {
-                Attribute = attributeDefinitions[0],
-                Value = "TestValue",
+        var components = new List<Base> {
+            new() {
+                Name = null!,
+                Description = "TestDescription1",
+                ShortName = "TC1",
             },
-            new EntityNumberAttribute<int> {
-                Attribute = null!,
-                Value = 42,
-            },
+            null!,
         };
         var testBase = new Domain {
             Name = "TestName",
@@ -90,7 +92,7 @@ public class DomainTests {
             ShortName = "GSS",
             Tags = new[] { "Tag1", "Tag2" },
             AttributeDefinitions = attributeDefinitions,
-            Attributes = attributes,
+            Components = components,
         };
         return testBase;
     }

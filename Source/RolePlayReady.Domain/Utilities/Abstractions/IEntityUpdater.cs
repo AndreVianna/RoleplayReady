@@ -24,22 +24,22 @@
 
 //    public interface ISetter {
 //        IActionConnector Be<TValue>(TValue value);
-//        IActionConnector Be<TValue>(Func<IEntity, TValue> getValueFrom);
+//        IActionConnector Be<TValue>(Func<IPersisted, TValue> getValueFrom);
 
 //        IActionConnector IncreaseBy<TValue>(TValue bonus) where TValue : IAdditionOperators<TValue, TValue, TValue>;
-//        IActionConnector IncreaseBy<TValue>(Func<IEntity, TValue> getBonusFrom) where TValue : IAdditionOperators<TValue, TValue, TValue>;
+//        IActionConnector IncreaseBy<TValue>(Func<IPersisted, TValue> getBonusFrom) where TValue : IAdditionOperators<TValue, TValue, TValue>;
 //        IActionConnector DecreaseBy<TValue>(TValue bonus) where TValue : ISubtractionOperators<TValue, TValue, TValue>;
-//        IActionConnector DecreaseBy<TValue>(Func<IEntity, TValue> getBonusFrom) where TValue : ISubtractionOperators<TValue, TValue, TValue>;
+//        IActionConnector DecreaseBy<TValue>(Func<IPersisted, TValue> getBonusFrom) where TValue : ISubtractionOperators<TValue, TValue, TValue>;
 
 //        IActionConnector Have<TKey, TValue>(TKey key, TValue value) where TKey : notnull;
-//        IActionConnector Have<TKey, TValue>(TKey key, Func<IEntity, TValue> getValueFrom) where TKey : notnull;
+//        IActionConnector Have<TKey, TValue>(TKey key, Func<IPersisted, TValue> getValueFrom) where TKey : notnull;
 //        IActionConnector Have<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> items) where TKey : notnull;
-//        IActionConnector Have<TKey, TValue>(Func<IEntity, IEnumerable<KeyValuePair<TKey, TValue>>> getItemsFrom) where TKey : notnull;
+//        IActionConnector Have<TKey, TValue>(Func<IPersisted, IEnumerable<KeyValuePair<TKey, TValue>>> getItemsFrom) where TKey : notnull;
 
 //        IActionConnector Have<TValue>(TValue item);
-//        IActionConnector Have<TValue>(Func<IEntity, TValue> getItemFrom);
+//        IActionConnector Have<TValue>(Func<IPersisted, TValue> getItemFrom);
 //        IActionConnector Have<TValue>(params TValue[] items);
-//        IActionConnector Have<TValue>(Func<IEntity, IEnumerable<TValue>> getItemsFrom);
+//        IActionConnector Have<TValue>(Func<IPersisted, IEnumerable<TValue>> getItemsFrom);
 //    }
 
 //    public interface IFinishesValidation {

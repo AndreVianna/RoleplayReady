@@ -6,14 +6,8 @@ public class GameSystemTests {
         var system = new GameSystem {
             Name = "TestName",
             Description = "TestDescription",
-            Domains = new List<Domain> {
-                new Domain {
-                    Name = "TestDomainName",
-                    Description = "TestDomainDescription",
-                }
-            },
-            ComponentDefinitions = new List<Base> {
-                new Base {
+            Domains = new List<Base> {
+                new() {
                     Name = "TestDomainName",
                     Description = "TestDomainDescription",
                 }
@@ -22,6 +16,5 @@ public class GameSystemTests {
 
         system.Should().NotBeNull();
         system.Domains.Should().HaveCount(1);
-        system.ComponentDefinitions.Should().HaveCount(1);
     }
 }

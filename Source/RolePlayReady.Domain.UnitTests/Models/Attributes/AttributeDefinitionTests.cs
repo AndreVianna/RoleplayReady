@@ -15,6 +15,5 @@ public class AttributeDefinitionTests {
         attribute.Description.Should().Be("Some description.");
         attribute.DataType.Should().Be(typeof(int));
         attribute.Constraints.Should().BeEmpty();
-        attribute.ToString().Should().Be("[AttributeDefinition] TestAttribute (TA): Integer");
     }
 }

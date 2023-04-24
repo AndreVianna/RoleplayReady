@@ -1,4 +1,6 @@
-﻿using static System.StringSplitOptions;
+﻿using System.Extensions;
+
+using static System.StringSplitOptions;
 
 using MaximumLengthIs = System.Validators.Text.MaximumLengthIs;
 using MinimumLengthIs = System.Validators.Text.MinimumLengthIs;

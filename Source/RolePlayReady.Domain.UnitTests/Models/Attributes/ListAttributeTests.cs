@@ -1,26 +1,26 @@
 namespace RolePlayReady.Models.Attributes;
 
-public class EntityDictionaryAttributeTests {
+public class ListAttributeTests {
     private readonly AttributeDefinition _definition;
-    private readonly EntityDictionaryAttribute<string, int> _attribute;
+    private readonly ListAttribute<string> _attribute;
 
-    public EntityDictionaryAttributeTests() {
+    public ListAttributeTests() {
         _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
-            DataType = typeof(Dictionary<string, int>),
+            DataType = typeof(List<string>),
         };
 
         _attribute = new() {
-            Attribute = _definition,
-            Value = new() { ["TestValue1"] = 1, ["TestValue2"] = 2, ["TestValue3"] = 3 }
+            Definition = _definition,
+            Value = new() { "TestValue1", "TestValue2", "TestValue3" }
         };
     }
 
     [Fact]
     public void Constructor_InitializesProperties() {
-        _attribute.Attribute.Should().Be(_definition);
-        _attribute.Value.Should().BeEquivalentTo(new Dictionary<string, int> { ["TestValue1"] = 1, ["TestValue2"] = 2, ["TestValue3"] = 3 });
+        _attribute.Definition.Should().Be(_definition);
+        _attribute.Value.Should().BeEquivalentTo("TestValue1", "TestValue2", "TestValue3");
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
@@ -40,6 +40,10 @@ public class EntityDictionaryAttributeTests {
             Add("MinimumCountIs", new object[] { 99 }, false);
             Add("MaximumCountIs", new object[] { 99 }, true);
             Add("MaximumCountIs", new object[] { 1 }, false);
+            Add("Contains", new object[] { "TestValue2" }, true);
+            Add("Contains", new object[] { "TestValue13" }, false);
+            Add("NotContains", new object[] { "TestValue13" }, true);
+            Add("NotContains", new object[] { "TestValue2" }, false);
         }
     }
 

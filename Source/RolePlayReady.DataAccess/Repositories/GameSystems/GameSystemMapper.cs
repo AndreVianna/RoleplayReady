@@ -1,33 +1,31 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
-public static class GameSystemMapper {
+internal static class GameSystemMapper {
     public static GameSystemData Map(this GameSystem input)
         => new() {
+            Id = input.Id,
+            State = input.State,
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
             Tags = input.Tags.ToArray(),
-            Domains = input.Domains.Select(x => x.Name).ToArray(),
         };
 
-    public static Row MapToRow(this Persisted<GameSystemData> input)
+    public static Row MapToRow(this GameSystemData input)
         => new() {
             Id = input.Id,
-            Name = input.Content.Name,
+            Name = input.Name,
         };
 
-    public static Persisted<GameSystem>? Map(this Persisted<GameSystemData>? input)
+    public static GameSystem? Map(this GameSystemData? input)
         => input is null
             ? null
             : new() {
                 Id = input.Id,
-                Timestamp = input.Timestamp,
-                State = State.Pending,
-                Content = new() {
-                    ShortName = input.Content.ShortName,
-                    Name = input.Content.Name,
-                    Description = input.Content.Description,
-                    Tags = input.Content.Tags,
-                },
+                State = input.State,
+                ShortName = input.ShortName,
+                Name = input.Name,
+                Description = input.Description,
+                Tags = input.Tags,
             };
 }

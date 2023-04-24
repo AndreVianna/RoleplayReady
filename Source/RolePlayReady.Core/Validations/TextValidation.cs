@@ -22,7 +22,7 @@ public class TextValidation
         return this;
     }
 
-    public IConnectsToOrFinishes<ITextValidators> IsIn(ICollection<string> list) {
+    public IConnectsToOrFinishes<ITextValidators> IsIn(params string[] list) {
         if (Subject is null) return this;
         if (!list.Contains(Subject))
             Errors.Add(new(MustBeIn, Source, string.Join(", ", list), Subject));
@@ -37,8 +37,7 @@ public class TextValidation
     }
 
     public IConnectsToOrFinishes<ITextValidators> MaximumLengthIs(int length) {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (Subject.Length > length)
             Errors.Add(new(Constants.Constants.ErrorMessages.MaximumLengthIs, Source, length, Subject.Length));
         return this;

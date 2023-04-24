@@ -1,8 +1,12 @@
-﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
+﻿using System.Extensions;
 
-public static class DomainMapper {
+namespace RolePlayReady.DataAccess.Repositories.Domains;
+
+internal static class DomainMapper {
     public static DomainData Map(this Domain input)
         => new() {
+            Id = input.Id,
+            State = input.State,
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
@@ -18,30 +22,27 @@ public static class DomainMapper {
             DataType = input.DataType.GetName(),
         };
 
-    public static Row MapToRow(this Persisted<DomainData> input)
+    public static Row MapToRow(this DomainData input)
         => new() {
                 Id = input.Id,
-                Name = input.Content.Name,
+                Name = input.Name,
             };
 
-    public static Persisted<Domain>? Map(this Persisted<DomainData>? input)
+    public static Domain? Map(this DomainData? input)
         => input is null
             ? null
             : new() {
                 Id = input.Id,
-                Timestamp = input.Timestamp,
-                State = State.Pending,
-                Content = new() {
-                    ShortName = input.Content.ShortName,
-                    Name = input.Content.Name,
-                    Description = input.Content.Description,
-                    Tags = input.Content.Tags,
-                    AttributeDefinitions = input.Content.AttributeDefinitions.Select(Map).ToArray(),
-                },
+                State = input.State,
+                ShortName = input.ShortName,
+                Name = input.Name,
+                Description = input.Description,
+                Tags = input.Tags,
+                AttributeDefinitions = input.AttributeDefinitions.Select(Map).ToArray(),
             };
 
-    private static IAttributeDefinition Map(this DomainData.AttributeDefinitionData input)
-        => new AttributeDefinition {
+    private static AttributeDefinition Map(this DomainData.AttributeDefinitionData input)
+        => new() {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,

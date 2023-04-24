@@ -3,10 +3,10 @@
 namespace RolePlayReady.DataAccess.Repositories;
 
 public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileRepository<TData>
-    where TData : class {
+    where TData : class, IKey {
     private readonly ILogger<TrackedJsonFileRepository<TData>> _logger;
     private readonly IFileSystem _io;
-    private readonly IDateTime _dateTime;
+    private readonly IDateTime _dateTimeProvider;
 
     private readonly string _baseFolderPath;
 
@@ -16,18 +16,18 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
     public TrackedJsonFileRepository(IConfiguration configuration, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger<TrackedJsonFileRepository<TData>>() ?? NullLogger<TrackedJsonFileRepository<TData>>.Instance;
         _io = io ?? new DefaultFileSystem();
-        _dateTime = dateTime ?? new DefaultDateTime();
+        _dateTimeProvider = dateTime ?? new DefaultDateTime();
         var baseFolder = configuration[_baseFolderConfigurationKey];
         const string keyId = $"{nameof(configuration)}[{_baseFolderConfigurationKey}]";
         _baseFolderPath = Ensure.IsNotNullOrWhiteSpace(baseFolder, keyId).Trim();
     }
 
-    public async Task<Result<IEnumerable<Persisted<TData>>>> GetAllAsync(string owner, string path, CancellationToken cancellation = default) {
+    public async Task<IEnumerable<TData>> GetAllAsync(string owner, string path, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting files from '{path}'...", folderPath);
             var filePaths = _io.GetFilesFrom(folderPath, "+*.json", SearchOption.TopDirectoryOnly);
-            var fileInfos = new List<Persisted<TData>>();
+            var fileInfos = new List<TData>();
             foreach (var filePath in filePaths) {
                 var result = await GetFileDataOrDefaultAsync(filePath, cancellation).ConfigureAwait(false);
                 if (result is null) continue;
@@ -35,7 +35,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
             }
 
             _logger.LogDebug("{fileCount} files retrieved from '{path}'.", fileInfos.Count, folderPath);
-            return fileInfos;
+            return fileInfos.ToArray();
         }
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";
@@ -44,14 +44,14 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    public async Task<NullableResult<Persisted<TData>>> GetByIdAsync(string owner, string path, Guid id, CancellationToken cancellation = default) {
+    public async Task<TData?> GetByIdAsync(string owner, string path, Guid id, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Getting latest data from '{path}/{id}'...", folderPath, id);
             var filePath = GetActiveFile(folderPath, id);
             if (filePath is null) {
                 _logger.LogDebug("File '{filePath}' not found.", filePath);
-                return default(Persisted<TData>);
+                return default;
             }
 
             return await GetFileDataOrDefaultAsync(filePath, cancellation).ConfigureAwait(false);
@@ -63,27 +63,30 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    public async Task<Result<Persisted<TData>>> UpsertAsync(string owner, string path, Guid id, TData data, CancellationToken cancellation = default) {
-        var now = _dateTime.Now;
+    public async Task<TData> UpsertAsync(string owner, string path, TData data, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
-            _logger.LogDebug("Adding or updating data in '{path}/{id}'...", folderPath, id);
-            var currentFile = GetActiveFile(folderPath, id);
+            _logger.LogDebug("Adding or updating data in '{path}/{id}'...", folderPath, data.Id);
+            var currentFile = GetActiveFile(folderPath, data.Id);
             if (currentFile is not null)
                 _io.MoveFile(currentFile, currentFile.Replace("+", ""));
-            var newFilePath = _io.CombinePath(folderPath, $"+{id}_{now:yyyyMMddHHmmss}.json");
-            await using var stream = _io.CreateNewFileAndOpenForWriting(newFilePath);
-            await SerializeAsync(stream, data, cancellationToken: cancellation);
+            var newFilePath = _io.CombinePath(folderPath, $"+{data.Id}_{_dateTimeProvider.Now:yyyyMMddHHmmss}.json");
+            await WriteToFileAsync(data, newFilePath, cancellation);
 
-            _logger.LogDebug("Date for '{path}/{id}' added or updated.", folderPath, id);
+            _logger.LogDebug("Date for '{path}/{id}' added or updated.", folderPath, data.Id);
 
             return await GetFileDataAsync(newFilePath, cancellation).ConfigureAwait(false);
         }
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";
-            _logger.LogError(ex, "Failed to add or update file '{path}/{id}'!", errorFolder, id);
+            _logger.LogError(ex, "Failed to add or update file '{path}/{id}'!", errorFolder, data.Id);
             throw;
         }
+    }
+
+    private Task WriteToFileAsync(TData data, string newFilePath, CancellationToken cancellation) {
+        using var stream = _io.CreateNewFileAndOpenForWriting(newFilePath);
+        return SerializeAsync(stream, data, cancellationToken: cancellation);
     }
 
     public Result<bool> Delete(string owner, string path, Guid id) {
@@ -113,7 +116,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    private async Task<Persisted<TData>?> GetFileDataOrDefaultAsync(string filePath, CancellationToken cancellation) {
+    private async Task<TData?> GetFileDataOrDefaultAsync(string filePath, CancellationToken cancellation) {
         try {
             return await GetFileDataAsync(filePath, cancellation);
         }
@@ -123,38 +126,22 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    private async Task<Persisted<TData>> GetFileDataAsync(string filePath, CancellationToken cancellation) {
+    private async Task<TData> GetFileDataAsync(string filePath, CancellationToken cancellation) {
         var fileName = _io.ExtractFileNameFrom(filePath);
-        if (!TryParseFileName(fileName, out var fileInfo)) {
+        if (!IsFileNameValid(fileName)) {
             throw new InvalidOperationException($"File name '{filePath}' is invalid.");
         }
 
         await using var stream = _io.OpenFileForReading(filePath);
         var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
         _logger.LogDebug("Data from '{filePath}' retrieved.", filePath);
-        return new() {
-            Id = fileInfo.Id,
-            Timestamp = fileInfo.Timestamp,
-            Content = content!
-        };
+        return content!;
     }
 
-    private bool TryParseFileName(string fileName, out FileInfo fileInfo) {
-        fileInfo = default!;
+    private bool IsFileNameValid(string fileName) {
         var match = FileNameMatcher().Match(fileName);
-        if (!match.Success || !TryParseTimestamp(match.Groups["datetime"].Value, out var dateTime))
-            return false;
-        fileInfo = new() { Id = Guid.Parse(match.Groups["id"].Value), Timestamp = dateTime };
-        return true;
-    }
-
-    private bool TryParseTimestamp(string value, out DateTime timestamp)
-        => _dateTime
-            .TryParseExact(value, _timestampFormat, null, DateTimeStyles.None, out timestamp);
-
-    private record FileInfo {
-        public required Guid Id { get; init; }
-        public required DateTime Timestamp { get; init; }
+        return match.Success && _dateTimeProvider
+           .TryParseExact(match.Groups["datetime"].Value, _timestampFormat, null, DateTimeStyles.None, out _);
     }
 
     private string GetFolderFullPath(string owner, string path)

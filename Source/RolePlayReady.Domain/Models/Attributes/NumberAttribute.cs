@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Models.Attributes;
 
-public record EntityNumberAttribute<TValue>
-    : EntityAttribute<TValue>
+public record NumberAttribute<TValue>
+    : Attribute<TValue>
     where TValue : IComparable<TValue>;

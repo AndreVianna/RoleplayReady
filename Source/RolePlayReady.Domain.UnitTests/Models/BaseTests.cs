@@ -3,9 +3,7 @@ using static RolePlayReady.Constants.Constants.Validation.Definition;
 namespace RolePlayReady.Models;
 
 public class BaseTests {
-    private record TestBase : Base {
-        public override string ToString() => base.ToString();
-    }
+    private record TestBase : Base;
 
     [Fact]
     public void Constructor_CreatesObject() {
@@ -19,7 +17,6 @@ public class BaseTests {
         testBase.Description.Should().Be("TestDescription");
         testBase.ShortName.Should().BeNull();
         testBase.Tags.Should().BeEquivalentTo("tag1", "tag2");
-        testBase.ToString().Should().Be("[TestBase] TestName");
     }
 
     [Theory]

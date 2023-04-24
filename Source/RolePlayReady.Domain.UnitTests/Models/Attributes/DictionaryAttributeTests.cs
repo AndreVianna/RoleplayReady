@@ -1,26 +1,26 @@
 namespace RolePlayReady.Models.Attributes;
 
-public class EntityNumberAttributeTests {
+public class DictionaryAttributeTests {
     private readonly AttributeDefinition _definition;
-    private readonly EntityNumberAttribute<int> _attribute;
+    private readonly DictionaryAttribute<string, int> _attribute;
 
-    public EntityNumberAttributeTests() {
+    public DictionaryAttributeTests() {
         _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
-            DataType = typeof(int),
+            DataType = typeof(Dictionary<string, int>),
         };
 
         _attribute = new() {
-            Attribute = _definition,
-            Value = 42
+            Definition = _definition,
+            Value = new() { ["TestValue1"] = 1, ["TestValue2"] = 2, ["TestValue3"] = 3 }
         };
     }
 
     [Fact]
     public void Constructor_InitializesProperties() {
-        _attribute.Attribute.Should().Be(_definition);
-        _attribute.Value.Should().Be(42);
+        _attribute.Definition.Should().Be(_definition);
+        _attribute.Value.Should().BeEquivalentTo(new Dictionary<string, int> { ["TestValue1"] = 1, ["TestValue2"] = 2, ["TestValue3"] = 3 });
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
@@ -34,22 +34,18 @@ public class EntityNumberAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("MaximumIs", new object[] { 99 }, true);
-            Add("MaximumIs", new object[] { 2 }, false);
-            Add("MinimumIs", new object[] { 2 }, true);
-            Add("MinimumIs", new object[] { 99 }, false);
-            Add("IsLessThan", new object[] { 99 }, true);
-            Add("IsLessThan", new object[] { 2 }, false);
-            Add("IsGreaterThan", new object[] { 2 }, true);
-            Add("IsGreaterThan", new object[] { 99 }, false);
-            Add("IsEqualTo", new object[] { 42 }, true);
-            Add("IsEqualTo", new object[] { 13 }, false);
+            Add("CountIs", new object[] { 3 }, true);
+            Add("CountIs", new object[] { 13 }, false);
+            Add("MinimumCountIs", new object[] { 1 }, true);
+            Add("MinimumCountIs", new object[] { 99 }, false);
+            Add("MaximumCountIs", new object[] { 99 }, true);
+            Add("MaximumCountIs", new object[] { 1 }, false);
         }
     }
 
     [Fact]
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("IsEqualTo", "wrong"));
+        _definition.Constraints.Add(new AttributeConstraint("CountIs", "wrong"));
 
         var action = _attribute.Validate;
 
@@ -58,7 +54,7 @@ public class EntityNumberAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("IsEqualTo"));
+        _definition.Constraints.Add(new AttributeConstraint("CountIs"));
 
         var action = _attribute.Validate;
 

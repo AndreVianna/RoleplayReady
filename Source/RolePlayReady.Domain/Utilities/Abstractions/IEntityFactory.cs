@@ -2,7 +2,7 @@
 
 //public interface IEntityFactory {
 //    TComponent Create<TComponent>(string name, string description)
-//        where TComponent : IEntity;
+//        where TComponent : IPersisted;
 
-//    IEntity Create(string type, string name, string description);
+//    IPersisted Create(string type, string name, string description);
 //}

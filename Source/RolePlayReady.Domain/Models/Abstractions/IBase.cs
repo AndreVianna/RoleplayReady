@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
-public interface IBase : IValidatable {
+public interface IBase {
     string Name { get; }
     string? ShortName { get; }
     string Description { get; }

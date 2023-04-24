@@ -10,5 +10,5 @@ public interface ITextValidators {
     IConnectsToOrFinishes<ITextValidators> MinimumLengthIs(int length);
     IConnectsToOrFinishes<ITextValidators> MaximumLengthIs(int length);
     IConnectsToOrFinishes<ITextValidators> LengthIs(int length);
-    IConnectsToOrFinishes<ITextValidators> IsIn(ICollection<string> list);
+    IConnectsToOrFinishes<ITextValidators> IsIn(params string[] list);
 }

@@ -1,14 +1,10 @@
-using System.Validators.Collection;
-using System.Validators.Number;
-using System.Validators.Text;
-
 namespace RolePlayReady.Models.Attributes;
 
-public class EntityTextAttributeTests {
+public class TextAttributeTests {
     private readonly AttributeDefinition _definition;
-    private readonly EntityTextAttribute _attribute;
+    private readonly TextAttribute _attribute;
 
-    public EntityTextAttributeTests() {
+    public TextAttributeTests() {
         _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
@@ -16,14 +12,14 @@ public class EntityTextAttributeTests {
         };
 
         _attribute = new() {
-            Attribute = _definition,
+            Definition = _definition,
             Value = "TestValue"
         };
     }
 
     [Fact]
     public void Constructor_InitializesProperties() {
-        _attribute.Attribute.Should().Be(_definition);
+        _attribute.Definition.Should().Be(_definition);
         _attribute.Value.Should().Be("TestValue");
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }

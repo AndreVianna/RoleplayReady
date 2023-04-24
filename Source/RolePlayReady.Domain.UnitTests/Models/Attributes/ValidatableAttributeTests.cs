@@ -2,16 +2,16 @@ using static System.Results.ValidationResult;
 
 namespace RolePlayReady.Models.Attributes;
 
-public class EntityValidatableAttributeTests {
+public class ValidatableAttributeTests {
     private readonly AttributeDefinition _definition;
-    private readonly EntityValidatableAttribute<TestObject> _attribute;
+    private readonly ValidatableAttribute<TestObject> _attribute;
     private readonly TestObject _testObject = new("Hello");
 
     private record TestObject(string Name) : IValidatable {
         public ValidationResult Validate() => Success;
     }
 
-    public EntityValidatableAttributeTests() {
+    public ValidatableAttributeTests() {
         _definition = new() {
             Name = "TestName",
             Description = "TestDescription",
@@ -19,14 +19,14 @@ public class EntityValidatableAttributeTests {
         };
 
         _attribute = new() {
-            Attribute = _definition,
+            Definition = _definition,
             Value = new("Hello")
         };
     }
 
     [Fact]
     public void Constructor_InitializesProperties() {
-        _attribute.Attribute.Should().Be(_definition);
+        _attribute.Definition.Should().Be(_definition);
         _attribute.Value.Should().Be(_testObject);
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }

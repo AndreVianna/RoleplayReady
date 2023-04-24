@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
+﻿using System.Extensions;
+
+namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
 public class GameSystemsRepository : IGameSystemsRepository {
     private readonly ITrackedJsonFileRepository<GameSystemData> _files;
@@ -7,28 +9,28 @@ public class GameSystemsRepository : IGameSystemsRepository {
         _files = files;
     }
 
-    public async Task<Result<IEnumerable<Row>>> GetManyAsync(string owner, CancellationToken cancellation = default) {
+    public async Task<IEnumerable<Row>> GetManyAsync(string owner, CancellationToken cancellation = default) {
         var files = await _files
             .GetAllAsync(owner, string.Empty, cancellation)
             .ConfigureAwait(false);
-        return files.Map(i => i.MapToRow());
+        return files.ToArray(i => i.MapToRow());
     }
 
-    public async Task<NullableResult<Persisted<GameSystem>>> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default) {
+    public async Task<GameSystem?> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default) {
         var file = await _files
             .GetByIdAsync(owner, string.Empty, id, cancellation)
             .ConfigureAwait(false);
-        return file.Map(i => i.Map());
+        return file.Map();
     }
 
-    public async Task<Result<Persisted<GameSystem>>> InsertAsync(string owner, GameSystem input, CancellationToken cancellation = default) {
-        var result = await _files.UpsertAsync(owner, string.Empty, Guid.NewGuid(), input.Map(), cancellation).ConfigureAwait(false);
-        return result.Map(i => i.Map()!);
+    public async Task<GameSystem> InsertAsync(string owner, GameSystem input, CancellationToken cancellation = default) {
+        var result = await _files.UpsertAsync(owner, string.Empty, input.Map(), cancellation).ConfigureAwait(false);
+        return result.Map()!;
     }
 
-    public async Task<Result<Persisted<GameSystem>>> UpdateAsync(string owner, Guid id, GameSystem input, CancellationToken cancellation = default) {
-        var result = await _files.UpsertAsync(owner, string.Empty, id, input.Map(), cancellation);
-        return result.Map(i => i.Map()!);
+    public async Task<GameSystem> UpdateAsync(string owner, GameSystem input, CancellationToken cancellation = default) {
+        var result = await _files.UpsertAsync(owner, string.Empty, input.Map(), cancellation);
+        return result.Map()!;
     }
 
     public Result<bool> Delete(string owner, Guid id)

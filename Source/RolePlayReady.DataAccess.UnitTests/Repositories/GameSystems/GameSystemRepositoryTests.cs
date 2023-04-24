@@ -12,7 +12,7 @@ public class GameSystemsRepositoryTests {
     }
 
     [Fact]
-    public async Task GetManyAsync_ReturnsAllSettings() {
+    public async Task GetManyAsync_ReturnsAll() {
         // Arrange
         var dataFiles = GenerateList();
         _files.GetAllAsync(InternalUser, string.Empty).Returns(dataFiles);
@@ -21,12 +21,11 @@ public class GameSystemsRepositoryTests {
         var settings = await _repository.GetManyAsync(InternalUser);
 
         // Assert
-        settings.HasValue.Should().BeTrue();
-        settings.Value.Count().Should().Be(dataFiles.Length);
+        settings.Should().HaveCount(dataFiles.Length);
     }
 
     [Fact]
-    public async Task GetByIdAsync_SettingFound_ReturnsSetting() {
+    public async Task GetByIdAsync_SystemFound_ReturnsSystem() {
         // Arrange
         var dataFile = GeneratePersisted();
         var tokenSource = new CancellationTokenSource();
@@ -36,54 +35,54 @@ public class GameSystemsRepositoryTests {
         var setting = await _repository.GetByIdAsync(InternalUser, dataFile.Id, tokenSource.Token);
 
         // Assert
-        setting.HasValue.Should().BeTrue();
-        setting.Value.Should().NotBeNull();
+        setting.Should().NotBeNull();
     }
 
     [Fact]
-    public async Task GetByIdAsync_SettingNotFound_ReturnsNull() {
+    public async Task GetByIdAsync_SystemNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.GetByIdAsync(InternalUser, string.Empty, id, Arg.Any<CancellationToken>()).Returns((Persisted<GameSystemData>?)null);
+        _files.GetByIdAsync(InternalUser, string.Empty, id, Arg.Any<CancellationToken>()).Returns(default(GameSystemData));
 
         // Act
         var setting = await _repository.GetByIdAsync(InternalUser, id);
 
         // Assert
-        setting.HasValue.Should().BeFalse();
-        setting.IsNull.Should().BeTrue();
+        setting.Should().BeNull();
     }
 
     [Fact]
-    public async Task InsertAsync_InsertsNewSetting() {
+    public async Task InsertAsync_InsertsNewSystem() {
         // Arrange
-        var input = GenerateInput();
-        var expected = GeneratePersisted();
-        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<Guid>(), Arg.Any<GameSystemData>()).Returns(expected);
+        var id = Guid.NewGuid();
+        var input = GenerateInput(id);
+        var expected = GeneratePersisted(id);
+        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
         var result = await _repository.InsertAsync(InternalUser, input);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Should().NotBeNull();
     }
 
     [Fact]
-    public async Task UpdateAsync_UpdatesExistingSetting() {
+    public async Task UpdateAsync_UpdatesExistingSystem() {
         // Arrange
-        var input = GenerateInput();
-        var expected = GeneratePersisted();
-        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<Guid>(), Arg.Any<GameSystemData>()).Returns(expected);
+        var id = Guid.NewGuid();
+        var input = GenerateInput(id, State.Hidden);
+        var expected = GeneratePersisted(id, State.Hidden);
+        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
-        var result = await _repository.UpdateAsync(InternalUser, Guid.NewGuid(), input);
+        var result = await _repository.UpdateAsync(InternalUser, input);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Should().NotBeNull();
     }
 
     [Fact]
-    public void Delete_RemovesSetting() {
+    public void Delete_RemovesSystem() {
         // Arrange
         var id = Guid.NewGuid();
         _files.Delete(InternalUser, string.Empty, id).Returns<Result<bool>>(true);
@@ -95,31 +94,37 @@ public class GameSystemsRepositoryTests {
         result.HasValue.Should().BeTrue();
     }
 
-    private static Persisted<GameSystemData>[] GenerateList()
+    private static GameSystemData[] GenerateList()
         => new[] { GeneratePersisted() };
 
-    private static Persisted<GameSystemData> GeneratePersisted()
+    private static GameSystemData GeneratePersisted(Guid? id = null, State? state = null)
         => new() {
-            Id = Guid.NewGuid(),
-            Timestamp = DateTime.Now,
-            Content = new() {
-                ShortName = "SomeId",
-                Name = "Some Id",
-                Description = "Some Description",
-                Tags = new[] { "SomeTag" },
-                Domains = new[] { "SomeDomain" },
-            }
-        };
-
-    private static GameSystem GenerateInput()
-        => new() {
+            Id = id ?? Guid.NewGuid(),
+            State = state ?? State.New,
             ShortName = "SomeId",
             Name = "Some Id",
             Description = "Some Description",
             Tags = new[] { "SomeTag" },
-            Domains = new[] { new Domain {
-                Name = "SomeName",
-                Description = "SomeDescription",
-            } },
+        };
+
+    private static GameSystem GenerateInput(Guid? id = null, State? state = null)
+        => new() {
+            Id = id ?? Guid.NewGuid(),
+            State = state ?? State.New,
+            ShortName = "SomeId",
+            Name = "Some Id",
+            Description = "Some Description",
+            Tags = new[] { "SomeTag" },
+            Domains = new[] {
+                new Base {
+                    Name = "Dom1",
+                    Description = "SomeDescription",
+                },
+                new Base {
+                    Name = "Domain1",
+                    ShortName = "Dom2",
+                    Description = "SomeDescription",
+                }
+            },
         };
 }

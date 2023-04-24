@@ -1,6 +1,8 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
 
 public class DomainData {
+    public Guid Id { get; init; }
+    public State State { get; init; }
     public string? ShortName { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
