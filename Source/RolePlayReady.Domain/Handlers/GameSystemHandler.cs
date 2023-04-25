@@ -31,6 +31,6 @@ public class GameSystemHandler : IGameSystemHandler {
             : result + input;
     }
 
-    public Result<bool> Remove(Guid id)
+    public FlagResult Remove(Guid id)
         => _repository.Delete(_owner, id);
 }

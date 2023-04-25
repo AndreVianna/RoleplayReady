@@ -31,6 +31,6 @@ public class GameSystemRepository : IGameSystemRepository {
         return result?.Map();
     }
 
-    public Result<bool> Delete(string owner, Guid id)
+    public FlagResult Delete(string owner, Guid id)
         => _files.Delete(owner, string.Empty, id);
 }

@@ -5,5 +5,5 @@ public interface IGameSystemHandler {
     Task<NullableResult<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default);
     Task<Result<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default);
     Task<NullableResult<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default);
-    Result<bool> Remove(Guid id);
+    FlagResult Remove(Guid id);
 }

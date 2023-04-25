@@ -110,7 +110,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         await SerializeAsync(stream, data, cancellationToken: cancellation);
     }
 
-    public Result<bool> Delete(string owner, string path, Guid id) {
+    public FlagResult Delete(string owner, string path, Guid id) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Deleting file '{path}/{id}'...", folderPath, id);

@@ -118,7 +118,7 @@ public class SystemsController : ControllerBase {
         Guid id) {
         _logger.LogDebug("Remove game system '{id}' requested.", id);
         var result = _handler.Remove(id);
-        if (result.Value is false) {
+        if (!result.IsTrue) {
             _logger.LogDebug("Fail to remove game system '{id}' (not found).", id);
             return NotFound();
         }

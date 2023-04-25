@@ -23,14 +23,14 @@ public class DomainRepository : IDomainRepository {
 
     public async Task<Domain> InsertAsync(string owner, Domain input, CancellationToken cancellation = default) {
         var result = await _files.InsertAsync(owner, string.Empty, input.Map(), cancellation).ConfigureAwait(false);
-        return result.Map()!;
+        return result.Map();
     }
 
     public async Task<Domain?> UpdateAsync(string owner, Domain input, CancellationToken cancellation = default) {
         var result = await _files.UpdateAsync(owner, string.Empty, input.Map(), cancellation);
-        return result?.Map()!;
+        return result?.Map();
     }
 
-    public Result<bool> Delete(string owner, Guid id)
+    public FlagResult Delete(string owner, Guid id)
         => _files.Delete(owner, string.Empty, id);
 }
