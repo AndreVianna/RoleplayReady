@@ -7,11 +7,11 @@ public abstract class CollectionValidator<TItem> : IValidator {
         _source = source;
     }
 
-    public ValidationResult Validate(object? input) {
+    public Result Validate(object? input) {
         var value = (ICollection<TItem>)input!;
         var validation = new CollectionValidation<TItem>(value, _source);
         return ValidateValue(validation);
     }
 
-    protected abstract ValidationResult ValidateValue(CollectionValidation<TItem> validation);
+    protected abstract Result ValidateValue(CollectionValidation<TItem> validation);
 }

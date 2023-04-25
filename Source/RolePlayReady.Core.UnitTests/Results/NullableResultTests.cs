@@ -1,6 +1,6 @@
 using System.Results.Extensions;
 
-using static System.Results.ValidationResult;
+using static System.Results.Result;
 
 namespace System.Results;
 
@@ -36,9 +36,9 @@ public class NullableResultTests {
 
     [Fact]
     public void AddOperator_FromValidation_ReturnsInvalid() {
-        var result = new ValidationResult();
+        var result = new Result();
 
-        NullableResult<string> subject = result + "testValue";
+        var subject = result.WithNullableValue("testValue");
 
         subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
@@ -46,10 +46,10 @@ public class NullableResultTests {
     }
 
     [Fact]
-    public void AddOperator_FromValidation_WithNull_ReturnsInvalid() {
-        var result = new ValidationResult();
+    public void AddOperator_FromValidation_WithNull_ReturnsValid() {
+        var result = new Result();
 
-        NullableResult<string> subject = result + default(string)!;
+        var subject = result.WithNullableValue(default(string));
 
         subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
@@ -60,7 +60,7 @@ public class NullableResultTests {
     public void AddOperator_FromValidation_WithErrors_ReturnsInvalid() {
         var result = Success + new ValidationError("Some error.", "someField");
 
-        NullableResult<string> subject = result + "testValue";
+        var subject = result.WithNullableValue("testValue");
 
         subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
@@ -69,10 +69,10 @@ public class NullableResultTests {
 
     [Fact]
     public void AddOperator_FromValidation_WithWrongType_ReturnsInvalid() {
-        var result = new ValidationResult();
+        var result = new Result();
 
         var action = () => {
-            NullableResult<string> subject = result + 43;
+            NullableResult<string> subject = result.WithNullableValue((object)43);
         };
 
         action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign 'Result<Integer>' to 'Result<String>'.");
@@ -145,7 +145,7 @@ public class NullableResultTests {
     [InlineData(true, false)]
     public void Equals_WithOtherValidation_ReturnsAsExpected(bool hasError, bool expectedResult) {
         NullableResult<string> subject = "testValue";
-        var other = new ValidationResult();
+        var other = new Result();
         if (hasError)
             subject += new ValidationError("Some error.", "objectResult");
 
@@ -159,7 +159,7 @@ public class NullableResultTests {
     [InlineData(true, true)]
     public void NotEquals_WithOtherValidation_ReturnsAsExpected(bool hasError, bool expectedResult) {
         NullableResult<string> subject = "testValue";
-        var other = new ValidationResult();
+        var other = new Result();
         if (hasError)
             subject += new ValidationError("Some error.", "objectResult");
 

@@ -9,6 +9,6 @@ public sealed class MaximumIs<TValue> : NumberValidator<TValue>
         _threshold = threshold;
     }
 
-    protected override ValidationResult ValidateValue(NumberValidation<TValue> validation)
+    protected override Result ValidateValue(NumberValidation<TValue> validation)
         => validation.MaximumIs(_threshold).Result;
 }

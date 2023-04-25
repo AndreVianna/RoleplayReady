@@ -1,6 +1,6 @@
 using System.Results.Extensions;
 
-using static System.Results.ValidationResult;
+using static System.Results.Result;
 
 namespace System.Results;
 
@@ -64,7 +64,7 @@ public class ResultTests {
     [InlineData(true, false)]
     public void Equals_WithOtherValidation_ReturnsAsExpected(bool hasError, bool expectedResult) {
         Result<string> subject = "testValue";
-        var other = new ValidationResult();
+        var other = new Result();
         if (hasError)
             subject += new ValidationError("Some error.", "objectResult");
 
@@ -78,7 +78,7 @@ public class ResultTests {
     [InlineData(true, true)]
     public void NotEquals_WithOtherValidation_ReturnsAsExpected(bool hasError, bool expectedResult) {
         Result<string> subject = "testValue";
-        var other = new ValidationResult();
+        var other = new Result();
         if (hasError)
             subject += new ValidationError("Some error.", "objectResult");
 
@@ -141,10 +141,10 @@ public class ResultTests {
     }
 
     [Fact]
-    public void AddOperator_FromValidation_ReturnsInvalid() {
-        var result = new ValidationResult();
+    public void AddOperator_FromValidation_ReturnsValid() {
+        var result = new Result();
 
-        Result<string> subject = result + "testValue";
+        var subject = result.WithValue("testValue");
 
         subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
@@ -155,7 +155,7 @@ public class ResultTests {
     public void AddOperator_FromValidation_WithErrors_ReturnsInvalid() {
         var result = Success + new ValidationError("Some error.", "someField");
 
-        Result<string> subject = result + "testValue";
+        var subject = result.WithValue("testValue");
 
         subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
@@ -164,10 +164,10 @@ public class ResultTests {
 
     [Fact]
     public void AddOperator_FromValidation_WithWrongType_ReturnsInvalid() {
-        var result = new ValidationResult();
+        var result = new Result();
 
         var action = () => {
-            Result<string> _ = result + 43;
+            Result<string> subject = result.WithValue((object)43);
         };
 
         action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign 'Result<Integer>' to 'Result<String>'.");

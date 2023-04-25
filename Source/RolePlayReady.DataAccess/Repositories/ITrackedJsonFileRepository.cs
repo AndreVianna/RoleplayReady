@@ -6,5 +6,5 @@ public interface ITrackedJsonFileRepository<TData>
     Task<TData?> GetByIdAsync(string owner, string path, Guid id, CancellationToken cancellation = default);
     Task<TData> InsertAsync(string owner, string path, TData data, CancellationToken cancellation = default);
     Task<TData?> UpdateAsync(string owner, string path, TData data, CancellationToken cancellation = default);
-    FlagResult Delete(string owner, string path, Guid id);
+    Result Delete(string owner, string path, Guid id);
 }

@@ -110,7 +110,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         await SerializeAsync(stream, data, cancellationToken: cancellation);
     }
 
-    public FlagResult Delete(string owner, string path, Guid id) {
+    public Result Delete(string owner, string path, Guid id) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
             _logger.LogDebug("Deleting file '{path}/{id}'...", folderPath, id);
@@ -118,7 +118,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
                 .Union(_io.GetFilesFrom(folderPath, $"{id}*.json", SearchOption.TopDirectoryOnly)).ToArray();
             if (activeFiles.Length == 0) {
                 _logger.LogDebug("File '{path}/{id}' not found.", folderPath, id);
-                return false;
+                return Result.Failure("Not found.", id.ToString());
             }
 
             foreach (var activeFile in activeFiles) {
@@ -128,7 +128,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
             }
 
             _logger.LogDebug("File '{path}/{id}' deleted.", folderPath, id);
-            return true;
+            return Result.Success;
         }
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";

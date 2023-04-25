@@ -3,8 +3,8 @@ namespace System.Validations;
 public class ComparableValidationTests {
     public record TestObject : IValidatable {
         public int Number { get; init; }
-        public ValidationResult Validate() {
-            var result = new ValidationResult();
+        public Result Validate() {
+            var result = new Result();
             result += Number.Value().IsEqualTo(15).Result;
             return result;
         }

@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Handlers;
+﻿using System.Results.Extensions;
+
+namespace RolePlayReady.Handlers;
 
 public class DomainHandler : IDomainHandler {
     private readonly IDomainRepository _repository;
@@ -21,16 +23,16 @@ public class DomainHandler : IDomainHandler {
         var result = input.Validate();
         return result.IsSuccess
             ? await _repository.InsertAsync(_owner, input, cancellation)
-            : result + input;
+            : result.WithValue(input);
     }
 
     public async Task<NullableResult<Domain>> UpdateAsync(Domain input, CancellationToken cancellation = default) {
         var result = input.Validate();
         return result.IsSuccess
             ? await _repository.UpdateAsync(_owner, input, cancellation)
-            : result + input;
+            : result.WithValue(input);
     }
 
-    public FlagResult Remove(Guid id)
+    public Result Remove(Guid id)
         => _repository.Delete(_owner, id);
 }

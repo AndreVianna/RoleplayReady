@@ -398,7 +398,7 @@ public class TrackedJsonFileRepositoryTests {
         var result = _repository.Delete(_owner, _path, _id1);
 
         // Assert
-        result.IsTrue.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
         _io.Received(1).MoveFile(activeFilePath, deletedFilePath1);
         _io.Received(1).MoveFile(inactiveFilePath, deletedFilePath2);
     }
@@ -416,7 +416,7 @@ public class TrackedJsonFileRepositoryTests {
         var result = _repository.Delete(_owner, _path, _id1);
 
         // Assert
-        result.IsTrue.Should().BeFalse();
+        result.IsSuccess.Should().BeFalse();
     }
 
     [Fact]

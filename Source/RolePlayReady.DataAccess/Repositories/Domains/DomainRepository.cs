@@ -31,6 +31,6 @@ public class DomainRepository : IDomainRepository {
         return result?.Map();
     }
 
-    public FlagResult Delete(string owner, Guid id)
+    public Result Delete(string owner, Guid id)
         => _files.Delete(owner, string.Empty, id);
 }

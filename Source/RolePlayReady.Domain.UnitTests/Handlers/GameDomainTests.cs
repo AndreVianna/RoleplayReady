@@ -85,13 +85,13 @@ public class GameDomainTests {
     public void Remove_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Delete(InternalUser, id).Returns(new FlagResult(true));
+        _repository.Delete(InternalUser, id).Returns(Result.Success);
 
         // Act
         var result = _handler.Remove(id);
 
         // Assert
-        result.IsTrue.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
     }
 
     private static Row CreateRow(Guid? id = null)

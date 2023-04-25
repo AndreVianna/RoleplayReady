@@ -4,8 +4,8 @@ public class IntegerValidationTests {
     public record TestObject : IValidatable {
         public int? Nullable { get; init; }
         public int? Required { get; init; }
-        public ValidationResult Validate() {
-            var result = new ValidationResult();
+        public Result Validate() {
+            var result = new Result();
             result += Nullable.IsNullOr().IsGreaterThan(10).And.IsLessThan(20).And.IsEqualTo(15).Result;
             result += Required.IsNotNull().And.MinimumIs(10).And.MaximumIs(20).Result;
             return result;

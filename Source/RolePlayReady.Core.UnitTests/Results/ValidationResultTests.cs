@@ -1,11 +1,11 @@
-using static System.Results.ValidationResult;
+using static System.Results.Result;
 
 namespace System.Results;
 
 public class ValidationResultTests {
     [Fact]
     public void ImplicitConversion_FromValidationError_ReturnsFailure() {
-        ValidationResult result = new ValidationError("Some error.", nameof(result));
+        Result result = new ValidationError("Some error.", nameof(result));
 
         result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
@@ -13,7 +13,7 @@ public class ValidationResultTests {
 
     [Fact]
     public void ImplicitConversion_FromValidationErrorArray_ReturnsFailure() {
-        ValidationResult result = new[] { new ValidationError("Some error.", nameof(result)) };
+        Result result = new[] { new ValidationError("Some error.", nameof(result)) };
 
         result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
@@ -21,7 +21,7 @@ public class ValidationResultTests {
 
     [Fact]
     public void ImplicitConversion_FromValidationErrorList_ReturnsFailure() {
-        ValidationResult result = new List<ValidationError> { new("Some error.", nameof(result)) };
+        Result result = new List<ValidationError> { new("Some error.", nameof(result)) };
 
         result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
@@ -35,7 +35,7 @@ public class ValidationResultTests {
     [InlineData(false, false)]
     [InlineData(true, true)]
     public void NotEquals_WithSuccess_ReturnsAsExpected(bool hasError, bool expectedResult) {
-        var subject = new ValidationResult();
+        var subject = new Result();
         if (hasError)
             subject += new ValidationError("Some error.", "objectResult");
 
@@ -50,9 +50,9 @@ public class ValidationResultTests {
     [InlineData(false, false, true, true)]
     [InlineData(false, false, false, false)]
     public void Equals_WithSame_ReturnsAsExpected(bool isNull, bool isSame, bool hasSameError, bool expectedResult) {
-        var subject = new ValidationResult() + new ValidationError("Some error.", "field");
-        var sameValue = new ValidationResult() + new ValidationError("Some error.", "field");
-        var otherValue = new ValidationResult() + new ValidationError("Other error.", "field");
+        var subject = new Result() + new ValidationError("Some error.", "field");
+        var sameValue = new Result() + new ValidationError("Some error.", "field");
+        var otherValue = new Result() + new ValidationError("Other error.", "field");
 
         var result = subject == (isNull ? default : isSame ? subject : hasSameError ? sameValue : otherValue);
 
@@ -61,7 +61,7 @@ public class ValidationResultTests {
 
     [Fact]
     public void AddOperator_WithError_ReturnsInvalid() {
-        var result = new ValidationResult();
+        var result = new Result();
 
         result += new ValidationError("Some error.", "result");
 
@@ -71,7 +71,7 @@ public class ValidationResultTests {
 
     [Fact]
     public void AddOperator_WithErrors_ReturnsInvalid() {
-        var result = new ValidationResult();
+        var result = new Result();
 
         result += new[] { new ValidationError("Some error 1.", "result"), new ValidationError("Some error 2.", "result") };
 
@@ -82,7 +82,7 @@ public class ValidationResultTests {
     [Fact]
     public void EqualityOperator_WhenSuccess_ReturnsTrue() {
         // Act
-        var subject = new ValidationResult();
+        var subject = new Result();
 
         // Assert
         var result = subject == Success;
@@ -104,7 +104,7 @@ public class ValidationResultTests {
     [Fact]
     public void InequalityOperator_WhenSuccess_ReturnsFalse() {
         // Act
-        var subject = new ValidationResult();
+        var subject = new Result();
 
         // Assert
         var result = subject != Success;

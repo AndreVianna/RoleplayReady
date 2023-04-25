@@ -3,8 +3,8 @@ namespace System.Validations;
 public class ValidatableValidationTests {
     public record ChildObject : IValidatable {
         public required string Name { get; init; }
-        public ValidationResult Validate() {
-            var result = new ValidationResult();
+        public Result Validate() {
+            var result = new Result();
             result += Name.IsNotNull()
                 .And.LengthIs(5).Result;
             return result;
@@ -13,8 +13,8 @@ public class ValidatableValidationTests {
 
     public record TestObject : IValidatable {
         public required ChildObject Child { get; init; }
-        public ValidationResult Validate() {
-            var result = new ValidationResult();
+        public Result Validate() {
+            var result = new Result();
             result += Child.IsNotNull()
                 .And.IsValid().Result;
             return result;

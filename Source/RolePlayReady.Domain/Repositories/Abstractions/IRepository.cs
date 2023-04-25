@@ -7,5 +7,5 @@ public interface IRepository<TEntity, TEntityRow>
     Task<TEntity?> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default);
     Task<TEntity> InsertAsync(string owner, TEntity input, CancellationToken cancellation = default);
     Task<TEntity?> UpdateAsync(string owner, TEntity input, CancellationToken cancellation = default);
-    FlagResult Delete(string owner, Guid id);
+    Result Delete(string owner, Guid id);
 }

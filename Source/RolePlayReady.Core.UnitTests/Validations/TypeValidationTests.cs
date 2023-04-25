@@ -3,8 +3,8 @@ namespace System.Validations;
 public class TypeValidationTests {
     public record TestObject : IValidatable {
         public Type? Type { get; init; }
-        public ValidationResult Validate() {
-            var result = new ValidationResult();
+        public Result Validate() {
+            var result = new Result();
             result += Type.IsNotNull()
                 .And.IsEqualTo<string>().Result;
             return result;

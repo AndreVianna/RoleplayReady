@@ -99,13 +99,13 @@ public class GameSystemRepositoryTests {
     public void Delete_RemovesSystem() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(InternalUser, string.Empty, id).Returns<FlagResult>(true);
+        _files.Delete(InternalUser, string.Empty, id).Returns(Result.Success);
 
         // Act
         var result = _repository.Delete(InternalUser, id);
 
         // Assert
-        result.IsTrue.Should().BeTrue();
+        result.IsSuccess.Should().BeTrue();
     }
 
     private static GameSystemData[] GenerateList()

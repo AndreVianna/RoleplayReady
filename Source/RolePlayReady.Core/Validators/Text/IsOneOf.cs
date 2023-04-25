@@ -8,6 +8,6 @@ public sealed class IsOneOf : TextValidator {
         _list = list;
     }
 
-    protected override ValidationResult ValidateValue(TextValidation validation)
+    protected override Result ValidateValue(TextValidation validation)
         => validation.IsIn(_list).Result;
 }
