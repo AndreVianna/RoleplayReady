@@ -63,19 +63,40 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    public async Task<TData> UpsertAsync(string owner, string path, TData data, CancellationToken cancellation = default) {
+    public async Task<TData> InsertAsync(string owner, string path, TData data, CancellationToken cancellation = default) {
         try {
             var folderPath = GetFolderFullPath(owner, path);
-            _logger.LogDebug("Adding or updating data in '{path}/{id}'...", folderPath, data.Id);
-            var currentFile = GetActiveFile(folderPath, data.Id);
-            if (currentFile is not null)
-                _io.MoveFile(currentFile, currentFile.Replace("+", ""));
-            var newFilePath = _io.CombinePath(folderPath, $"+{data.Id}_{_dateTimeProvider.Now:yyyyMMddHHmmss}.json");
-            await WriteToFileAsync(data, newFilePath, cancellation).ConfigureAwait(false);
+            _logger.LogDebug("Adding data in '{path}/{id}'...", folderPath, data.Id);
+            var existingFile = GetActiveFile(folderPath, data.Id);
+            if (existingFile is not null)
+                throw new InvalidOperationException($"File '{existingFile}' already exists.");
+            var filePath = _io.CombinePath(folderPath, $"+{data.Id}_{_dateTimeProvider.Now:yyyyMMddHHmmss}.json");
+            await WriteToFileAsync(data, filePath, cancellation).ConfigureAwait(false);
+            _logger.LogDebug("File '{filePath}' added.", filePath);
+            return await GetFileDataAsync(filePath, cancellation).ConfigureAwait(false);
+        }
+        catch (Exception ex) {
+            var errorFolder = $"{_baseFolderPath}/{path}";
+            _logger.LogError(ex, "Failed to add file '{path}/{id}'!", errorFolder, data.Id);
+            throw;
+        }
+    }
 
-            _logger.LogDebug("Date for '{path}/{id}' added or updated.", folderPath, data.Id);
+    public async Task<TData?> UpdateAsync(string owner, string path, TData data, CancellationToken cancellation = default) {
+        try {
+            var folderPath = GetFolderFullPath(owner, path);
+            _logger.LogDebug("Updating data in '{path}/{id}'...", folderPath, data.Id);
+            var existingFile = GetActiveFile(folderPath, data.Id);
+            if (existingFile is null) {
+                _logger.LogDebug("File '{filePath}' not found.", existingFile);
+                return default;
+            }
 
-            return await GetFileDataAsync(newFilePath, cancellation).ConfigureAwait(false);
+            _io.MoveFile(existingFile, existingFile.Replace("+", ""));
+            var filePath = _io.CombinePath(folderPath, $"+{data.Id}_{_dateTimeProvider.Now:yyyyMMddHHmmss}.json");
+            await WriteToFileAsync(data, filePath, cancellation).ConfigureAwait(false);
+            _logger.LogDebug("File '{filePath}' updated.", filePath);
+            return await GetFileDataAsync(filePath, cancellation).ConfigureAwait(false);
         }
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";

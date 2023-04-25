@@ -1,6 +1,4 @@
-﻿using System.Extensions;
-
-namespace RolePlayReady.DataAccess.Repositories.Domains;
+﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
 
 public class DomainRepository : IDomainRepository {
     private readonly ITrackedJsonFileRepository<DomainData> _files;
@@ -20,17 +18,17 @@ public class DomainRepository : IDomainRepository {
         var file = await _files
             .GetByIdAsync(owner, string.Empty, id, cancellation)
             .ConfigureAwait(false);
-        return file.Map();
+        return file?.Map();
     }
 
     public async Task<Domain> InsertAsync(string owner, Domain input, CancellationToken cancellation = default) {
-        var result = await _files.UpsertAsync(owner, string.Empty, input.Map(), cancellation).ConfigureAwait(false);
+        var result = await _files.InsertAsync(owner, string.Empty, input.Map(), cancellation).ConfigureAwait(false);
         return result.Map()!;
     }
 
-    public async Task<Domain> UpdateAsync(string owner, Domain input, CancellationToken cancellation = default) {
-        var result = await _files.UpsertAsync(owner, string.Empty, input.Map(), cancellation);
-        return result.Map()!;
+    public async Task<Domain?> UpdateAsync(string owner, Domain input, CancellationToken cancellation = default) {
+        var result = await _files.UpdateAsync(owner, string.Empty, input.Map(), cancellation);
+        return result?.Map()!;
     }
 
     public Result<bool> Delete(string owner, Guid id)

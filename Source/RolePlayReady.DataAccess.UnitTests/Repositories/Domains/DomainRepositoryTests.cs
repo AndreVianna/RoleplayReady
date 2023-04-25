@@ -58,7 +58,7 @@ public class DomainRepositoryTests {
         var domain = GenerateInput(id);
         var expected = GeneratePersisted(id);
         var tokenSource = new CancellationTokenSource();
-        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
+        _files.InsertAsync(InternalUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
 
         // Act
         var result = await _repository.InsertAsync(InternalUser, domain, tokenSource.Token);
@@ -74,13 +74,28 @@ public class DomainRepositoryTests {
         var domain = GenerateInput(id);
         var expected = GeneratePersisted(id);
         var tokenSource = new CancellationTokenSource();
-        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
+        _files.UpdateAsync(InternalUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
 
         // Act
         var result = await _repository.UpdateAsync(InternalUser, domain, tokenSource.Token);
 
         // Assert
         result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistingId_ReturnsNull() {
+        // Arrange
+        var id = Guid.NewGuid();
+        var domain = GenerateInput(id);
+        var tokenSource = new CancellationTokenSource();
+        _files.UpdateAsync(InternalUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(default(DomainData));
+
+        // Act
+        var result = await _repository.UpdateAsync(InternalUser, domain, tokenSource.Token);
+
+        // Assert
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -93,7 +108,7 @@ public class DomainRepositoryTests {
         var result = _repository.Delete(InternalUser, id);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().BeTrue();
     }
 
     private static DomainData[] GenerateList()

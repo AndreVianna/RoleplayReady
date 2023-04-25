@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
 
-public class DomainData {
+public class DomainData : IPersisted {
     public Guid Id { get; init; }
     public State State { get; init; }
     public string? ShortName { get; init; }

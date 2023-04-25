@@ -7,6 +7,5 @@ public interface IResult {
 }
 
 public interface IResult<out TValue> : IResult {
-    bool HasValue { get; }
     TValue Value { get; }
 }

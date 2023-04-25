@@ -4,10 +4,10 @@ namespace RolePlayReady.Handlers;
 
 public class GameSystemsHandlerTests {
     private readonly GameSystemHandler _handler;
-    private readonly IGameSystemsRepository _repository;
+    private readonly IGameSystemRepository _repository;
 
     public GameSystemsHandlerTests() {
-        _repository = Substitute.For<IGameSystemsRepository>();
+        _repository = Substitute.For<IGameSystemRepository>();
         var userAccessor = Substitute.For<IUserAccessor>();
         userAccessor.Id.Returns(InternalUser);
         _handler = new(_repository, userAccessor);
@@ -23,7 +23,7 @@ public class GameSystemsHandlerTests {
         var result = await _handler.GetManyAsync();
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class GameSystemsHandlerTests {
         var result = await _handler.GetByIdAsync(id);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class GameSystemsHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
     }
 
     [Fact]
@@ -78,7 +78,21 @@ public class GameSystemsHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithInvalidId_ReturnsNull() {
+        // Arrange
+        var id = Guid.NewGuid();
+        var input = CreateInput(id);
+        _repository.UpdateAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(default(GameSystem));
+
+        // Act
+        var result = await _handler.UpdateAsync(input);
+
+        // Assert
+        result.Value.Should().BeNull();
     }
 
     [Fact]
@@ -105,7 +119,7 @@ public class GameSystemsHandlerTests {
         var result = _handler.Remove(id);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().BeTrue();
     }
 
     private static Row CreateRow(Guid? id = null)

@@ -1,6 +1,4 @@
-﻿using System.Extensions;
-
-namespace RolePlayReady.DataAccess.Repositories.Domains;
+﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
 
 internal static class DomainMapper {
     public static DomainData Map(this Domain input)
@@ -24,22 +22,20 @@ internal static class DomainMapper {
 
     public static Row MapToRow(this DomainData input)
         => new() {
-                Id = input.Id,
-                Name = input.Name,
-            };
+            Id = input.Id,
+            Name = input.Name,
+        };
 
-    public static Domain? Map(this DomainData? input)
-        => input is null
-            ? null
-            : new() {
-                Id = input.Id,
-                State = input.State,
-                ShortName = input.ShortName,
-                Name = input.Name,
-                Description = input.Description,
-                Tags = input.Tags,
-                AttributeDefinitions = input.AttributeDefinitions.Select(Map).ToArray(),
-            };
+    public static Domain Map(this DomainData input)
+        => new() {
+            Id = input.Id,
+            State = input.State,
+            ShortName = input.ShortName,
+            Name = input.Name,
+            Description = input.Description,
+            Tags = input.Tags,
+            AttributeDefinitions = input.AttributeDefinitions.Select(Map).ToArray(),
+        };
 
     private static AttributeDefinition Map(this DomainData.AttributeDefinitionData input)
         => new() {

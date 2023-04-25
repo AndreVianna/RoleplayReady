@@ -17,15 +17,13 @@ internal static class GameSystemMapper {
             Name = input.Name,
         };
 
-    public static GameSystem? Map(this GameSystemData? input)
-        => input is null
-            ? null
-            : new() {
-                Id = input.Id,
-                State = input.State,
-                ShortName = input.ShortName,
-                Name = input.Name,
-                Description = input.Description,
-                Tags = input.Tags,
-            };
+    public static GameSystem Map(this GameSystemData input)
+        => new() {
+            Id = input.Id,
+            State = input.State,
+            ShortName = input.ShortName,
+            Name = input.Name,
+            Description = input.Description,
+            Tags = input.Tags,
+        };
 }

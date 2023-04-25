@@ -265,13 +265,11 @@ public class TrackedJsonFileRepositoryTests {
         await action.Should().ThrowAsync<InvalidOperationException>();
     }
 
-    [Theory]
-    [InlineData("insert")]
-    [InlineData("update")]
-    public async Task UpsertAsync_PathAndIdGiven_InsertsNewDataFile(string operation) {
+    [Fact]
+    public async Task UpsertAsync_PathAndIdGiven_InsertsNewDataFile() {
         // Arrange
         var existingFilePath = $"{_baseFolder}/{_owner}/{_path}/+{_id1}_20220406120000.json";
-        var targetId = operation == "insert" ? _newId : _id1;
+        var targetId = _newId;
         var filePath = $"{_baseFolder}/{_owner}/{_path}/+{targetId}_20220406230000.json";
         var newData = new TestData {
             Id = targetId,
@@ -299,23 +297,76 @@ public class TrackedJsonFileRepositoryTests {
         _io.OpenFileForReading(filePath).Returns(file1Content);
 
         // Act
-        var result = await _repository.UpsertAsync(_owner, _path, newData);
+        var result = await _repository.InsertAsync(_owner, _path, newData);
 
         // Assert
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(newData);
-        if (operation == "update") _io.Received(1).MoveFile(existingFilePath, existingFilePath.Replace("+", ""));
         _io.Received(1).CreateNewFileAndOpenForWriting(filePath);
     }
 
     [Fact]
-    public async Task UpsertAsync_WithInternalError_ThrowsInvalidOperationException() {
+    public async Task UpdateAsync_PathAndIdGiven_InsertsNewDataFile() {
+        // Arrange
+        var existingFilePath = $"{_baseFolder}/{_owner}/{_path}/+{_id1}_20220406120000.json";
+        var targetId = _id1;
+        var filePath = $"{_baseFolder}/{_owner}/{_path}/+{targetId}_20220406230000.json";
+        var newData = new TestData {
+            Id = targetId,
+            Name = "SomeNewName",
+            Number = 69,
+        };
+
+        _io.CombinePath(_baseFolder, _owner, _path).Returns($"{_baseFolder}/{_owner}/{_path}");
+        _io.GetFilesFrom($"{_baseFolder}/{_owner}/{_path}", $"+{_id1}*.json", SearchOption.TopDirectoryOnly)
+            .Returns(new[] { existingFilePath });
+        _dateTime.Now.Returns(DateTime.Parse("2022-04-06 23:00:00"));
+        _io.When(x => x.MoveFile(existingFilePath, existingFilePath.Replace("+", ""))).Do(_ => { });
+        _io.CombinePath($"{_baseFolder}/{_owner}/{_path}", $"+{targetId}_20220406230000.json").Returns(filePath);
+        var buffer = new byte[1024];
+        using var memoryStream = new MemoryStream(buffer, true);
+        _io.CreateNewFileAndOpenForWriting(filePath).Returns(memoryStream);
+
+        _io.ExtractFileNameFrom(filePath).Returns($"+{targetId}_20220406230000.json");
+        _dateTime.TryParseExact("20220406230000", "yyyyMMddHHmmss", null, DateTimeStyles.None, out Arg.Any<DateTime>())
+                 .Returns(x => {
+                     x[4] = DateTime.Parse("2022-04-06 23:00:00");
+                     return true;
+                 });
+        using var file1Content = new MemoryStream(Encoding.UTF8.GetBytes(Serialize(newData)));
+        _io.OpenFileForReading(filePath).Returns(file1Content);
+
+        // Act
+        var result = await _repository.UpdateAsync(_owner, _path, newData);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(newData);
+        _io.Received(1).MoveFile(existingFilePath, existingFilePath.Replace("+", ""));
+        _io.Received(1).CreateNewFileAndOpenForWriting(filePath);
+    }
+
+    [Fact]
+    public async Task InsertAsync_WithInternalError_ThrowsInvalidOperationException() {
         // Arrange
         var data = _expected[0];
         _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.UpsertAsync(_owner, _path, data);
+        var action = () => _repository.InsertAsync(_owner, _path, data);
+
+        // Assert
+        await action.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithInternalError_ThrowsInvalidOperationException() {
+        // Arrange
+        var data = _expected[0];
+        _io.CombinePath(_baseFolder, _owner, _path).Throws<InvalidOperationException>();
+
+        // Act
+        var action = () => _repository.UpdateAsync(_owner, _path, data);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>();
@@ -347,7 +398,6 @@ public class TrackedJsonFileRepositoryTests {
         var result = _repository.Delete(_owner, _path, _id1);
 
         // Assert
-        result.HasValue.Should().BeTrue();
         result.Value.Should().BeTrue();
         _io.Received(1).MoveFile(activeFilePath, deletedFilePath1);
         _io.Received(1).MoveFile(inactiveFilePath, deletedFilePath2);
@@ -366,7 +416,6 @@ public class TrackedJsonFileRepositoryTests {
         var result = _repository.Delete(_owner, _path, _id1);
 
         // Assert
-        result.HasValue.Should().BeTrue();
         result.Value.Should().BeFalse();
     }
 

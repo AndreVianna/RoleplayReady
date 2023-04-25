@@ -2,11 +2,11 @@ using static RolePlayReady.Constants.Constants;
 
 namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
-public class GameSystemsRepositoryTests {
+public class GameSystemRepositoryTests {
     private readonly ITrackedJsonFileRepository<GameSystemData> _files;
-    private readonly GameSystemsRepository _repository;
+    private readonly GameSystemRepository _repository;
 
-    public GameSystemsRepositoryTests() {
+    public GameSystemRepositoryTests() {
         _files = Substitute.For<ITrackedJsonFileRepository<GameSystemData>>();
         _repository = new(_files);
     }
@@ -57,7 +57,7 @@ public class GameSystemsRepositoryTests {
         var id = Guid.NewGuid();
         var input = GenerateInput(id);
         var expected = GeneratePersisted(id);
-        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
+        _files.InsertAsync(InternalUser, string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
         var result = await _repository.InsertAsync(InternalUser, input);
@@ -72,13 +72,27 @@ public class GameSystemsRepositoryTests {
         var id = Guid.NewGuid();
         var input = GenerateInput(id, State.Hidden);
         var expected = GeneratePersisted(id, State.Hidden);
-        _files.UpsertAsync(InternalUser, string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
+        _files.UpdateAsync(InternalUser, string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
         var result = await _repository.UpdateAsync(InternalUser, input);
 
         // Assert
         result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithNonExistingId_ReturnsNull() {
+        // Arrange
+        var id = Guid.NewGuid();
+        var input = GenerateInput(id, State.Hidden);
+        _files.UpdateAsync(InternalUser, string.Empty, Arg.Any<GameSystemData>()).Returns(default(GameSystemData));
+
+        // Act
+        var result = await _repository.UpdateAsync(InternalUser, input);
+
+        // Assert
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -91,7 +105,7 @@ public class GameSystemsRepositoryTests {
         var result = _repository.Delete(InternalUser, id);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().BeTrue();
     }
 
     private static GameSystemData[] GenerateList()

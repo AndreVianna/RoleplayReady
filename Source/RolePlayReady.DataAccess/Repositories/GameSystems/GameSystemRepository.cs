@@ -1,11 +1,9 @@
-﻿using System.Extensions;
+﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
-namespace RolePlayReady.DataAccess.Repositories.GameSystems;
-
-public class GameSystemsRepository : IGameSystemsRepository {
+public class GameSystemRepository : IGameSystemRepository {
     private readonly ITrackedJsonFileRepository<GameSystemData> _files;
 
-    public GameSystemsRepository(ITrackedJsonFileRepository<GameSystemData> files) {
+    public GameSystemRepository(ITrackedJsonFileRepository<GameSystemData> files) {
         _files = files;
     }
 
@@ -20,17 +18,17 @@ public class GameSystemsRepository : IGameSystemsRepository {
         var file = await _files
             .GetByIdAsync(owner, string.Empty, id, cancellation)
             .ConfigureAwait(false);
-        return file.Map();
+        return file?.Map();
     }
 
     public async Task<GameSystem> InsertAsync(string owner, GameSystem input, CancellationToken cancellation = default) {
-        var result = await _files.UpsertAsync(owner, string.Empty, input.Map(), cancellation).ConfigureAwait(false);
+        var result = await _files.InsertAsync(owner, string.Empty, input.Map(), cancellation).ConfigureAwait(false);
         return result.Map()!;
     }
 
-    public async Task<GameSystem> UpdateAsync(string owner, GameSystem input, CancellationToken cancellation = default) {
-        var result = await _files.UpsertAsync(owner, string.Empty, input.Map(), cancellation);
-        return result.Map()!;
+    public async Task<GameSystem?> UpdateAsync(string owner, GameSystem input, CancellationToken cancellation = default) {
+        var result = await _files.UpdateAsync(owner, string.Empty, input.Map(), cancellation);
+        return result?.Map();
     }
 
     public Result<bool> Delete(string owner, Guid id)

@@ -10,6 +10,11 @@ public class ComponentTests {
             Id = id,
             Name = "TestPersisted",
             Description = "Test persisted.",
+
+            Tags = new[] {
+                "Test",
+                "Persisted",
+            },
             Attributes = new[] {
                 new TextAttribute {
                     Definition = new AttributeDefinition {

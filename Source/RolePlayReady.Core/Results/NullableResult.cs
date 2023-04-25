@@ -15,9 +15,6 @@ public record NullableResult<TValue> : ResultBase, INullableResult<TValue> {
             Errors.Add(error);
     }
 
-    public bool IsNull => Value is null;
-    public bool HasValue => Value is not null;
-
     public TValue? Value { get; }
 
     public static implicit operator NullableResult<TValue>(Result<TValue> value) => new(value.Value, value.Errors);

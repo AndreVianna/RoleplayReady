@@ -11,14 +11,13 @@ public class ResultTests {
 
         result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
-        result.HasValue.Should().BeTrue();
         result.Value.Should().Be("testValue");
     }
 
     [Fact]
     public void ImplicitConversion_FromNull_Throws() {
         var action = () => {
-            Result<string> result = default(string)!;
+            Result<string> _ = default(string)!;
         };
 
         action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign null to 'Result<String>'.");
@@ -32,7 +31,6 @@ public class ResultTests {
 
         result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
-        result.HasValue.Should().BeTrue();
         result.Value.Should().Be("testValue");
     }
 
@@ -139,7 +137,6 @@ public class ResultTests {
 
         result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeTrue();
         result.Value.Should().Be("testValue");
     }
 
@@ -151,7 +148,6 @@ public class ResultTests {
 
         subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
-        subject.HasValue.Should().BeTrue();
         subject.Value.Should().Be("testValue");
     }
 
@@ -163,7 +159,6 @@ public class ResultTests {
 
         subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
-        subject.HasValue.Should().BeTrue();
         subject.Value.Should().Be("testValue");
     }
 
@@ -172,7 +167,7 @@ public class ResultTests {
         var result = new ValidationResult();
 
         var action = () => {
-            Result<string> subject = result + 43;
+            Result<string> _ = result + 43;
         };
 
         action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign 'Result<Integer>' to 'Result<String>'.");
@@ -187,7 +182,6 @@ public class ResultTests {
 
         subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
-        subject.HasValue.Should().BeTrue();
         subject.Value.Should().Be("testValue");
     }
 
@@ -202,7 +196,6 @@ public class ResultTests {
 
         result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeTrue();
         result.Value.Should().Be("testValue");
     }
 
@@ -228,8 +221,6 @@ public class ResultTests {
         //Assert
         result.Should().Be(expectedResult);
     }
-
-    private record TestRecord<TValue>(TValue Name, ICollection<ValidationError> Errors);
 
     [Theory]
     [InlineData(true, true, false)]
@@ -266,7 +257,6 @@ public class ResultTests {
 
         var result = input.Map(int.Parse);
 
-        result.HasValue.Should().BeTrue();
         result.Value.Should().Be(42);
     }
 
@@ -276,7 +266,6 @@ public class ResultTests {
 
         var result = input.Map(int.Parse);
 
-        result.HasValue.Should().BeTrue();
         result.Value.Should().Be(42);
         result.Errors.Should().HaveCount(1);
     }
@@ -287,7 +276,6 @@ public class ResultTests {
 
         var result = input.Map(int.Parse);
 
-        result.HasValue.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
     }
 
@@ -297,7 +285,6 @@ public class ResultTests {
 
         var result = input.Map(int.Parse);
 
-        result.HasValue.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
         result.Errors.Should().HaveCount(1);
     }

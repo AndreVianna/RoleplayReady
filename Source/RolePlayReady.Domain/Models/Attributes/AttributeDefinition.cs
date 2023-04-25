@@ -3,5 +3,5 @@
 public record AttributeDefinition : Base, IAttributeDefinition {
     public required Type DataType { get; init; }
 
-    public ICollection<IAttributeConstraint> Constraints { get; } = new List<IAttributeConstraint>();
+    public ICollection<AttributeConstraint> Constraints { get; } = new List<AttributeConstraint>();
 }

@@ -2,5 +2,5 @@
 
 public interface IAttributeDefinition : IBase {
     Type DataType { get; }
-    ICollection<IAttributeConstraint> Constraints { get; }
+    ICollection<AttributeConstraint> Constraints { get; }
 }

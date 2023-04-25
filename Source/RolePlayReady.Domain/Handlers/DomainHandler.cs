@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Handlers;
 
-public class DomainHandler {
+public class DomainHandler : IDomainHandler {
     private readonly IDomainRepository _repository;
     private readonly string _owner;
 
@@ -24,7 +24,7 @@ public class DomainHandler {
             : result + input;
     }
 
-    public async Task<Result<Domain>> UpdateAsync(Domain input, CancellationToken cancellation = default) {
+    public async Task<NullableResult<Domain>> UpdateAsync(Domain input, CancellationToken cancellation = default) {
         var result = input.Validate();
         return result.IsSuccess
             ? await _repository.UpdateAsync(_owner, input, cancellation)

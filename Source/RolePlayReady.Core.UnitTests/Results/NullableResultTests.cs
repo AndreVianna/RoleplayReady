@@ -11,8 +11,6 @@ public class NullableResultTests {
 
         result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
-        result.HasValue.Should().BeTrue();
-        result.IsNull.Should().BeFalse();
         result.Value.Should().Be("testValue");
     }
 
@@ -22,8 +20,6 @@ public class NullableResultTests {
 
         result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
-        result.HasValue.Should().BeFalse();
-        result.IsNull.Should().BeTrue();
         result.Value.Should().BeNull();
     }
 
@@ -35,8 +31,6 @@ public class NullableResultTests {
 
         subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
-        subject.HasValue.Should().BeTrue();
-        subject.IsNull.Should().BeFalse();
         subject.Value.Should().Be("testValue");
     }
 
@@ -48,8 +42,6 @@ public class NullableResultTests {
 
         subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
-        subject.HasValue.Should().BeTrue();
-        subject.IsNull.Should().BeFalse();
         subject.Value.Should().Be("testValue");
     }
 
@@ -61,8 +53,6 @@ public class NullableResultTests {
 
         subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
-        subject.HasValue.Should().BeFalse();
-        subject.IsNull.Should().BeTrue();
         subject.Value.Should().BeNull();
     }
 
@@ -74,7 +64,6 @@ public class NullableResultTests {
 
         subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
-        subject.HasValue.Should().BeTrue();
         subject.Value.Should().Be("testValue");
     }
 
@@ -97,8 +86,6 @@ public class NullableResultTests {
 
         result.IsSuccess.Should().BeFalse();
         result.HasErrors.Should().BeTrue();
-        result.HasValue.Should().BeTrue();
-        result.IsNull.Should().BeFalse();
         result.Value.Should().Be("testValue");
     }
 
@@ -111,8 +98,6 @@ public class NullableResultTests {
 
         subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
-        subject.HasValue.Should().BeTrue();
-        subject.IsNull.Should().BeFalse();
         subject.Value.Should().Be("testValue");
     }
 
@@ -267,8 +252,6 @@ public class NullableResultTests {
 
         var result = input.Map(int.Parse!);
 
-        result.HasValue.Should().BeTrue();
-        result.IsNull.Should().BeFalse();
         result.Value.Should().Be(42);
     }
 
@@ -278,8 +261,6 @@ public class NullableResultTests {
 
         var result = input.Map(int.Parse!);
 
-        result.HasValue.Should().BeTrue();
-        result.IsNull.Should().BeFalse();
         result.Value.Should().Be(42);
         result.Errors.Should().HaveCount(1);
     }
@@ -290,8 +271,6 @@ public class NullableResultTests {
 
         var result = input.Map(int.Parse);
 
-        result.HasValue.Should().BeTrue();
-        result.IsNull.Should().BeFalse();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
     }
 
@@ -301,8 +280,6 @@ public class NullableResultTests {
 
         var result = input.Map(int.Parse);
 
-        result.HasValue.Should().BeTrue();
-        result.IsNull.Should().BeFalse();
         result.Value.Should().BeEquivalentTo(new[] { 42, 7 });
         result.Errors.Should().HaveCount(1);
     }
@@ -327,8 +304,6 @@ public class NullableResultTests {
 
         var result = input.Map(int.Parse);
 
-        result.HasValue.Should().BeFalse();
-        result.IsNull.Should().BeTrue();
         result.Value.Should().BeNull();
         result.Errors.Should().HaveCount(1);
     }

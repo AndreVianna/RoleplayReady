@@ -1,10 +1,10 @@
 ﻿namespace RolePlayReady.Handlers;
 
-public class GameSystemHandler {
-    private readonly IGameSystemsRepository _repository;
+public class GameSystemHandler : IGameSystemHandler {
+    private readonly IGameSystemRepository _repository;
     private readonly string _owner;
 
-    public GameSystemHandler(IGameSystemsRepository repository, IUserAccessor user) {
+    public GameSystemHandler(IGameSystemRepository repository, IUserAccessor user) {
         _repository = repository;
         _owner = user.Id;
     }
@@ -24,7 +24,7 @@ public class GameSystemHandler {
             : result + input;
     }
 
-    public async Task<Result<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
+    public async Task<NullableResult<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
         var result = input.Validate();
         return result.IsSuccess
             ? await _repository.UpdateAsync(_owner, input, cancellation)

@@ -27,7 +27,7 @@ public class BaseTests {
     [InlineData(1, 1, 1, 1, 0, 1)]
     [InlineData(1, 1, 1, 1, -1, 1)]
     [InlineData(1, 1, 1, 1, 1, 0)]
-    [InlineData(MaxNameSize + 1, MaxDescriptionSize + 1, MaxShortNameSize + 1, 1, MaxTagSize + 1, 4)]
+    [InlineData(MaximumNameLength + 1, MaximumDescriptionLength + 1, MaximumShortNameLength + 1, 1, MaximumTagLength + 1, 4)]
     public void Validate_Validates(int? nameSize, int? descriptionSize, int? shortNameSize, int? tagListCount, int? tagsSize, int expectedErrorCount) {
         var testBase = new TestBase {
             Name = TestDataHelpers.GenerateTestString(nameSize)!,

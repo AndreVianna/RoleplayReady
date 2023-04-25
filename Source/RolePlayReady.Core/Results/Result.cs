@@ -17,8 +17,6 @@ public record Result<TValue> : ResultBase, IResult<TValue> {
             Errors.Add(error);
     }
 
-    public bool HasValue => true;
-
     [NotNull]
     public TValue Value { get; }
 

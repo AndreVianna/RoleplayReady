@@ -11,4 +11,8 @@
     <ProjectReference Include="..\RolePlayReady.Core\RolePlayReady.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

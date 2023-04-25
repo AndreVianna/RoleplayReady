@@ -23,7 +23,7 @@ public class GameDomainTests {
         var result = await _handler.GetManyAsync();
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class GameDomainTests {
         var result = await _handler.GetByIdAsync(id);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class GameDomainTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
     }
 
     [Fact]
@@ -64,7 +64,21 @@ public class GameDomainTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithInvalidId_ReturnsNull() {
+        // Arrange
+        var id = Guid.NewGuid();
+        var input = CreateInput(id);
+        _repository.UpdateAsync(InternalUser, input, Arg.Any<CancellationToken>()).Returns(default(Domain));
+
+        // Act
+        var result = await _handler.UpdateAsync(input);
+
+        // Assert
+        result.Value.Should().BeNull();
     }
 
     [Fact]
@@ -77,7 +91,7 @@ public class GameDomainTests {
         var result = _handler.Remove(id);
 
         // Assert
-        result.HasValue.Should().BeTrue();
+        result.Value.Should().BeTrue();
     }
 
     private static Row CreateRow(Guid? id = null)

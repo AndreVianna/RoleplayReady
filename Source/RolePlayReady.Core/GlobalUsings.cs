@@ -1,10 +1,8 @@
 // Global using directives
 
 global using System.Abstractions;
-global using System.Collections;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
-global using System.Numerics;
 global using System.Results;
 global using System.Results.Abstractions;
 global using System.Runtime.CompilerServices;
@@ -16,5 +14,7 @@ global using System.Validators.Abstractions;
 global using System.Validators.Collection;
 global using System.Validators.Number;
 global using System.Validators.Text;
+
+global using Microsoft.Extensions.DependencyInjection;
 
 global using static System.Constants.Constants.ErrorMessages;
