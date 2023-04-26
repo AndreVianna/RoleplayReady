@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+
 using RolePlayReady.Security.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,9 +9,8 @@ builder.Configuration
        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-if (env.IsDevelopment()) {
+if (env.IsDevelopment())
     builder.Configuration.AddUserSecrets<Program>();
-}
 
 Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
@@ -17,11 +18,12 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-const string authenticateScheme = "Bearer";
+const string authScheme = "Bearer";
+const string authHeaderKey = "Authorization";
 builder.Services.AddAuthentication(options => {
-    options.DefaultAuthenticateScheme = authenticateScheme;
-    options.DefaultChallengeScheme = authenticateScheme;
-}).AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(authenticateScheme, null);
+    options.DefaultAuthenticateScheme = authScheme;
+    options.DefaultChallengeScheme = authScheme;
+}).AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(authScheme, null);
 
 builder.Services.AddDefaultSystemProviders();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -39,20 +41,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc(apiVersion, new OpenApiInfo { Title = apiTitle, Version = apiVersion });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
-        Description = "JWT Authorization header using the Bearer scheme.",
-        Name = "Authorization",
+    c.AddSecurityDefinition(authScheme, new OpenApiSecurityScheme {
+        Description = "Please enter a valid JWT token.",
+        Name = authHeaderKey,
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer"
+        BearerFormat = "JWT",
+        Scheme = authScheme,
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement { {
         new OpenApiSecurityScheme {
             Reference = new OpenApiReference {
                 Type = ReferenceType.SecurityScheme,
-                Id = "Bearer"
-            }
+                Id = authScheme,
+            },
         },
         new List<string>()
     }});
