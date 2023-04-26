@@ -1,3 +1,5 @@
+using RolePlayReady.Api.Models.GameSystem;
+
 namespace RolePlayReady.Api.Controllers;
 
 [Authorize]

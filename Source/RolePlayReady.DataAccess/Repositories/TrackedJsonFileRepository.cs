@@ -20,6 +20,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         var baseFolder = configuration[_baseFolderConfigurationKey];
         const string keyId = $"{nameof(configuration)}[{_baseFolderConfigurationKey}]";
         _baseFolderPath = Ensure.IsNotNullOrWhiteSpace(baseFolder, keyId).Trim();
+        _io.CreateFolderIfNotExists(_baseFolderPath);
     }
 
     public async Task<IEnumerable<TData>> GetAllAsync(string owner, string path, CancellationToken cancellation = default) {
@@ -165,8 +166,11 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
            .TryParseExact(match.Groups["datetime"].Value, _timestampFormat, null, DateTimeStyles.None, out _);
     }
 
-    private string GetFolderFullPath(string owner, string path)
-        => _io.CombinePath(_baseFolderPath, owner.Trim(), path.Trim());
+    private string GetFolderFullPath(string owner, string path) {
+        var folderPath = _io.CombinePath(_baseFolderPath, owner.Trim(), path.Trim());
+        _io.CreateFolderIfNotExists(folderPath);
+        return folderPath;
+    }
 
     private string? GetActiveFile(string folder, Guid id)
         => _io.GetFilesFrom(folder, $"+{id}*.json", SearchOption.TopDirectoryOnly)

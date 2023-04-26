@@ -11,6 +11,9 @@ public class DefaultFileSystem : IFileSystem {
     public string[] GetFilesFrom(string folderPath, string searchPattern, SearchOption searchOptions)
         => Directory.GetFiles(folderPath, searchPattern, searchOptions);
 
+    public void CreateFolderIfNotExists(string folderPath)
+        => Directory.CreateDirectory(folderPath);
+
     public bool FileExists(string filePath)
         => File.Exists(filePath);
 

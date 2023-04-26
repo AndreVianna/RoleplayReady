@@ -1,3 +1,5 @@
+using RolePlayReady.Security.Abstractions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var env = builder.Environment;
@@ -15,13 +17,15 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+const string authenticateScheme = "Bearer";
 builder.Services.AddAuthentication(options => {
-    options.DefaultAuthenticateScheme = "ApiKey";
-    options.DefaultChallengeScheme = "ApiKey";
-}).AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
+    options.DefaultAuthenticateScheme = authenticateScheme;
+    options.DefaultChallengeScheme = authenticateScheme;
+}).AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(authenticateScheme, null);
 
 builder.Services.AddDefaultSystemProviders();
-builder.Services.AddDummyUserAccessor();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IUserAccessor, ApiUserAccessor>();
 builder.Services.AddDomainHandlers();
 builder.Services.AddRepositories();
 builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService<ILoggerFactory>()));
@@ -29,9 +33,30 @@ builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService
 builder.Services.AddControllers(options => options.Filters.Add<CustomExceptionFilter>())
                 .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
 
+const string apiTitle = "RoleplayReady API";
+const string apiVersion = "v1";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoleplayReady API", Version = "v1" });
+    c.SwaggerDoc(apiVersion, new OpenApiInfo { Title = apiTitle, Version = apiVersion });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement { {
+        new OpenApiSecurityScheme {
+            Reference = new OpenApiReference {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        new List<string>()
+    }});
+
     c.EnableAnnotations();
 });
 
