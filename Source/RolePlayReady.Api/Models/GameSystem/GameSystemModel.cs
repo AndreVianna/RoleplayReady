@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Api.Models;
+﻿namespace RolePlayReady.Api.Models.GameSystem;
 
 [SwaggerSchema("The model that represents a game system.", ReadOnly = true)]
 public record GameSystemModel {
@@ -6,17 +6,17 @@ public record GameSystemModel {
     [SwaggerSchema("The id of the game system.", ReadOnly = true)]
     public required Guid Id { get; init; }
     [Required]
-    [MaxLength(Constants.Constants.Validation.Definition.MaximumNameLength)]
-    [MinLength(Constants.Constants.Validation.Definition.MinimumNameLength)]
+    [MaxLength(Validation.Name.MaximumLength)]
+    [MinLength(Validation.Name.MinimumLength)]
     [SwaggerSchema("The name of the game system.", ReadOnly = true)]
     public required string Name { get; init; }
     [Required]
-    [MaxLength(Constants.Constants.Validation.Definition.MaximumDescriptionLength)]
-    [MinLength(Constants.Constants.Validation.Definition.MinimumDescriptionLength)]
+    [MaxLength(Validation.Description.MaximumLength)]
+    [MinLength(Validation.Description.MinimumLength)]
     [SwaggerSchema("The description of the game system.", ReadOnly = true)]
     public required string Description { get; init; }
-    [MinLength(Constants.Constants.Validation.Definition.MinimumShortNameLength)]
-    [MaxLength(Constants.Constants.Validation.Definition.MaximumShortNameLength)]
+    [MinLength(Validation.ShortName.MinimumLength)]
+    [MaxLength(Validation.ShortName.MaximumLength)]
     [SwaggerSchema("The optional short name of the game system.", ReadOnly = true)]
     public string? ShortName { get; init; }
     [SwaggerSchema("A collection of tags used to qualify the game system.", ReadOnly = true)]

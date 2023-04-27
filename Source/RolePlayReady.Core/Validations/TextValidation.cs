@@ -1,6 +1,7 @@
-﻿namespace System.Validations;
+﻿
+namespace System.Validations;
 
-public class TextValidation
+public partial class TextValidation
     : Validation<string, ITextValidators>,
         ITextValidation {
     public TextValidation(string? subject, string? source, IEnumerable<ValidationError>? previousErrors = null)
@@ -8,8 +9,7 @@ public class TextValidation
     }
 
     public IConnectsToOrFinishes<ITextValidators> IsNotEmptyOrWhiteSpace() {
-        if (Subject is null)
-            return this;
+        if (Subject is null) return this;
         if (Subject.Trim().Length == 0)
             Errors.Add(new(CannotBeEmptyOrWhitespace, Source));
         return this;
@@ -18,7 +18,7 @@ public class TextValidation
     public IConnectsToOrFinishes<ITextValidators> MinimumLengthIs(int length) {
         if (Subject is null) return this;
         if (Subject.Length < length)
-            Errors.Add(new(Constants.Constants.ErrorMessages.MinimumLengthIs, Source, length, Subject.Length));
+            Errors.Add(new(ErrorMessages.MinimumLengthIs, Source, length, Subject.Length));
         return this;
     }
 
@@ -39,7 +39,17 @@ public class TextValidation
     public IConnectsToOrFinishes<ITextValidators> MaximumLengthIs(int length) {
         if (Subject is null) return this;
         if (Subject.Length > length)
-            Errors.Add(new(Constants.Constants.ErrorMessages.MaximumLengthIs, Source, length, Subject.Length));
+            Errors.Add(new(ErrorMessages.MaximumLengthIs, Source, length, Subject.Length));
         return this;
     }
+
+    public IConnectsToOrFinishes<ITextValidators> IsEmail() {
+        if (Subject is null) return this;
+        if (!EmailChecker().IsMatch(Subject))
+            Errors.Add(new(IsNotAValidEmail, Source));
+        return this;
+    }
+
+    [GeneratedRegex("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
+    private static partial Regex EmailChecker();
 }

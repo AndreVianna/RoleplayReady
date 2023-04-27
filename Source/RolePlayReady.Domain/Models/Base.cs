@@ -1,6 +1,4 @@
-﻿using static RolePlayReady.Constants.Constants.Validation.Definition;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public record Base : IBase, IValidatable {
     public required string Name { get; init; }
@@ -11,10 +9,18 @@ public record Base : IBase, IValidatable {
 
     public virtual Result Validate() {
         var result = new Result();
-        result += Name.IsNotNull().And.IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaximumNameLength).Result;
-        result += Description.IsNotNull().And.IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaximumDescriptionLength).Result;
-        result += ShortName.IsNullOr().IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaximumShortNameLength).Result;
-        result += Tags.ForEach(item => item.IsNotNull().And.IsNotEmptyOrWhiteSpace().And.MaximumLengthIs(MaximumTagLength)).Result;
+        result += Name.IsNotNull()
+                      .And.IsNotEmptyOrWhiteSpace()
+                      .And.MaximumLengthIs(Validation.Name.MaximumLength).Result;
+        result += Description.IsNotNull()
+                             .And.IsNotEmptyOrWhiteSpace()
+                             .And.MaximumLengthIs(Validation.Description.MaximumLength).Result;
+        result += ShortName.IsNullOr()
+                           .IsNotEmptyOrWhiteSpace()
+                           .And.MaximumLengthIs(Validation.ShortName.MaximumLength).Result;
+        result += Tags.ForEach(item => item.IsNotNull()
+                                           .And.IsNotEmptyOrWhiteSpace()
+                                           .And.MaximumLengthIs(Validation.Tag.MaximumLength)).Result;
         return result;
     }
 }

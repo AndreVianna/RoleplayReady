@@ -17,4 +17,5 @@ global using System.Validators.Text;
 
 global using Microsoft.Extensions.DependencyInjection;
 
+global using static System.Constants.Constants;
 global using static System.Constants.Constants.ErrorMessages;

@@ -23,6 +23,7 @@ public static class Constants {
         public const string MustNotContain = "'{0}' must not contain {1}.";
         public const string MustContainKey = "'{0}' must contain key '{1}'.";
         public const string MustNotContainKey = "'{0}' must not contain key '{1}'.";
+        public const string IsNotAValidEmail = "'{0}' is not a valid email.";
 
         public const string CannotBeLessThan = "'{0}' cannot be less then {1}. Found: {2}.";
         public const string MustBeLessThan = "'{0}' must be less than {1}. Found: {2}.";

@@ -1,6 +1,4 @@
-﻿using System.Results.Extensions;
-
-namespace RolePlayReady.Handlers;
+﻿namespace RolePlayReady.Handlers;
 
 public class DomainHandler : IDomainHandler {
     private readonly IDomainRepository _repository;

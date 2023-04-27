@@ -1,5 +1,3 @@
-using static RolePlayReady.Constants.Constants.Validation.Definition;
-
 namespace RolePlayReady.Models;
 
 public class BaseTests {
@@ -27,7 +25,7 @@ public class BaseTests {
     [InlineData(1, 1, 1, 1, 0, 1)]
     [InlineData(1, 1, 1, 1, -1, 1)]
     [InlineData(1, 1, 1, 1, 1, 0)]
-    [InlineData(MaximumNameLength + 1, MaximumDescriptionLength + 1, MaximumShortNameLength + 1, 1, MaximumTagLength + 1, 4)]
+    [InlineData(Validation.Name.MaximumLength + 1, Validation.Description.MaximumLength + 1, Validation.ShortName.MaximumLength + 1, 1, Validation.Tag.MaximumLength + 1, 4)]
     public void Validate_Validates(int? nameSize, int? descriptionSize, int? shortNameSize, int? tagListCount, int? tagsSize, int expectedErrorCount) {
         var testBase = new TestBase {
             Name = TestDataHelpers.GenerateTestString(nameSize)!,

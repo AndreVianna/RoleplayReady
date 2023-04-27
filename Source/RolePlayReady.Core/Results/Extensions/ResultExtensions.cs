@@ -6,7 +6,7 @@ public static class ResultExtensions {
     public static Result<TOutput> WithValue<TOutput>(this Result input, TOutput value)
         => new Result<TOutput>(value) + input;
 
-    public static NullableResult<TOutput> WithNullableValue<TOutput>(this Result input, TOutput? value)
+    public static NullableResult<TOutput> WithNullableValue<TOutput>(this Result input, TOutput? value = default)
         => new NullableResult<TOutput>(value) + input;
 
     public static Result<TOutput> Map<TInput, TOutput>(this Result<TInput> input, Func<TInput, TOutput> map)

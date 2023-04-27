@@ -1,10 +1,9 @@
-using static RolePlayReady.Constants.Constants;
-
 namespace RolePlayReady.DataAccess.Repositories.Domains;
 
 public class DomainRepositoryTests {
     private readonly ITrackedJsonFileRepository<DomainData> _files;
     private readonly DomainRepository _repository;
+    private const string _dummyUser = "DummyUser";
 
     public DomainRepositoryTests() {
         _files = Substitute.For<ITrackedJsonFileRepository<DomainData>>();
@@ -15,10 +14,10 @@ public class DomainRepositoryTests {
     public async Task GetManyAsync_ReturnsAllDomains() {
         // Arrange
         var dataFiles = GenerateList();
-        _files.GetAllAsync(InternalUser, string.Empty).Returns(dataFiles);
+        _files.GetAllAsync(_dummyUser, string.Empty).Returns(dataFiles);
 
         // Act
-        var domains = await _repository.GetManyAsync(InternalUser);
+        var domains = await _repository.GetManyAsync(_dummyUser);
 
         // Assert
         domains.Should().HaveCount(dataFiles.Length);
@@ -29,10 +28,10 @@ public class DomainRepositoryTests {
         // Arrange
         var dataFile = GeneratePersisted();
         var tokenSource = new CancellationTokenSource();
-        _files.GetByIdAsync(InternalUser, string.Empty, dataFile.Id, tokenSource.Token).Returns(dataFile);
+        _files.GetByIdAsync(_dummyUser, string.Empty, dataFile.Id, tokenSource.Token).Returns(dataFile);
 
         // Act
-        var domain = await _repository.GetByIdAsync(InternalUser, dataFile.Id, tokenSource.Token);
+        var domain = await _repository.GetByIdAsync(_dummyUser, dataFile.Id, tokenSource.Token);
 
         // Assert
         domain.Should().NotBeNull();
@@ -42,10 +41,10 @@ public class DomainRepositoryTests {
     public async Task GetByIdAsync_DomainNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.GetByIdAsync(InternalUser, string.Empty, id, Arg.Any<CancellationToken>()).Returns(default(DomainData));
+        _files.GetByIdAsync(_dummyUser, string.Empty, id, Arg.Any<CancellationToken>()).Returns(default(DomainData));
 
         // Act
-        var domain = await _repository.GetByIdAsync(InternalUser, id);
+        var domain = await _repository.GetByIdAsync(_dummyUser, id);
 
         // Assert
         domain.Should().BeNull();
@@ -58,10 +57,10 @@ public class DomainRepositoryTests {
         var domain = GenerateInput(id);
         var expected = GeneratePersisted(id);
         var tokenSource = new CancellationTokenSource();
-        _files.InsertAsync(InternalUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
+        _files.InsertAsync(_dummyUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
 
         // Act
-        var result = await _repository.InsertAsync(InternalUser, domain, tokenSource.Token);
+        var result = await _repository.InsertAsync(_dummyUser, domain, tokenSource.Token);
 
         // Assert
         result.Should().NotBeNull();
@@ -74,10 +73,10 @@ public class DomainRepositoryTests {
         var domain = GenerateInput(id);
         var expected = GeneratePersisted(id);
         var tokenSource = new CancellationTokenSource();
-        _files.UpdateAsync(InternalUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
+        _files.UpdateAsync(_dummyUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
 
         // Act
-        var result = await _repository.UpdateAsync(InternalUser, domain, tokenSource.Token);
+        var result = await _repository.UpdateAsync(_dummyUser, domain, tokenSource.Token);
 
         // Assert
         result.Should().NotBeNull();
@@ -89,10 +88,10 @@ public class DomainRepositoryTests {
         var id = Guid.NewGuid();
         var domain = GenerateInput(id);
         var tokenSource = new CancellationTokenSource();
-        _files.UpdateAsync(InternalUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(default(DomainData));
+        _files.UpdateAsync(_dummyUser, string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(default(DomainData));
 
         // Act
-        var result = await _repository.UpdateAsync(InternalUser, domain, tokenSource.Token);
+        var result = await _repository.UpdateAsync(_dummyUser, domain, tokenSource.Token);
 
         // Assert
         result.Should().BeNull();
@@ -102,10 +101,10 @@ public class DomainRepositoryTests {
     public void Delete_RemovesDomain() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(InternalUser, string.Empty, id).Returns(Result.Success);
+        _files.Delete(_dummyUser, string.Empty, id).Returns(Result.Success);
 
         // Act
-        var result = _repository.Delete(InternalUser, id);
+        var result = _repository.Delete(_dummyUser, id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

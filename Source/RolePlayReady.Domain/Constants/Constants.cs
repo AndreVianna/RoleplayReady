@@ -1,17 +1,31 @@
 ﻿namespace RolePlayReady.Constants;
 
-public static class Constants {
+public static class General {
     public const string InternalUser = "Internal";
 
-    public static class Validation {
-        public static class Definition {
-            public const int MaximumNameLength = 100;
-            public const int MinimumNameLength = 3;
-            public const int MaximumDescriptionLength = 1000;
-            public const int MinimumDescriptionLength = 10;
-            public const int MaximumShortNameLength = 10;
-            public const int MinimumShortNameLength = 2;
-            public const int MaximumTagLength = 20;
-        }
+}
+
+public static class Validation {
+    public static class Name {
+        public const int MaximumLength = 100;
+        public const int MinimumLength = 3;
+    }
+
+    public static class Description {
+        public const int MaximumLength = 1000;
+        public const int MinimumLength = 10;
+    }
+
+    public static class ShortName {
+        public const int MaximumLength = 10;
+        public const int MinimumLength = 2;
+    }
+
+    public static class Tag {
+        public const int MaximumLength = 20;
+    }
+
+    public static class Password {
+        public const int MaximumLength = 100;
     }
 }
