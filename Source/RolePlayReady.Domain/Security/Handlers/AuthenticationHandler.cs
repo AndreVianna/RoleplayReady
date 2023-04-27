@@ -32,9 +32,10 @@ public class AuthenticationHandler : IAuthenticationHandler {
         var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(issuerSigningKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+        var tokenExpirationInHours = int.Parse(_configuration["Security:TokenExpirationInHours"]!);
         var tokenDescriptor = new SecurityTokenDescriptor {
             Subject = new ClaimsIdentity(claims),
-            Expires = _dateTime.Now.AddHours(2),
+            Expires = _dateTime.Now.AddHours(tokenExpirationInHours),
             SigningCredentials = credentials
         };
 
@@ -45,5 +46,5 @@ public class AuthenticationHandler : IAuthenticationHandler {
 
     private bool IsCorrect(Login login)
         => login.Email.Equals(_configuration["Security:DefaultUser:Email"])
-        && login.Email.Equals(_configuration["Security:DefaultUser:Password"]);
+        && login.Password.Equals(_configuration["Security:DefaultUser:Password"]);
 }

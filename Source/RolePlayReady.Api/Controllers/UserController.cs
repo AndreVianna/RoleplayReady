@@ -16,6 +16,7 @@ public class UserController : ControllerBase {
         _logger = logger;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public IActionResult Login(LoginRequest request) {
         var login = request.ToDomain();

@@ -8,7 +8,7 @@ namespace RolePlayReady.Api.Controllers;
 [SwaggerTag("Manages game systems.")]
 public class SystemsController : ControllerBase {
     private readonly IGameSystemHandler _handler;
-    private readonly ILogger _logger;
+    private readonly ILogger<SystemsController> _logger;
 
     public SystemsController(IGameSystemHandler handler, ILogger<SystemsController> logger) {
         _handler = handler;

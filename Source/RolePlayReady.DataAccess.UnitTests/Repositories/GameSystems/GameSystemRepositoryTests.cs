@@ -3,7 +3,6 @@ namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 public class GameSystemRepositoryTests {
     private readonly ITrackedJsonFileRepository<GameSystemData> _files;
     private readonly GameSystemRepository _repository;
-    private const string _dummyUser = "DummyUser";
 
     public GameSystemRepositoryTests() {
         _files = Substitute.For<ITrackedJsonFileRepository<GameSystemData>>();
@@ -14,10 +13,10 @@ public class GameSystemRepositoryTests {
     public async Task GetManyAsync_ReturnsAll() {
         // Arrange
         var dataFiles = GenerateList();
-        _files.GetAllAsync(_dummyUser, string.Empty).Returns(dataFiles);
+        _files.GetAllAsync(string.Empty).Returns(dataFiles);
 
         // Act
-        var settings = await _repository.GetManyAsync(_dummyUser);
+        var settings = await _repository.GetManyAsync();
 
         // Assert
         settings.Should().HaveCount(dataFiles.Length);
@@ -28,10 +27,10 @@ public class GameSystemRepositoryTests {
         // Arrange
         var dataFile = GeneratePersisted();
         var tokenSource = new CancellationTokenSource();
-        _files.GetByIdAsync(_dummyUser, string.Empty, dataFile.Id, tokenSource.Token).Returns(dataFile);
+        _files.GetByIdAsync(string.Empty, dataFile.Id, tokenSource.Token).Returns(dataFile);
 
         // Act
-        var setting = await _repository.GetByIdAsync(_dummyUser, dataFile.Id, tokenSource.Token);
+        var setting = await _repository.GetByIdAsync(dataFile.Id, tokenSource.Token);
 
         // Assert
         setting.Should().NotBeNull();
@@ -41,10 +40,10 @@ public class GameSystemRepositoryTests {
     public async Task GetByIdAsync_SystemNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.GetByIdAsync(_dummyUser, string.Empty, id, Arg.Any<CancellationToken>()).Returns(default(GameSystemData));
+        _files.GetByIdAsync(string.Empty, id, Arg.Any<CancellationToken>()).Returns(default(GameSystemData));
 
         // Act
-        var setting = await _repository.GetByIdAsync(_dummyUser, id);
+        var setting = await _repository.GetByIdAsync(id);
 
         // Assert
         setting.Should().BeNull();
@@ -56,10 +55,10 @@ public class GameSystemRepositoryTests {
         var id = Guid.NewGuid();
         var input = GenerateInput(id);
         var expected = GeneratePersisted(id);
-        _files.InsertAsync(_dummyUser, string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
+        _files.InsertAsync(string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
-        var result = await _repository.InsertAsync(_dummyUser, input);
+        var result = await _repository.InsertAsync(input);
 
         // Assert
         result.Should().NotBeNull();
@@ -71,10 +70,10 @@ public class GameSystemRepositoryTests {
         var id = Guid.NewGuid();
         var input = GenerateInput(id, State.Hidden);
         var expected = GeneratePersisted(id, State.Hidden);
-        _files.UpdateAsync(_dummyUser, string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
+        _files.UpdateAsync(string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
-        var result = await _repository.UpdateAsync(_dummyUser, input);
+        var result = await _repository.UpdateAsync(input);
 
         // Assert
         result.Should().NotBeNull();
@@ -85,10 +84,10 @@ public class GameSystemRepositoryTests {
         // Arrange
         var id = Guid.NewGuid();
         var input = GenerateInput(id, State.Hidden);
-        _files.UpdateAsync(_dummyUser, string.Empty, Arg.Any<GameSystemData>()).Returns(default(GameSystemData));
+        _files.UpdateAsync(string.Empty, Arg.Any<GameSystemData>()).Returns(default(GameSystemData));
 
         // Act
-        var result = await _repository.UpdateAsync(_dummyUser, input);
+        var result = await _repository.UpdateAsync(input);
 
         // Assert
         result.Should().BeNull();
@@ -98,10 +97,10 @@ public class GameSystemRepositoryTests {
     public void Delete_RemovesSystem() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(_dummyUser, string.Empty, id).Returns(Result.Success);
+        _files.Delete(string.Empty, id).Returns(Result.Success);
 
         // Act
-        var result = _repository.Delete(_dummyUser, id);
+        var result = _repository.Delete(id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

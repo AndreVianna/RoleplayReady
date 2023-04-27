@@ -7,30 +7,30 @@ public class DomainRepository : IDomainRepository {
         _files = files;
     }
 
-    public async Task<IEnumerable<Row>> GetManyAsync(string owner, CancellationToken cancellation = default) {
+    public async Task<IEnumerable<Row>> GetManyAsync(CancellationToken cancellation = default) {
         var files = await _files
-            .GetAllAsync(owner, string.Empty, cancellation)
+            .GetAllAsync(string.Empty, cancellation)
             .ConfigureAwait(false);
         return files.ToArray(i => i.MapToRow());
     }
 
-    public async Task<Domain?> GetByIdAsync(string owner, Guid id, CancellationToken cancellation = default) {
+    public async Task<Domain?> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
         var file = await _files
-            .GetByIdAsync(owner, string.Empty, id, cancellation)
+            .GetByIdAsync(string.Empty, id, cancellation)
             .ConfigureAwait(false);
         return file?.Map();
     }
 
-    public async Task<Domain> InsertAsync(string owner, Domain input, CancellationToken cancellation = default) {
-        var result = await _files.InsertAsync(owner, string.Empty, input.Map(), cancellation).ConfigureAwait(false);
+    public async Task<Domain> InsertAsync(Domain input, CancellationToken cancellation = default) {
+        var result = await _files.InsertAsync(string.Empty, input.Map(), cancellation).ConfigureAwait(false);
         return result.Map();
     }
 
-    public async Task<Domain?> UpdateAsync(string owner, Domain input, CancellationToken cancellation = default) {
-        var result = await _files.UpdateAsync(owner, string.Empty, input.Map(), cancellation);
+    public async Task<Domain?> UpdateAsync(Domain input, CancellationToken cancellation = default) {
+        var result = await _files.UpdateAsync(string.Empty, input.Map(), cancellation);
         return result?.Map();
     }
 
-    public Result Delete(string owner, Guid id)
-        => _files.Delete(owner, string.Empty, id);
+    public Result Delete(Guid id)
+        => _files.Delete(string.Empty, id);
 }

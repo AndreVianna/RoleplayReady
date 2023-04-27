@@ -1,4 +1,6 @@
-﻿using static System.Text.Json.JsonSerializer;
+﻿using RolePlayReady.Security.Abstractions;
+
+using static System.Text.Json.JsonSerializer;
 
 namespace RolePlayReady.DataAccess.Repositories;
 
@@ -13,19 +15,19 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
     private const string _timestampFormat = "yyyyMMddHHmmss";
     private const string _baseFolderConfigurationKey = $"{nameof(TrackedJsonFileRepository<TData>)}:BaseFolder";
 
-    public TrackedJsonFileRepository(IConfiguration configuration, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
+    public TrackedJsonFileRepository(IConfiguration configuration, IUserAccessor owner, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger<TrackedJsonFileRepository<TData>>() ?? NullLogger<TrackedJsonFileRepository<TData>>.Instance;
         _io = io ?? new DefaultFileSystem();
         _dateTimeProvider = dateTime ?? new DefaultDateTime();
-        var baseFolder = configuration[_baseFolderConfigurationKey];
-        const string keyId = $"{nameof(configuration)}[{_baseFolderConfigurationKey}]";
-        _baseFolderPath = Ensure.IsNotNullOrWhiteSpace(baseFolder, keyId).Trim();
+        const string baseFolderSource = $"{nameof(configuration)}[{_baseFolderConfigurationKey}]";
+        var baseFolder = Ensure.IsNotNullOrWhiteSpace(configuration[_baseFolderConfigurationKey], baseFolderSource).Trim();
+        _baseFolderPath = _io.CombinePath(baseFolder, owner.Username);
         _io.CreateFolderIfNotExists(_baseFolderPath);
     }
 
-    public async Task<IEnumerable<TData>> GetAllAsync(string owner, string path, CancellationToken cancellation = default) {
+    public async Task<IEnumerable<TData>> GetAllAsync(string path, CancellationToken cancellation = default) {
         try {
-            var folderPath = GetFolderFullPath(owner, path);
+            var folderPath = GetSourceFolderAbsolutePath(path);
             _logger.LogDebug("Getting files from '{path}'...", folderPath);
             var filePaths = _io.GetFilesFrom(folderPath, "+*.json", SearchOption.TopDirectoryOnly);
             var fileInfos = new List<TData>();
@@ -45,9 +47,9 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    public async Task<TData?> GetByIdAsync(string owner, string path, Guid id, CancellationToken cancellation = default) {
+    public async Task<TData?> GetByIdAsync(string path, Guid id, CancellationToken cancellation = default) {
         try {
-            var folderPath = GetFolderFullPath(owner, path);
+            var folderPath = GetSourceFolderAbsolutePath(path);
             _logger.LogDebug("Getting latest data from '{path}/{id}'...", folderPath, id);
             var filePath = GetActiveFile(folderPath, id);
             if (filePath is null) {
@@ -64,9 +66,9 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    public async Task<TData> InsertAsync(string owner, string path, TData data, CancellationToken cancellation = default) {
+    public async Task<TData> InsertAsync(string path, TData data, CancellationToken cancellation = default) {
         try {
-            var folderPath = GetFolderFullPath(owner, path);
+            var folderPath = GetSourceFolderAbsolutePath(path);
             _logger.LogDebug("Adding data in '{path}/{id}'...", folderPath, data.Id);
             var existingFile = GetActiveFile(folderPath, data.Id);
             if (existingFile is not null)
@@ -83,9 +85,9 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         }
     }
 
-    public async Task<TData?> UpdateAsync(string owner, string path, TData data, CancellationToken cancellation = default) {
+    public async Task<TData?> UpdateAsync(string path, TData data, CancellationToken cancellation = default) {
         try {
-            var folderPath = GetFolderFullPath(owner, path);
+            var folderPath = GetSourceFolderAbsolutePath(path);
             _logger.LogDebug("Updating data in '{path}/{id}'...", folderPath, data.Id);
             var existingFile = GetActiveFile(folderPath, data.Id);
             if (existingFile is null) {
@@ -111,9 +113,9 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         await SerializeAsync(stream, data, cancellationToken: cancellation);
     }
 
-    public Result Delete(string owner, string path, Guid id) {
+    public Result Delete(string path, Guid id) {
         try {
-            var folderPath = GetFolderFullPath(owner, path);
+            var folderPath = GetSourceFolderAbsolutePath(path);
             _logger.LogDebug("Deleting file '{path}/{id}'...", folderPath, id);
             var activeFiles = _io.GetFilesFrom(folderPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
                 .Union(_io.GetFilesFrom(folderPath, $"{id}*.json", SearchOption.TopDirectoryOnly)).ToArray();
@@ -166,8 +168,8 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
            .TryParseExact(match.Groups["datetime"].Value, _timestampFormat, null, DateTimeStyles.None, out _);
     }
 
-    private string GetFolderFullPath(string owner, string path) {
-        var folderPath = _io.CombinePath(_baseFolderPath, owner.Trim(), path.Trim());
+    private string GetSourceFolderAbsolutePath(string path) {
+        var folderPath = _io.CombinePath(_baseFolderPath, Ensure.IsNotNullOrWhiteSpace(path).Trim());
         _io.CreateFolderIfNotExists(folderPath);
         return folderPath;
     }
