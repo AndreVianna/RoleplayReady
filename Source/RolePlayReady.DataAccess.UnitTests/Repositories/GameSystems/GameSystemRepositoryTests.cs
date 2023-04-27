@@ -103,7 +103,7 @@ public class GameSystemRepositoryTests {
         var result = _repository.Delete(id);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
+        result.Should().BeTrue();
     }
 
     private static GameSystemData[] GenerateList()

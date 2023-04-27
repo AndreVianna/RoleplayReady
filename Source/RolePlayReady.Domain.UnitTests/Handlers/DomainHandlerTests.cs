@@ -1,11 +1,10 @@
 namespace RolePlayReady.Handlers;
 
-public class GameDomainTests {
+public class DomainHandlerTests {
     private readonly DomainHandler _handler;
     private readonly IDomainRepository _repository;
-    private const string _dummyUser = "DummyUser";
 
-    public GameDomainTests() {
+    public DomainHandlerTests() {
         _repository = Substitute.For<IDomainRepository>();
         _handler = new(_repository);
     }
@@ -38,6 +37,19 @@ public class GameDomainTests {
     }
 
     [Fact]
+    public async Task GetByIdAsync_WithInvalidId_ReturnsNotFound() {
+        // Arrange
+        var id = Guid.NewGuid();
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(Domain));
+
+        // Act
+        var result = await _handler.GetByIdAsync(id);
+
+        // Assert
+        result.IsNotFound.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task AddAsync_ReturnsDomain() {
         // Arrange
         var input = CreateInput();
@@ -47,6 +59,23 @@ public class GameDomainTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
+        result.HasErrors.Should().BeFalse();
+        result.Value.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task AddAsync_WithErrors_ReturnsFailure() {
+        // Arrange
+        var input = new Domain {
+            Name = null!,
+            Description = null!,
+        };
+
+        // Act
+        var result = await _handler.AddAsync(input);
+
+        // Assert
+        result.HasErrors.Should().BeTrue();
         result.Value.Should().NotBeNull();
     }
 
@@ -61,11 +90,13 @@ public class GameDomainTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
+        result.HasErrors.Should().BeFalse();
+        result.IsNotFound.Should().BeFalse();
         result.Value.Should().NotBeNull();
     }
 
     [Fact]
-    public async Task UpdateAsync_WithInvalidId_ReturnsNull() {
+    public async Task UpdateAsync_WithInvalidId_ReturnsNotFound() {
         // Arrange
         var id = Guid.NewGuid();
         var input = CreateInput(id);
@@ -75,20 +106,54 @@ public class GameDomainTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
+        result.HasErrors.Should().BeTrue();
+        result.IsNotFound.Should().BeTrue();
         result.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithErrors_ReturnsFailure() {
+        // Arrange
+        var id = Guid.NewGuid();
+        var input = new Domain {
+            Name = null!,
+            Description = null!,
+        };
+
+        // Act
+        var result = await _handler.UpdateAsync(input);
+
+        // Assert
+        result.HasErrors.Should().BeTrue();
+        result.IsNotFound.Should().BeFalse();
+        result.Value.Should().NotBeNull();
     }
 
     [Fact]
     public void Remove_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Delete(id).Returns(Result.Success);
+        _repository.Delete(id).Returns(true);
 
         // Act
         var result = _handler.Remove(id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Remove_WithInvalidId_ReturnsNotFound() {
+        // Arrange
+        var id = Guid.NewGuid();
+        _repository.Delete(id).Returns(false);
+
+        // Act
+        var result = _handler.Remove(id);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.IsNotFound.Should().BeTrue();
     }
 
     private static Row CreateRow(Guid? id = null)

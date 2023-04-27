@@ -7,6 +7,7 @@ global using System.Text;
 global using FluentAssertions;
 
 global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging.Abstractions;
 
 global using NSubstitute;
@@ -15,6 +16,7 @@ global using NSubstitute.ExceptionExtensions;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;
+global using RolePlayReady.Security.Abstractions;
 
 global using Xunit;
 

@@ -87,6 +87,17 @@ public class ResultTests {
         result.Should().Be(expectedResult);
     }
 
+    [Fact]
+    public void ImplicitConversion_FromResult_ReturnsAsExpected() {
+        Result<object> source = "testValue";
+        source += new ValidationError("Some error.", "objectResult");
+
+        Result<string> subject = source;
+
+        subject.HasErrors.Should().BeTrue();
+        subject.Value.Should().Be("testValue");
+    }
+
     [Theory]
     [InlineData(false, false)]
     [InlineData(true, true)]

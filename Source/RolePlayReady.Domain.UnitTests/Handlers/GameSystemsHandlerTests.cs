@@ -37,6 +37,19 @@ public class GameSystemsHandlerTests {
     }
 
     [Fact]
+    public async Task GetByIdAsync_WithInvalidId_ReturnsNotFound() {
+        // Arrange
+        var id = Guid.NewGuid();
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(GameSystem));
+
+        // Act
+        var result = await _handler.GetByIdAsync(id);
+
+        // Assert
+        result.IsNotFound.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task AddAsync_ReturnsSystem() {
         // Arrange
         var input = CreateInput();
@@ -109,13 +122,26 @@ public class GameSystemsHandlerTests {
     public void Remove_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Delete(id).Returns(Result.Success);
+        _repository.Delete(id).Returns(true);
 
         // Act
         var result = _handler.Remove(id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Remove_WithInvalidId_ReturnsTrue() {
+        // Arrange
+        var id = Guid.NewGuid();
+        _repository.Delete(id).Returns(false);
+
+        // Act
+        var result = _handler.Remove(id);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
     }
 
     private static Row CreateRow(Guid? id = null)

@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Security.Handlers;
+﻿using System.Utilities;
+
+namespace RolePlayReady.Security.Handlers;
 
 public class AuthenticationHandler : IAuthenticationHandler {
     private readonly IConfiguration _configuration;
@@ -16,7 +18,7 @@ public class AuthenticationHandler : IAuthenticationHandler {
         }
 
         if (!IsCorrect(login)) {
-            return Result.Failure(string.Empty, "Invalid", nameof(login));
+            return Result.Failure(string.Empty, "AuthenticationFailed", nameof(login));
         }
 
         // Generate the JWT

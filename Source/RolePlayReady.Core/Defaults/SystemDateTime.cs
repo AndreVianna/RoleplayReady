@@ -1,7 +1,7 @@
-﻿namespace System;
+﻿namespace System.Defaults;
 
 [ExcludeFromCodeCoverage]
-public class DefaultDateTime : IDateTime {
+public class SystemDateTime : IDateTime {
     public DateTime Now => DateTime.UtcNow;
     public DateOnly Today => DateOnly.FromDateTime(DateTime.UtcNow);
     public TimeOnly TimeOfDay => TimeOnly.FromDateTime(DateTime.UtcNow);

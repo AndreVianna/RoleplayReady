@@ -1,16 +1,18 @@
+using System.Utilities;
+
 using RolePlayReady.Api.Models.GameSystem;
 
 namespace RolePlayReady.Api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/Systems")]
 [SwaggerTag("Manages game systems.")]
-public class SystemsController : ControllerBase {
+public class GameSystemsController : ControllerBase {
     private readonly IGameSystemHandler _handler;
-    private readonly ILogger<SystemsController> _logger;
+    private readonly ILogger<GameSystemsController> _logger;
 
-    public SystemsController(IGameSystemHandler handler, ILogger<SystemsController> logger) {
+    public GameSystemsController(IGameSystemHandler handler, ILogger<GameSystemsController> logger) {
         _handler = handler;
         _logger = logger;
     }
@@ -28,7 +30,7 @@ public class SystemsController : ControllerBase {
         return Ok(response);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Get a game system",
                       Description = "Retrieves a game system by its ID.",
                       OperationId = "GetGameSystemById")]
@@ -37,10 +39,10 @@ public class SystemsController : ControllerBase {
     public async Task<IActionResult> GetById(
         [FromRoute]
         [SwaggerParameter("The id of the game system.", Required = true)]
-        Guid id,
+        string id,
         CancellationToken cancellationToken = default) {
         _logger.LogDebug("Getting game system '{id}' requested.", id);
-        var result = await _handler.GetByIdAsync(id, cancellationToken);
+        var result = await _handler.GetByIdAsync(id.ToGuid(), cancellationToken);
         if (result.Value is null) {
             _logger.LogDebug("Fail to retrieve game system '{id}' (not found).", id);
             return NotFound();
@@ -75,7 +77,7 @@ public class SystemsController : ControllerBase {
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id}")]
     [SwaggerOperation(Summary = "Update a game system",
                       Description = "Updates an existing game system with the given ID using the provided request data.",
                       OperationId = "UpdateGameSystem")]
@@ -85,7 +87,7 @@ public class SystemsController : ControllerBase {
     public async Task<IActionResult> Update(
         [FromRoute]
         [SwaggerParameter("The id of the game system.", Required = true)]
-        Guid id,
+        string id,
         [FromBody]
         [SwaggerParameter("Updated game system data.", Required = true)]
         GameSystemRequest request,
@@ -98,17 +100,17 @@ public class SystemsController : ControllerBase {
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
 
-        if (result.Value is null) {
+        if (result.IsNotFound) {
             _logger.LogDebug("Fail to update game system '{id}' (not found).", id);
             return NotFound();
         }
 
-        var response = result.Value.ToResponse();
+        var response = result.Value!.ToResponse();
         _logger.LogDebug("Game system '{id}' updated successfully.", id);
         return Ok(response);
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id}")]
     [SwaggerOperation(Summary = "Remove a game system",
                       Description = "Removes an existing game system with the given ID.",
                       OperationId = "RemoveGameSystem")]
@@ -117,10 +119,10 @@ public class SystemsController : ControllerBase {
     public IActionResult Remove(
         [FromRoute]
         [SwaggerParameter("The id of the game system.", Required = true)]
-        Guid id) {
+        string id) {
         _logger.LogDebug("Remove game system '{id}' requested.", id);
-        var result = _handler.Remove(id);
-        if (!result.IsSuccess) {
+        var result = _handler.Remove(id.ToGuid());
+        if (result.IsNotFound) {
             _logger.LogDebug("Fail to remove game system '{id}' (not found).", id);
             return NotFound();
         }

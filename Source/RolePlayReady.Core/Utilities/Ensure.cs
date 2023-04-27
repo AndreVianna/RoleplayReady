@@ -1,6 +1,4 @@
-﻿using System.Extensions;
-
-namespace System;
+﻿namespace System.Utilities;
 
 public static class Ensure {
     [return: NotNull]
@@ -92,7 +90,7 @@ public static class Ensure {
     public static TItem[] ArgumentsAreAllOfType<TItem>(IReadOnlyList<object?> arguments, string methodName, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {
         var list = (IReadOnlyList<object>)IsNotNullOrEmptyAndHasNoNullItems(arguments, paramName);
         for (var index = 0; index < list.Count; index++) {
-            if (list[index] is not TItem )
+            if (list[index] is not TItem)
                 throw new ArgumentException($"At least one argument of '{methodName}' is of an invalid type. Expected: {typeof(TItem).GetName()}.  Found: {list[index]!.GetType().GetName()}.", $"{nameof(arguments)}[{index}]");
         }
 

@@ -9,9 +9,9 @@ namespace RolePlayReady.Api.Controllers;
 public class UserController : ControllerBase {
     // Inject the necessary services
     private readonly IAuthenticationHandler _handler;
-    private readonly ILogger<SystemsController> _logger;
+    private readonly ILogger<GameSystemsController> _logger;
 
-    public UserController(IAuthenticationHandler handler, ILogger<SystemsController> logger) {
+    public UserController(IAuthenticationHandler handler, ILogger<GameSystemsController> logger) {
         _handler = handler;
         _logger = logger;
     }

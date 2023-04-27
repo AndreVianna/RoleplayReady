@@ -1,4 +1,4 @@
-﻿namespace System;
+﻿namespace System.Utilities;
 
 public static class Make {
     public static Type TypeFrom(string name)

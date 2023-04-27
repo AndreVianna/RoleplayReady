@@ -57,6 +57,28 @@ public class NullableResultTests {
     }
 
     [Fact]
+    public void ImplicitConversion_FromNullableResult_ReturnsAsExpected() {
+        NullableResult<object> source = "testValue";
+        source += new ValidationError("Some error.", "objectResult");
+
+        NullableResult<string> subject = source;
+
+        subject.HasErrors.Should().BeTrue();
+        subject.Value.Should().Be("testValue");
+    }
+
+    [Fact]
+    public void ImplicitConversion_FromResult_ReturnsAsExpected() {
+        Result<object> source = "testValue";
+        source += new ValidationError("Some error.", "objectResult");
+
+        NullableResult<string> subject = source;
+
+        subject.HasErrors.Should().BeTrue();
+        subject.Value.Should().Be("testValue");
+    }
+
+    [Fact]
     public void AddOperator_FromValidation_WithErrors_ReturnsInvalid() {
         var result = Success + new ValidationError("Some error.", "someField");
 

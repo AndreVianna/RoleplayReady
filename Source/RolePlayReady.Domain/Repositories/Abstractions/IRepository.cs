@@ -7,5 +7,5 @@ public interface IRepository<TEntity, TEntityRow>
     Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellation = default);
     Task<TEntity> InsertAsync(TEntity input, CancellationToken cancellation = default);
     Task<TEntity?> UpdateAsync(TEntity input, CancellationToken cancellation = default);
-    Result Delete(Guid id);
+    bool Delete(Guid id);
 }

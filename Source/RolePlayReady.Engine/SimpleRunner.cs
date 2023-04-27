@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine;
+﻿using System.Utilities;
+
+namespace RolePlayReady.Engine;
 
 public abstract class SimpleRunner<TContext, TOptions> : IRunner<TContext, TOptions>
     where TContext : class, IContext

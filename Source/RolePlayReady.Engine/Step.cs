@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine;
+﻿using System.Utilities;
+
+namespace RolePlayReady.Engine;
 
 public abstract class Step<TContext> : IStep<TContext>
     where TContext : class, IContext {

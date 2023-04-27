@@ -1,5 +1,4 @@
-﻿using RolePlayReady.Security.Abstractions;
-
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Text.Json.JsonSerializer;
 
 namespace RolePlayReady.DataAccess.Repositories;
@@ -18,7 +17,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
     public TrackedJsonFileRepository(IConfiguration configuration, IUserAccessor owner, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger<TrackedJsonFileRepository<TData>>() ?? NullLogger<TrackedJsonFileRepository<TData>>.Instance;
         _io = io ?? new DefaultFileSystem();
-        _dateTimeProvider = dateTime ?? new DefaultDateTime();
+        _dateTimeProvider = dateTime ?? new SystemDateTime();
         const string baseFolderSource = $"{nameof(configuration)}[{_baseFolderConfigurationKey}]";
         var baseFolder = Ensure.IsNotNullOrWhiteSpace(configuration[_baseFolderConfigurationKey], baseFolderSource).Trim();
         _baseFolderPath = _io.CombinePath(baseFolder, owner.Username);
@@ -113,25 +112,20 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
         await SerializeAsync(stream, data, cancellationToken: cancellation);
     }
 
-    public Result Delete(string path, Guid id) {
+    public bool Delete(string path, Guid id) {
         try {
             var folderPath = GetSourceFolderAbsolutePath(path);
             _logger.LogDebug("Deleting file '{path}/{id}'...", folderPath, id);
-            var activeFiles = _io.GetFilesFrom(folderPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
-                .Union(_io.GetFilesFrom(folderPath, $"{id}*.json", SearchOption.TopDirectoryOnly)).ToArray();
-            if (activeFiles.Length == 0) {
-                _logger.LogDebug("File '{path}/{id}' not found.", folderPath, id);
-                return Result.Failure("Not found.", id.ToString());
+            var existingFile = GetActiveFile(folderPath, id);
+            if (existingFile is null) {
+                _logger.LogDebug("File '{filePath}' not found.", existingFile);
+                return false;
             }
 
-            foreach (var activeFile in activeFiles) {
-                var fileName = _io.ExtractFileNameFrom(activeFile);
-                var deletedFile = _io.CombinePath(folderPath, $"-{fileName.Replace("+", string.Empty)}");
-                _io.MoveFile(activeFile, deletedFile);
-            }
+            _io.MoveFile(existingFile, existingFile.Replace("+", ""));
 
             _logger.LogDebug("File '{path}/{id}' deleted.", folderPath, id);
-            return Result.Success;
+            return true;
         }
         catch (Exception ex) {
             var errorFolder = $"{_baseFolderPath}/{path}";

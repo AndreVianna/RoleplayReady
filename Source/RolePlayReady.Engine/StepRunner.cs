@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Engine;
+﻿using System.Utilities;
+
+namespace RolePlayReady.Engine;
 
 public abstract class StepRunner<TContext, TOptions> : IRunner<TContext, TOptions>
     where TContext : class, IContext

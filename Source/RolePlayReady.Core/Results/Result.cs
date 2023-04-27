@@ -1,6 +1,4 @@
-﻿using System.Extensions;
-
-namespace System.Results;
+﻿namespace System.Results;
 
 public sealed record Result : ResultBase {
     public Result() : this((object?)null) { }
@@ -17,8 +15,7 @@ public sealed record Result : ResultBase {
     }
 
     public static Result Success { get; } = new();
-    public static Result<TValue> Value<TValue>(TValue value) => new(value);
-    public static NullableResult<TValue> NullableValue<TValue>(TValue? value) => new(value);
+    public static Result<TValue> FromValue<TValue>(TValue value) => new(value);
     public static Result Failure(string message, string source)  => Failure(new ValidationError(message, source));
     public static Result Failure(ValidationError error) => Failure(new [] { error });
     public static Result Failure(IEnumerable<ValidationError> errors) => new(errors);
@@ -28,6 +25,8 @@ public sealed record Result : ResultBase {
     public static NullableResult<TValue> Failure<TValue>(string message, string source) => Failure<TValue>(new ValidationError(message, source));
     public static NullableResult<TValue> Failure<TValue>(ValidationError error) => Failure<TValue>(new[] { error });
     public static NullableResult<TValue> Failure<TValue>(IEnumerable<ValidationError> errors) => new NullableResult<TValue>() + new Result(errors);
+    public static Result NotFound(string source) => Failure(NotFoundMessage, source);
+    public static NullableResult<TValue> NotFound<TValue>(string source) => Failure<TValue>(NotFoundMessage, source);
 
     public static implicit operator Result(List<ValidationError> errors) => new((object?)errors);
     public static implicit operator Result(ValidationError[] errors) => new((object?)errors);
@@ -63,7 +62,6 @@ public record Result<TValue> : ResultBase, IResult<TValue> {
     [NotNull]
     public TValue Value { get; }
 
-    public static implicit operator Result<TValue>(NullableResult<object> value) => new(value.Value, value.Errors);
     public static implicit operator Result<TValue>(Result<object> value) => new(value.Value, value.Errors);
     public static implicit operator Result<TValue>(TValue? value) => new(value, Array.Empty<ValidationError>());
     public static implicit operator TValue(Result<TValue> input) => input.Value;
@@ -99,6 +97,7 @@ public record NullableResult<TValue> : ResultBase, INullableResult<TValue> {
     public TValue? Value { get; }
 
     public static implicit operator NullableResult<TValue>(Result<TValue> value) => new(value.Value, value.Errors);
+    public static implicit operator NullableResult<TValue>(Result<object> value) => new(value.Value, value.Errors);
     public static implicit operator NullableResult<TValue>(NullableResult<object> value) => new(value.Value, value.Errors);
     public static implicit operator NullableResult<TValue>(TValue? value) => new(value, Array.Empty<ValidationError>());
     public static implicit operator TValue?(NullableResult<TValue> input) => input.Value;

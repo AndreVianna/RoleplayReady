@@ -1,4 +1,4 @@
-﻿namespace System;
+﻿namespace System.Defaults;
 
 [ExcludeFromCodeCoverage]
 public class DefaultFileSystem : IFileSystem {

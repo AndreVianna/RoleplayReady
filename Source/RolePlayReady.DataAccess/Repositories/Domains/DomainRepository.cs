@@ -31,6 +31,6 @@ public class DomainRepository : IDomainRepository {
         return result?.Map();
     }
 
-    public Result Delete(Guid id)
+    public bool Delete(Guid id)
         => _files.Delete(string.Empty, id);
 }

@@ -1,7 +1,7 @@
 namespace RolePlayReady.Models;
 
 public class BaseTests {
-    private record TestBase : Base;
+    public record TestBase : Base;
 
     [Fact]
     public void Constructor_CreatesObject() {
@@ -18,24 +18,28 @@ public class BaseTests {
     }
 
     [Theory]
-    [InlineData(null, null, null, null, null, 3)]
-    [InlineData(0, 0, 0, 0, null, 3)]
-    [InlineData(-1, -1, -1, -1, null, 4)]
-    [InlineData(1, 1, 1, 1, null, 1)]
-    [InlineData(1, 1, 1, 1, 0, 1)]
-    [InlineData(1, 1, 1, 1, -1, 1)]
-    [InlineData(1, 1, 1, 1, 1, 0)]
-    [InlineData(Validation.Name.MaximumLength + 1, Validation.Description.MaximumLength + 1, Validation.ShortName.MaximumLength + 1, 1, Validation.Tag.MaximumLength + 1, 4)]
-    public void Validate_Validates(int? nameSize, int? descriptionSize, int? shortNameSize, int? tagListCount, int? tagsSize, int expectedErrorCount) {
-        var testBase = new TestBase {
-            Name = TestDataHelpers.GenerateTestString(nameSize)!,
-            Description = TestDataHelpers.GenerateTestString(descriptionSize)!,
-            ShortName = TestDataHelpers.GenerateTestString(shortNameSize)!,
-            Tags = TestDataHelpers.GenerateTestCollection(tagListCount, TestDataHelpers.GenerateTestString(tagsSize))!,
-        };
+    [ClassData(typeof(TestData))]
+    public void Validate_Validates(TestBase subject, bool isSuccess, int errorCount) {
+        // Act
+        var result = subject.Validate();
 
-        var result = testBase.Validate();
+        // Assert
+        result.IsSuccess.Should().Be(isSuccess);
+        result.Errors.Should().HaveCount(errorCount);
+    }
 
-        result.Errors.Should().HaveCount(expectedErrorCount);
+    private class TestData : TheoryData<TestBase, bool, int> {
+        public TestData() {
+            Add(new() { Name = "TestName", Description = "TestDescription", ShortName = "TN", Tags = new [] { "tag1", "tag2" } }, true, 0);
+            Add(new() { Name = null!, Description = null!, ShortName = null, Tags = null! }, false, 3);
+            Add(new() { Name = "", Description = "", ShortName = "", Tags = new [] { null!, "" } }, false, 5);
+            Add(new() { Name = "  ", Description = "  ", ShortName = "  ", Tags = new [] { "  " } }, false, 4);
+            Add(new() {
+                Name = new('X', Validation.Name.MaximumLength + 1),
+                Description = new('X', Validation.Description.MaximumLength + 1),
+                ShortName = new('X', Validation.ShortName.MaximumLength + 1),
+                Tags = new [] { new string('X', Validation.Tag.MaximumLength + 1) },
+            }, false, 4);
+        }
     }
 }

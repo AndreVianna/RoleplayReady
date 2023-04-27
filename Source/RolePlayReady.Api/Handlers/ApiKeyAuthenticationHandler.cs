@@ -1,3 +1,5 @@
+using System.Utilities;
+
 namespace RolePlayReady.Api.Handlers;
 
 internal class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions> {

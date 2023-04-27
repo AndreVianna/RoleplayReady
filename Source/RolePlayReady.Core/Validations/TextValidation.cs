@@ -44,7 +44,7 @@ public partial class TextValidation
     }
 
     public IConnectsToOrFinishes<ITextValidators> IsEmail() {
-        if (Subject is null) return this;
+        if (string.IsNullOrEmpty(Subject)) return this;
         if (!EmailChecker().IsMatch(Subject))
             Errors.Add(new(IsNotAValidEmail, Source));
         return this;

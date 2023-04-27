@@ -1,4 +1,4 @@
-﻿namespace System;
+﻿namespace System.Utilities;
 
 public static class Create {
     public static T Instance<T>(params object?[]? args)

@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
+﻿using System.Utilities;
+
+namespace RolePlayReady.DataAccess.Repositories.Domains;
 
 internal static class DomainMapper {
     public static DomainData Map(this Domain input)
