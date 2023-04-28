@@ -7,7 +7,6 @@ global using Microsoft.Extensions.Logging;
 
 global using NSubstitute;
 
-global using RolePlayReady.Api.Models.GameSystem;
 global using RolePlayReady.Handlers;
 global using RolePlayReady.Models;
 

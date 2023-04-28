@@ -1,10 +1,9 @@
-using RolePlayReady.Api.Controllers.Account.Models;
-using RolePlayReady.Api.Controllers.GameSystem;
-using RolePlayReady.Api.Controllers.Models;
+using RolePlayReady.Api.Controllers.Accounts.Models;
+using RolePlayReady.Api.Controllers.GameSystems;
 
 using IAuthenticationHandler = RolePlayReady.Security.Handlers.IAuthenticationHandler;
 
-namespace RolePlayReady.Api.Controllers.Account;
+namespace RolePlayReady.Api.Controllers.Accounts;
 
 [Authorize]
 [ApiController]
@@ -26,16 +25,16 @@ public class UserController : ControllerBase {
         var login = request.ToDomain();
         var result = _handler.Authenticate(login);
         if (!result.HasErrors) {
-            var response = new LoginResponse { Token = result.Value };
-            return Ok(response);
+            _logger.LogDebug("'{user}' logged in successfully.", request.Email);
+            return Ok(result.Value.ToLoginResponse());
         }
 
         if (result.Errors[0].Message == "Invalid.") {
-            _logger.LogDebug("Fail to login (failed attempt).");
+            _logger.LogDebug("'{user}' failed to login (failed attempt).", request.Email);
             return Unauthorized();
         }
 
-        _logger.LogDebug("Fail to login (bad request).");
+        _logger.LogDebug("'{user}' fail to login (bad request).", request.Email);
         return BadRequest(result.Errors.UpdateModelState(ModelState));
     }
 }

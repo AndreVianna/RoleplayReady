@@ -1,6 +1,4 @@
-using DomainGameSystem = RolePlayReady.Models.GameSystem;
-
-namespace RolePlayReady.Api.Controllers.GameSystem.Models;
+namespace RolePlayReady.Api.Controllers.GameSystems.Models;
 
 internal static class GameSystemMapper {
     public static GameSystemRowResponse[] ToResponse(this IEnumerable<Row> rows)
@@ -12,7 +10,7 @@ internal static class GameSystemMapper {
             Name = row.Name
         };
 
-    public static GameSystemResponse ToResponse(this DomainGameSystem model)
+    public static GameSystemResponse ToResponse(this GameSystem model)
         => new() {
             Id = (Base64Guid)model.Id,
             Name = model.Name,
@@ -21,7 +19,7 @@ internal static class GameSystemMapper {
             Tags = model.Tags,
         };
 
-    public static DomainGameSystem ToDomain(this GameSystemRequest request, Guid? id = null)
+    public static GameSystem ToDomain(this GameSystemRequest request, Guid? id = null)
         => new() {
             Id = id ?? Guid.NewGuid(),
             Name = request.Name,

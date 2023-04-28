@@ -1,6 +1,4 @@
-using RolePlayReady.Security.Models;
-
-namespace RolePlayReady.Api.Controllers.Account.Models;
+namespace RolePlayReady.Api.Controllers.Accounts.Models;
 
 internal static class AccountManagementMapper {
     public static Login ToDomain(this LoginRequest request)
@@ -8,4 +6,7 @@ internal static class AccountManagementMapper {
             Email = request.Email.Trim(),
             Password = request.Password.Trim(),
         };
+
+    public static LoginResponse ToLoginResponse(this string response)
+        => new() { Token = response };
 }

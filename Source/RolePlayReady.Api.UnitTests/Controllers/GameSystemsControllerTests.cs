@@ -1,5 +1,5 @@
-﻿using RolePlayReady.Api.Controllers.GameSystem;
-using RolePlayReady.Api.Controllers.GameSystem.Models;
+﻿using RolePlayReady.Api.Controllers.GameSystems;
+using RolePlayReady.Api.Controllers.GameSystems.Models;
 
 namespace RolePlayReady.Api.Controllers;
 

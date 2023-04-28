@@ -1,7 +1,6 @@
-using RolePlayReady.Api.Controllers.GameSystem.Models;
-using RolePlayReady.Api.Controllers.Models;
+using RolePlayReady.Api.Controllers.GameSystems.Models;
 
-namespace RolePlayReady.Api.Controllers.GameSystem;
+namespace RolePlayReady.Api.Controllers.GameSystems;
 
 [Authorize]
 [ApiController]

@@ -31,7 +31,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUserAccessor, ApiUserAccessor>();
 builder.Services.AddDomainHandlers();
 builder.Services.AddRepositories();
-builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService<ILoggerFactory>()));
+builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService<ILoggerFactory>(), env));
 
 builder.Services.AddControllers(options => options.Filters.Add<CustomExceptionFilter>())
                 .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
