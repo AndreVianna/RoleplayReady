@@ -1,6 +1,6 @@
 namespace RolePlayReady.Api.Controllers.Accounts.Models;
 
-internal static class AccountManagementMapper {
+internal static class AccountsMapper {
     public static Login ToDomain(this LoginRequest request)
         => new() {
             Email = request.Email.Trim(),

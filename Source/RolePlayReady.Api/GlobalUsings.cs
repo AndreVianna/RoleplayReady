@@ -19,6 +19,8 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
 
+global using RolePlayReady.Api.Controllers.Accounts.Models;
+global using RolePlayReady.Api.Controllers.GameSystems;
 global using RolePlayReady.Api.Controllers.Models;
 global using RolePlayReady.Api.Handlers;
 global using RolePlayReady.Constants;

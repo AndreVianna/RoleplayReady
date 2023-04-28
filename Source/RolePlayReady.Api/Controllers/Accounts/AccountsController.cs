@@ -1,6 +1,3 @@
-using RolePlayReady.Api.Controllers.Accounts.Models;
-using RolePlayReady.Api.Controllers.GameSystems;
-
 using IAuthenticationHandler = RolePlayReady.Security.Handlers.IAuthenticationHandler;
 
 namespace RolePlayReady.Api.Controllers.Accounts;
@@ -9,12 +6,12 @@ namespace RolePlayReady.Api.Controllers.Accounts;
 [ApiController]
 [Route("api/[controller]")]
 [SwaggerTag("Manages user information.")]
-public class UserController : ControllerBase {
+public class AccountsController : ControllerBase {
     // Inject the necessary services
     private readonly IAuthenticationHandler _handler;
     private readonly ILogger<GameSystemsController> _logger;
 
-    public UserController(IAuthenticationHandler handler, ILogger<GameSystemsController> logger) {
+    public AccountsController(IAuthenticationHandler handler, ILogger<GameSystemsController> logger) {
         _handler = handler;
         _logger = logger;
     }
