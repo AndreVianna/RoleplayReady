@@ -1,4 +1,4 @@
-namespace RolePlayReady.Api.Models.AccountManagement;
+namespace RolePlayReady.Api.Controllers.Account.Models;
 
 public record LoginRequest {
     [Required]

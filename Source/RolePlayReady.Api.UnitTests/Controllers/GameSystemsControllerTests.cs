@@ -1,4 +1,7 @@
-﻿namespace RolePlayReady.Api.Controllers;
+﻿using RolePlayReady.Api.Controllers.GameSystem;
+using RolePlayReady.Api.Controllers.GameSystem.Models;
+
+namespace RolePlayReady.Api.Controllers;
 
 public class GameSystemsControllerTests {
     [Fact]
@@ -30,7 +33,7 @@ public class GameSystemsControllerTests {
 
         // Assert
         var subject = result.Should().BeOfType<OkObjectResult>().Subject;
-        var resultRows = subject.Value.Should().BeOfType<GameSystemRowModel[]>().Subject;
+        var resultRows = subject.Value.Should().BeOfType<GameSystemRowResponse[]>().Subject;
         resultRows.Should().BeEquivalentTo(expectedRows);
     }
 }

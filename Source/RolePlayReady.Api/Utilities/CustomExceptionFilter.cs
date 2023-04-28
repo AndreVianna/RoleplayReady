@@ -1,4 +1,4 @@
-namespace RolePlayReady.Api.Filters;
+namespace RolePlayReady.Api.Utilities;
 
 internal class CustomExceptionFilter : IExceptionFilter {
     private readonly ILogger _logger;

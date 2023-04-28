@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Api.Models.GameSystem;
+﻿namespace RolePlayReady.Api.Controllers.GameSystem.Models;
 
 [SwaggerSchema("The request model used to create or update a game system.")]
 public record GameSystemRequest {

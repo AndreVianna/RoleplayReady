@@ -163,7 +163,7 @@ public partial class TrackedJsonFileRepository<TData> : ITrackedJsonFileReposito
     }
 
     private string GetSourceFolderAbsolutePath(string path) {
-        var folderPath = _io.CombinePath(_baseFolderPath, Ensure.IsNotNullOrWhiteSpace(path).Trim());
+        var folderPath = _io.CombinePath(_baseFolderPath, Ensure.IsNotNull(path).Trim());
         _io.CreateFolderIfNotExists(folderPath);
         return folderPath;
     }

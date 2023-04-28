@@ -1,6 +1,10 @@
+using RolePlayReady.Api.Controllers.Account.Models;
+using RolePlayReady.Api.Controllers.GameSystem;
+using RolePlayReady.Api.Controllers.Models;
+
 using IAuthenticationHandler = RolePlayReady.Security.Handlers.IAuthenticationHandler;
 
-namespace RolePlayReady.Api.Controllers;
+namespace RolePlayReady.Api.Controllers.Account;
 
 [Authorize]
 [ApiController]

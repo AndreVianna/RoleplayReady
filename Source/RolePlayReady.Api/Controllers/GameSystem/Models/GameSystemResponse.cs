@@ -1,7 +1,7 @@
-﻿namespace RolePlayReady.Api.Models.GameSystem;
+﻿namespace RolePlayReady.Api.Controllers.GameSystem.Models;
 
 [SwaggerSchema("The model that represents a game system.", ReadOnly = true)]
-public record GameSystemModel {
+public record GameSystemResponse {
     [Required]
     [SwaggerSchema("The id of the game system.", ReadOnly = true)]
     public required string Id { get; init; }
