@@ -32,4 +32,8 @@
     <ProjectReference Include="..\RolePlayReady.Domain\RolePlayReady.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="RolePlayReady.Api.UnitTests" />
+  </ItemGroup>
+
 </Project>
