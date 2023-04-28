@@ -1,11 +1,15 @@
+using Microsoft.AspNetCore.Mvc;
+
 using IAuthenticationHandler = RolePlayReady.Security.Handlers.IAuthenticationHandler;
 
 namespace RolePlayReady.Api.Controllers.Accounts;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
-[SwaggerTag("Manages user information.")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]", Order = 0)]
+[ApiExplorerSettings(GroupName = "Account Management")]
+[Produces("application/json")]
 public class AccountsController : ControllerBase {
     // Inject the necessary services
     private readonly IAuthenticationHandler _handler;

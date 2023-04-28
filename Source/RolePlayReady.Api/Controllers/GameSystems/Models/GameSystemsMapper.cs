@@ -1,6 +1,6 @@
 namespace RolePlayReady.Api.Controllers.GameSystems.Models;
 
-internal static class GameSystemMapper {
+internal static class GameSystemsMapper {
     public static GameSystemRowResponse[] ToResponse(this IEnumerable<Row> rows)
         => rows.Select(ToResponse).ToArray();
 

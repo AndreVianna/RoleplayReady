@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 using RolePlayReady.Api.Utilities;
 using RolePlayReady.Security.Abstractions;
@@ -26,6 +29,17 @@ builder.Services.AddAuthentication(options => {
     options.DefaultChallengeScheme = authScheme;
 }).AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(authScheme, null);
 
+builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new(1, 0);
+});
+builder.Services.AddVersionedApiExplorer(options => {
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
 builder.Services.AddDefaultSystemProviders();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUserAccessor, ApiUserAccessor>();
@@ -33,8 +47,10 @@ builder.Services.AddDomainHandlers();
 builder.Services.AddRepositories();
 builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService<ILoggerFactory>(), env));
 
-builder.Services.AddControllers(options => options.Filters.Add<CustomExceptionFilter>())
-                .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
+builder.Services.AddControllers(options => {
+        options.Filters.Add<CustomExceptionFilter>();
+    })
+    .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
 
 const string apiTitle = "RoleplayReady API";
 const string apiVersion = "v1";
@@ -50,6 +66,9 @@ builder.Services.AddSwaggerGen(c => {
         BearerFormat = "JWT",
         Scheme = authScheme,
     });
+
+    c.DocInclusionPredicate((name, api) => true);
+    c.TagActionsBy(api => new[] { api.GroupName });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement { {
         new OpenApiSecurityScheme {

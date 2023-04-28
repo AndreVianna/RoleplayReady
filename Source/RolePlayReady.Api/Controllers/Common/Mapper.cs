@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Api.Controllers.Models;
+﻿namespace RolePlayReady.Api.Controllers.Common;
 
 internal static class Mapper {
     public static ModelStateDictionary UpdateModelState(this ICollection<ValidationError> validationErrors, ModelStateDictionary modelState) {

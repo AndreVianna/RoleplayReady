@@ -4,8 +4,8 @@ namespace RolePlayReady.Api.Controllers.GameSystems;
 
 [Authorize]
 [ApiController]
-[Route("api/Systems")]
-[SwaggerTag("Manages game systems.")]
+[Route("api/v{version:apiVersion}/Systems", Order = 1)]
+[ApiExplorerSettings(GroupName = "Game Systems")]
 public class GameSystemsController : ControllerBase {
     private readonly IGameSystemHandler _handler;
     private readonly ILogger<GameSystemsController> _logger;
