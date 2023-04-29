@@ -45,6 +45,27 @@ public class Base64GuidTests {
     }
 
     [Fact]
+    public void FromGuidEmpty_ToString_SetProperly() {
+        // Arrange
+        var input = (Base64Guid)Guid.Empty;
+
+        // Act
+        string subject = input;
+
+        // Assert
+        subject.Should().Be(string.Empty);
+    }
+
+    [Fact]
+    public void FromNullBase64_SetProperly() {
+        // Act
+        Base64Guid subject = default(string)!;
+
+        // Assert
+        subject.Value.Should().Be(Guid.Empty);
+    }
+
+    [Fact]
     public void FromInvalid_Throws() {
         // Arrange
         var input = "invalid";
@@ -62,6 +83,18 @@ public class Base64GuidTests {
     public void FromGuid_SetProperly() {
         // Arrange
         var input = Guid.NewGuid();
+
+        // Act
+        Base64Guid subject = input;
+
+        // Assert
+        subject.Value.Should().Be(input);
+    }
+
+    [Fact]
+    public void FromGuidEmpty_ToBase64Guid_SetProperly() {
+        // Arrange
+        var input = Guid.Empty;
 
         // Act
         Base64Guid subject = input;

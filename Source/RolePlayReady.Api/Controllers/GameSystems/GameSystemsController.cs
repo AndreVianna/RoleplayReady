@@ -97,14 +97,14 @@ public class GameSystemsController : ControllerBase {
             return NotFound();
         var model = request.ToDomain(uuid);
         var result = await _handler.UpdateAsync(model, cancellationToken);
-        if (result.HasErrors) {
-            _logger.LogDebug("Fail to update game system '{id}' (bad request).", id);
-            return BadRequest(result.Errors.UpdateModelState(ModelState));
-        }
-
         if (result.IsNotFound) {
             _logger.LogDebug("Fail to update game system '{id}' (not found).", id);
             return NotFound();
+        }
+
+        if (result.HasErrors) {
+            _logger.LogDebug("Fail to update game system '{id}' (bad request).", id);
+            return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
 
         var response = result.Value!.ToResponse();
