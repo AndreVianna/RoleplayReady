@@ -1,5 +1,6 @@
-namespace RolePlayReady.Api.Handlers;
+namespace RolePlayReady.Api.Utilities;
 
+[ExcludeFromCodeCoverage]
 internal class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions> {
     private readonly IConfiguration _configuration;
     private const string _authHeader = "Authorization";

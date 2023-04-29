@@ -11,14 +11,14 @@ public class AuthenticationHandler : IAuthenticationHandler {
         _dateTime = dateTime;
     }
 
-    public Result<string> Authenticate(Login login) {
+    public Result<string> Authenticate(Login login) { 
         var result = login.Validate();
         if (result.HasErrors) {
             return result.WithValue(string.Empty);
         }
 
         if (!IsCorrect(login)) {
-            return Result.Failure(string.Empty, "AuthenticationFailed", nameof(login));
+            return Result.Failure(string.Empty, IAuthenticationHandler.AuthenticationFailedError, nameof(login));
         }
 
         // Generate the JWT

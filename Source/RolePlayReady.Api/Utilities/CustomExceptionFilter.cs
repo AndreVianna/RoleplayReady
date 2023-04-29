@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-
 namespace RolePlayReady.Api.Utilities;
 
+[ExcludeFromCodeCoverage]
 internal class CustomExceptionFilter : IExceptionFilter {
     private readonly IWebHostEnvironment _env;
     private readonly ILogger _logger;

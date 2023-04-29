@@ -35,13 +35,29 @@
               </Exclude>
             </CompanyNames>
 
+            <Sources>
+              <Exclude>
+                <Source>.*program.cs</Source>
+              </Exclude>
+            </Sources>
+
             <!-- We recommend you do not change the following values: -->
             <UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
             <AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
             <CollectFromChildProcesses>True</CollectFromChildProcesses>
             <CollectAspDotNet>False</CollectAspDotNet>
+            <EnableStaticNativeInstrumentation>True</EnableStaticNativeInstrumentation>
+            <EnableDynamicNativeInstrumentation>True</EnableDynamicNativeInstrumentation>
+            <EnableStaticNativeInstrumentationRestore>True</EnableStaticNativeInstrumentationRestore>
+
 
           </CodeCoverage>
+        </Configuration>
+      </DataCollector>
+      <DataCollector friendlyName="blame" enabled="True">
+        <Configuration>
+          <CollectDump DumpType="Full" />
+          <CollectDumpOnTestSessionHang TestTimeout="10min" HangDumpType="Full" />
         </Configuration>
       </DataCollector>
     </DataCollectors>

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-
 using IAuthenticationHandler = RolePlayReady.Security.Handlers.IAuthenticationHandler;
 
 namespace RolePlayReady.Api.Controllers.Accounts;
@@ -11,11 +9,10 @@ namespace RolePlayReady.Api.Controllers.Accounts;
 [ApiExplorerSettings(GroupName = "Account Management")]
 [Produces("application/json")]
 public class AccountsController : ControllerBase {
-    // Inject the necessary services
     private readonly IAuthenticationHandler _handler;
-    private readonly ILogger<GameSystemsController> _logger;
+    private readonly ILogger<AccountsController> _logger;
 
-    public AccountsController(IAuthenticationHandler handler, ILogger<GameSystemsController> logger) {
+    public AccountsController(IAuthenticationHandler handler, ILogger<AccountsController> logger) {
         _handler = handler;
         _logger = logger;
     }
@@ -30,7 +27,7 @@ public class AccountsController : ControllerBase {
             return Ok(result.Value.ToLoginResponse());
         }
 
-        if (result.Errors[0].Message == "Invalid.") {
+        if (result.Errors[0].Message == IAuthenticationHandler.AuthenticationFailedError) {
             _logger.LogDebug("'{user}' failed to login (failed attempt).", request.Email);
             return Unauthorized();
         }

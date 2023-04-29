@@ -1,6 +1,7 @@
 // Global using directives
 
 global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Extensions;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Net;
@@ -21,13 +22,13 @@ global using Microsoft.OpenApi.Models;
 
 global using RolePlayReady.Api.Controllers.Accounts.Models;
 global using RolePlayReady.Api.Controllers.Common;
-global using RolePlayReady.Api.Controllers.GameSystems;
-global using RolePlayReady.Api.Handlers;
+global using RolePlayReady.Api.Utilities;
 global using RolePlayReady.Constants;
 global using RolePlayReady.DataAccess.Extensions;
 global using RolePlayReady.Extensions;
 global using RolePlayReady.Handlers;
 global using RolePlayReady.Models;
+global using RolePlayReady.Security.Abstractions;
 global using RolePlayReady.Security.Models;
 
 global using Serilog;

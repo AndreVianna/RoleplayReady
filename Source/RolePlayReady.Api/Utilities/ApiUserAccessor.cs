@@ -1,7 +1,6 @@
-using RolePlayReady.Security.Abstractions;
+namespace RolePlayReady.Api.Utilities;
 
-namespace RolePlayReady.Api.Handlers;
-
+[ExcludeFromCodeCoverage]
 public class ApiUserAccessor : IUserAccessor {
     private readonly HttpContext _httpContext;
 

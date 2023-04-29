@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.Api.Controllers;
 
 public class GameSystemsControllerTests {
-    private static readonly IGameSystemHandler _handler = Substitute.For<IGameSystemHandler>();
+    private readonly IGameSystemHandler _handler = Substitute.For<IGameSystemHandler>();
     private static readonly ILogger<GameSystemsController> _logger = Substitute.For<ILogger<GameSystemsController>>();
     private static readonly Row[] _rows = new[] {
         new Row {
@@ -21,9 +21,9 @@ public class GameSystemsControllerTests {
         Tags = new[] { "Fantasy", "Adventure" },
     };
 
-    private static readonly GameSystemsController _controller;
+    private readonly GameSystemsController _controller;
 
-    static GameSystemsControllerTests() {
+    public GameSystemsControllerTests() {
         _controller = new GameSystemsController(_handler, _logger);
     }
 

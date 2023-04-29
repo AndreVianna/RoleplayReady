@@ -1,11 +1,3 @@
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using RolePlayReady.Api.Utilities;
-using RolePlayReady.Security.Abstractions;
-
 var builder = WebApplication.CreateBuilder(args);
 
 var env = builder.Environment;
@@ -47,9 +39,7 @@ builder.Services.AddDomainHandlers();
 builder.Services.AddRepositories();
 builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService<ILoggerFactory>(), env));
 
-builder.Services.AddControllers(options => {
-        options.Filters.Add<CustomExceptionFilter>();
-    })
+builder.Services.AddControllers(options => options.Filters.Add<CustomExceptionFilter>())
     .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
 
 const string apiTitle = "RoleplayReady API";
