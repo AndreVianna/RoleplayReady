@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RolePlayReady.Api\RolePlayReady.Api.csproj" />
+  </ItemGroup>
+
 </Project>

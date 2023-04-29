@@ -6,6 +6,7 @@ namespace RolePlayReady.Api.Controllers.GameSystems;
 [ApiController]
 [Route("api/v{version:apiVersion}/Systems", Order = 1)]
 [ApiExplorerSettings(GroupName = "Game Systems")]
+[Produces("application/json")]
 public class GameSystemsController : ControllerBase {
     private readonly IGameSystemHandler _handler;
     private readonly ILogger<GameSystemsController> _logger;
