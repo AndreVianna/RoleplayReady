@@ -25,5 +25,5 @@ public abstract class Validation<TSubject, TValidators>
 
     public TValidators And => (this as TValidators)!;
 
-    public Result Result => Success + Errors.ToArray();
+    public Result Result => FromErrors(Errors);
 }

@@ -4,20 +4,17 @@ namespace System.Results.Extensions;
 
 public static class ResultExtensions {
     public static Result<TOutput> ToResult<TOutput>(this Result input, TOutput value)
-        => new Result<TOutput>(value) + input;
+        => WithErrors(value, input.Errors);
 
-    public static Result<TOutput> Map<TInput, TOutput>(this Result<TInput> input, Func<TInput, TOutput> map)
-        => new Result<TOutput>(map(input.Value)) + (input.HasErrors ? input.Errors.ToArray() : Success);
+    public static Result<TOutput> Map<TInput, TOutput>(this Result<TInput> input, Func<TInput?, TOutput?> map)
+        => WithErrors(map(input.Value), input.Errors);
 
     public static Result<IEnumerable<TOutput>> Map<TInput, TOutput>(this Result<IEnumerable<TInput>> input, Func<TInput, TOutput> map)
-        => new Result<IEnumerable<TOutput>>(input.Value.Select(map)) + (input.HasErrors ? input.Errors.ToArray() : Success);
+        => WithErrors(input.Value?.Select(map), input.Errors);
 
-    public static SearchResult<TOutput> ToSearchResult<TOutput>(this Result input, TOutput value)
-        => new SearchResult<TOutput>(value) + input;
+    public static ResultOrNotFound<TOutput> ToResultOrNotFound<TOutput>(this Result input, TOutput value, bool found)
+        => ResultOrNotFound.WithErrors(value, found, input.Errors);
 
-    public static SearchResult<TOutput> Map<TInput, TOutput>(this SearchResult<TInput> input, Func<TInput, TOutput> map)
-        => new SearchResult<TOutput>(map(input.Value)) + (input.HasErrors ? input.Errors.ToArray() : Success);
-
-    public static SearchResult<IEnumerable<TOutput>> Map<TInput, TOutput>(this SearchResult<IEnumerable<TInput>> input, Func<TInput, TOutput> map)
-        => new SearchResult<IEnumerable<TOutput>>(input.Value.Select(map)) + (input.HasErrors ? input.Errors.ToArray() : Success);
+    public static ResultOrNotFound<TOutput> Map<TInput, TOutput>(this ResultOrNotFound<TInput> input, Func<TInput?, TOutput?> map, bool found)
+        => ResultOrNotFound.WithErrors(map(input.Value), found, input.Errors);
 }

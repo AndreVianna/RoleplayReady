@@ -4,7 +4,7 @@ public class StringValidationTests {
     public record TestObject : IValidatable {
         public string? Text { get; init; }
         public Result Validate() {
-            var result = new Result();
+            var result = Result.Success();
             result += Text.IsNotNull()
                           .And.IsNotEmptyOrWhiteSpace()
                           .And.MinimumLengthIs(3)

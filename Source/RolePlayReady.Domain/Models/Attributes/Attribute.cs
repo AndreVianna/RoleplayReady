@@ -9,9 +9,9 @@ public abstract record Attribute<TValue> : IAttribute {
     public TValue Value { get; init; } = default!;
 
     public Result Validate() {
-        var result = new Result();
+        var result = Result.Success();
         result += Definition.DataType.IsNotNull().And.IsEqualTo<TValue>().Result;
-        result += Definition.Constraints.Aggregate(new Result(), (r, c)
+        result += Definition.Constraints.Aggregate(Result.Success(), (r, c)
             => r + For(Definition.Name)
                 .Create(typeof(TValue), c.ValidatorName, c.Arguments.ToArray())
                 .Validate(Value));

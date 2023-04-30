@@ -31,7 +31,7 @@ public class GameSystemsControllerTests {
     public async Task GetMany_ReturnsArrayOfGameSystemRowResponses() {
         // Arrange
         var expectedRows = _rows.ToResponse();
-        _handler.GetManyAsync(Arg.Any<CancellationToken>()).Returns(Result.FromValue(_rows.AsEnumerable()));
+        _handler.GetManyAsync(Arg.Any<CancellationToken>()).Returns(Result.Success(_rows.AsEnumerable()));
 
         // Act
         var response = await _controller.GetMany();
@@ -48,7 +48,7 @@ public class GameSystemsControllerTests {
         var expected = _sample.ToResponse();
         var base64Id = (Base64Guid)_sample.Id;
         _handler.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-                .Returns(SearchResult.FromValue<GameSystem?>(_sample));
+                .Returns(ResultOrNotFound.Success(_sample));
 
         // Act
         var response = await _controller.GetById(base64Id);
@@ -72,7 +72,7 @@ public class GameSystemsControllerTests {
     public async Task GetById_WithNonExistingId_ReturnsNotFound() {
         var base64Id = (Base64Guid)Guid.NewGuid();
         _handler.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-                .Returns(SearchResult.Failure(default(GameSystem), "Some error.", "id"));
+                .Returns(ResultOrNotFound.NotFound(default(GameSystem))!);
 
         // Act
         var response = await _controller.GetById(base64Id);
@@ -92,7 +92,7 @@ public class GameSystemsControllerTests {
         };
         var expected = _sample.ToResponse();
         _handler.AddAsync(Arg.Any<GameSystem>(), Arg.Any<CancellationToken>())
-                .Returns(Result.FromValue(_sample));
+                .Returns(Result.Success(_sample));
 
         // Act
         var response = await _controller.Create(request);
@@ -111,7 +111,7 @@ public class GameSystemsControllerTests {
             Description = null!,
         };
         _handler.AddAsync(Arg.Any<GameSystem>(), Arg.Any<CancellationToken>())
-                .Returns(Result.Failure(_sample, "Some error.", "request"));
+                .Returns(Result.WithError(_sample, "Some error.", "request"));
 
         var response = await _controller.Create(request);
 
@@ -133,7 +133,7 @@ public class GameSystemsControllerTests {
         };
         var expected = _sample.ToResponse();
         _handler.UpdateAsync(Arg.Any<GameSystem>(), Arg.Any<CancellationToken>())
-                .Returns(SearchResult.FromValue(_sample));
+                .Returns(ResultOrNotFound.Success(_sample));
 
         // Act
         var response = await _controller.Update(base64Id, request);
@@ -173,7 +173,7 @@ public class GameSystemsControllerTests {
         var input = request.ToDomain();
 
         _handler.UpdateAsync(Arg.Any<GameSystem>(), Arg.Any<CancellationToken>())
-                .Returns(SearchResult.NotFound(input));
+                .Returns(ResultOrNotFound.NotFound(input));
 
         // Act
         var response = await _controller.Update(base64Id, request);
@@ -191,7 +191,7 @@ public class GameSystemsControllerTests {
             Description = null!,
         };
         _handler.UpdateAsync(Arg.Any<GameSystem>(), Arg.Any<CancellationToken>())
-                .Returns(SearchResult.Failure(_sample, "Some error.", "request"));
+                .Returns(ResultOrNotFound.WithError(_sample, false, "Some error.", "request"));
 
         var response = await _controller.Update(base64Id, request);
 
@@ -205,7 +205,7 @@ public class GameSystemsControllerTests {
     public void Remove_WithValidId_ReturnsGameSystemResponse() {
         // Arrange
         var base64Id = (Base64Guid)_sample.Id;
-        _handler.Remove(Arg.Any<Guid>()).Returns(SearchResult.Success);
+        _handler.Remove(Arg.Any<Guid>()).Returns(ResultOrNotFound.Success);
 
         // Act
         var response = _controller.Remove(base64Id);
@@ -226,7 +226,7 @@ public class GameSystemsControllerTests {
     [Fact]
     public void Remove_WithNonExistingId_ReturnsNotFound() {
         var base64Id = (Base64Guid)Guid.NewGuid();
-        _handler.Remove(Arg.Any<Guid>()).Returns(SearchResult.NotFound("id"));
+        _handler.Remove(Arg.Any<Guid>()).Returns(ResultOrNotFound.NotFound("id"));
 
         // Act
         var response = _controller.Remove(base64Id);

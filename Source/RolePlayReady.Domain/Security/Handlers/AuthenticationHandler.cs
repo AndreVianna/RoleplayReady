@@ -20,7 +20,7 @@ public class AuthenticationHandler : IAuthenticationHandler {
         }
 
         if (!IsCorrect(login)) {
-            return Result.Failure(string.Empty, AuthenticationFailedCode, nameof(login));
+            return Result.WithError(string.Empty, AuthenticationFailedCode, nameof(login));
         }
 
         // Generate the JWT

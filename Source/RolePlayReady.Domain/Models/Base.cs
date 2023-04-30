@@ -8,7 +8,7 @@ public record Base : IBase, IValidatable {
     public ICollection<string> Tags { get; init; } = new List<string>();
 
     public virtual Result Validate() {
-        var result = new Result();
+        var result = Result.Success();
         result += Name.IsNotNull()
                       .And.IsNotEmptyOrWhiteSpace()
                       .And.MaximumLengthIs(Validation.Name.MaximumLength).Result;

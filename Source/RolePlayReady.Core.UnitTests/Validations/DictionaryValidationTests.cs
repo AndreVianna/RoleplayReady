@@ -5,7 +5,7 @@ public class DictionaryValidationTests {
         public required IDictionary<string, int> Numbers { get; init; } = new Dictionary<string, int>();
         public required IDictionary<string, string> Names { get; init; } = new Dictionary<string, string>();
         public Result Validate() {
-            var result = new Result();
+            var result = Result.Success();
             result += Numbers.Map()
                 .IsNotEmpty()
                 .And.MinimumCountIs(2)

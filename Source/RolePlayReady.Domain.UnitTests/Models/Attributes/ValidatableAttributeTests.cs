@@ -8,7 +8,7 @@ public class ValidatableAttributeTests {
     private readonly TestObject _testObject = new("Hello");
 
     private record TestObject(string Name) : IValidatable {
-        public Result Validate() => Success;
+        public Result Validate() => Success();
     }
 
     public ValidatableAttributeTests() {

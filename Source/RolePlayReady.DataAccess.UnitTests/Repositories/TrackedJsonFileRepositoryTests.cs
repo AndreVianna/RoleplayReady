@@ -98,7 +98,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         _io.OpenFileForReading(_file1V3).Returns(_file1Content);
         _file2Content = new MemoryStream(Encoding.UTF8.GetBytes(Serialize(_expected[1])));
         _io.OpenFileForReading(_file2V0).Returns(_file2Content);
-        _invalidFileContent = new MemoryStream("Failure"u8.ToArray());
+        _invalidFileContent = new MemoryStream("FromError"u8.ToArray());
         _io.OpenFileForReading(_invalidContentFile).Returns(_invalidFileContent);
 
         _io.ExtractFileNameFrom(_newFile).Returns(_newFileName);

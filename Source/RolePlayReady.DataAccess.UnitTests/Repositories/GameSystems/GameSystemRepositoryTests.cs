@@ -97,7 +97,7 @@ public class GameSystemRepositoryTests {
     public void Delete_RemovesSystem() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(string.Empty, id).Returns(Result.Success);
+        _files.Delete(string.Empty, id).Returns(Result.Success());
 
         // Act
         var result = _repository.Delete(id);

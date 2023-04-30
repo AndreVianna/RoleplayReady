@@ -9,14 +9,14 @@ public class GameSystemHandler : IGameSystemHandler {
 
     public async Task<Result<IEnumerable<Row>>> GetManyAsync(CancellationToken cancellation = default) {
         var list = await _repository.GetManyAsync(cancellation).ConfigureAwait(false);
-        return Result.FromValue(list);
+        return Result.Success(list);
     }
 
-    public async Task<SearchResult<GameSystem?>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
+    public async Task<ResultOrNotFound<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
         var output = await _repository.GetByIdAsync(id, cancellation);
         return output is not null
-            ? SearchResult.FromValue<GameSystem?>(output)
-            : SearchResult.NotFound(output);
+            ? ResultOrNotFound.Success(output)
+            : ResultOrNotFound.NotFound(output)!;
     }
 
     public async Task<Result<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default) {
@@ -26,17 +26,17 @@ public class GameSystemHandler : IGameSystemHandler {
             : await _repository.InsertAsync(input, cancellation);
     }
 
-    public async Task<SearchResult<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
+    public async Task<ResultOrNotFound<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        if (result.HasErrors) return result.ToSearchResult(input);
+        if (result.HasErrors) return ResultOrNotFound.WithErrors(input, false, result.Errors);
         var output = await _repository.UpdateAsync(input, cancellation);
         return output is not null
-            ? SearchResult.FromValue(output)
-            : SearchResult.NotFound(input);
+            ? ResultOrNotFound.Success(output)
+            : ResultOrNotFound.NotFound(input)!;
     }
 
-    public SearchResult Remove(Guid id)
+    public ResultOrNotFound Remove(Guid id)
         => _repository.Delete(id)
-            ? SearchResult.Success
-            : SearchResult.NotFound();
+            ? ResultOrNotFound.Success()
+            : ResultOrNotFound.NotFound();
 }
