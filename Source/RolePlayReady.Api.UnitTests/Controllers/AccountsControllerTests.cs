@@ -44,7 +44,8 @@ public class AccountsControllerTests {
             Email = _sample.Email,
             Password = _sample.Password,
         };
-        _handler.Authenticate(Arg.Any<Login>()).Returns(Result.Failure(string.Empty, IAuthenticationHandler.AuthenticationFailedError, "login"));
+        _handler.Authenticate(Arg.Any<Login>())
+                .Returns(Result.Failure(string.Empty, IAuthenticationHandler.AuthenticationFailedError, "login"));
 
         // Act
         var response = _controller.Login(request);
@@ -60,7 +61,8 @@ public class AccountsControllerTests {
             Email = "invalid",
             Password = "invalid",
         };
-        _handler.Authenticate(Arg.Any<Login>()).Returns(Result.Failure(string.Empty, "Some validation error.", "login"));
+        _handler.Authenticate(Arg.Any<Login>())
+                .Returns(Result.Failure(string.Empty, "Some validation error.", "login"));
 
         // Act
         var response = _controller.Login(request);

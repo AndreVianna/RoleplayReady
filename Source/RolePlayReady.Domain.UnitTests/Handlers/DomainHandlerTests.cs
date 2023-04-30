@@ -108,13 +108,12 @@ public class DomainHandlerTests {
         // Assert
         result.HasErrors.Should().BeTrue();
         result.IsNotFound.Should().BeTrue();
-        result.Value.Should().BeNull();
+        result.Value.Should().Be(input);
     }
 
     [Fact]
     public async Task UpdateAsync_WithErrors_ReturnsFailure() {
         // Arrange
-        var id = Guid.NewGuid();
         var input = new Domain {
             Name = null!,
             Description = null!,

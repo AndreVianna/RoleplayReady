@@ -12,28 +12,31 @@ public class GameSystemHandler : IGameSystemHandler {
         return Result.FromValue(list);
     }
 
-    public async Task<NullableResult<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
+    public async Task<SearchResult<GameSystem?>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
         var output = await _repository.GetByIdAsync(id, cancellation);
-        if (output is not null) return output;
-        return Result.NotFound<GameSystem>(nameof(id));
+        return output is not null
+            ? SearchResult.FromValue<GameSystem?>(output)
+            : SearchResult.NotFound(output);
     }
 
     public async Task<Result<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        if (result.HasErrors) return result.WithValue(input);
-        return await _repository.InsertAsync(input, cancellation);
+        return result.HasErrors
+            ? result.ToResult(input)
+            : await _repository.InsertAsync(input, cancellation);
     }
 
-    public async Task<NullableResult<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
+    public async Task<SearchResult<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        if (result.HasErrors) return result.WithValue(input);
+        if (result.HasErrors) return result.ToSearchResult(input);
         var output = await _repository.UpdateAsync(input, cancellation);
-        if (output is not null) return output;
-        return Result.NotFound<GameSystem>(nameof(input));
+        return output is not null
+            ? SearchResult.FromValue(output)
+            : SearchResult.NotFound(input);
     }
 
-    public Result Remove(Guid id)
+    public SearchResult Remove(Guid id)
         => _repository.Delete(id)
-            ? Result.Success
-            : Result.NotFound(nameof(id));
+            ? SearchResult.Success
+            : SearchResult.NotFound();
 }

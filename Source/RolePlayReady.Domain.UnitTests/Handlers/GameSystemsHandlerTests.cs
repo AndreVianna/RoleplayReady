@@ -101,7 +101,9 @@ public class GameSystemsHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.Value.Should().BeNull();
+        result.IsSuccess.Should().BeFalse();
+        result.IsNotFound.Should().BeTrue();
+        result.Value.Should().Be(input);
     }
 
     [Fact]

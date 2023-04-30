@@ -1,10 +1,127 @@
-using System.Results.Extensions;
-
 using static System.Results.Result;
 
 namespace System.Results;
 
 public class ResultTests {
+    [Fact]
+    public void ImplicitConversion_FromValidationError_ReturnsFailure() {
+        Result result = new ValidationError("Some error.", nameof(result));
+
+        result.IsSuccess.Should().BeFalse();
+        result.HasErrors.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ImplicitConversion_FromValidationErrorArray_ReturnsFailure() {
+        Result result = new[] { new ValidationError("Some error.", nameof(result)) };
+
+        result.IsSuccess.Should().BeFalse();
+        result.HasErrors.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ImplicitConversion_FromValidationErrorList_ReturnsFailure() {
+        Result result = new List<ValidationError> { new("Some error.", nameof(result)) };
+
+        result.IsSuccess.Should().BeFalse();
+        result.HasErrors.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Success_ReturnsSuccess()
+        => Success.IsSuccess.Should().BeTrue();
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void NotEquals_WithSuccess_ReturnsAsExpected(bool hasError, bool expectedResult) {
+        var subject = new Result();
+        if (hasError)
+            subject += new ValidationError("Some error.", "objectResult");
+
+        var result = subject != Success;
+
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData(true, true, true, false)]
+    [InlineData(false, true, true, true)]
+    [InlineData(false, false, true, true)]
+    [InlineData(false, false, false, false)]
+    public void Equals_WithSame_ReturnsAsExpected(bool isNull, bool isSame, bool hasSameError, bool expectedResult) {
+        var subject = new Result() + new ValidationError("Some error.", "field");
+        var sameValue = new Result() + new ValidationError("Some error.", "field");
+        var otherValue = new Result() + new ValidationError("Other error.", "field");
+
+        var result = subject == (isNull ? default : isSame ? subject : hasSameError ? sameValue : otherValue);
+
+        result.Should().Be(expectedResult);
+    }
+
+    [Fact]
+    public void AddOperator_WithError_ReturnsInvalid() {
+        var result = new Result();
+
+        result += new ValidationError("Some error.", "result");
+
+        result.IsSuccess.Should().BeFalse();
+        result.HasErrors.Should().BeTrue();
+    }
+
+    [Fact]
+    public void AddOperator_WithErrors_ReturnsInvalid() {
+        var result = new Result();
+
+        result += new[] { new ValidationError("Some error 1.", "result"), new ValidationError("Some error 2.", "result") };
+
+        result.IsSuccess.Should().BeFalse();
+        result.HasErrors.Should().BeTrue();
+    }
+
+    [Fact]
+    public void EqualityOperator_WhenSuccess_ReturnsTrue() {
+        // Act
+        var subject = new Result();
+
+        // Assert
+        var result = subject == Success;
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void EqualityOperator_WhenFailure_ReturnsFalse() {
+        // Act
+        var subject = Success + new ValidationError("Some error.", "field");
+
+        // Assert
+        var result = subject == Success;
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void InequalityOperator_WhenSuccess_ReturnsFalse() {
+        // Act
+        var subject = new Result();
+
+        // Assert
+        var result = subject != Success;
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void InequalityOperator_WhenFailure_ReturnsTrue() {
+        // Act
+        var subject = Success + new ValidationError("Some error.", "field");
+
+        // Assert
+        var result = subject != Success;
+
+        result.Should().BeTrue();
+    }
     [Fact]
     public void ImplicitConversion_FromValue_ReturnsValid() {
         Result<string> result = "testValue";
@@ -12,15 +129,6 @@ public class ResultTests {
         result.IsSuccess.Should().BeTrue();
         result.HasErrors.Should().BeFalse();
         result.Value.Should().Be("testValue");
-    }
-
-    [Fact]
-    public void ImplicitConversion_FromNull_Throws() {
-        var action = () => {
-            Result<string> _ = default(string)!;
-        };
-
-        action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign null to 'Result<String>'.");
     }
 
     [Fact]
@@ -92,7 +200,7 @@ public class ResultTests {
         Result<object> source = "testValue";
         source += new ValidationError("Some error.", "objectResult");
 
-        Result<string> subject = source;
+        Result<string> subject = source!;
 
         subject.HasErrors.Should().BeTrue();
         subject.Value.Should().Be("testValue");
@@ -101,7 +209,7 @@ public class ResultTests {
     [Theory]
     [InlineData(false, false)]
     [InlineData(true, true)]
-    public void NotEquals_WithSuccess_ReturnsAsExpected(bool hasError, bool expectedResult) {
+    public void OfTValue_NotEquals_WithSuccess_ReturnsAsExpected(bool hasError, bool expectedResult) {
         Result<string> subject = "testValue";
         if (hasError)
             subject += new ValidationError("Some error.", "objectResult");
@@ -116,7 +224,7 @@ public class ResultTests {
     [InlineData(false, true, true, true)]
     [InlineData(false, false, true, true)]
     [InlineData(false, false, false, false)]
-    public void Equals_WithSame_ReturnsAsExpected(bool isNull, bool isSame, bool hasSameValue, bool expectedResult) {
+    public void OfTValue_Equals_WithSame_ReturnsAsExpected(bool isNull, bool isSame, bool hasSameValue, bool expectedResult) {
         Result<string> subject = "testValue";
         Result<string> sameValue = "testValue";
         Result<string> otherValue = "otherValue";
@@ -141,7 +249,7 @@ public class ResultTests {
     }
 
     [Fact]
-    public void AddOperator_WithError_ReturnsInvalid() {
+    public void OfTValue_AddOperator_WithError_ReturnsInvalid() {
         Result<string> result = "testValue";
 
         result += new ValidationError("Some error.", "objectResult");
@@ -155,7 +263,7 @@ public class ResultTests {
     public void AddOperator_FromValidation_ReturnsValid() {
         var result = new Result();
 
-        var subject = result.WithValue("testValue");
+        var subject = result.ToResult("testValue");
 
         subject.IsSuccess.Should().BeTrue();
         subject.HasErrors.Should().BeFalse();
@@ -166,7 +274,7 @@ public class ResultTests {
     public void AddOperator_FromValidation_WithErrors_ReturnsInvalid() {
         var result = Success + new ValidationError("Some error.", "someField");
 
-        var subject = result.WithValue("testValue");
+        var subject = result.ToResult("testValue");
 
         subject.IsSuccess.Should().BeFalse();
         subject.HasErrors.Should().BeTrue();
@@ -178,7 +286,7 @@ public class ResultTests {
         var result = new Result();
 
         var action = () => {
-            Result<string> subject = result.WithValue((object)43);
+            Result<string> _ = result.ToResult((object)43)!;
         };
 
         action.Should().Throw<InvalidCastException>().WithMessage("Cannot assign 'Result<Integer>' to 'Result<String>'.");
@@ -197,7 +305,7 @@ public class ResultTests {
     }
 
     [Fact]
-    public void AddOperator_WithErrors_ReturnsInvalid() {
+    public void OfTValue_AddOperator_WithErrors_ReturnsInvalid() {
         Result<string> result = "testValue";
         var fail = Success + new[] { new ValidationError("Some error 1.", "objectResult"), new ValidationError("Some error 2.", "objectResult") };
 

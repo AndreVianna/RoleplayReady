@@ -12,28 +12,31 @@ public class DomainHandler : IDomainHandler {
         return Result.FromValue(list);
     }
 
-    public async Task<NullableResult<Domain>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
+    public async Task<SearchResult<Domain?>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
         var output = await _repository.GetByIdAsync(id, cancellation).ConfigureAwait(false);
-        if (output is null) return Result.NotFound<Domain>(nameof(id));
-        return output;
+        return output is not null
+            ? SearchResult.FromValue<Domain?>(output)
+            : SearchResult.NotFound(output);
     }
 
     public async Task<Result<Domain>> AddAsync(Domain input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        if (result.HasErrors) return result.WithValue(input);
-        return await _repository.InsertAsync(input, cancellation).ConfigureAwait(false);
+        return result.HasErrors
+            ? result.ToResult(input)
+            : await _repository.InsertAsync(input, cancellation).ConfigureAwait(false);
     }
 
-    public async Task<NullableResult<Domain>> UpdateAsync(Domain input, CancellationToken cancellation = default) {
+    public async Task<SearchResult<Domain>> UpdateAsync(Domain input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        if (result.HasErrors) return result.WithValue(input);
+        if (result.HasErrors) return result.ToSearchResult(input);
         var output = await _repository.UpdateAsync(input, cancellation).ConfigureAwait(false);
-        if (output is null) return Result.NotFound<Domain>(nameof(input));
-        return output;
+        return output is not null
+            ? SearchResult.FromValue(output)
+            : SearchResult.NotFound(input);
     }
 
-    public Result Remove(Guid id)
+    public SearchResult Remove(Guid id)
         => _repository.Delete(id)
-            ? Result.Success
-            : Result.NotFound(nameof(id));
+            ? SearchResult.Success
+            : SearchResult.NotFound();
 }

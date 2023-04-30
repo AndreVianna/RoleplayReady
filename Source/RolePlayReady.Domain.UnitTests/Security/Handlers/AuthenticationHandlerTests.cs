@@ -2,10 +2,8 @@ namespace RolePlayReady.Security.Handlers;
 
 public class AuthenticationHandlerTests {
     private readonly AuthenticationHandler _handler;
-    private static readonly string _dummyToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhODc4ODU4OC05MjlhLTQ4NTktODNkNC1jMTA2YjMwZTNhZmQiLCJnaXZlbl9uYW1lIjoiU29tZSBVc2VyIiwidW5pcXVlX25hbWUiOiJTb21lVXNlcjEyMyIsImVtYWlsIjoic29tZS51c2VyQGhvc3QuY29tIiwibmJmIjoxNjgyNjIxMDAwLCJleHAiOjE2ODI2NDYyMDAsImlhdCI6MTY4MjYyMTAwMH0.pHCY0Zdg9NaN5NFWN1tEngdx2e_vRPRc99DsvTcWS5A";
     private static readonly string _validUser = "some.user@host.com";
     private static readonly string _validPassword = "Secret1234!";
-
 
     public AuthenticationHandlerTests() {
         var configuration = Substitute.For<IConfiguration>();
@@ -24,7 +22,7 @@ public class AuthenticationHandlerTests {
 
     [Theory]
     [ClassData(typeof(TestData))]
-    public async Task Authenticate_ReturnsToken(Login login, bool isSuccess, string[] errors) {
+    public void Authenticate_ReturnsToken(Login login, bool isSuccess, string[] errors) {
         // Act
         var result = _handler.Authenticate(login);
 
@@ -40,6 +38,5 @@ public class AuthenticationHandlerTests {
             Add(new() { Email = "invalid.user@email.com", Password = _validPassword }, false, new[] { "AuthenticationFailed" });
             Add(new() { Email = null!, Password = "" }, false, new[] { "'Email' cannot be null.", "'Password' cannot be empty or whitespace." });
         }
-
     }
 }

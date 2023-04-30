@@ -16,7 +16,7 @@ public class AuthenticationHandler : IAuthenticationHandler {
     public Result<string> Authenticate(Login login) {
         var result = login.Validate();
         if (result.HasErrors) {
-            return result.WithValue(string.Empty);
+            return result.ToResult(string.Empty);
         }
 
         if (!IsCorrect(login)) {

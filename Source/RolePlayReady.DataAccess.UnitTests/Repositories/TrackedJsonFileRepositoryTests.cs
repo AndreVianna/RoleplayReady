@@ -46,7 +46,6 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     private static readonly string _invalidNameFileName = $"+{_invalidNameId}_invalid.json";
     private static readonly string _invalidTimestampFileName = $"+{_invalidTimestampId}_{_invalidTimestamp}.json";
 
-
     private static readonly string _newFile = $"{_finalFolder}/{_newFileName}";
     private static readonly string _file1V4 = $"{_finalFolder}/{_file1V4Name}";
     private static readonly string _file1V3 = $"{_finalFolder}/{_file1V3Name}";
@@ -307,7 +306,6 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         _io.Received(1).MoveFile(_existingFiles[0], _existingFiles[0].Replace("+", ""));
         _io.Received(1).CreateNewFileAndOpenForWriting(_file1V4);
     }
-
 
     [Fact]
     public async Task InsertAsync_FileNotFound_InsertsNewDataFile() {
