@@ -22,17 +22,17 @@ public class AccountsController : ControllerBase {
     public IActionResult Login(LoginRequest request) {
         var login = request.ToDomain();
         var result = _handler.Authenticate(login);
-        if (!result.HasErrors) {
-            _logger.LogDebug("'{user}' logged in successfully.", request.Email);
-            return Ok(result.Value.ToLoginResponse());
+        if (result.HasErrors) {
+            _logger.LogDebug("'{user}' fail to login (bad request).", request.Email);
+            return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
 
-        if (result.Errors[0].Message == IAuthenticationHandler.AuthenticationFailedError) {
+        if (!result.IsSuccess) {
             _logger.LogDebug("'{user}' failed to login (failed attempt).", request.Email);
             return Unauthorized();
         }
 
-        _logger.LogDebug("'{user}' fail to login (bad request).", request.Email);
-        return BadRequest(result.Errors.UpdateModelState(ModelState));
+        _logger.LogDebug("'{user}' logged in successfully.", request.Email);
+        return Ok(result.Token!.ToLoginResponse());
     }
 }

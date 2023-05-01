@@ -1,5 +1,4 @@
-﻿using RolePlayReady.Api.Controllers.Accounts.Models;
-using RolePlayReady.Security.Models;
+﻿using SignInResult = System.Results.SignInResult;
 
 namespace RolePlayReady.Api.Controllers;
 
@@ -26,7 +25,7 @@ public class AccountsControllerTests {
         };
         const string token = "ValidToken";
         var expected = token.ToLoginResponse();
-        _handler.Authenticate(Arg.Any<Login>()).Returns(Result.Success(token));
+        _handler.Authenticate(Arg.Any<Login>()).Returns(SignInResult.AsSuccess(token));
 
         // Act
         var response = _controller.Login(request);
@@ -45,7 +44,7 @@ public class AccountsControllerTests {
             Password = _sample.Password,
         };
         _handler.Authenticate(Arg.Any<Login>())
-                .Returns(Result.WithError(string.Empty, IAuthenticationHandler.AuthenticationFailedError, "login"));
+                .Returns(SignInResult.AsFailure());
 
         // Act
         var response = _controller.Login(request);
@@ -62,7 +61,7 @@ public class AccountsControllerTests {
             Password = "invalid",
         };
         _handler.Authenticate(Arg.Any<Login>())
-                .Returns(Result.WithError(string.Empty, "Some validation error.", "login"));
+                .Returns(SignInResult.AsInvalid("Some validation error.", "login"));
 
         // Act
         var response = _controller.Login(request);

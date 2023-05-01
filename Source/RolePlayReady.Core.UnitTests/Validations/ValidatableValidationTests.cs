@@ -4,7 +4,7 @@ public class ValidatableValidationTests {
     public record ChildObject : IValidatable {
         public required string Name { get; init; }
         public Result Validate() {
-            var result = Result.Success();
+            var result = Result.AsSuccess();
             result += Name.IsNotNull()
                 .And.LengthIs(5).Result;
             return result;
@@ -14,7 +14,7 @@ public class ValidatableValidationTests {
     public record TestObject : IValidatable {
         public required ChildObject Child { get; init; }
         public Result Validate() {
-            var result = Result.Success();
+            var result = Result.AsSuccess();
             result += Child.IsNotNull()
                 .And.IsValid().Result;
             return result;

@@ -100,7 +100,7 @@ public class DomainRepositoryTests {
     public void Delete_RemovesDomain() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(string.Empty, id).Returns(Result.Success());
+        _files.Delete(string.Empty, id).Returns(Result.AsSuccess());
 
         // Act
         var result = _repository.Delete(id);

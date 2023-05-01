@@ -24,7 +24,7 @@ public class GameSystemsController : ControllerBase {
     public async Task<IActionResult> GetMany(CancellationToken cancellationToken = default) {
         _logger.LogDebug("Getting all game systems requested.");
         var result = await _handler.GetManyAsync(cancellationToken);
-        var response = result.Value.ToResponse();
+        var response = result.Value!.ToResponse();
         _logger.LogDebug("{count} game systems retrieved successfully.", response.Length);
         return Ok(response);
     }
@@ -73,7 +73,7 @@ public class GameSystemsController : ControllerBase {
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
 
-        var response = result.Value.ToResponse();
+        var response = result.Value!.ToResponse();
         _logger.LogDebug("Game system '{id}' created successfully.", response.Id);
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
@@ -98,14 +98,14 @@ public class GameSystemsController : ControllerBase {
             return NotFound();
         var model = request.ToDomain(uuid);
         var result = await _handler.UpdateAsync(model, cancellationToken);
-        if (result.IsNotFound) {
-            _logger.LogDebug("Fail to update game system '{id}' (not found).", id);
-            return NotFound();
-        }
-
         if (result.HasErrors) {
             _logger.LogDebug("Fail to update game system '{id}' (bad request).", id);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
+        }
+
+        if (result.IsNotFound) {
+            _logger.LogDebug("Fail to update game system '{id}' (not found).", id);
+            return NotFound();
         }
 
         var response = result.Value!.ToResponse();

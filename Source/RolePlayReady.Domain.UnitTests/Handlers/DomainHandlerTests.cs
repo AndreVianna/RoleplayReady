@@ -19,7 +19,8 @@ public class DomainHandlerTests {
         var result = await _handler.GetManyAsync();
 
         // Assert
-        result.Value.Should().NotBeNull();
+        result.HasErrors.Should().BeFalse();
+        result.Value.Should().BeEquivalentTo(expected);
     }
 
     [Fact]
@@ -33,7 +34,9 @@ public class DomainHandlerTests {
         var result = await _handler.GetByIdAsync(id);
 
         // Assert
-        result.Value.Should().NotBeNull();
+        result.IsNotFound.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
+        result.Value.Should().Be(expected);
     }
 
     [Fact]
@@ -47,6 +50,8 @@ public class DomainHandlerTests {
 
         // Assert
         result.IsNotFound.Should().BeTrue();
+        result.HasErrors.Should().BeFalse();
+        result.Value.Should().BeNull();
     }
 
     [Fact]
@@ -76,7 +81,7 @@ public class DomainHandlerTests {
 
         // Assert
         result.HasErrors.Should().BeTrue();
-        result.Value.Should().NotBeNull();
+        result.Value.Should().Be(input);
     }
 
     [Fact]
@@ -92,7 +97,7 @@ public class DomainHandlerTests {
         // Assert
         result.HasErrors.Should().BeFalse();
         result.IsNotFound.Should().BeFalse();
-        result.Value.Should().NotBeNull();
+        result.Value.Should().Be(input);
     }
 
     [Fact]
@@ -106,7 +111,7 @@ public class DomainHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasErrors.Should().BeTrue();
+        result.HasErrors.Should().BeFalse();
         result.IsNotFound.Should().BeTrue();
         result.Value.Should().Be(input);
     }
@@ -124,8 +129,8 @@ public class DomainHandlerTests {
 
         // Assert
         result.HasErrors.Should().BeTrue();
-        result.IsNotFound.Should().BeFalse();
-        result.Value.Should().NotBeNull();
+        result.Invoking(x => x.IsNotFound).Should().Throw<InvalidOperationException>();
+        result.Value.Should().Be(input);
     }
 
     [Fact]

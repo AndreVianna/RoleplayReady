@@ -34,8 +34,8 @@ public class AuthenticationHandlerTests {
     private class TestData : TheoryData<Login, bool, string[]> {
         public TestData() {
             Add(new() { Email = _validUser, Password = _validPassword }, true, Array.Empty<string>());
-            Add(new() { Email = _validUser, Password = "WrongPassword" }, false, new[] { "AuthenticationFailed" });
-            Add(new() { Email = "invalid.user@email.com", Password = _validPassword }, false, new[] { "AuthenticationFailed" });
+            Add(new() { Email = _validUser, Password = "WrongPassword" }, false, Array.Empty<string>());
+            Add(new() { Email = "invalid.user@email.com", Password = _validPassword }, false, Array.Empty<string>());
             Add(new() { Email = null!, Password = "" }, false, new[] { "'Email' cannot be null.", "'Password' cannot be empty or whitespace." });
         }
     }

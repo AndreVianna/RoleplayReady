@@ -1,6 +1,4 @@
-﻿using System.Utilities;
-
-namespace RolePlayReady.Security.Handlers;
+﻿namespace RolePlayReady.Security.Handlers;
 
 public class AuthenticationHandler : IAuthenticationHandler {
     private readonly IConfiguration _configuration;
@@ -11,21 +9,20 @@ public class AuthenticationHandler : IAuthenticationHandler {
         _dateTime = dateTime;
     }
 
-    public string AuthenticationFailedCode => "AuthenticationFailed";
-
-    public Result<string> Authenticate(Login login) {
+    public SignInResult Authenticate(Login login) {
         var result = login.Validate();
-        if (result.HasErrors) {
-            return result.ToResult(string.Empty);
-        }
+        if (result.HasErrors)
+            return SignInResult.AsInvalid(result.Errors);
 
-        if (!IsCorrect(login)) {
-            return Result.WithError(string.Empty, AuthenticationFailedCode, nameof(login));
-        }
+        if (!IsCorrect(login))
+            return SignInResult.AsFailure();
 
-        // Generate the JWT
-        var claims = new[]
-        {
+        var token = GenerateSignInToken();
+        return SignInResult.AsSuccess(token);
+    }
+
+    private string GenerateSignInToken() {
+        var claims = new[] {
             new Claim(ClaimTypes.NameIdentifier, _configuration["Security:DefaultUser:Id"]!),
             new Claim(ClaimTypes.GivenName, _configuration["Security:DefaultUser:Name"]!),
             new Claim(ClaimTypes.Name, _configuration["Security:DefaultUser:Username"]!),

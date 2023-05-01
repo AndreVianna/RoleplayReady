@@ -25,5 +25,5 @@ public abstract class Validation<TSubject, TValidators>
 
     public TValidators And => (this as TValidators)!;
 
-    public Result Result => FromErrors(Errors);
+    public Result Result => AsInvalid(Errors);
 }

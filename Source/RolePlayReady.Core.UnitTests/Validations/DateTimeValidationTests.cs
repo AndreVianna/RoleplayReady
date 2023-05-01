@@ -8,7 +8,7 @@ public class DateTimeValidationTests {
         public DateTime? Nullable { get; init; }
         public DateTime? Required { get; init; }
         public Result Validate() {
-            var result = Result.Success();
+            var result = Result.AsSuccess();
             result += NotNull.Value().IsAfter(_baseDate).And.IsBefore(_baseDate.AddDays(1)).Result;
             result += Nullable.IsNullOr().IsAfter(_baseDate).And.IsBefore(_baseDate.AddDays(1)).Result;
             result += Required.IsNotNull().And.StartsOn(_baseDate).And.EndsOn(_baseDate.AddDays(1)).Result;
