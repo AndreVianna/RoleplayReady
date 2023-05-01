@@ -8,6 +8,6 @@ public sealed class LengthIs : TextValidator {
         _length = length;
     }
 
-    protected override Result ValidateValue(TextValidation validation)
+    protected override ValidationResult ValidateValue(TextValidation validation)
         => validation.LengthIs(_length).Result;
 }

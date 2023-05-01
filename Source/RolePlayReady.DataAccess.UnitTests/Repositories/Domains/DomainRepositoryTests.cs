@@ -1,19 +1,23 @@
+using RolePlayReady.DataAccess.Repositories.Users;
+
 namespace RolePlayReady.DataAccess.Repositories.Domains;
 
 public class DomainRepositoryTests {
-    private readonly ITrackedJsonFileRepository<DomainData> _files;
+    private readonly IJsonFileHandler<DomainData> _files;
     private readonly DomainRepository _repository;
 
     public DomainRepositoryTests() {
-        _files = Substitute.For<ITrackedJsonFileRepository<DomainData>>();
-        _repository = new(_files);
+        _files = Substitute.For<IJsonFileHandler<DomainData>>();
+        var userAccessor = Substitute.For<IUserAccessor>();
+        userAccessor.BaseFolder.Returns("User1234");
+        _repository = new(_files, new DomainMapper(), userAccessor);
     }
 
     [Fact]
     public async Task GetManyAsync_ReturnsAllDomains() {
         // Arrange
         var dataFiles = GenerateList();
-        _files.GetAllAsync(string.Empty).Returns(dataFiles);
+        _files.GetAllAsync().Returns(dataFiles);
 
         // Act
         var domains = await _repository.GetManyAsync();
@@ -27,7 +31,7 @@ public class DomainRepositoryTests {
         // Arrange
         var dataFile = GeneratePersisted();
         var tokenSource = new CancellationTokenSource();
-        _files.GetByIdAsync(string.Empty, dataFile.Id, tokenSource.Token).Returns(dataFile);
+        _files.GetByIdAsync(dataFile.Id, tokenSource.Token).Returns(dataFile);
 
         // Act
         var domain = await _repository.GetByIdAsync(dataFile.Id, tokenSource.Token);
@@ -40,7 +44,7 @@ public class DomainRepositoryTests {
     public async Task GetByIdAsync_DomainNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.GetByIdAsync(string.Empty, id, Arg.Any<CancellationToken>()).Returns(default(DomainData));
+        _files.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(DomainData));
 
         // Act
         var domain = await _repository.GetByIdAsync(id);
@@ -56,7 +60,7 @@ public class DomainRepositoryTests {
         var domain = GenerateInput(id);
         var expected = GeneratePersisted(id);
         var tokenSource = new CancellationTokenSource();
-        _files.InsertAsync(string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
+        _files.CreateAsync(Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
 
         // Act
         var result = await _repository.AddAsync(domain, tokenSource.Token);
@@ -72,7 +76,7 @@ public class DomainRepositoryTests {
         var domain = GenerateInput(id);
         var expected = GeneratePersisted(id);
         var tokenSource = new CancellationTokenSource();
-        _files.UpdateAsync(string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
+        _files.UpdateAsync(Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
 
         // Act
         var result = await _repository.UpdateAsync(domain, tokenSource.Token);
@@ -87,7 +91,7 @@ public class DomainRepositoryTests {
         var id = Guid.NewGuid();
         var domain = GenerateInput(id);
         var tokenSource = new CancellationTokenSource();
-        _files.UpdateAsync(string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(default(DomainData));
+        _files.UpdateAsync(Arg.Any<DomainData>(), tokenSource.Token).Returns(default(DomainData));
 
         // Act
         var result = await _repository.UpdateAsync(domain, tokenSource.Token);
@@ -100,7 +104,7 @@ public class DomainRepositoryTests {
     public void Delete_RemovesDomain() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(string.Empty, id).Returns(Result.AsSuccess());
+        _files.Delete(id).Returns(ValidationResult.AsSuccess());
 
         // Act
         var result = _repository.Remove(id);

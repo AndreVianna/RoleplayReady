@@ -1,4 +1,4 @@
-using static System.Results.Result;
+using static System.Results.ValidationResult;
 
 namespace RolePlayReady.Models.Attributes;
 
@@ -8,7 +8,7 @@ public class ValidatableAttributeTests {
     private readonly TestObject _testObject = new("Hello");
 
     private record TestObject(string Name) : IValidatable {
-        public Result Validate() => AsSuccess();
+        public ValidationResult Validate() => AsSuccess();
     }
 
     public ValidatableAttributeTests() {

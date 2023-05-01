@@ -3,8 +3,8 @@ namespace System.Validations;
 public class StringValidationTests {
     public record TestObject : IValidatable {
         public string? Text { get; init; }
-        public Result Validate() {
-            var result = Result.AsSuccess();
+        public ValidationResult Validate() {
+            var result = ValidationResult.AsSuccess();
             result += Text.IsNotNull()
                           .And.IsNotEmptyOrWhiteSpace()
                           .And.MinimumLengthIs(3)

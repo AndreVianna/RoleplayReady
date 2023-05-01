@@ -1,7 +1,7 @@
 ﻿namespace System.Results;
 
-public enum SignInResultValue {
-    Invalid = 0, // authentication is pending.
+public enum SignInResultType {
+    Invalid = 0, // request validation failed.
     Blocked = 1, // account is blocked.
     Locked = 2, // account is locked.
     Failed = 3, // attempt failed.

@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
+﻿namespace RolePlayReady.DataAccess.Repositories.Users;
 
 public record UserData : IKey {
     public Guid Id { get; init; }

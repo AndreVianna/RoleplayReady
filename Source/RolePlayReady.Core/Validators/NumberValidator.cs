@@ -8,11 +8,11 @@ public abstract class NumberValidator<TNumber> : IValidator
         _source = source;
     }
 
-    public Result Validate(object? input) {
+    public ValidationResult Validate(object? input) {
         var value = (TNumber)input!;
         var validation = new NumberValidation<TNumber>(value, _source);
         return ValidateValue(validation);
     }
 
-    protected abstract Result ValidateValue(NumberValidation<TNumber> validation);
+    protected abstract ValidationResult ValidateValue(NumberValidation<TNumber> validation);
 }

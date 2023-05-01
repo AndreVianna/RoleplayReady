@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Handlers;
+﻿using static System.Results.CRUDResult;
+
+namespace RolePlayReady.Handlers;
 
 public class DomainHandler : IDomainHandler {
     private readonly IDomainRepository _repository;
@@ -7,36 +9,38 @@ public class DomainHandler : IDomainHandler {
         _repository = repository;
     }
 
-    public async Task<Result<IEnumerable<Row>>> GetManyAsync(CancellationToken cancellation = default) {
+    public async Task<CRUDResult<IEnumerable<Row>>> GetManyAsync(CancellationToken cancellation = default) {
         var list = await _repository.GetManyAsync(cancellation).ConfigureAwait(false);
-        return Result.AsSuccessFor(list);
+        return AsSuccessFor(list);
     }
 
-    public async Task<ResultOrNotFound<Domain>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
+    public async Task<CRUDResult<Domain>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
         var output = await _repository.GetByIdAsync(id, cancellation).ConfigureAwait(false);
         return output is not null
-            ? ResultOrNotFound.AsSuccessFor(output)
-            : ResultOrNotFound.AsNotFoundFor(output)!;
+            ? AsSuccessFor(output)
+            : AsNotFoundFor(output);
     }
 
-    public async Task<Result<Domain>> AddAsync(Domain input, CancellationToken cancellation = default) {
+    public async Task<CRUDResult<Domain>> AddAsync(Domain input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        return result.HasErrors
-            ? result.ToResult(input)
-            : await _repository.AddAsync(input, cancellation).ConfigureAwait(false);
+        if (result.HasErrors) return result.ToCRUDResult(input);
+        var output = await _repository.AddAsync(input, cancellation).ConfigureAwait(false);
+        return output is not null
+            ? AsSuccessFor(output)
+            : AsConflictFor(input);
     }
 
-    public async Task<ResultOrNotFound<Domain>> UpdateAsync(Domain input, CancellationToken cancellation = default) {
+    public async Task<CRUDResult<Domain>> UpdateAsync(Domain input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        if (result.HasErrors) return result.ToResultOrNotFound(true, input);
+        if (result.HasErrors) return result.ToCRUDResult(input);
         var output = await _repository.UpdateAsync(input, cancellation).ConfigureAwait(false);
         return output is not null
-            ? ResultOrNotFound.AsSuccessFor(output)
-            : ResultOrNotFound.AsNotFoundFor(input)!;
+            ? AsSuccessFor(output)
+            : AsNotFoundFor(input);
     }
 
-    public ResultOrNotFound Remove(Guid id)
+    public CRUDResult Remove(Guid id)
         => _repository.Remove(id)
-            ? ResultOrNotFound.AsSuccess()
-            : ResultOrNotFound.AsNotFound();
+            ? AsSuccess()
+            : AsNotFound();
 }

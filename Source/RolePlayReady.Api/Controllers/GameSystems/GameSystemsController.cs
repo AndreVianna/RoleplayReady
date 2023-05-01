@@ -41,8 +41,11 @@ public class GameSystemsController : ControllerBase {
         string id,
         CancellationToken cancellationToken = default) {
         _logger.LogDebug("Getting game system '{id}' requested.", id);
-        if (!Base64Guid.TryParse(id, out var uuid))
-            return NotFound();
+        if (!Base64Guid.TryParse(id, out var uuid)) {
+            ModelState.AddModelError("id", "Not a valid base64 uuid.");
+            return BadRequest(ModelState);
+        }
+
         var result = await _handler.GetByIdAsync(uuid, cancellationToken);
         if (result.Value is null) {
             _logger.LogDebug("Fail to retrieve game system '{id}' (not found).", id);
@@ -73,6 +76,11 @@ public class GameSystemsController : ControllerBase {
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
 
+        if (result.IsConflict) {
+            _logger.LogDebug("Fail to create game system (bad request).");
+            return Conflict(result.Errors.UpdateModelState(ModelState));
+        }
+
         var response = result.Value!.ToResponse();
         _logger.LogDebug("Game system '{id}' created successfully.", response.Id);
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
@@ -94,8 +102,11 @@ public class GameSystemsController : ControllerBase {
         GameSystemRequest request,
         CancellationToken cancellationToken = default) {
         _logger.LogDebug("Update game system '{id}' requested.", id);
-        if (!Base64Guid.TryParse(id, out var uuid))
-            return NotFound();
+        if (!Base64Guid.TryParse(id, out var uuid)) {
+            ModelState.AddModelError("id", "Not a valid base64 uuid.");
+            return BadRequest(ModelState);
+        }
+
         var model = request.ToDomain(uuid);
         var result = await _handler.UpdateAsync(model, cancellationToken);
         if (result.HasErrors) {
@@ -124,8 +135,11 @@ public class GameSystemsController : ControllerBase {
         [SwaggerParameter("The id of the game system.", Required = true)]
         string id) {
         _logger.LogDebug("Remove game system '{id}' requested.", id);
-        if (!Base64Guid.TryParse(id, out var uuid))
-            return NotFound();
+        if (!Base64Guid.TryParse(id, out var uuid)) {
+            ModelState.AddModelError("id", "Not a valid base64 uuid.");
+            return BadRequest(ModelState);
+        }
+
         var result = _handler.Remove(uuid);
         if (result.IsNotFound) {
             _logger.LogDebug("Fail to remove game system '{id}' (not found).", id);

@@ -4,8 +4,8 @@ public class CollectionValidationTests {
     public record TestObject : IValidatable {
         public required ICollection<int> Numbers { get; init; } = Array.Empty<int>();
         public required ICollection<string> Names { get; init; } = Array.Empty<string>();
-        public Result Validate() {
-            var result = Result.AsSuccess();
+        public ValidationResult Validate() {
+            var result = ValidationResult.AsSuccess();
             result += Numbers.List()
                 .IsNotEmpty()
                 .And.MinimumCountIs(2)

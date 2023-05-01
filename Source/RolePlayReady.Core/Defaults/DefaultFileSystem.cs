@@ -5,7 +5,7 @@ public class DefaultFileSystem : IFileSystem {
     public string CombinePath(params string[] paths)
         => Path.Combine(paths);
 
-    public string ExtractFileNameFrom(string filePath)
+    public string GetFileNameFrom(string filePath)
         => Path.GetFileName(filePath);
 
     public string[] GetFilesFrom(string folderPath, string searchPattern, SearchOption searchOptions)

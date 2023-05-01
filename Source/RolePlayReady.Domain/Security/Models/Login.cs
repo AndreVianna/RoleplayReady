@@ -4,8 +4,8 @@ public record Login : IValidatable {
     public required string Email { get; set; }
     public required string Password { get; set; }
 
-    public Result Validate() {
-        var result = Result.AsSuccess();
+    public ValidationResult Validate() {
+        var result = ValidationResult.AsSuccess();
         result += Email.IsNotNull()
                        .And.IsNotEmptyOrWhiteSpace()
                        .And.IsEmail().Result;

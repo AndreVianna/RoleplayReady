@@ -1,4 +1,4 @@
-﻿using static System.Results.Result;
+﻿using static System.Results.ValidationResult;
 
 namespace System.Validations;
 
@@ -22,8 +22,6 @@ public abstract class Validation<TSubject, TValidators>
     public TSubject? Subject { get; }
     public string Source { get; }
     public ICollection<ValidationError> Errors { get; }
-
     public TValidators And => (this as TValidators)!;
-
-    public Result Result => AsInvalid(Errors);
+    public ValidationResult Result => AsInvalid(Errors);
 }

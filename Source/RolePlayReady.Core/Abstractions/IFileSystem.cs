@@ -6,7 +6,7 @@ public interface IFileSystem {
     bool FileExists(string filePath);
     void CreateFolderIfNotExists(string folderPath);
     void MoveFile(string sourcePath, string targetPath);
-    string ExtractFileNameFrom(string filePath);
+    string GetFileNameFrom(string filePath);
     Stream OpenFileForReading(string filePath);
     Stream CreateNewFileAndOpenForWriting(string path);
 }

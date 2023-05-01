@@ -16,8 +16,8 @@ public record User : IKey, IValidatable {
     [PersonalInformation]
     public DateOnly? Birthday { get; init; }
 
-    public Result Validate() {
-        var result = Result.AsSuccess();
+    public ValidationResult Validate() {
+        var result = ValidationResult.AsSuccess();
         result += Username.IsNotNull()
                           .And.IsNotEmptyOrWhiteSpace()
                           .And.MinimumLengthIs(3)

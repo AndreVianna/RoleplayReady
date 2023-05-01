@@ -1,5 +1,4 @@
 global using System.Results;
-global using System.Results.Extensions;
 global using System.Validations.Abstractions;
 global using System.Validations.Extensions;
 global using System.Validators.Collection;

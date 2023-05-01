@@ -2,7 +2,7 @@ namespace RolePlayReady.DataAccess.Repositories;
 
 public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     private readonly IFileSystem _io;
-    private readonly TrackedJsonFileRepository<TestData> _repository;
+    private readonly JsonFileHandler<TestData> _handler;
 
     private record TestData : IKey {
         public Guid Id { get; init; } = Guid.NewGuid();
@@ -10,9 +10,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
 
     private const string _rootFolder = "testBaseFolder";
     private const string _owner = "owner";
-    private const string _baseFolder = $"{_rootFolder}/{_owner}";
     private const string _path = "testPath";
-    private const string _finalFolder = $"{_baseFolder}/{_path}";
+    private const string _subFolder = $"{_owner}/{_path}";
+    //private const string _baseFolder = $"{_rootFolder}/{_owner}";
+    private const string _finalFolder = $"{_rootFolder}/{_subFolder}";
 
     private static readonly Guid _newFileId = Guid.NewGuid();
     private static readonly Guid _file1Id = Guid.NewGuid();
@@ -76,11 +77,8 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     };
 
     public TrackedJsonFileRepositoryTests() {
-        var userAccessor = Substitute.For<IUserAccessor>();
-        userAccessor.Username.Returns(_owner);
         _io = Substitute.For<IFileSystem>();
-        _io.CombinePath(_rootFolder, _owner).Returns(_baseFolder);
-        _io.CombinePath(_baseFolder, _path).Returns(_finalFolder);
+        _io.CombinePath(_rootFolder, _subFolder).Returns(_finalFolder);
         _io.CombinePath(_finalFolder, _newFileName).Returns(_newFile);
         _io.CombinePath(_finalFolder, _file1V3DeletedName).Returns(_file1V3Deleted);
         _io.CombinePath(_finalFolder, _file1V4Name).Returns(_file1V4);
@@ -101,12 +99,12 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         _invalidFileContent = new MemoryStream("AsInvalidFor"u8.ToArray());
         _io.OpenFileForReading(_invalidContentFile).Returns(_invalidFileContent);
 
-        _io.ExtractFileNameFrom(_newFile).Returns(_newFileName);
-        _io.ExtractFileNameFrom(_file1V4).Returns(_file1V4Name);
-        _io.ExtractFileNameFrom(_file1V3).Returns(_file1V3Name);
-        _io.ExtractFileNameFrom(_file2V0).Returns(_file2V0Name);
-        _io.ExtractFileNameFrom(_invalidNameFile).Returns(_invalidNameFileName);
-        _io.ExtractFileNameFrom(_invalidTimestampFile).Returns(_invalidTimestampFileName);
+        _io.GetFileNameFrom(_newFile).Returns(_newFileName);
+        _io.GetFileNameFrom(_file1V4).Returns(_file1V4Name);
+        _io.GetFileNameFrom(_file1V3).Returns(_file1V3Name);
+        _io.GetFileNameFrom(_file2V0).Returns(_file2V0Name);
+        _io.GetFileNameFrom(_invalidNameFile).Returns(_invalidNameFileName);
+        _io.GetFileNameFrom(_invalidTimestampFile).Returns(_invalidTimestampFileName);
 
         _io.When(x => x.MoveFile(Arg.Any<string>(), Arg.Any<string>())).Do(_ => { });
 
@@ -128,8 +126,9 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
             .Returns(x => { x[4] = null; return false; });
 
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(TrackedJsonFileRepository<TestData>)}:BaseFolder"].Returns(_rootFolder);
-        _repository = new(configuration, userAccessor, _io, dateTime, NullLoggerFactory.Instance);
+        configuration[$"{nameof(JsonFileHandler<TestData>)}:BaseFolder"].Returns(_rootFolder);
+        _handler = new(configuration, _io, dateTime, NullLoggerFactory.Instance);
+        _handler.SetBasePath(_subFolder);
     }
 
     public void Dispose() {
@@ -143,10 +142,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         // Arrange
         var userAccessor = Substitute.For<IUserAccessor>();
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(TrackedJsonFileRepository<TestData>)}:BaseFolder"].Returns(_baseFolder);
+        configuration[$"{nameof(JsonFileHandler<TestData>)}:BaseFolder"].Returns(_rootFolder);
 
         // Act
-        var result = new TrackedJsonFileRepository<TestData>(configuration, userAccessor, null, null, null);
+        var result = new JsonFileHandler<TestData>(configuration, null, null, null);
 
         // Assert
         result.Should().NotBeNull();
@@ -157,10 +156,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         // Arrange
         var userAccessor = Substitute.For<IUserAccessor>();
         var configuration = Substitute.For<IConfiguration>();
-        configuration[$"{nameof(TrackedJsonFileRepository<TestData>)}:BaseFolder"].Returns(default(string));
+        configuration[$"{nameof(JsonFileHandler<TestData>)}:BaseFolder"].Returns(default(string));
 
         // Act
-        var action = () => new TrackedJsonFileRepository<TestData>(configuration, userAccessor, null, null, null);
+        var action = () => new JsonFileHandler<TestData>(configuration, null, null, null);
 
         // Assert
         action.Should().Throw<ArgumentException>();
@@ -169,7 +168,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public async Task GetAllAsync_PathGiven_ReturnsAllDataFiles() {
         // Act
-        var result = await _repository.GetAllAsync(_path);
+        var result = await _handler.GetAllAsync();
 
         // Assert
         var subject = result.Should().BeOfType<TestData[]>().Subject;
@@ -179,10 +178,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public async Task GetAllAsync_WithInternalError_ThrowsInvalidOperationException() {
         // Arrange
-        _io.CombinePath(_baseFolder, _path).Throws<InvalidOperationException>();
+        _io.GetFilesFrom(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<SearchOption>()).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.GetAllAsync(_path);
+        var action = () => _handler.GetAllAsync();
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>();
@@ -191,7 +190,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public async Task GetByIdAsync_PathAndIdGiven_DataFileFound_ReturnsDataFile() {
         // Act
-        var result = await _repository.GetByIdAsync(_path, _file1Id);
+        var result = await _handler.GetByIdAsync(_file1Id);
 
         // Assert
         result.Should().NotBeNull();
@@ -201,7 +200,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public async Task GetByIdAsync_PathAndIdGiven_DataFileNotFound_ReturnsNull() {
         // Act
-        var result = await _repository.GetByIdAsync(_path, _missingFileId);
+        var result = await _handler.GetByIdAsync(_missingFileId);
 
         // Assert
         result.Should().BeNull();
@@ -210,7 +209,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public async Task GetByIdAsync_WithInvalidFileName_ReturnsNull() {
         // Act
-        var result = await _repository.GetByIdAsync(_path, _invalidNameId);
+        var result = await _handler.GetByIdAsync(_invalidNameId);
 
         // Assert
         result.Should().BeNull();
@@ -219,7 +218,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public async Task GetByIdAsync_WithInvalidFileTimestamp_ReturnsNull() {
         // Act
-        var result = await _repository.GetByIdAsync(_path, _invalidTimestampId);
+        var result = await _handler.GetByIdAsync(_invalidTimestampId);
 
         // Assert
         result.Should().BeNull();
@@ -228,7 +227,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public async Task GetByIdAsync_WithInvalidFileContent_ReturnsNull() {
         // Act
-        var result = await _repository.GetByIdAsync(_path, _invalidContentId);
+        var result = await _handler.GetByIdAsync(_invalidContentId);
 
         // Assert
         result.Should().BeNull();
@@ -237,10 +236,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public async Task GetByIdAsync_WithInternalError_ThrowsInvalidOperationException() {
         // Arrange
-        _io.CombinePath(_baseFolder, _path).Throws<InvalidOperationException>();
+        _io.GetFilesFrom(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<SearchOption>()).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.GetByIdAsync(_path, _file1Id);
+        var action = () => _handler.GetByIdAsync(_file1Id);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>();
@@ -261,7 +260,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         _io.OpenFileForReading(_newFile).Returns(file1Content);
 
         // Act
-        var result = await _repository.InsertAsync(_path, newFileData);
+        var result = await _handler.CreateAsync(newFileData);
 
         // Assert
         result.Should().NotBeNull();
@@ -270,17 +269,17 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     }
 
     [Fact]
-    public async Task InsertAsync_WhenAlreadyExists_InsertsNewDataFile() {
+    public async Task InsertAsync_WhenAlreadyExists_ReturnsNull() {
         // Arrange
         var newFileData = new TestData {
             Id = _file2Id,
         };
 
         // Act
-        var action = () => _repository.InsertAsync(_path, newFileData);
+        var result = await _handler.CreateAsync(newFileData);
 
         // Assert
-        await action.Should().ThrowAsync<InvalidOperationException>();
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -298,7 +297,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         _io.OpenFileForReading(_file1V4).Returns(file1Content);
 
         // Act
-        var result = await _repository.UpdateAsync(_path, updatedData);
+        var result = await _handler.UpdateAsync(updatedData);
 
         // Assert
         result.Should().NotBeNull();
@@ -308,14 +307,14 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     }
 
     [Fact]
-    public async Task InsertAsync_FileNotFound_InsertsNewDataFile() {
+    public async Task InsertAsync_WhenFileNotFound_ReturnsNull() {
         // Arrange
         var newFileData = new TestData {
             Id = _missingFileId,
         };
 
         // Act
-        var result = await _repository.UpdateAsync(_path, newFileData);
+        var result = await _handler.UpdateAsync(newFileData);
 
         // Assert
         result.Should().BeNull();
@@ -325,10 +324,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     public async Task InsertAsync_WithInternalError_ThrowsInvalidOperationException() {
         // Arrange
         var data = _expected[0];
-        _io.CombinePath(_baseFolder, _path).Throws<InvalidOperationException>();
+        _io.GetFilesFrom(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<SearchOption>()).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.InsertAsync(_path, data);
+        var action = () => _handler.CreateAsync(data);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>();
@@ -338,10 +337,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     public async Task UpdateAsync_WithInternalError_ThrowsInvalidOperationException() {
         // Arrange
         var data = _expected[0];
-        _io.CombinePath(_baseFolder, _path).Throws<InvalidOperationException>();
+        _io.GetFilesFrom(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<SearchOption>()).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.UpdateAsync(_path, data);
+        var action = () => _handler.UpdateAsync(data);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>();
@@ -350,7 +349,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public void Delete_PathAndIdGiven_RemovesDataFile() {
         // Act
-        var result = _repository.Delete(_path, _file1Id);
+        var result = _handler.Delete(_file1Id);
 
         // Assert
         result.Should().BeTrue();
@@ -360,7 +359,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public void Delete_WhenFileNotFound_ReturnsFalse() {
         // Act
-        var result = _repository.Delete(_path, _missingFileId);
+        var result = _handler.Delete(_missingFileId);
 
         // Assert
         result.Should().BeFalse();
@@ -369,10 +368,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public void Delete_WithInternalError_ThrowsInvalidOperationException() {
         // Arrange
-        _io.CombinePath(_baseFolder, _path).Throws<InvalidOperationException>();
+        _io.GetFilesFrom(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<SearchOption>()).Throws<InvalidOperationException>();
 
         // Act
-        var action = () => _repository.Delete(_path, _file1Id);
+        var action = () => _handler.Delete(_file1Id);
 
         // Assert
         action.Should().Throw<InvalidOperationException>();

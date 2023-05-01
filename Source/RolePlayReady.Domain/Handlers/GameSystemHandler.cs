@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Handlers;
+﻿using static System.Results.CRUDResult;
+
+namespace RolePlayReady.Handlers;
 
 public class GameSystemHandler : IGameSystemHandler {
     private readonly IGameSystemRepository _repository;
@@ -7,36 +9,38 @@ public class GameSystemHandler : IGameSystemHandler {
         _repository = repository;
     }
 
-    public async Task<Result<IEnumerable<Row>>> GetManyAsync(CancellationToken cancellation = default) {
+    public async Task<CRUDResult<IEnumerable<Row>>> GetManyAsync(CancellationToken cancellation = default) {
         var list = await _repository.GetManyAsync(cancellation).ConfigureAwait(false);
-        return Result.AsSuccessFor(list);
+        return AsSuccessFor(list);
     }
 
-    public async Task<ResultOrNotFound<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
+    public async Task<CRUDResult<GameSystem>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
         var output = await _repository.GetByIdAsync(id, cancellation);
         return output is not null
-            ? ResultOrNotFound.AsSuccessFor(output)
-            : ResultOrNotFound.AsNotFoundFor(output)!;
+            ? AsSuccessFor(output)
+            : AsNotFoundFor(output);
     }
 
-    public async Task<Result<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default) {
-        var result = input.Validate();
-        return result.HasErrors
-            ? result.ToResult(input)
-            : await _repository.AddAsync(input, cancellation);
-    }
-
-    public async Task<ResultOrNotFound<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
-        var result = input.Validate();
-        if (result.HasErrors) return ResultOrNotFound.AsInvalidFor(input, result.Errors);
-        var output = await _repository.UpdateAsync(input, cancellation);
+    public async Task<CRUDResult<GameSystem>> AddAsync(GameSystem input, CancellationToken cancellation = default) {
+        var validation = input.Validate();
+        if (validation.HasErrors) return validation.ToCRUDResult(input);
+        var output = await _repository.AddAsync(input, cancellation).ConfigureAwait(false);
         return output is not null
-            ? ResultOrNotFound.AsSuccessFor(output)
-            : ResultOrNotFound.AsNotFoundFor(input)!;
+            ? AsSuccessFor(output)
+            : AsConflictFor(input);
     }
 
-    public ResultOrNotFound Remove(Guid id)
+    public async Task<CRUDResult<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
+        var validation = input.Validate();
+        if (validation.HasErrors) return AsInvalidFor(input, validation.Errors);
+        var output = await _repository.UpdateAsync(input, cancellation).ConfigureAwait(false);
+        return output is not null
+            ? AsSuccessFor(output)
+            : AsNotFoundFor(input);
+    }
+
+    public CRUDResult Remove(Guid id)
         => _repository.Remove(id)
-            ? ResultOrNotFound.AsSuccess()
-            : ResultOrNotFound.AsNotFound();
+            ? AsSuccess()
+            : AsNotFound();
 }

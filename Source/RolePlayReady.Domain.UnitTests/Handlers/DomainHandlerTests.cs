@@ -81,6 +81,7 @@ public class DomainHandlerTests {
 
         // Assert
         result.HasErrors.Should().BeTrue();
+        result.Invoking(x => x.IsConflict).Should().Throw<InvalidOperationException>();
         result.Value.Should().Be(input);
     }
 

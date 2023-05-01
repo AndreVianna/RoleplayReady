@@ -3,7 +3,6 @@
 global using System.Abstractions;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Results;
-global using System.Results.Extensions;
 global using System.Security.Claims;
 global using System.Text;
 global using System.Utilities;

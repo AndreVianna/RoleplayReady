@@ -6,7 +6,8 @@ public static class ServiceCollectionExtensions {
     public static IServiceCollection AddRepositories(this IServiceCollection services) {
         services.AddScoped<IDomainRepository, DomainRepository>();
         services.AddScoped<IGameSystemRepository, GameSystemRepository>();
-        services.AddScoped(typeof(ITrackedJsonFileRepository<>), typeof(TrackedJsonFileRepository<>));
+        services.AddScoped<IUserRepository, IUserRepository>();
+        services.AddScoped(typeof(IJsonFileHandler<>), typeof(JsonFileHandler<>));
         return services;
     }
 }

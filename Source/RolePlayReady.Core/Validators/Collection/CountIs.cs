@@ -8,6 +8,6 @@ public sealed class CountIs<TItem> : CollectionValidator<TItem> {
         _count = count;
     }
 
-    protected override Result ValidateValue(CollectionValidation<TItem> validation)
+    protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation)
         => validation.CountIs(_count).Result;
 }

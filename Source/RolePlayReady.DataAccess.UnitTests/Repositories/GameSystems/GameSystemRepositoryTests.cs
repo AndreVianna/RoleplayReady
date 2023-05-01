@@ -1,19 +1,23 @@
+using RolePlayReady.DataAccess.Repositories.Domains;
+
 namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
 public class GameSystemRepositoryTests {
-    private readonly ITrackedJsonFileRepository<GameSystemData> _files;
+    private readonly IJsonFileHandler<GameSystemData> _files;
     private readonly GameSystemRepository _repository;
 
     public GameSystemRepositoryTests() {
-        _files = Substitute.For<ITrackedJsonFileRepository<GameSystemData>>();
-        _repository = new(_files);
+        _files = Substitute.For<IJsonFileHandler<GameSystemData>>();
+        var userAccessor = Substitute.For<IUserAccessor>();
+        userAccessor.BaseFolder.Returns("User1234");
+        _repository = new(_files, new GameSystemMapper(), userAccessor);
     }
 
     [Fact]
     public async Task GetManyAsync_ReturnsAll() {
         // Arrange
         var dataFiles = GenerateList();
-        _files.GetAllAsync(string.Empty).Returns(dataFiles);
+        _files.GetAllAsync().Returns(dataFiles);
 
         // Act
         var settings = await _repository.GetManyAsync();
@@ -27,7 +31,7 @@ public class GameSystemRepositoryTests {
         // Arrange
         var dataFile = GeneratePersisted();
         var tokenSource = new CancellationTokenSource();
-        _files.GetByIdAsync(string.Empty, dataFile.Id, tokenSource.Token).Returns(dataFile);
+        _files.GetByIdAsync(dataFile.Id, tokenSource.Token).Returns(dataFile);
 
         // Act
         var setting = await _repository.GetByIdAsync(dataFile.Id, tokenSource.Token);
@@ -40,7 +44,7 @@ public class GameSystemRepositoryTests {
     public async Task GetByIdAsync_SystemNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.GetByIdAsync(string.Empty, id, Arg.Any<CancellationToken>()).Returns(default(GameSystemData));
+        _files.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(GameSystemData));
 
         // Act
         var setting = await _repository.GetByIdAsync(id);
@@ -55,7 +59,7 @@ public class GameSystemRepositoryTests {
         var id = Guid.NewGuid();
         var input = GenerateInput(id);
         var expected = GeneratePersisted(id);
-        _files.InsertAsync(string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
+        _files.CreateAsync(Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
         var result = await _repository.AddAsync(input);
@@ -70,7 +74,7 @@ public class GameSystemRepositoryTests {
         var id = Guid.NewGuid();
         var input = GenerateInput(id, State.Hidden);
         var expected = GeneratePersisted(id, State.Hidden);
-        _files.UpdateAsync(string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
+        _files.UpdateAsync(Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
         var result = await _repository.UpdateAsync(input);
@@ -84,7 +88,7 @@ public class GameSystemRepositoryTests {
         // Arrange
         var id = Guid.NewGuid();
         var input = GenerateInput(id, State.Hidden);
-        _files.UpdateAsync(string.Empty, Arg.Any<GameSystemData>()).Returns(default(GameSystemData));
+        _files.UpdateAsync(Arg.Any<GameSystemData>()).Returns(default(GameSystemData));
 
         // Act
         var result = await _repository.UpdateAsync(input);
@@ -97,7 +101,7 @@ public class GameSystemRepositoryTests {
     public void Delete_RemovesSystem() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(string.Empty, id).Returns(Result.AsSuccess());
+        _files.Delete(id).Returns(ValidationResult.AsSuccess());
 
         // Act
         var result = _repository.Remove(id);

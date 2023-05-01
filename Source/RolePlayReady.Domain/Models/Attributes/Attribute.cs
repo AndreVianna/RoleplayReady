@@ -8,10 +8,10 @@ public abstract record Attribute<TValue> : IAttribute {
     object? IAttribute.Value => Value;
     public TValue Value { get; init; } = default!;
 
-    public Result Validate() {
-        var result = Result.AsSuccess();
+    public ValidationResult Validate() {
+        var result = ValidationResult.AsSuccess();
         result += Definition.DataType.IsNotNull().And.IsEqualTo<TValue>().Result;
-        result += Definition.Constraints.Aggregate(Result.AsSuccess(), (r, c)
+        result += Definition.Constraints.Aggregate(ValidationResult.AsSuccess(), (r, c)
             => r + For(Definition.Name)
                 .Create(typeof(TValue), c.ValidatorName, c.Arguments.ToArray())
                 .Validate(Value));

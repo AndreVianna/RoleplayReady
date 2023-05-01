@@ -7,11 +7,11 @@ public abstract class TextValidator : IValidator {
         _source = source;
     }
 
-    public Result Validate(object? input) {
+    public ValidationResult Validate(object? input) {
         var value = (string)input!;
         var validation = new TextValidation(value.Trim(), _source);
         return ValidateValue(validation);
     }
 
-    protected abstract Result ValidateValue(TextValidation validation);
+    protected abstract ValidationResult ValidateValue(TextValidation validation);
 }
