@@ -42,7 +42,7 @@ builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService
 builder.Services.AddControllers(options => options.Filters.Add<CustomExceptionFilter>())
     .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
 
-const string apiTitle = "RoleplayReady API";
+const string apiTitle = "RolePlayReady API";
 const string apiVersion = "v1";
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
