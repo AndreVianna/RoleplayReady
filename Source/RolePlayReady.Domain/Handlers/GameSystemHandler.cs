@@ -23,7 +23,7 @@ public class GameSystemHandler : IGameSystemHandler {
         var result = input.Validate();
         return result.HasErrors
             ? result.ToResult(input)
-            : await _repository.InsertAsync(input, cancellation);
+            : await _repository.AddAsync(input, cancellation);
     }
 
     public async Task<ResultOrNotFound<GameSystem>> UpdateAsync(GameSystem input, CancellationToken cancellation = default) {
@@ -36,7 +36,7 @@ public class GameSystemHandler : IGameSystemHandler {
     }
 
     public ResultOrNotFound Remove(Guid id)
-        => _repository.Delete(id)
+        => _repository.Remove(id)
             ? ResultOrNotFound.AsSuccess()
             : ResultOrNotFound.AsNotFound();
 }

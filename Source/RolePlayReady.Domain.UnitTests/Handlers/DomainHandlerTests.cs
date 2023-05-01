@@ -58,7 +58,7 @@ public class DomainHandlerTests {
     public async Task AddAsync_ReturnsDomain() {
         // Arrange
         var input = CreateInput();
-        _repository.InsertAsync(input, Arg.Any<CancellationToken>()).Returns(input);
+        _repository.AddAsync(input, Arg.Any<CancellationToken>()).Returns(input);
 
         // Act
         var result = await _handler.AddAsync(input);
@@ -137,7 +137,7 @@ public class DomainHandlerTests {
     public void Remove_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Delete(id).Returns(true);
+        _repository.Remove(id).Returns(true);
 
         // Act
         var result = _handler.Remove(id);
@@ -150,7 +150,7 @@ public class DomainHandlerTests {
     public void Remove_WithInvalidId_ReturnsNotFound() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Delete(id).Returns(false);
+        _repository.Remove(id).Returns(false);
 
         // Act
         var result = _handler.Remove(id);

@@ -21,7 +21,7 @@ public class DomainRepository : IDomainRepository {
         return file?.Map();
     }
 
-    public async Task<Domain> InsertAsync(Domain input, CancellationToken cancellation = default) {
+    public async Task<Domain> AddAsync(Domain input, CancellationToken cancellation = default) {
         var result = await _files.InsertAsync(string.Empty, input.Map(), cancellation).ConfigureAwait(false);
         return result.Map();
     }
@@ -31,6 +31,6 @@ public class DomainRepository : IDomainRepository {
         return result?.Map();
     }
 
-    public bool Delete(Guid id)
+    public bool Remove(Guid id)
         => _files.Delete(string.Empty, id);
 }

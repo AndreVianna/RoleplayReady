@@ -21,8 +21,7 @@ builder.Services.AddAuthentication(options => {
     options.DefaultChallengeScheme = authScheme;
 }).AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(authScheme, null);
 
-builder.Services.AddApiVersioning(options =>
-{
+builder.Services.AddApiVersioning(options => {
     options.ReportApiVersions = true;
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new(1, 0);

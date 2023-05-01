@@ -8,12 +8,10 @@ public record Login : IValidatable {
         var result = Result.AsSuccess();
         result += Email.IsNotNull()
                        .And.IsNotEmptyOrWhiteSpace()
-                       .And.IsEmail()
-                       .Result;
+                       .And.IsEmail().Result;
         result += Password.IsNotNull()
                           .And.IsNotEmptyOrWhiteSpace()
-                          .And.MaximumLengthIs(Constants.Validation.Password.MaximumLength)
-                          .Result;
+                          .And.MaximumLengthIs(Validation.Password.MaximumLength).Result;
         return result;
     }
 }

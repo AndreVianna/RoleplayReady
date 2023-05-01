@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
-public record GameSystemData : IPersisted  {
+public record GameSystemData : IKey  {
     public Guid Id { get; init; }
     public State State { get; init; }
     public string? ShortName { get; init; }

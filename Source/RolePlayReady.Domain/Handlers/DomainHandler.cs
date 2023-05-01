@@ -23,7 +23,7 @@ public class DomainHandler : IDomainHandler {
         var result = input.Validate();
         return result.HasErrors
             ? result.ToResult(input)
-            : await _repository.InsertAsync(input, cancellation).ConfigureAwait(false);
+            : await _repository.AddAsync(input, cancellation).ConfigureAwait(false);
     }
 
     public async Task<ResultOrNotFound<Domain>> UpdateAsync(Domain input, CancellationToken cancellation = default) {
@@ -36,7 +36,7 @@ public class DomainHandler : IDomainHandler {
     }
 
     public ResultOrNotFound Remove(Guid id)
-        => _repository.Delete(id)
+        => _repository.Remove(id)
             ? ResultOrNotFound.AsSuccess()
             : ResultOrNotFound.AsNotFound();
 }

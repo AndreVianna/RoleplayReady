@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
-public interface IGameObject : IPersisted {
+public interface IGameObject : IKey {
     string Unit { get; }
 }

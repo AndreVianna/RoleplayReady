@@ -59,7 +59,7 @@ public class DomainRepositoryTests {
         _files.InsertAsync(string.Empty, Arg.Any<DomainData>(), tokenSource.Token).Returns(expected);
 
         // Act
-        var result = await _repository.InsertAsync(domain, tokenSource.Token);
+        var result = await _repository.AddAsync(domain, tokenSource.Token);
 
         // Assert
         result.Should().NotBeNull();
@@ -103,7 +103,7 @@ public class DomainRepositoryTests {
         _files.Delete(string.Empty, id).Returns(Result.AsSuccess());
 
         // Act
-        var result = _repository.Delete(id);
+        var result = _repository.Remove(id);
 
         // Assert
         result.Should().BeTrue();

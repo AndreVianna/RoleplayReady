@@ -58,7 +58,7 @@ public class GameSystemRepositoryTests {
         _files.InsertAsync(string.Empty, Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
-        var result = await _repository.InsertAsync(input);
+        var result = await _repository.AddAsync(input);
 
         // Assert
         result.Should().NotBeNull();
@@ -100,7 +100,7 @@ public class GameSystemRepositoryTests {
         _files.Delete(string.Empty, id).Returns(Result.AsSuccess());
 
         // Act
-        var result = _repository.Delete(id);
+        var result = _repository.Remove(id);
 
         // Assert
         result.Should().BeTrue();
