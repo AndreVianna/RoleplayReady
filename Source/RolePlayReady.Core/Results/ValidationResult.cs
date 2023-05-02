@@ -1,28 +1,25 @@
 ﻿namespace System.Results;
 
-public record ValidationResult : IResult {
-    public ValidationResult(IEnumerable<ValidationError>? errors = null) {
-        Errors = errors?.ToList() ?? new List<ValidationError>();
+public record ValidationResult : Result {
+    public ValidationResult(IEnumerable<ValidationError>? errors = null)
+        : base(errors) {
     }
 
-    public bool IsValid => Errors.Count == 0;
-    public virtual bool IsSuccess => IsValid;
-    public bool HasValidationErrors => Errors.Count != 0;
-    public IList<ValidationError> Errors { get; protected init; } = new List<ValidationError>();
-
-    public static ValidationResult AsSuccess()  => new();
+    public override bool IsSuccess => !IsInvalid;
+    public static ValidationResult Success { get; } = new();
 
     public static ValidationResult AsInvalid(IEnumerable<ValidationError> errors)
         => new(Ensure.IsNotNull(errors));
-    public CRUDResult<TOutput> ToCRUDResult<TOutput>(TOutput value)
-        => HasValidationErrors
-            ? new(CRUDResultType.Invalid, value, Errors)
-            : throw new InvalidOperationException("Cannot convert a successful ValidationResult to a CrudResult.");
 
-    public SignInResult ToSignInResult()
-        => HasValidationErrors
+    public CrudResult<TOutput> ToInvalidCrudResult<TOutput>(TOutput value)
+        => !IsSuccess
+            ? new(CRUDResultType.Invalid, value, Errors)
+            : throw new InvalidOperationException("Cannot convert a successful validation to an invalid CRUD result.");
+
+    public SignInResult ToInvalidSignInResult()
+        => !IsSuccess
             ? new(SignInResultType.Invalid, null, Errors)
-            : throw new InvalidOperationException("Cannot convert a successful ValidationResult to a SignInResult.");
+            : throw new InvalidOperationException("Cannot convert a successful validation to an invalid sign in result.");
 
     public static implicit operator ValidationResult(List<ValidationError> errors) => new(errors.AsEnumerable());
     public static implicit operator ValidationResult(ValidationError[] errors) => new(errors.AsEnumerable());
@@ -31,10 +28,7 @@ public record ValidationResult : IResult {
 
     public static ValidationResult operator +(ValidationResult left, ValidationResult right) => new(right.Errors.Union(left.Errors));
 
-    public virtual bool Equals(ValidationResult? other)
-        => other is not null
-        && Errors.SequenceEqual(other.Errors);
+    public virtual bool Equals(ValidationResult? other) => base.Equals(other);
 
-    public override int GetHashCode()
-        => Errors.Aggregate(Array.Empty<ValidationError>().GetHashCode(), HashCode.Combine);
+    public override int GetHashCode() => base.GetHashCode();
 }

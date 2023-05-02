@@ -71,7 +71,7 @@ public class GameSystemsController : ControllerBase {
         _logger.LogDebug("Create game system requested.");
         var model = request.ToDomain();
         var result = await _handler.AddAsync(model, cancellationToken);
-        if (result.HasValidationErrors) {
+        if (result.HasErrors) {
             _logger.LogDebug("Fail to create game system (bad request).");
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
@@ -109,7 +109,7 @@ public class GameSystemsController : ControllerBase {
 
         var model = request.ToDomain(uuid);
         var result = await _handler.UpdateAsync(model, cancellationToken);
-        if (result.HasValidationErrors) {
+        if (result.HasErrors) {
             _logger.LogDebug("Fail to update game system '{id}' (bad request).", id);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }

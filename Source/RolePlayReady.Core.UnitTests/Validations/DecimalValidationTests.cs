@@ -5,7 +5,7 @@ public class DecimalValidationTests {
         public decimal? Nullable { get; init; }
         public decimal? Required { get; init; }
         public ValidationResult Validate() {
-            var result = ValidationResult.AsSuccess();
+            var result = ValidationResult.Success;
             result += Nullable.IsNullOr().IsGreaterThan(10).And.IsLessThan(20).And.IsEqualTo(15).Result;
             result += Required.IsNotNull().And.MinimumIs(10).And.MaximumIs(20).Result;
             return result;

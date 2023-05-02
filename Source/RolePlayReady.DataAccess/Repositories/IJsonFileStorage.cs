@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories;
 
-public interface IJsonFileHandler<TData>
+public interface IJsonFileStorage<TData>
     where TData : class, IKey {
     void SetBasePath(string path);
     Task<IEnumerable<TData>> GetAllAsync(CancellationToken cancellation = default);

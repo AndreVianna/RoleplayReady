@@ -2,19 +2,19 @@
 
 namespace RolePlayReady.DataAccess.Repositories;
 
-public partial class JsonFileHandler<TData> : IJsonFileHandler<TData>
+public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
     where TData : class, IKey {
-    private readonly ILogger<JsonFileHandler<TData>> _logger;
+    private readonly ILogger<JsonFileStorage<TData>> _logger;
     private readonly IFileSystem _io;
     private readonly IDateTime _dateTimeProvider;
 
     private string _repositoryPath;
 
     private const string _timestampFormat = "yyyyMMddHHmmss";
-    private const string _baseFolderKey = $"{nameof(JsonFileHandler<TData>)}:BaseFolder";
+    private const string _baseFolderKey = $"{nameof(JsonFileStorage<TData>)}:BaseFolder";
 
-    public JsonFileHandler(IConfiguration configuration, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
-        _logger = loggerFactory?.CreateLogger<JsonFileHandler<TData>>() ?? NullLogger<JsonFileHandler<TData>>.Instance;
+    public JsonFileStorage(IConfiguration configuration, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
+        _logger = loggerFactory?.CreateLogger<JsonFileStorage<TData>>() ?? NullLogger<JsonFileStorage<TData>>.Instance;
         _io = io ?? new DefaultFileSystem();
         _dateTimeProvider = dateTime ?? new SystemDateTime();
         _repositoryPath = Ensure.IsNotNullOrWhiteSpace(configuration[_baseFolderKey], $"{nameof(configuration)}[{_baseFolderKey}]").Trim();

@@ -5,7 +5,7 @@ public class CollectionValidationTests {
         public required ICollection<int> Numbers { get; init; } = Array.Empty<int>();
         public required ICollection<string> Names { get; init; } = Array.Empty<string>();
         public ValidationResult Validate() {
-            var result = ValidationResult.AsSuccess();
+            var result = ValidationResult.Success;
             result += Numbers.List()
                 .IsNotEmpty()
                 .And.MinimumCountIs(2)

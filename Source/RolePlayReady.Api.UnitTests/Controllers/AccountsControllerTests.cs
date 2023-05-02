@@ -29,7 +29,7 @@ public class AccountsControllerTests {
         };
         const string token = "ValidToken";
         var expected = token.ToLoginResponse();
-        _handler.Authenticate(Arg.Any<Login>()).Returns(SignInResult.AsSuccess(token));
+        _handler.Authenticate(Arg.Any<Login>()).Returns(SignInResult.Success(token));
 
         // Act
         var response = _controller.Login(request);
@@ -48,7 +48,7 @@ public class AccountsControllerTests {
             Password = _sample.Password,
         };
         _handler.Authenticate(Arg.Any<Login>())
-                .Returns(SignInResult.AsFailure());
+                .Returns(SignInResult.Failure());
 
         // Act
         var response = _controller.Login(request);
@@ -65,7 +65,7 @@ public class AccountsControllerTests {
             Password = "invalid",
         };
         _handler.Authenticate(Arg.Any<Login>())
-                .Returns(SignInResult.AsInvalid("Some validation error.", "login"));
+                .Returns(SignInResult.Invalid("Some validation error.", "login"));
 
         // Act
         var response = _controller.Login(request);

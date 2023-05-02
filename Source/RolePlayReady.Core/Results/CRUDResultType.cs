@@ -2,7 +2,7 @@
 
 public enum CRUDResultType {
     Invalid = 0, // request validation failed.
-    Succeeded = 1, // operation succeeded.
+    Success = 1, // operation succeeded.
     NotFound = 2, // operation failed because the resource was not found.
     Conflict = 3, // operation failed because the resource already exists.
 }

@@ -1,20 +1,6 @@
 namespace System.Validators;
 
 public class ValidatorFactoryTests {
-    [Theory]
-    [ClassData(typeof(TestData))]
-    public void Create_ForType_ReturnsValidator(Type valueType, string validatorName, Type validatorType, params object[] args) {
-        var validator = ValidatorFactory.For("Attribute").Create(valueType, validatorName, args);
-
-        validator.Should().BeOfType(validatorType);
-    }
-
-    [Fact]
-    public void Create_ForUnsupportedType_Throws() {
-        var action = () => ValidatorFactory.For("Attribute").Create(typeof(Dictionary<int, int>), "Anything", Array.Empty<object>());
-        action.Should().Throw<InvalidOperationException>().WithMessage("Unsupported validator data type 'Dictionary<Integer,Integer>'.");
-    }
-
     private class TestData : TheoryData<Type, string, Type, object[]> {
         public TestData() {
             Add(typeof(decimal), nameof(IsLessThan<decimal>), typeof(IsLessThan<decimal>), new object[] { 20.0m });
@@ -42,5 +28,19 @@ public class ValidatorFactoryTests {
             Add(typeof(Dictionary<string, string>), nameof(MaximumCountIs<KeyValuePair<string, int>>), typeof(MaximumCountIs<KeyValuePair<string, string>>), new object[] { 20 });
             Add(typeof(Dictionary<string, string>), nameof(MinimumCountIs<KeyValuePair<string, int>>), typeof(MinimumCountIs<KeyValuePair<string, string>>), new object[] { 20 });
         }
+    }
+
+    [Theory]
+    [ClassData(typeof(TestData))]
+    public void Create_ForType_ReturnsValidator(Type valueType, string validatorName, Type validatorType, params object[] args) {
+        var validator = ValidatorFactory.For("Attribute").Create(valueType, validatorName, args);
+
+        validator.Should().BeOfType(validatorType);
+    }
+
+    [Fact]
+    public void Create_ForUnsupportedType_Throws() {
+        var action = () => ValidatorFactory.For("Attribute").Create(typeof(Dictionary<int, int>), "Anything", Array.Empty<object>());
+        action.Should().Throw<InvalidOperationException>().WithMessage("Unsupported validator data type 'Dictionary<Integer,Integer>'.");
     }
 }

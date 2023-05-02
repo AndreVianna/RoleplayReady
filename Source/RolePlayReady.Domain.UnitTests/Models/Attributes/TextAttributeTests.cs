@@ -24,14 +24,6 @@ public class TextAttributeTests {
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
-    [Theory]
-    [ClassData(typeof(TestData))]
-    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
-        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
-
-        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
-    }
-
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
             Add("MaximumLengthIs", new object[] { 20 }, true);
@@ -43,6 +35,14 @@ public class TextAttributeTests {
             Add("IsOneOf", new object[] { "One", "TestValue", "Three" }, true);
             Add("IsOneOf", new object[] { "One", "Two", "Three" }, false);
         }
+    }
+
+    [Theory]
+    [ClassData(typeof(TestData))]
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
+        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
+
+        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
     }
 
     [Fact]

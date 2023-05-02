@@ -59,7 +59,7 @@ public class GameSystemsHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
          result.IsConflict.Should().BeFalse();
         result.Value.Should().NotBeNull();
     }
@@ -74,7 +74,7 @@ public class GameSystemsHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
         result.IsConflict.Should().BeTrue();
         result.Value.Should().NotBeNull();
     }
@@ -89,7 +89,7 @@ public class GameSystemsHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeTrue();
+        result.HasErrors.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
     }
 
@@ -133,7 +133,7 @@ public class GameSystemsHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeTrue();
+        result.HasErrors.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
     }
 

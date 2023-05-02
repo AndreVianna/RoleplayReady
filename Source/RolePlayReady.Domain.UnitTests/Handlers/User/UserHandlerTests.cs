@@ -19,7 +19,7 @@ public class UserHandlerTests {
         var result = await _handler.GetManyAsync();
 
         // Assert
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
         result.Value.Should().BeEquivalentTo(expected);
     }
 
@@ -35,7 +35,7 @@ public class UserHandlerTests {
 
         // Assert
         result.IsNotFound.Should().BeFalse();
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
         result.Value.Should().Be(expected);
     }
 
@@ -50,7 +50,7 @@ public class UserHandlerTests {
 
         // Assert
         result.IsNotFound.Should().BeTrue();
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
         result.Value.Should().BeNull();
     }
 
@@ -64,7 +64,7 @@ public class UserHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
         result.IsConflict.Should().BeFalse();
         result.Value.Should().NotBeNull();
     }
@@ -79,7 +79,7 @@ public class UserHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
         result.IsConflict.Should().BeTrue();
         result.Value.Should().NotBeNull();
     }
@@ -96,7 +96,7 @@ public class UserHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeTrue();
+        result.HasErrors.Should().BeTrue();
         result.Invoking(x => x.IsConflict).Should().Throw<InvalidOperationException>();
         result.Value.Should().Be(input);
     }
@@ -112,7 +112,7 @@ public class UserHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
         result.IsNotFound.Should().BeFalse();
         result.Value.Should().Be(input);
     }
@@ -128,7 +128,7 @@ public class UserHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeFalse();
+        result.HasErrors.Should().BeFalse();
         result.IsNotFound.Should().BeTrue();
         result.Value.Should().Be(input);
     }
@@ -145,7 +145,7 @@ public class UserHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasValidationErrors.Should().BeTrue();
+        result.HasErrors.Should().BeTrue();
         result.Invoking(x => x.IsNotFound).Should().Throw<InvalidOperationException>();
         result.Value.Should().Be(input);
     }

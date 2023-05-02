@@ -1,21 +1,21 @@
 namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
 public class GameSystemRepositoryTests {
-    private readonly IJsonFileHandler<GameSystemData> _files;
+    private readonly IJsonFileStorage<GameSystemData> _storage;
     private readonly GameSystemRepository _repository;
 
     public GameSystemRepositoryTests() {
-        _files = Substitute.For<IJsonFileHandler<GameSystemData>>();
+        _storage = Substitute.For<IJsonFileStorage<GameSystemData>>();
         var userAccessor = Substitute.For<IUserAccessor>();
         userAccessor.BaseFolder.Returns("User1234");
-        _repository = new(_files, new GameSystemMapper(), userAccessor);
+        _repository = new(_storage, userAccessor);
     }
 
     [Fact]
     public async Task GetManyAsync_ReturnsAll() {
         // Arrange
         var dataFiles = GenerateList();
-        _files.GetAllAsync().Returns(dataFiles);
+        _storage.GetAllAsync().Returns(dataFiles);
 
         // Act
         var settings = await _repository.GetManyAsync();
@@ -29,7 +29,7 @@ public class GameSystemRepositoryTests {
         // Arrange
         var dataFile = GenerateData();
         var tokenSource = new CancellationTokenSource();
-        _files.GetByIdAsync(dataFile.Id, tokenSource.Token).Returns(dataFile);
+        _storage.GetByIdAsync(dataFile.Id, tokenSource.Token).Returns(dataFile);
 
         // Act
         var setting = await _repository.GetByIdAsync(dataFile.Id, tokenSource.Token);
@@ -42,7 +42,7 @@ public class GameSystemRepositoryTests {
     public async Task GetByIdAsync_SystemNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(GameSystemData));
+        _storage.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(GameSystemData));
 
         // Act
         var setting = await _repository.GetByIdAsync(id);
@@ -57,7 +57,7 @@ public class GameSystemRepositoryTests {
         var id = Guid.NewGuid();
         var input = GenerateInput(id);
         var expected = GenerateData(id);
-        _files.CreateAsync(Arg.Any<GameSystemData>()).Returns(expected);
+        _storage.CreateAsync(Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
         var result = await _repository.AddAsync(input);
@@ -72,7 +72,7 @@ public class GameSystemRepositoryTests {
         var id = Guid.NewGuid();
         var input = GenerateInput(id);
         var expected = GenerateData(id);
-        _files.UpdateAsync(Arg.Any<GameSystemData>()).Returns(expected);
+        _storage.UpdateAsync(Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
         var result = await _repository.UpdateAsync(input);
@@ -86,7 +86,7 @@ public class GameSystemRepositoryTests {
         // Arrange
         var id = Guid.NewGuid();
         var input = GenerateInput(id);
-        _files.UpdateAsync(Arg.Any<GameSystemData>()).Returns(default(GameSystemData));
+        _storage.UpdateAsync(Arg.Any<GameSystemData>()).Returns(default(GameSystemData));
 
         // Act
         var result = await _repository.UpdateAsync(input);
@@ -99,7 +99,7 @@ public class GameSystemRepositoryTests {
     public void Delete_RemovesSystem() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(id).Returns(ValidationResult.AsSuccess());
+        _storage.Delete(id).Returns(CrudResult.Success);
 
         // Act
         var result = _repository.Remove(id);

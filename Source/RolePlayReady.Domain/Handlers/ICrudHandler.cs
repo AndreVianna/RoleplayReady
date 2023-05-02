@@ -8,9 +8,9 @@ public interface ICrudHandler<TModel>
 public interface ICrudHandler<TModel, TRowModel>
     where TModel : class, IKey, IValidatable
     where TRowModel : Row {
-    Task<CRUDResult<IEnumerable<TRowModel>>> GetManyAsync(CancellationToken cancellation = default);
-    Task<CRUDResult<TModel>> GetByIdAsync(Guid id, CancellationToken cancellation = default);
-    Task<CRUDResult<TModel>> AddAsync(TModel input, CancellationToken cancellation = default);
-    Task<CRUDResult<TModel>> UpdateAsync(TModel input, CancellationToken cancellation = default);
+    Task<CrudResult<IEnumerable<TRowModel>>> GetManyAsync(CancellationToken cancellation = default);
+    Task<CrudResult<TModel>> GetByIdAsync(Guid id, CancellationToken cancellation = default);
+    Task<CrudResult<TModel>> AddAsync(TModel input, CancellationToken cancellation = default);
+    Task<CrudResult<TModel>> UpdateAsync(TModel input, CancellationToken cancellation = default);
     CrudResult Remove(Guid id);
 }

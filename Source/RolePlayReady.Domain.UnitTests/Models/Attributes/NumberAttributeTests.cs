@@ -24,14 +24,6 @@ public class NumberAttributeTests {
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
-    [Theory]
-    [ClassData(typeof(TestData))]
-    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
-        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
-
-        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
-    }
-
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
             Add("MaximumIs", new object[] { 99 }, true);
@@ -45,6 +37,14 @@ public class NumberAttributeTests {
             Add("IsEqualTo", new object[] { 42 }, true);
             Add("IsEqualTo", new object[] { 13 }, false);
         }
+    }
+
+    [Theory]
+    [ClassData(typeof(TestData))]
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
+        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
+
+        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
     }
 
     [Fact]

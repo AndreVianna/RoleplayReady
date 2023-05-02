@@ -1,4 +1,4 @@
-﻿using RolePlayReady.Repositories;
+﻿using static System.Results.CrudResult;
 
 namespace RolePlayReady.Handlers;
 
@@ -23,38 +23,38 @@ public class CrudHandler<TModel, TRowModel, TRepository>
         _repository = repository;
     }
 
-    public async Task<CRUDResult<IEnumerable<TRowModel>>> GetManyAsync(CancellationToken cancellation = default) {
+    public async Task<CrudResult<IEnumerable<TRowModel>>> GetManyAsync(CancellationToken cancellation = default) {
         var list = await _repository.GetManyAsync(cancellation).ConfigureAwait(false);
-        return CrudResult.AsSuccessFor(list);
+        return SuccessFor(list);
     }
 
-    public async Task<CRUDResult<TModel>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
+    public async Task<CrudResult<TModel>> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
         var output = await _repository.GetByIdAsync(id, cancellation).ConfigureAwait(false);
         return output is not null
-            ? CrudResult.AsSuccessFor(output)
-            : CrudResult.AsNotFoundFor(output);
+            ? SuccessFor(output)
+            : NotFoundFor(output);
     }
 
-    public async Task<CRUDResult<TModel>> AddAsync(TModel input, CancellationToken cancellation = default) {
+    public async Task<CrudResult<TModel>> AddAsync(TModel input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        if (result.HasValidationErrors) return result.ToCRUDResult(input);
+        if (result.IsInvalid) return result.ToInvalidCrudResult(input);
         var output = await _repository.AddAsync(input, cancellation).ConfigureAwait(false);
         return output is not null
-            ? CrudResult.AsSuccessFor(output)
-            : CrudResult.AsConflictFor(input);
+            ? SuccessFor(output)
+            : ConflictFor(input);
     }
 
-    public async Task<CRUDResult<TModel>> UpdateAsync(TModel input, CancellationToken cancellation = default) {
+    public async Task<CrudResult<TModel>> UpdateAsync(TModel input, CancellationToken cancellation = default) {
         var result = input.Validate();
-        if (result.HasValidationErrors) return result.ToCRUDResult(input);
+        if (result.IsInvalid) return result.ToInvalidCrudResult(input);
         var output = await _repository.UpdateAsync(input, cancellation).ConfigureAwait(false);
         return output is not null
-            ? CrudResult.AsSuccessFor(output)
-            : CrudResult.AsNotFoundFor(input);
+            ? SuccessFor(output)
+            : NotFoundFor(input);
     }
 
     public CrudResult Remove(Guid id)
         => _repository.Remove(id)
-            ? CrudResult.AsSuccess()
-            : CrudResult.AsNotFound();
+            ? Success
+            : NotFound;
 }

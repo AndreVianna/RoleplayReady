@@ -1,9 +1,7 @@
-﻿using RolePlayReady.Handlers.Sphere;
+﻿namespace RolePlayReady.DataAccess.Repositories.Domains;
 
-namespace RolePlayReady.DataAccess.Repositories.Domains;
-
-public class SphereMapper : ISphereMapper {
-    public SphereData ToData(Sphere input)
+public static class SphereMapper {
+    public static SphereData ToData(this Sphere input)
         => new() {
             Id = input.Id,
             State = input.State,
@@ -14,13 +12,13 @@ public class SphereMapper : ISphereMapper {
             AttributeDefinitions = input.AttributeDefinitions.Select(ToData).ToArray(),
         };
 
-    public Row ToRow(SphereData input)
+    public static Row ToRow(this SphereData input)
         => new() {
             Id = input.Id,
             Name = input.Name,
         };
 
-    public Sphere? ToModel(SphereData? input)
+    public static Sphere? ToModel(this SphereData? input)
         => input is null
             ? null
             : new() {
@@ -33,7 +31,7 @@ public class SphereMapper : ISphereMapper {
                 AttributeDefinitions = input.AttributeDefinitions.Select(ToModel).ToArray(),
             };
 
-    private SphereData.AttributeDefinitionData ToData(IAttributeDefinition input)
+    private static SphereData.AttributeDefinitionData ToData(IAttributeDefinition input)
         => new() {
             ShortName = input.ShortName,
             Name = input.Name,
@@ -41,7 +39,7 @@ public class SphereMapper : ISphereMapper {
             DataType = input.DataType.GetName(),
         };
 
-    private AttributeDefinition ToModel(SphereData.AttributeDefinitionData input)
+    private static AttributeDefinition ToModel(SphereData.AttributeDefinitionData input)
         => new() {
             ShortName = input.ShortName,
             Name = input.Name,

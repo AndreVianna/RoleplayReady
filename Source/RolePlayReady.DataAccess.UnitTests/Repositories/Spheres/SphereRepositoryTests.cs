@@ -3,21 +3,21 @@ using RolePlayReady.DataAccess.Repositories.Domains;
 namespace RolePlayReady.DataAccess.Repositories.Spheres;
 
 public class SphereRepositoryTests {
-    private readonly IJsonFileHandler<SphereData> _files;
+    private readonly IJsonFileStorage<SphereData> _storage;
     private readonly SphereRepository _repository;
 
     public SphereRepositoryTests() {
-        _files = Substitute.For<IJsonFileHandler<SphereData>>();
+        _storage = Substitute.For<IJsonFileStorage<SphereData>>();
         var userAccessor = Substitute.For<IUserAccessor>();
         userAccessor.BaseFolder.Returns("User1234");
-        _repository = new(_files, new SphereMapper(), userAccessor);
+        _repository = new(_storage, userAccessor);
     }
 
     [Fact]
     public async Task GetManyAsync_ReturnsAllDomains() {
         // Arrange
         var dataFiles = GenerateList();
-        _files.GetAllAsync().Returns(dataFiles);
+        _storage.GetAllAsync().Returns(dataFiles);
 
         // Act
         var domains = await _repository.GetManyAsync();
@@ -31,7 +31,7 @@ public class SphereRepositoryTests {
         // Arrange
         var dataFile = GenerateData();
         var tokenSource = new CancellationTokenSource();
-        _files.GetByIdAsync(dataFile.Id, tokenSource.Token).Returns(dataFile);
+        _storage.GetByIdAsync(dataFile.Id, tokenSource.Token).Returns(dataFile);
 
         // Act
         var domain = await _repository.GetByIdAsync(dataFile.Id, tokenSource.Token);
@@ -44,7 +44,7 @@ public class SphereRepositoryTests {
     public async Task GetByIdAsync_DomainNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(SphereData));
+        _storage.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(SphereData));
 
         // Act
         var domain = await _repository.GetByIdAsync(id);
@@ -60,7 +60,7 @@ public class SphereRepositoryTests {
         var domain = GenerateInput(id);
         var expected = GenerateData(id);
         var tokenSource = new CancellationTokenSource();
-        _files.CreateAsync(Arg.Any<SphereData>(), tokenSource.Token).Returns(expected);
+        _storage.CreateAsync(Arg.Any<SphereData>(), tokenSource.Token).Returns(expected);
 
         // Act
         var result = await _repository.AddAsync(domain, tokenSource.Token);
@@ -76,7 +76,7 @@ public class SphereRepositoryTests {
         var domain = GenerateInput(id);
         var expected = GenerateData(id);
         var tokenSource = new CancellationTokenSource();
-        _files.UpdateAsync(Arg.Any<SphereData>(), tokenSource.Token).Returns(expected);
+        _storage.UpdateAsync(Arg.Any<SphereData>(), tokenSource.Token).Returns(expected);
 
         // Act
         var result = await _repository.UpdateAsync(domain, tokenSource.Token);
@@ -91,7 +91,7 @@ public class SphereRepositoryTests {
         var id = Guid.NewGuid();
         var domain = GenerateInput(id);
         var tokenSource = new CancellationTokenSource();
-        _files.UpdateAsync(Arg.Any<SphereData>(), tokenSource.Token).Returns(default(SphereData));
+        _storage.UpdateAsync(Arg.Any<SphereData>(), tokenSource.Token).Returns(default(SphereData));
 
         // Act
         var result = await _repository.UpdateAsync(domain, tokenSource.Token);
@@ -104,7 +104,7 @@ public class SphereRepositoryTests {
     public void Delete_RemovesDomain() {
         // Arrange
         var id = Guid.NewGuid();
-        _files.Delete(id).Returns(ValidationResult.AsSuccess());
+        _storage.Delete(id).Returns(ValidationResult.Success);
 
         // Act
         var result = _repository.Remove(id);

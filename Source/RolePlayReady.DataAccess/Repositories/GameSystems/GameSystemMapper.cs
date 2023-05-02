@@ -1,9 +1,7 @@
-﻿using RolePlayReady.Handlers.GameSystem;
+﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
-namespace RolePlayReady.DataAccess.Repositories.GameSystems;
-
-public class GameSystemMapper : IGameSystemMapper {
-    public GameSystemData ToData(GameSystem input)
+public static class GameSystemMapper {
+    public static GameSystemData ToData(GameSystem input)
         => new() {
             Id = input.Id,
             State = input.State,
@@ -13,13 +11,13 @@ public class GameSystemMapper : IGameSystemMapper {
             Tags = input.Tags.ToArray(),
         };
 
-    public Row ToRow(GameSystemData input)
+    public static Row ToRow(GameSystemData input)
         => new() {
             Id = input.Id,
             Name = input.Name,
         };
 
-    public GameSystem? ToModel(GameSystemData? input)
+    public static GameSystem? ToModel(GameSystemData? input)
         => input is null
             ? null
             : new() {

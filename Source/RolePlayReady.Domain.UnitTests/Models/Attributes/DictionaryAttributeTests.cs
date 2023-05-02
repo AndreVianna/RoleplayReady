@@ -24,14 +24,6 @@ public class DictionaryAttributeTests {
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
-    [Theory]
-    [ClassData(typeof(TestData))]
-    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
-        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
-
-        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
-    }
-
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
             Add("CountIs", new object[] { 3 }, true);
@@ -41,6 +33,14 @@ public class DictionaryAttributeTests {
             Add("MaximumCountIs", new object[] { 99 }, true);
             Add("MaximumCountIs", new object[] { 1 }, false);
         }
+    }
+
+    [Theory]
+    [ClassData(typeof(TestData))]
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
+        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
+
+        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
     }
 
     [Fact]

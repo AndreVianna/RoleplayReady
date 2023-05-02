@@ -24,14 +24,6 @@ public class ListAttributeTests {
         _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
-    [Theory]
-    [ClassData(typeof(TestData))]
-    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
-        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
-
-        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
-    }
-
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
             Add("CountIs", new object[] { 3 }, true);
@@ -45,6 +37,14 @@ public class ListAttributeTests {
             Add("NotContains", new object[] { "TestValue13" }, true);
             Add("NotContains", new object[] { "TestValue2" }, false);
         }
+    }
+
+    [Theory]
+    [ClassData(typeof(TestData))]
+    public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
+        _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
+
+        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
     }
 
     [Fact]

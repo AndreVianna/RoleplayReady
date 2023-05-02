@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.Users;
 
-public class UserMapper : IUserMapper {
-    public UserData ToData(User input)
+public static class UserMapper {
+    public static UserData ToData(this User input)
         => new() {
             Id = input.Id,
             Email = input.Email,
@@ -13,14 +13,14 @@ public class UserMapper : IUserMapper {
             Birthday = input.Birthday,
         };
 
-    public UserRow ToRow(UserData input)
+    public static UserRow ToRow(this UserData input)
         => new() {
             Id = input.Id,
             Email = input.Email,
             Name = input.Name ?? string.Empty,
         };
 
-    public User? ToModel(UserData? input)
+    public static User? ToModel(this UserData? input)
         => input is null
             ? null
             : new() {

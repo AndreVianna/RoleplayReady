@@ -2,7 +2,6 @@
 
 public interface IResult {
     bool IsSuccess { get; }
-    bool HasValidationErrors { get; }
     IList<ValidationError> Errors { get; }
 }
 

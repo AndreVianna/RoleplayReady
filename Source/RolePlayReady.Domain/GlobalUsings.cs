@@ -22,5 +22,6 @@ global using RolePlayReady.Handlers.User;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;
+global using RolePlayReady.Repositories;
 global using RolePlayReady.Repositories.GameSystem;
 global using RolePlayReady.Repositories.User;

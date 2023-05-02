@@ -13,19 +13,19 @@ public class AuthHandler : IAuthHandler {
 
     public SignInResult Authenticate(Login login) {
         var validation = login.Validate();
-        if (validation.HasValidationErrors) {
+        if (validation.HasErrors) {
             _logger.LogDebug("Login attempt with invalid request.");
-            return validation.ToSignInResult();
+            return validation.ToInvalidSignInResult();
         }
 
         if (!IsCorrect(login)) {
             _logger.LogDebug("Login attempt for '{email}' failed.", login.Email);
-            return SignInResult.AsFailure();
+            return SignInResult.Failure();
         }
 
         var token = GenerateSignInToken();
         _logger.LogDebug("Login for '{email}' succeeded.", login.Email);
-        return SignInResult.AsSuccess(token);
+        return SignInResult.Success(token);
     }
 
     private string GenerateSignInToken() {
