@@ -1,4 +1,4 @@
-global using System.Results;
+global using System.Defaults;
 global using System.Utilities;
 
 global using FluentAssertions;
@@ -8,13 +8,12 @@ global using Microsoft.Extensions.Logging;
 
 global using NSubstitute;
 
-global using RolePlayReady.Api.Controllers.Accounts;
-global using RolePlayReady.Api.Controllers.Accounts.Models;
 global using RolePlayReady.Api.Controllers.GameSystems;
 global using RolePlayReady.Api.Controllers.GameSystems.Models;
-global using RolePlayReady.Handlers;
+global using RolePlayReady.Api.Controllers.Users;
+global using RolePlayReady.Api.Controllers.Users.Models;
+global using RolePlayReady.Handlers.GameSystem;
+global using RolePlayReady.Handlers.User;
 global using RolePlayReady.Models;
-global using RolePlayReady.Security.Handlers;
-global using RolePlayReady.Security.Models;
 
 global using Xunit;

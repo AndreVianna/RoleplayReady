@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.DataAccess.Repositories;
+﻿using RolePlayReady.Repositories;
+
+namespace RolePlayReady.DataAccess.Repositories;
 
 public class Repository<TModel, TRowModel, TData>
     : IRepository<TModel, TRowModel>

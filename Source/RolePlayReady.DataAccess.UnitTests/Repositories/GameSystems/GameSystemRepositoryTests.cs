@@ -1,5 +1,3 @@
-using RolePlayReady.DataAccess.Repositories.Domains;
-
 namespace RolePlayReady.DataAccess.Repositories.GameSystems;
 
 public class GameSystemRepositoryTests {
@@ -29,7 +27,7 @@ public class GameSystemRepositoryTests {
     [Fact]
     public async Task GetByIdAsync_SystemFound_ReturnsSystem() {
         // Arrange
-        var dataFile = GeneratePersisted();
+        var dataFile = GenerateData();
         var tokenSource = new CancellationTokenSource();
         _files.GetByIdAsync(dataFile.Id, tokenSource.Token).Returns(dataFile);
 
@@ -58,7 +56,7 @@ public class GameSystemRepositoryTests {
         // Arrange
         var id = Guid.NewGuid();
         var input = GenerateInput(id);
-        var expected = GeneratePersisted(id);
+        var expected = GenerateData(id);
         _files.CreateAsync(Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
@@ -72,8 +70,8 @@ public class GameSystemRepositoryTests {
     public async Task UpdateAsync_UpdatesExistingSystem() {
         // Arrange
         var id = Guid.NewGuid();
-        var input = GenerateInput(id, State.Hidden);
-        var expected = GeneratePersisted(id, State.Hidden);
+        var input = GenerateInput(id);
+        var expected = GenerateData(id);
         _files.UpdateAsync(Arg.Any<GameSystemData>()).Returns(expected);
 
         // Act
@@ -87,7 +85,7 @@ public class GameSystemRepositoryTests {
     public async Task UpdateAsync_WithNonExistingId_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        var input = GenerateInput(id, State.Hidden);
+        var input = GenerateInput(id);
         _files.UpdateAsync(Arg.Any<GameSystemData>()).Returns(default(GameSystemData));
 
         // Act
@@ -111,22 +109,22 @@ public class GameSystemRepositoryTests {
     }
 
     private static GameSystemData[] GenerateList()
-        => new[] { GeneratePersisted() };
+        => new[] { GenerateData() };
 
-    private static GameSystemData GeneratePersisted(Guid? id = null, State? state = null)
+    private static GameSystemData GenerateData(Guid? id = null)
         => new() {
             Id = id ?? Guid.NewGuid(),
-            State = state ?? State.New,
+            State = State.New,
             ShortName = "SomeId",
             Name = "Some Id",
             Description = "Some Description",
             Tags = new[] { "SomeTag" },
         };
 
-    private static GameSystem GenerateInput(Guid? id = null, State? state = null)
+    private static GameSystem GenerateInput(Guid? id = null)
         => new() {
             Id = id ?? Guid.NewGuid(),
-            State = state ?? State.New,
+            State = State.New,
             ShortName = "SomeId",
             Name = "Some Id",
             Description = "Some Description",

@@ -1,5 +1,6 @@
 // Global using directives
 
+global using System.Abstractions;
 global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Extensions;
@@ -20,19 +21,19 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
 
-global using RolePlayReady.Api.Controllers.Accounts.Models;
 global using RolePlayReady.Api.Controllers.Common;
 global using RolePlayReady.Api.Utilities;
 global using RolePlayReady.Constants;
 global using RolePlayReady.DataAccess.Extensions;
 global using RolePlayReady.Extensions;
-global using RolePlayReady.Handlers;
+global using RolePlayReady.Handlers.Auth;
+global using RolePlayReady.Handlers.GameSystem;
+global using RolePlayReady.Handlers.User;
 global using RolePlayReady.Models;
-global using RolePlayReady.Security.Abstractions;
-global using RolePlayReady.Security.Models;
 
 global using Serilog;
 
 global using Swashbuckle.AspNetCore.Annotations;
+global using Swashbuckle.AspNetCore.SwaggerGen;
 
 global using ILogger = Microsoft.Extensions.Logging.ILogger;

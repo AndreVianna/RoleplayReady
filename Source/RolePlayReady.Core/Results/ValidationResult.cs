@@ -7,22 +7,22 @@ public record ValidationResult : IResult {
 
     public bool IsValid => Errors.Count == 0;
     public virtual bool IsSuccess => IsValid;
-    public bool HasErrors => Errors.Count != 0;
+    public bool HasValidationErrors => Errors.Count != 0;
     public IList<ValidationError> Errors { get; protected init; } = new List<ValidationError>();
 
     public static ValidationResult AsSuccess()  => new();
 
     public static ValidationResult AsInvalid(IEnumerable<ValidationError> errors)
         => new(Ensure.IsNotNull(errors));
-    public CRUDResult<TOutput> ToCRUDResult<TOutput>(TOutput value) {
-        if (!HasErrors) throw new InvalidOperationException("Cannot convert a successful ValidationResult to a CRUDResult.");
-        return new(CRUDResultType.Invalid, value, Errors);
-    }
+    public CRUDResult<TOutput> ToCRUDResult<TOutput>(TOutput value)
+        => HasValidationErrors
+            ? new(CRUDResultType.Invalid, value, Errors)
+            : throw new InvalidOperationException("Cannot convert a successful ValidationResult to a CrudResult.");
 
-    public SignInResult ToSignInResult(string? token = null) {
-        if (!HasErrors) throw new InvalidOperationException("Cannot convert a successful ValidationResult to a SignInResult.");
-        return new(SignInResultType.Invalid, token, Errors);
-    }
+    public SignInResult ToSignInResult()
+        => HasValidationErrors
+            ? new(SignInResultType.Invalid, null, Errors)
+            : throw new InvalidOperationException("Cannot convert a successful ValidationResult to a SignInResult.");
 
     public static implicit operator ValidationResult(List<ValidationError> errors) => new(errors.AsEnumerable());
     public static implicit operator ValidationResult(ValidationError[] errors) => new(errors.AsEnumerable());

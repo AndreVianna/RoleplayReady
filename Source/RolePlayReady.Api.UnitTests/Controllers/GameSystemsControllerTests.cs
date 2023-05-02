@@ -1,4 +1,4 @@
-﻿using static System.Results.CRUDResult;
+﻿using static System.Results.CrudResult;
 
 namespace RolePlayReady.Api.Controllers;
 
@@ -67,14 +67,14 @@ public class GameSystemsControllerTests {
         var response = await _controller.GetById("invalid");
 
         // Assert
-        response.Should().BeOfType<NotFoundResult>();
+        response.Should().BeOfType<BadRequestObjectResult>();
     }
 
     [Fact]
     public async Task GetById_WithNonExistingId_ReturnsNotFound() {
         var base64Id = (Base64Guid)Guid.NewGuid();
         _handler.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
-                .Returns(AsNotFoundFor(default(GameSystem))!);
+                .Returns(AsNotFoundFor(default(GameSystem)));
 
         // Act
         var response = await _controller.GetById(base64Id);
@@ -103,6 +103,27 @@ public class GameSystemsControllerTests {
         var result = response.Should().BeOfType<CreatedAtActionResult>().Subject;
         var content = result.Value.Should().BeOfType<GameSystemResponse>().Subject;
         content.Should().BeEquivalentTo(expected);
+    }
+
+    [Fact]
+    public async Task Create_WithExistingId_ReturnsConflict() {
+        // Arrange
+        var request = new GameSystemRequest {
+            Name = "Lairs & Lizards 3e",
+            Description = "A very nice role playing game.",
+            ShortName = "LnL3e",
+            Tags = new[] { "Fantasy", "Adventure" },
+        };
+        var expected = request.ToDomain();
+        _handler.AddAsync(Arg.Any<GameSystem>(), Arg.Any<CancellationToken>())
+                .Returns(AsConflictFor(expected));
+
+        // Act
+        var response = await _controller.Create(request);
+
+        // Assert
+        var result = response.Should().BeOfType<ConflictObjectResult>().Subject;
+        result.Value.Should().BeOfType<string>(); // just an error message.
     }
 
     [Fact]
@@ -147,7 +168,7 @@ public class GameSystemsControllerTests {
     }
 
     [Fact]
-    public async Task Update_WithInvalidId_ReturnsNotFound() {
+    public async Task Update_WithInvalidId_ReturnsBadRequest() {
         // Arrange
         var request = new GameSystemRequest {
             Name = "Lairs & Lizards 3e",
@@ -160,7 +181,7 @@ public class GameSystemsControllerTests {
         var response = await _controller.Update("invalid", request);
 
         // Assert
-        response.Should().BeOfType<NotFoundResult>();
+        response.Should().BeOfType<BadRequestObjectResult>();
     }
 
     [Fact]
@@ -173,7 +194,6 @@ public class GameSystemsControllerTests {
             Tags = new[] { "Fantasy", "Adventure" },
         };
         var input = request.ToDomain();
-
         _handler.UpdateAsync(Arg.Any<GameSystem>(), Arg.Any<CancellationToken>())
                 .Returns(AsNotFoundFor(input));
 
@@ -222,7 +242,7 @@ public class GameSystemsControllerTests {
         var response = _controller.Remove("invalid");
 
         // Assert
-        response.Should().BeOfType<NotFoundResult>();
+        response.Should().BeOfType<BadRequestObjectResult>();
     }
 
     [Fact]

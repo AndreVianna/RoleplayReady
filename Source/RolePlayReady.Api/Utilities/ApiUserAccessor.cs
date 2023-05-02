@@ -12,7 +12,7 @@ public class ApiUserAccessor : IUserAccessor {
     public string Email => _httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value
                         ?? throw new InvalidOperationException("User email not found.");
     public string BaseFolder => _httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value
-                           ?? throw new InvalidOperationException("Username not found.");
+                           ?? throw new InvalidOperationException("FolderName not found.");
     public string Name => _httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value
                        ?? throw new InvalidOperationException("User name not found.");
 }

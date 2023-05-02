@@ -1,19 +1,23 @@
-﻿using SignInResult = System.Results.SignInResult;
+﻿using RolePlayReady.Api.Controllers.Auth;
+using RolePlayReady.Api.Controllers.Auth.Models;
+using RolePlayReady.Handlers.Auth;
+
+using SignInResult = System.Results.SignInResult;
 
 namespace RolePlayReady.Api.Controllers;
 
 public class AccountsControllerTests {
-    private readonly IAuthenticationHandler _handler = Substitute.For<IAuthenticationHandler>();
-    private static readonly ILogger<AccountsController> _logger = Substitute.For<ILogger<AccountsController>>();
+    private readonly IAuthHandler _handler = Substitute.For<IAuthHandler>();
+    private static readonly ILogger<AuthController> _logger = Substitute.For<ILogger<AuthController>>();
     private static readonly Login _sample = new() {
         Email = "some.user@host.com",
         Password = "Password!1234",
     };
 
-    private readonly AccountsController _controller;
+    private readonly AuthController _controller;
 
     public AccountsControllerTests() {
-        _controller = new AccountsController(_handler, _logger);
+        _controller = new AuthController(_handler, _logger);
     }
 
     [Fact]

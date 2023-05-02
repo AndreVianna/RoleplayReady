@@ -4,7 +4,7 @@ namespace RolePlayReady.Api.Controllers.GameSystems;
 
 [Authorize]
 [ApiController]
-[Route("api/v{version:apiVersion}/Systems", Order = 1)]
+[Route("api/v{version:apiVersion}/systems", Order = 1)]
 [ApiExplorerSettings(GroupName = "Game Systems")]
 [Produces("application/json")]
 public class GameSystemsController : ControllerBase {
@@ -71,14 +71,14 @@ public class GameSystemsController : ControllerBase {
         _logger.LogDebug("Create game system requested.");
         var model = request.ToDomain();
         var result = await _handler.AddAsync(model, cancellationToken);
-        if (result.HasErrors) {
+        if (result.HasValidationErrors) {
             _logger.LogDebug("Fail to create game system (bad request).");
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
 
         if (result.IsConflict) {
-            _logger.LogDebug("Fail to create game system (bad request).");
-            return Conflict(result.Errors.UpdateModelState(ModelState));
+            _logger.LogDebug("Fail to create game system (conflict).");
+            return Conflict("A game system with same name already exists.");
         }
 
         var response = result.Value!.ToResponse();
@@ -109,7 +109,7 @@ public class GameSystemsController : ControllerBase {
 
         var model = request.ToDomain(uuid);
         var result = await _handler.UpdateAsync(model, cancellationToken);
-        if (result.HasErrors) {
+        if (result.HasValidationErrors) {
             _logger.LogDebug("Fail to update game system '{id}' (bad request).", id);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }

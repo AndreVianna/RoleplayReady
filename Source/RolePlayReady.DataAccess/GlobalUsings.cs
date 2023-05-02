@@ -12,11 +12,14 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Logging.Abstractions;
 
+global using RolePlayReady.DataAccess.Repositories;
 global using RolePlayReady.DataAccess.Repositories.Domains;
 global using RolePlayReady.DataAccess.Repositories.GameSystems;
+global using RolePlayReady.DataAccess.Repositories.Users;
+global using RolePlayReady.Handlers.User;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;
-global using RolePlayReady.Repositories.Abstractions;
-global using RolePlayReady.Security.Abstractions;
-global using RolePlayReady.Security.Models;
+global using RolePlayReady.Repositories.GameSystem;
+global using RolePlayReady.Repositories.Sphere;
+global using RolePlayReady.Repositories.User;

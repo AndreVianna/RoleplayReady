@@ -2,9 +2,10 @@
 
 public static class ServiceCollectionExtensions {
     public static IServiceCollection AddDomainHandlers(this IServiceCollection services) {
-        services.AddScoped<IDomainHandler, DomainHandler>();
+        services.AddScoped<IAuthHandler, AuthHandler>();
+        services.AddScoped<IUserHandler, UserHandler>();
         services.AddScoped<IGameSystemHandler, GameSystemHandler>();
-        services.AddScoped<IAuthenticationHandler, AuthenticationHandler>();
+        services.AddScoped<ISphereHandler, SphereHandler>();
         return services;
     }
 }

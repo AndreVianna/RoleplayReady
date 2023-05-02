@@ -1,13 +1,10 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.Users;
 
-public class UserMapper : IDataMapper<User, UserRow, UserData> {
+public class UserMapper : IUserMapper {
     public UserData ToData(User input)
         => new() {
             Id = input.Id,
-            Username = input.Username,
             Email = input.Email,
-            PasswordHash = input.PasswordHash,
-            PasswordSalt = input.PasswordSalt,
             LockExpiration = input.LockExpiration,
             SignInRetryCount = input.SignInRetryCount,
             IsBlocked = input.IsBlocked,
@@ -20,7 +17,7 @@ public class UserMapper : IDataMapper<User, UserRow, UserData> {
         => new() {
             Id = input.Id,
             Email = input.Email,
-            Name = input.Name,
+            Name = input.Name ?? string.Empty,
         };
 
     public User? ToModel(UserData? input)
@@ -28,10 +25,7 @@ public class UserMapper : IDataMapper<User, UserRow, UserData> {
             ? null
             : new() {
                 Id = input.Id,
-                Username = input.Username,
                 Email = input.Email,
-                PasswordHash = input.PasswordHash,
-                PasswordSalt = input.PasswordSalt,
                 LockExpiration = input.LockExpiration,
                 SignInRetryCount = input.SignInRetryCount,
                 IsBlocked = input.IsBlocked,

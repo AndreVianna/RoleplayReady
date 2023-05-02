@@ -15,7 +15,6 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 const string authScheme = "Bearer";
-const string authHeaderKey = "Authorization";
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = authScheme;
     options.DefaultChallengeScheme = authScheme;
@@ -41,34 +40,29 @@ builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService
 builder.Services.AddControllers(options => options.Filters.Add<CustomExceptionFilter>())
     .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
 
+builder.Services.AddEndpointsApiExplorer();
 const string apiTitle = "RolePlayReady API";
 const string apiVersion = "v1";
-builder.Services.AddEndpointsApiExplorer();
+const string authHeaderKey = "Authorization";
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc(apiVersion, new OpenApiInfo { Title = apiTitle, Version = apiVersion });
 
+    c.OperationFilter<AuthResponsesOperationFilter>();
     c.AddSecurityDefinition(authScheme, new OpenApiSecurityScheme {
         Description = "Please enter a valid JWT token.",
+        Reference = new OpenApiReference {
+            Type = ReferenceType.SecurityScheme,
+            Id = authScheme,
+        },
         Name = authHeaderKey,
         In = ParameterLocation.Header,
+        Scheme = authScheme,
         Type = SecuritySchemeType.Http,
         BearerFormat = "JWT",
-        Scheme = authScheme,
     });
 
     c.DocInclusionPredicate((name, api) => true);
     c.TagActionsBy(api => new[] { api.GroupName });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement { {
-        new OpenApiSecurityScheme {
-            Reference = new OpenApiReference {
-                Type = ReferenceType.SecurityScheme,
-                Id = authScheme,
-            },
-        },
-        new List<string>()
-    }});
-
     c.EnableAnnotations();
 });
 

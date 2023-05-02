@@ -1,6 +1,8 @@
-﻿namespace RolePlayReady.DataAccess.Repositories.GameSystems;
+﻿using RolePlayReady.Handlers.GameSystem;
 
-public class GameSystemMapper : IDataMapper<GameSystem, Row, GameSystemData> {
+namespace RolePlayReady.DataAccess.Repositories.GameSystems;
+
+public class GameSystemMapper : IGameSystemMapper {
     public GameSystemData ToData(GameSystem input)
         => new() {
             Id = input.Id,

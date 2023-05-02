@@ -1,10 +1,5 @@
 ﻿namespace RolePlayReady.Constants;
 
-public static class General {
-    public const string InternalUser = "Internal";
-
-}
-
 public static class Validation {
     public static class Name {
         public const int MaximumLength = 100;
