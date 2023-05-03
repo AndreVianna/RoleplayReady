@@ -7,7 +7,7 @@ public abstract class CollectionValidator<TItem> : IValidator {
         _source = source;
     }
 
-    public ValidationResult Validate(object? input) {
+    public ValidationResult Validate(object? input, [CallerArgumentExpression(nameof(input))] string? source = null) {
         var value = (ICollection<TItem?>)input!;
         var validation = new CollectionValidation<TItem>(value, _source);
         return ValidateValue(validation);

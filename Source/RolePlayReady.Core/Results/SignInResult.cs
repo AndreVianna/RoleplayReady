@@ -1,10 +1,12 @@
-﻿namespace System.Results;
+﻿using static System.Utilities.Ensure;
+
+namespace System.Results;
 
 public sealed record SignInResult : Result {
     public SignInResult(SignInResultType type, string? token = null, IEnumerable<ValidationError>? errors = null)
         : base(errors){
         Type = IsInvalid ? SignInResultType.Invalid : type;
-        Token = IsSuccess ? Ensure.IsNotNull(token) : null; // only set token if success.
+        Token = IsSuccess ? IsNotNull(token) : null; // only set token if success.
     }
 
     public string? Token { get; }
@@ -18,13 +20,13 @@ public sealed record SignInResult : Result {
     public static SignInResult Success(string token, bool requires2Factor = false) => new(requires2Factor ? SignInResultType.TwoFactorRequired : SignInResultType.Success, token);
     public static SignInResult Invalid(string message, string source) => Invalid(new ValidationError(message, source));
     public static SignInResult Invalid(ValidationError error) => Invalid(new[] { error });
-    public static SignInResult Invalid(IEnumerable<ValidationError> errors) => new(SignInResultType.Invalid, null, Ensure.IsNotNullOrEmptyAndHasNoNullItems(errors));
+    public static SignInResult Invalid(IEnumerable<ValidationError> errors) => new(SignInResultType.Invalid, null, IsNotNullAndDoesNotHaveNull(errors));
     public static SignInResult Blocked() => new(SignInResultType.Blocked);
     public static SignInResult Locked() => new(SignInResultType.Locked);
     public static SignInResult Failure() => new(SignInResultType.Failed);
 
-    public static implicit operator SignInResult(List<ValidationError> errors) => new(SignInResultType.Invalid, null, Ensure.IsNotNullOrEmptyAndHasNoNullItems(errors));
-    public static implicit operator SignInResult(ValidationError[] errors) => new(SignInResultType.Invalid, null, Ensure.IsNotNullOrEmptyAndHasNoNullItems(errors));
+    public static implicit operator SignInResult(List<ValidationError> errors) => new(SignInResultType.Invalid, null, IsNotNullAndDoesNotHaveNull(errors));
+    public static implicit operator SignInResult(ValidationError[] errors) => new(SignInResultType.Invalid, null, IsNotNullAndDoesNotHaveNull(errors));
     public static implicit operator SignInResult(ValidationError error) => new(SignInResultType.Invalid, null, new[] { error }.AsEnumerable());
     public static implicit operator SignInResult(string token) => new(SignInResultType.Success, token);
     public static implicit operator SignInResult(SignInResultType resultType) 

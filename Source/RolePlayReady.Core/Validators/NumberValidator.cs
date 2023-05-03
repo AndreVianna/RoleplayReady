@@ -8,7 +8,7 @@ public abstract class NumberValidator<TNumber> : IValidator
         _source = source;
     }
 
-    public ValidationResult Validate(object? input) {
+    public ValidationResult Validate(object? input, [CallerArgumentExpression(nameof(input))] string? source = null) {
         var value = (TNumber)input!;
         var validation = new NumberValidation<TNumber>(value, _source);
         return ValidateValue(validation);

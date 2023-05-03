@@ -33,7 +33,7 @@ public class AuthHandlerTests {
     [ClassData(typeof(TestData))]
     public void Authenticate_ReturnsToken(Login login, bool isSuccess, string[] errors) {
         // Act
-        var result = _handler.Authenticate(login);
+        var result = _handler.SignIn(login);
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

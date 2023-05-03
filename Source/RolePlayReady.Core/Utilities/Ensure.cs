@@ -1,4 +1,6 @@
-﻿namespace System.Utilities;
+﻿using System.Collections;
+
+namespace System.Utilities;
 
 public static class Ensure {
     [return: NotNull]
@@ -13,92 +15,104 @@ public static class Ensure {
             ? throw new ArgumentException(string.Format(IsNotOfType, paramName, typeof(TArgument).Name, argument!.GetType().Name), paramName)
             : result;
 
-    public static string IsNotNullOrEmpty(string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
-        => IsNotNull(argument, paramName).Length == 0
-            ? throw new ArgumentException(string.Format(CannotBeEmpty, paramName), paramName)
-            : argument!;
+    [return: NotNull]
+    public static TArgument IsNotNullOrEmpty<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        where TArgument : IEnumerable {
+        argument = IsNotNull(argument, paramName);
+        return argument switch {
+            string { Length: 0 } => throw new ArgumentException(string.Format(CannotBeEmpty, paramName), paramName),
+            string => argument,
+            ICollection { Count: 0 } => throw new ArgumentException(string.Format(CannotBeEmpty, paramName), paramName),
+            _ => argument,
+        };
+    }
 
-    public static string IsNotNullOrWhiteSpace(string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
-        => IsNotNullOrEmpty(argument, paramName).Trim().Length == 0
+    public static string IsNotNullOrWhiteSpace(string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
+        argument = IsNotNullOrEmpty(argument, paramName);
+        return argument.Trim().Length == 0
             ? throw new ArgumentException(string.Format(CannotBeWhitespace, paramName), paramName)
-            : argument!;
-
-    public static ICollection<TItem> IsNotNullAndHasNoNullItems<TItem>(IEnumerable<TItem?>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
-        var collection = IsOfType<ICollection<TItem>>(argument, paramName);
-        return collection.Any(x => x is null)
-            ? throw new ArgumentNullException(paramName, string.Format(CannotContainNull, paramName))
-            : collection;
-    }
-
-    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
-    public static ICollection<string> IsNotNullAndHasNoNullOrEmptyItems(IEnumerable<string?>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
-        var collection = IsOfType<ICollection<string>>(argument, paramName);
-        // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
-        return collection.Any(i => string.IsNullOrEmpty(i))
-            ? throw new ArgumentNullException(paramName, string.Format(CannotContainNullOrEmpty, paramName))
-            : collection;
-    }
-
-    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
-    public static ICollection<string> IsNotNullAndHasNoNullOrWhiteSpaceItems(IEnumerable<string?>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
-        var collection = IsOfType<ICollection<string>>(argument, paramName);
-        // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
-        return collection.Any(i => string.IsNullOrWhiteSpace(i))
-            ? throw new ArgumentNullException(paramName, string.Format(CannotContainNullOrWhitespace, paramName))
-            : collection;
-    }
-
-    public static ICollection<TItem?> IsNotNullOrEmpty<TItem>(IEnumerable<TItem?>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
-        var collection = IsOfType<ICollection<TItem?>>(argument, paramName);
-        return !collection.Any()
-            ? throw new ArgumentException(string.Format(CannotBeEmpty, paramName), paramName)
-            : collection;
-    }
-
-    public static ICollection<TItem> IsNotNullOrEmptyAndHasNoNullItems<TItem>(IEnumerable<TItem?>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
-        var collection = IsNotNullOrEmpty(argument, paramName);
-        return collection.Any(x => x is null)
-            ? throw new ArgumentException(string.Format(CannotContainNull, paramName), paramName)
-            : (ICollection<TItem>)collection;
-    }
-
-    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
-    public static ICollection<string> IsNotNullOrEmptyAndHasNoNullOrEmptyItems(IEnumerable<string?>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
-        var collection = IsNotNullOrEmpty(argument, paramName);
-        // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
-        return collection.Any(i => string.IsNullOrEmpty(i))
-            ? throw new ArgumentException(string.Format(CannotContainNullOrEmpty, paramName), paramName)
-            : (ICollection<string>)collection;
-    }
-
-    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "Impacts code coverage.")]
-    public static ICollection<string> IsNotNullOrEmptyAndHasNoNullOrWhiteSpaceItems(IEnumerable<string>? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
-        var collection = IsNotNullOrEmpty(argument, paramName);
-        // ReSharper disable once ConvertClosureToMethodGroup - Impacts code coverage,
-        return collection.Any(i => string.IsNullOrWhiteSpace(i))
-            ? throw new ArgumentException(string.Format(CannotContainNullOrWhitespace, paramName), paramName)
-            : (ICollection<string>)collection;
+            : argument;
     }
 
     [return: NotNull]
-    public static TItem ArgumentExistsAndIsOfType<TItem>(IReadOnlyList<object?> arguments, string methodName, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))] string? paramName = null)
+    public static TArgument IsNotNullAndDoesNotHaveNull<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        where TArgument : IEnumerable {
+        argument = IsNotNull(argument, paramName);
+        return argument switch {
+            IEnumerable collection when collection.Cast<object?>().Any(item => item is null) => throw new ArgumentException(string.Format(CannotContainNull, paramName), paramName),
+            _ => argument
+        };
+    }
+
+    [return: NotNull]
+    public static TArgument IsNotNullAndDoesNotHaveNullOrEmpty<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        where TArgument : IEnumerable<string?> {
+        argument = IsNotNull(argument, paramName);
+        return argument switch {
+            // ReSharper disable once ConvertClosureToMethodGroup - it messes with code coverage
+            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrEmpty(i)) => throw new ArgumentException(string.Format(CannotContainNullOrEmpty, paramName), paramName),
+            _ => argument,
+        };
+    }
+
+    [return: NotNull]
+    public static TArgument IsNotNullAndDoesNotHaveNullOrWhiteSpace<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        where TArgument : IEnumerable<string?> {
+        argument = IsNotNull(argument, paramName);
+        return argument switch {
+            // ReSharper disable once ConvertClosureToMethodGroup - it messes with code coverage
+            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrWhiteSpace(i)) => throw new ArgumentException(string.Format(CannotContainNullOrWhitespace, paramName), paramName),
+            _ => argument,
+        };
+    }
+
+    [return: NotNull]
+    public static TArgument IsNotNullOrEmptyAndDoesNotHaveNull<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        where TArgument : IEnumerable {
+        argument = IsNotNullOrEmpty(argument, paramName);
+        return argument switch {
+            IEnumerable collection when collection.Cast<object?>().Any(x => x is null) => throw new ArgumentException(string.Format(CannotContainNull, paramName), paramName),
+            _ => argument,
+        };
+    }
+
+    [return: NotNull]
+    public static TArgument IsNotNullOrEmptyAndDoesNotHaveNullOrEmpty<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        where TArgument : IEnumerable<string?> {
+        argument = IsNotNullOrEmpty(argument, paramName);
+        return argument switch {
+            IEnumerable<string?> collection when collection.Any(string.IsNullOrEmpty) => throw new ArgumentException(string.Format(CannotContainNullOrEmpty, paramName), paramName),
+            _ => argument,
+        };
+    }
+
+    [return: NotNull]
+    public static TArgument IsNotNullOrEmptyAndDoesNotHaveNullOrWhiteSpace<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+        where TArgument : IEnumerable<string?> {
+        argument = IsNotNullOrEmpty(argument, paramName);
+        return argument switch {
+            IEnumerable<string?> collection when collection.Any(string.IsNullOrWhiteSpace) => throw new ArgumentException(string.Format(CannotContainNullOrWhitespace, paramName), paramName),
+            _ => argument,
+        };
+    }
+
+    [return: NotNull]
+    public static TItem ArgumentExistsAndIsOfType<TItem>(string methodName, IReadOnlyList<object?> arguments, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))] string? paramName = null)
         => argumentIndex >= arguments.Count
             ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", paramName)
             : arguments[(int)argumentIndex] is TItem value
                     ? value
                     : throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]");
 
-    public static TItem[] ArgumentsAreAllOfType<TItem>(IReadOnlyList<object?> arguments, string methodName, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {
-        var list = (IReadOnlyList<object>)IsNotNullOrEmptyAndHasNoNullItems(arguments, paramName);
-        for (var index = 0; index < list.Count; index++) {
-            if (list[index] is not TItem)
-                throw new ArgumentException($"At least one argument of '{methodName}' is of an invalid type. Expected: {typeof(TItem).GetName()}.  Found: {list[index].GetType().GetName()}.", $"{nameof(arguments)}[{index}]");
-        }
+    public static TItem[] ArgumentsAreAllOfType<TItem>(string methodName, IReadOnlyList<object?> arguments, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {
+        var list = IsNotNullOrEmptyAndDoesNotHaveNull(arguments, paramName);
+        for (var index = 0; index < list.Count; index++)
+            ArgumentExistsAndIsOfType<TItem>(methodName, arguments, (uint)index, paramName);
 
         return list.Cast<TItem>().ToArray();
     }
 
-    public static TItem? ArgumentExistsAndIsOfTypeOrDefault<TItem>(IReadOnlyList<object?> arguments, string methodName, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))]string? paramName = null)
+    public static TItem? ArgumentExistsAndIsOfTypeOrDefault<TItem>(string methodName, IReadOnlyList<object?> arguments, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))]string? paramName = null)
         => argumentIndex >= arguments.Count
             ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", paramName)
             : arguments[(int)argumentIndex] switch {
@@ -107,14 +121,11 @@ public static class Ensure {
                 _ => throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]")
             };
 
-    public static TItem?[] ArgumentsAreAllOfTypeOrDefault<TItem>(IReadOnlyList<object?> arguments, string methodName, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {
-        var list = (IReadOnlyList<object?>)IsNotNullOrEmpty(arguments, paramName);
-        for (var index = 0; index < list.Count; index++) {
-            if (list[index] is not null and not TItem)
-                throw new ArgumentException($"At least one argument of '{methodName}' is of an invalid type. Expected: {typeof(TItem).GetName()}.  Found: {list[index]!.GetType().GetName()}.", $"{nameof(arguments)}[{index}]");
-        }
+    public static TItem?[] ArgumentsAreAllOfTypeOrDefault<TItem>(string methodName, IReadOnlyList<object?> arguments, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {
+        var list = IsNotNullOrEmpty(arguments, paramName);
+        for (var index = 0; index < list.Count; index++)
+            ArgumentExistsAndIsOfTypeOrDefault<TItem>(methodName, arguments, (uint)index, paramName);
 
-        var result = list.Select(i => i is null ? default : (TItem)i).ToArray();
-        return result;
+        return list.Select(i => i is null ? default : (TItem)i).ToArray();
     }
 }

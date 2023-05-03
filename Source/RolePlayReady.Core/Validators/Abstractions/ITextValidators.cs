@@ -7,4 +7,5 @@ public interface ITextValidators {
     IConnectsToOrFinishes<ITextValidators> LengthIs(int length);
     IConnectsToOrFinishes<ITextValidators> IsIn(params string[] list);
     IConnectsToOrFinishes<ITextValidators> IsEmail();
+    IConnectsToOrFinishes<ITextValidators> IsPassword(IPasswordPolicy policy);
 }

@@ -7,7 +7,7 @@ public abstract class TextValidator : IValidator {
         _source = source;
     }
 
-    public ValidationResult Validate(object? input) {
+    public ValidationResult Validate(object? input, [CallerArgumentExpression(nameof(input))] string? source = null) {
         var value = (string)input!;
         var validation = new TextValidation(value.Trim(), _source);
         return ValidateValue(validation);

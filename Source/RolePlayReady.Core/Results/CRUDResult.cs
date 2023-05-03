@@ -1,4 +1,6 @@
-﻿namespace System.Results;
+﻿using static System.Utilities.Ensure;
+
+namespace System.Results;
 
 public record CrudResult : Result {
     public CrudResult(CRUDResultType type, IEnumerable<ValidationError>? errors = null)
@@ -16,17 +18,17 @@ public record CrudResult : Result {
     public static CrudResult Conflict() => new(CRUDResultType.Conflict);
     public static CrudResult Invalid(string message, string source) => Invalid(new ValidationError(message, source));
     public static CrudResult Invalid(ValidationError error) => Invalid(new[] { error });
-    public static CrudResult Invalid(IEnumerable<ValidationError> errors) => new(CRUDResultType.Invalid, Ensure.IsNotNullOrEmptyAndHasNoNullItems(errors));
+    public static CrudResult Invalid(IEnumerable<ValidationError> errors) => new(CRUDResultType.Invalid, IsNotNullAndDoesNotHaveNull(errors));
 
     public static CrudResult<TValue> Success<TValue>(TValue value) => new(CRUDResultType.Success, value);
     public static CrudResult<TValue> NotFound<TValue>(TValue? value = default) => new(CRUDResultType.NotFound, value);
     public static CrudResult<TValue> Conflict<TValue>(TValue value) => new(CRUDResultType.Conflict, value);
     public static CrudResult<TValue> Invalid<TValue>(TValue value, string message, string source) => Invalid(value, new ValidationError(message, source));
     public static CrudResult<TValue> Invalid<TValue>(TValue value, ValidationError error) => Invalid(value, new[] { error });
-    public static CrudResult<TValue> Invalid<TValue>(TValue value, IEnumerable<ValidationError> errors) => new(CRUDResultType.Invalid, value, Ensure.IsNotNullOrEmptyAndHasNoNullItems(errors));
+    public static CrudResult<TValue> Invalid<TValue>(TValue value, IEnumerable<ValidationError> errors) => new(CRUDResultType.Invalid, value, IsNotNullAndDoesNotHaveNull(errors));
 
-    public static implicit operator CrudResult(List<ValidationError> errors) => new(CRUDResultType.Invalid, Ensure.IsNotNullOrEmptyAndHasNoNullItems(errors));
-    public static implicit operator CrudResult(ValidationError[] errors) => new(CRUDResultType.Invalid, Ensure.IsNotNullOrEmptyAndHasNoNullItems(errors));
+    public static implicit operator CrudResult(List<ValidationError> errors) => new(CRUDResultType.Invalid, IsNotNullAndDoesNotHaveNull(errors));
+    public static implicit operator CrudResult(ValidationError[] errors) => new(CRUDResultType.Invalid, IsNotNullAndDoesNotHaveNull(errors));
     public static implicit operator CrudResult(ValidationError error) => new(CRUDResultType.Invalid, new[] { error }.AsEnumerable());
 
     public static CrudResult operator +(CrudResult left, ValidationResult right) {
@@ -38,7 +40,7 @@ public record CrudResult : Result {
 public record CrudResult<TResult> : CrudResult {
     public CrudResult(CRUDResultType type, TResult? value = default, IEnumerable<ValidationError>? errors = null)
         : base(type, errors) {
-        Value = type != CRUDResultType.NotFound ? Ensure.IsNotNull(value) : value;
+        Value = type != CRUDResultType.NotFound ? IsNotNull(value) : value;
     }
 
     public TResult? Value { get; }

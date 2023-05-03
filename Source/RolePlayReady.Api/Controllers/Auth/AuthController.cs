@@ -21,7 +21,7 @@ public class AuthController : ControllerBase {
     [HttpPost("login")]
     public IActionResult Login(LoginRequest request) {
         var login = request.ToDomain();
-        var result = _handler.Authenticate(login);
+        var result = _handler.SignIn(login);
         if (result.IsInvalid) {
             _logger.LogDebug("'{user}' fail to login (bad request).", request.Email);
             return BadRequest(result.Errors.UpdateModelState(ModelState));

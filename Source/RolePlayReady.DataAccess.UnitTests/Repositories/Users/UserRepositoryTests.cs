@@ -109,15 +109,14 @@ public class UserRepositoryTests {
     private static UserData[] GenerateList()
         => new[] {
             GenerateData(),
-            GenerateData(hasName: false)
+            GenerateData(hasPassword: false, hasName: false)
         };
 
-    private static UserData GenerateData(Guid? id = null, bool hasName = true)
+    private static UserData GenerateData(Guid? id = null, bool hasPassword = true, bool hasName = true)
         => new() {
             Id = id ?? Guid.NewGuid(),
             Email = "some.user@email.com",
-            PasswordHash = "PasswordHash",
-            PasswordSalt = "PasswordSalt",
+            Password = hasPassword ? new HashedSecret("PasswordHash", "PasswordSalt") : null,
             Name = hasName ? "Some User" : null,
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };

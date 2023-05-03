@@ -45,7 +45,7 @@ public sealed class ValidatorFactory {
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
-        TValue GetLimit() => Ensure.ArgumentExistsAndIsOfType<TValue>(arguments, validator, 0);
+        TValue GetLimit() => Ensure.ArgumentExistsAndIsOfType<TValue>(validator, arguments, 0);
     }
 
     private IValidator CreateStringValidator(string validator, IReadOnlyList<object?> arguments) {
@@ -57,8 +57,8 @@ public sealed class ValidatorFactory {
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
-        int GetLength() => Ensure.ArgumentExistsAndIsOfType<int>(arguments, validator, 0);
-        string?[] GetList() => Ensure.ArgumentsAreAllOfTypeOrDefault<string>(arguments, validator).ToArray();
+        int GetLength() => Ensure.ArgumentExistsAndIsOfType<int>(validator, arguments, 0);
+        string?[] GetList() => Ensure.ArgumentsAreAllOfTypeOrDefault<string>(validator, arguments).ToArray();
     }
 
     private IValidator CreateCollectionValidator<TItem>(string validator, IReadOnlyList<object?> arguments) {
@@ -71,8 +71,8 @@ public sealed class ValidatorFactory {
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
-        int GetCount() => Ensure.ArgumentExistsAndIsOfType<int>(arguments, validator, 0);
-        TItem? GetItem() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TItem>(arguments, validator, 0);
+        int GetCount() => Ensure.ArgumentExistsAndIsOfType<int>(validator, arguments, 0);
+        TItem? GetItem() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TItem>(validator, arguments, 0);
     }
 
     private IValidator CreateDictionaryValidator<TKey, TValue>(string validator, IReadOnlyList<object?> arguments) {
@@ -83,6 +83,6 @@ public sealed class ValidatorFactory {
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
-        int GetCount() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<int>(arguments, validator, 0);
+        int GetCount() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<int>(validator, arguments, 0);
     }
 }

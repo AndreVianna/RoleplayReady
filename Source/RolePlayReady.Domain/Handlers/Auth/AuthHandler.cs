@@ -13,7 +13,7 @@ public class AuthHandler : IAuthHandler {
         _logger = logger;
     }
 
-    public SignInResult Authenticate(Login login) {
+    public SignInResult SignIn(Login login) {
         var validation = login.Validate();
         if (validation.IsInvalid) {
             _logger.LogDebug("Login attempt with invalid request.");
@@ -29,6 +29,8 @@ public class AuthHandler : IAuthHandler {
         _logger.LogDebug("Login for '{email}' succeeded.", login.Email);
         return Success(token);
     }
+
+    public SignInResult Register(User.User login) => throw new NotImplementedException();
 
     private string GenerateSignInToken() {
         var claims = new[] {
