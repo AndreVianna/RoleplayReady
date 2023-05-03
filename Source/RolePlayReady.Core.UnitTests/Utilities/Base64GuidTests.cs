@@ -2,6 +2,36 @@
 
 public class Base64GuidTests {
     [Fact]
+    public void Parse_ReturnsBase64Guid() {
+        // Arrange
+        var input = Guid.NewGuid();
+        var guidString = input.ToString();
+        var base64GuidString = (string)new Base64Guid(input);
+
+        // Act
+        var subject1 = Base64Guid.Parse(guidString);
+        var subject2 = Base64Guid.Parse(base64GuidString);
+
+        // Assert
+        subject1.Value.Should().Be(input);
+        subject2.Value.Should().Be(input);
+    }
+
+    [Fact]
+    public void TryParse_ReturnsTrueIfValid() {
+        // Arrange
+        var input = Guid.NewGuid();
+
+        // Act
+        var valid = Base64Guid.TryParse(input.ToString(), out _);
+        var invalid = Base64Guid.TryParse("Invalid", out _);
+
+        // Assert
+        valid.Should().BeTrue();
+        invalid.Should().BeFalse();
+    }
+
+    [Fact]
     public void ToString_ReturnsBase64Guid() {
         // Arrange
         var input = Guid.NewGuid();

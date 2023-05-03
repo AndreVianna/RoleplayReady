@@ -97,7 +97,7 @@ public class UserRepositoryTests {
     public void Delete_RemovesSystem() {
         // Arrange
         var id = Guid.NewGuid();
-        _storage.Delete(id).Returns(ValidationResult.Success);
+        _storage.Delete(id).Returns(true);
 
         // Act
         var result = _repository.Remove(id);
@@ -107,23 +107,26 @@ public class UserRepositoryTests {
     }
 
     private static UserData[] GenerateList()
-        => new[] { GenerateData() };
+        => new[] {
+            GenerateData(),
+            GenerateData(hasName: false)
+        };
 
-    private static UserData GenerateData(Guid? id = null)
+    private static UserData GenerateData(Guid? id = null, bool hasName = true)
         => new() {
             Id = id ?? Guid.NewGuid(),
             Email = "some.user@email.com",
             PasswordHash = "PasswordHash",
             PasswordSalt = "PasswordSalt",
-            Name = "Some User",
+            Name = hasName ? "Some User" : null,
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
 
-    private static User GenerateInput(Guid? id = null)
+    private static User GenerateInput(Guid? id = null, bool hasName = true)
         => new() {
             Id = id ?? Guid.NewGuid(),
             Email = "some.user@email.com",
-            Name = "Some User",
+            Name = hasName ? "Some User" : null,
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
 }

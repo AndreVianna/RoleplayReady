@@ -6,25 +6,15 @@ public record ValidationResult : Result {
     }
 
     public override bool IsSuccess => !IsInvalid;
-    public static ValidationResult Success { get; } = new();
+    public static ValidationResult Success() => new();
 
-    public static ValidationResult AsInvalid(IEnumerable<ValidationError> errors)
-        => new(Ensure.IsNotNull(errors));
-
-    public CrudResult<TOutput> ToInvalidCrudResult<TOutput>(TOutput value)
-        => !IsSuccess
-            ? new(CRUDResultType.Invalid, value, Errors)
-            : throw new InvalidOperationException("Cannot convert a successful validation to an invalid CRUD result.");
-
-    public SignInResult ToInvalidSignInResult()
-        => !IsSuccess
-            ? new(SignInResultType.Invalid, null, Errors)
-            : throw new InvalidOperationException("Cannot convert a successful validation to an invalid sign in result.");
+    public static ValidationResult Invalid(string message, string source) => Invalid(new ValidationError(message, source));
+    public static ValidationResult Invalid(ValidationError error) => Invalid(new[] { error });
+    public static ValidationResult Invalid(IEnumerable<ValidationError> errors) => new(Ensure.IsNotNull(errors));
 
     public static implicit operator ValidationResult(List<ValidationError> errors) => new(errors.AsEnumerable());
     public static implicit operator ValidationResult(ValidationError[] errors) => new(errors.AsEnumerable());
     public static implicit operator ValidationResult(ValidationError error) => new(new[] { error }.AsEnumerable());
-    public static implicit operator bool(ValidationResult result) => result.IsSuccess;
 
     public static ValidationResult operator +(ValidationResult left, ValidationResult right) => new(right.Errors.Union(left.Errors));
 

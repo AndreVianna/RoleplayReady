@@ -16,7 +16,7 @@ public record User : IKey, IValidatable {
     public string FolderName => (Base64Guid)Id;
 
     public ValidationResult Validate() {
-        var result = ValidationResult.Success;
+        var result = ValidationResult.Success();
         result += Email.IsNotNull()
                        .And.IsNotEmptyOrWhiteSpace()
                        .And.IsEmail().Result;

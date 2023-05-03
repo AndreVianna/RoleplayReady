@@ -6,8 +6,8 @@ public record Sphere : Persisted {
 
     public override ValidationResult Validate() {
         var result = base.Validate();
-        result += Components.ForEach(item => item.IsNotNull().And.IsValid()).Result;
-        result += AttributeDefinitions.ForEach(item => item.IsNotNull().And.IsValid()).Result;
+        result += Components!.ForEach(item => item.IsNotNull().And.IsValid()).Result;
+        result += AttributeDefinitions!.ForEach(item => item.IsNotNull().And.IsValid()).Result;
         return result;
     }
 }

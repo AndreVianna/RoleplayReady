@@ -4,7 +4,7 @@ public class ComparableValidationTests {
     public record TestObject : IValidatable {
         public int Number { get; init; }
         public ValidationResult Validate() {
-            var result = ValidationResult.Success;
+            var result = ValidationResult.Success();
             result += Number.Value().IsEqualTo(15).Result;
             return result;
         }

@@ -1,5 +1,4 @@
-﻿
-namespace System.Validations;
+﻿namespace System.Validations;
 
 public partial class TextValidation
     : Validation<string, ITextValidators>,
@@ -22,7 +21,7 @@ public partial class TextValidation
         return this;
     }
 
-    public IConnectsToOrFinishes<ITextValidators> IsIn(params string[] list) {
+    public IConnectsToOrFinishes<ITextValidators> IsIn(params string?[] list) {
         if (Subject is null) return this;
         if (!list.Contains(Subject))
             Errors.Add(new(MustBeIn, Source, string.Join(", ", list), Subject));

@@ -104,7 +104,7 @@ public class SphereRepositoryTests {
     public void Delete_RemovesDomain() {
         // Arrange
         var id = Guid.NewGuid();
-        _storage.Delete(id).Returns(ValidationResult.Success);
+        _storage.Delete(id).Returns(true);
 
         // Act
         var result = _repository.Remove(id);

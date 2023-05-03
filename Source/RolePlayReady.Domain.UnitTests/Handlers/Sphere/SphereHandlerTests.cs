@@ -19,7 +19,7 @@ public class SphereHandlerTests {
         var result = await _handler.GetManyAsync();
 
         // Assert
-        result.HasErrors.Should().BeFalse();
+        result.IsInvalid.Should().BeFalse();
         result.Value.Should().BeEquivalentTo(expected);
     }
 
@@ -35,7 +35,7 @@ public class SphereHandlerTests {
 
         // Assert
         result.IsNotFound.Should().BeFalse();
-        result.HasErrors.Should().BeFalse();
+        result.IsInvalid.Should().BeFalse();
         result.Value.Should().Be(expected);
     }
 
@@ -50,7 +50,7 @@ public class SphereHandlerTests {
 
         // Assert
         result.IsNotFound.Should().BeTrue();
-        result.HasErrors.Should().BeFalse();
+        result.IsInvalid.Should().BeFalse();
         result.Value.Should().BeNull();
     }
 
@@ -64,7 +64,7 @@ public class SphereHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasErrors.Should().BeFalse();
+        result.IsInvalid.Should().BeFalse();
         result.IsConflict.Should().BeFalse();
         result.Value.Should().NotBeNull();
     }
@@ -79,7 +79,7 @@ public class SphereHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasErrors.Should().BeFalse();
+        result.IsInvalid.Should().BeFalse();
         result.IsConflict.Should().BeTrue();
         result.Value.Should().NotBeNull();
     }
@@ -96,7 +96,7 @@ public class SphereHandlerTests {
         var result = await _handler.AddAsync(input);
 
         // Assert
-        result.HasErrors.Should().BeTrue();
+        result.IsInvalid.Should().BeTrue();
         result.Invoking(x => x.IsConflict).Should().Throw<InvalidOperationException>();
         result.Value.Should().Be(input);
     }
@@ -112,7 +112,7 @@ public class SphereHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasErrors.Should().BeFalse();
+        result.IsInvalid.Should().BeFalse();
         result.IsNotFound.Should().BeFalse();
         result.Value.Should().Be(input);
     }
@@ -128,7 +128,7 @@ public class SphereHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasErrors.Should().BeFalse();
+        result.IsInvalid.Should().BeFalse();
         result.IsNotFound.Should().BeTrue();
         result.Value.Should().Be(input);
     }
@@ -145,7 +145,7 @@ public class SphereHandlerTests {
         var result = await _handler.UpdateAsync(input);
 
         // Assert
-        result.HasErrors.Should().BeTrue();
+        result.IsInvalid.Should().BeTrue();
         result.Invoking(x => x.IsNotFound).Should().Throw<InvalidOperationException>();
         result.Value.Should().Be(input);
     }

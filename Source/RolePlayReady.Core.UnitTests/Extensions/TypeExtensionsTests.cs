@@ -7,6 +7,7 @@ public class TypeExtensionsTests {
     [InlineData(typeof(int), "Integer")]
     [InlineData(typeof(string), "String")]
     [InlineData(typeof(decimal), "Decimal")]
+    [InlineData(typeof(long), "Int64")]
     [InlineData(typeof(List<string>), "List<String>")]
     [InlineData(typeof(List<int>), "List<Integer>")]
     [InlineData(typeof(List<decimal>), "List<Decimal>")]
@@ -22,6 +23,7 @@ public class TypeExtensionsTests {
     [InlineData(typeof(int[]), "Integer[]")]
     [InlineData(typeof(string[]), "String[]")]
     [InlineData(typeof(decimal[]), "Decimal[]")]
+    [InlineData(typeof(long[]), "Int64[]")]
     public void ToFriendlyName_CorrectlyConvertsInput(Type input, string expectedResult) {
         // Act
         var name = input.GetName();
@@ -30,5 +32,14 @@ public class TypeExtensionsTests {
         // Assert
         name.Should().Be(expectedResult);
         type.Should().Be(input);
+    }
+
+    [Fact]
+    public void UnsupportedType_Throws() {
+        // Act
+        var action = () => Make.TypeFrom("Invalid");
+
+        // Assert
+        action.Should().Throw<InvalidOperationException>();
     }
 }

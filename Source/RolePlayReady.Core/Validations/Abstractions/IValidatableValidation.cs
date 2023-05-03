@@ -4,7 +4,3 @@ public interface IValidatableValidation
     : IConnectsToOrFinishes<IValidatableValidators>,
         IValidatableValidators {
 }
-
-public interface IValidatableValidators {
-    IFinishesValidation IsValid();
-}

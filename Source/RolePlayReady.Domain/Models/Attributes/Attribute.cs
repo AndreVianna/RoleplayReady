@@ -1,4 +1,4 @@
-﻿using static System.Validators.ValidatorFactory;
+﻿using static System.Results.ValidationResult;
 
 namespace RolePlayReady.Models.Attributes;
 
@@ -9,12 +9,10 @@ public abstract record Attribute<TValue> : IAttribute {
     public TValue Value { get; init; } = default!;
 
     public ValidationResult Validate() {
-        var result = ValidationResult.Success;
+        var result = Success();
         result += Definition.DataType.IsNotNull().And.IsEqualTo<TValue>().Result;
-        result += Definition.Constraints.Aggregate(ValidationResult.Success, (r, c)
-            => r + For(Definition.Name)
-                .Create(typeof(TValue), c.ValidatorName, c.Arguments.ToArray())
-                .Validate(Value));
+        result += Definition.Constraints.Aggregate(Success(), (r, c)
+            => r + c.Create<TValue>(Definition.Name).Validate(Value));
         return result;
     }
 }

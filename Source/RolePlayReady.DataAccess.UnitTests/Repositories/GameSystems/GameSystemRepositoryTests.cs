@@ -99,7 +99,7 @@ public class GameSystemRepositoryTests {
     public void Delete_RemovesSystem() {
         // Arrange
         var id = Guid.NewGuid();
-        _storage.Delete(id).Returns(CrudResult.Success);
+        _storage.Delete(id).Returns(true);
 
         // Act
         var result = _repository.Remove(id);

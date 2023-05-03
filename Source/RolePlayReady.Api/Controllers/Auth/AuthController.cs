@@ -22,7 +22,7 @@ public class AuthController : ControllerBase {
     public IActionResult Login(LoginRequest request) {
         var login = request.ToDomain();
         var result = _handler.Authenticate(login);
-        if (result.HasErrors) {
+        if (result.IsInvalid) {
             _logger.LogDebug("'{user}' fail to login (bad request).", request.Email);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }

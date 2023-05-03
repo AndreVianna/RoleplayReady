@@ -1,7 +1,7 @@
 ﻿namespace System.Validations;
 
 public static class DictionaryItemValidation {
-    public static IFinishesValidation ForEachItemIn<TKey, TValue>(IValidation<IDictionary<TKey, TValue>?> validation, Func<TValue, IFinishesValidation> validateUsing, bool addIsNullError = true) {
+    public static IFinishesValidation ForEachItemIn<TKey, TValue>(IValidation<IDictionary<TKey, TValue?>?> validation, Func<TValue?, IFinishesValidation> validateUsing, bool addIsNullError = true) {
         if (validation.Subject is null) {
             if (addIsNullError) validation.Errors.Add(new(CannotBeNull, validation.Source));
             return validation;

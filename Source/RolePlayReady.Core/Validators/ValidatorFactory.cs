@@ -1,6 +1,4 @@
-﻿using System.Utilities;
-
-using static System.StringSplitOptions;
+﻿using static System.StringSplitOptions;
 
 using MaximumLengthIs = System.Validators.Text.MaximumLengthIs;
 using MinimumLengthIs = System.Validators.Text.MinimumLengthIs;
@@ -16,7 +14,7 @@ public sealed class ValidatorFactory {
 
     public static ValidatorFactory For(string source) => new(source);
 
-    public IValidator Create(Type dataType, string validator, object[] arguments) {
+    public IValidator Create(Type dataType, string validator, object?[] arguments) {
         return GetTypeComponents() switch {
             ["Integer"] => CreateNumericValidator<int>(validator, arguments),
             ["Decimal"] => CreateNumericValidator<decimal>(validator, arguments),
@@ -36,7 +34,7 @@ public sealed class ValidatorFactory {
               .ToArray();
     }
 
-    private IValidator CreateNumericValidator<TValue>(string validator, IReadOnlyList<object> arguments)
+    private IValidator CreateNumericValidator<TValue>(string validator, IReadOnlyList<object?> arguments)
         where TValue : IComparable<TValue> {
         return validator switch {
             nameof(IsLessThan<TValue>) => new IsLessThan<TValue>(_source, GetLimit()),
@@ -50,7 +48,7 @@ public sealed class ValidatorFactory {
         TValue GetLimit() => Ensure.ArgumentExistsAndIsOfType<TValue>(arguments, validator, 0);
     }
 
-    private IValidator CreateStringValidator(string validator, IReadOnlyList<object> arguments) {
+    private IValidator CreateStringValidator(string validator, IReadOnlyList<object?> arguments) {
         return validator switch {
             nameof(MinimumLengthIs) => new MinimumLengthIs(_source, GetLength()),
             nameof(MaximumLengthIs) => new MaximumLengthIs(_source, GetLength()),
@@ -60,31 +58,31 @@ public sealed class ValidatorFactory {
         };
 
         int GetLength() => Ensure.ArgumentExistsAndIsOfType<int>(arguments, validator, 0);
-        string[] GetList() => Ensure.ArgumentsAreAllOfType<string>(arguments, validator).ToArray();
+        string?[] GetList() => Ensure.ArgumentsAreAllOfTypeOrDefault<string>(arguments, validator).ToArray();
     }
 
-    private IValidator CreateCollectionValidator<TItem>(string validator, IReadOnlyList<object> arguments) {
+    private IValidator CreateCollectionValidator<TItem>(string validator, IReadOnlyList<object?> arguments) {
         return validator switch {
-            nameof(MinimumCountIs<TItem>) => new MinimumCountIs<TItem>(_source, GetCount()),
-            nameof(MaximumCountIs<TItem>) => new MaximumCountIs<TItem>(_source, GetCount()),
-            nameof(CountIs<TItem>) => new CountIs<TItem>(_source, GetCount()),
-            nameof(Contains<TItem>) => new Contains<TItem>(_source, GetItem()),
-            nameof(NotContains<TItem>) => new NotContains<TItem>(_source, GetItem()),
+            nameof(MinimumCountIs<TItem?>) => new MinimumCountIs<TItem?>(_source, GetCount()),
+            nameof(MaximumCountIs<TItem?>) => new MaximumCountIs<TItem?>(_source, GetCount()),
+            nameof(CountIs<TItem?>) => new CountIs<TItem?>(_source, GetCount()),
+            nameof(Contains<TItem?>) => new Contains<TItem?>(_source, GetItem()),
+            nameof(NotContains<TItem?>) => new NotContains<TItem?>(_source, GetItem()),
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
         int GetCount() => Ensure.ArgumentExistsAndIsOfType<int>(arguments, validator, 0);
-        TItem GetItem() => Ensure.ArgumentExistsAndIsOfType<TItem>(arguments, validator, 0);
+        TItem? GetItem() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TItem>(arguments, validator, 0);
     }
 
-    private IValidator CreateDictionaryValidator<TKey, TValue>(string validator, IReadOnlyList<object> arguments) {
+    private IValidator CreateDictionaryValidator<TKey, TValue>(string validator, IReadOnlyList<object?> arguments) {
         return validator switch {
-            nameof(MinimumCountIs<KeyValuePair<TKey, TValue>>) => new MinimumCountIs<KeyValuePair<TKey, TValue>>(_source, GetCount()),
-            nameof(MaximumCountIs<KeyValuePair<TKey, TValue>>) => new MaximumCountIs<KeyValuePair<TKey, TValue>>(_source, GetCount()),
-            nameof(CountIs<KeyValuePair<TKey, TValue>>) => new CountIs<KeyValuePair<TKey, TValue>>(_source, GetCount()),
+            nameof(MinimumCountIs<KeyValuePair<TKey, TValue?>>) => new MinimumCountIs<KeyValuePair<TKey, TValue?>>(_source, GetCount()),
+            nameof(MaximumCountIs<KeyValuePair<TKey, TValue?>>) => new MaximumCountIs<KeyValuePair<TKey, TValue?>>(_source, GetCount()),
+            nameof(CountIs<KeyValuePair<TKey, TValue?>>) => new CountIs<KeyValuePair<TKey, TValue?>>(_source, GetCount()),
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
-        int GetCount() => Ensure.ArgumentExistsAndIsOfType<int>(arguments, validator, 0);
+        int GetCount() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<int>(arguments, validator, 0);
     }
 }

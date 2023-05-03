@@ -23,5 +23,5 @@ public abstract class Validation<TSubject, TValidators>
     public string Source { get; }
     public ICollection<ValidationError> Errors { get; }
     public TValidators And => (this as TValidators)!;
-    public ValidationResult Result => AsInvalid(Errors);
+    public ValidationResult Result => Invalid(Errors);
 }

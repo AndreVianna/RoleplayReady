@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Handlers.Auth;
+﻿using static System.Results.SignInResult;
+
+namespace RolePlayReady.Handlers.Auth;
 
 public class AuthHandler : IAuthHandler {
     private readonly IConfiguration _configuration;
@@ -13,19 +15,19 @@ public class AuthHandler : IAuthHandler {
 
     public SignInResult Authenticate(Login login) {
         var validation = login.Validate();
-        if (validation.HasErrors) {
+        if (validation.IsInvalid) {
             _logger.LogDebug("Login attempt with invalid request.");
-            return validation.ToInvalidSignInResult();
+            return Invalid(validation.Errors);
         }
 
         if (!IsCorrect(login)) {
             _logger.LogDebug("Login attempt for '{email}' failed.", login.Email);
-            return SignInResult.Failure();
+            return Failure();
         }
 
         var token = GenerateSignInToken();
         _logger.LogDebug("Login for '{email}' succeeded.", login.Email);
-        return SignInResult.Success(token);
+        return Success(token);
     }
 
     private string GenerateSignInToken() {
@@ -53,6 +55,6 @@ public class AuthHandler : IAuthHandler {
     }
 
     private bool IsCorrect(Login login)
-        => login.Email.ToLower().Equals(_configuration["Security:DefaultUser:Email"]?.ToLower())
+        => login.Email.ToLower().Equals(_configuration["Security:DefaultUser:Email"]!.ToLower())
         && login.Password.Equals(_configuration["Security:DefaultUser:Password"]);
 }

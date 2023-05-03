@@ -5,7 +5,7 @@ public class IntegerValidationTests {
         public int? Nullable { get; init; }
         public int? Required { get; init; }
         public ValidationResult Validate() {
-            var result = ValidationResult.Success;
+            var result = ValidationResult.Success();
             result += Nullable.IsNullOr().IsGreaterThan(10).And.IsLessThan(20).And.IsEqualTo(15).Result;
             result += Required.IsNotNull().And.MinimumIs(10).And.MaximumIs(20).Result;
             return result;

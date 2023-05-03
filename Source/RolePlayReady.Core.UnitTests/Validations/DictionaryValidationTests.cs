@@ -5,7 +5,7 @@ public class DictionaryValidationTests {
         public required IDictionary<string, int> Numbers { get; init; } = new Dictionary<string, int>();
         public required IDictionary<string, string> Names { get; init; } = new Dictionary<string, string>();
         public ValidationResult Validate() {
-            var result = ValidationResult.Success;
+            var result = ValidationResult.Success();
             result += Numbers.Map()
                 .IsNotEmpty()
                 .And.MinimumCountIs(2)
@@ -14,7 +14,7 @@ public class DictionaryValidationTests {
                 .And.ContainsKey("Five")
                 .And.NotContainsKey("Nine")
                 .And.ForEach(item => item.Value().IsGreaterThan(0)).Result;
-            result += Names.ForEach(value => value.IsNotNull()).Result;
+            result += Names!.ForEach(value => value.IsNotNull()).Result;
             return result;
         }
     }

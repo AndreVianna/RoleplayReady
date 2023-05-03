@@ -73,7 +73,7 @@ public class UsersController : ControllerBase {
         _logger.LogDebug("Create user requested.");
         var model = request.ToDomain();
         var result = await _handler.AddAsync(model, cancellationToken);
-        if (result.HasErrors) {
+        if (result.IsInvalid) {
             _logger.LogDebug("Fail to create user (bad request).");
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
@@ -111,7 +111,7 @@ public class UsersController : ControllerBase {
 
         var model = request.ToDomain(uuid);
         var result = await _handler.UpdateAsync(model, cancellationToken);
-        if (result.HasErrors) {
+        if (result.IsInvalid) {
             _logger.LogDebug("Fail to update user '{id}' (bad request).", id);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }

@@ -1,9 +1,9 @@
 ﻿namespace System.Validators.Collection;
 
 public sealed class Contains<TItem> : CollectionValidator<TItem> {
-    private readonly TItem _item;
+    private readonly TItem? _item;
 
-    public Contains(string source, TItem item)
+    public Contains(string source, TItem? item)
         : base(source) {
         _item = item;
     }
