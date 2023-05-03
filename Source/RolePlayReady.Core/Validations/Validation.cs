@@ -25,3 +25,17 @@ public abstract class Validation<TSubject, TValidators>
     public TValidators And => (this as TValidators)!;
     public ValidationResult Result => Invalid(Errors);
 }
+
+public sealed class Validation<TSubject>
+    : IConnectsToOrFinishes<TSubject?> {
+    private readonly IEnumerable<ValidationError> _errors;
+
+    public Validation(TSubject? subject, IEnumerable<ValidationError>? errors = null) {
+        And = subject;
+        _errors = new List<ValidationError>(errors ?? Array.Empty<ValidationError>());
+    }
+
+    public TSubject? And { get; }
+
+    public ValidationResult Result => Invalid(_errors);
+}

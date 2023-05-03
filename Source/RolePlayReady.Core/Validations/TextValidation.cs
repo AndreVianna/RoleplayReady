@@ -1,6 +1,4 @@
-﻿using System.Validations.Extensions;
-
-namespace System.Validations;
+﻿namespace System.Validations;
 
 public partial class TextValidation
     : Validation<string, ITextValidators>,
