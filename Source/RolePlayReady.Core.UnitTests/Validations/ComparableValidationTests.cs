@@ -3,10 +3,10 @@ namespace System.Validations;
 public class ComparableValidationTests {
     public record TestObject : IValidatable {
         public int Number { get; init; }
-        public ValidationResult Validate() {
+        public ICollection<ValidationError> Validate() {
             var result = ValidationResult.Success();
-            result += Number.Value().IsEqualTo(15).Result;
-            return result;
+            result += Number.Value().IsEqualTo(15).Errors;
+            return result.Errors;
         }
     }
 
@@ -21,7 +21,7 @@ public class ComparableValidationTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.Validate();
+        var result = (ValidationResult)subject.Validate();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

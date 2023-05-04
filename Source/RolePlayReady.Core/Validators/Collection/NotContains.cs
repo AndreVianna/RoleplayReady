@@ -8,6 +8,6 @@ public sealed class NotContains<TItem> : CollectionValidator<TItem> {
         _item = item;
     }
 
-    protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation)
-        => validation.NotContains(_item).Result;
+    protected override ICollection<ValidationError> ValidateValue(CollectionValidations<TItem> validation)
+        => validation.NotContains(_item).Errors;
 }

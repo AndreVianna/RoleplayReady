@@ -4,14 +4,14 @@ public record Login : IValidatable {
     public required string Email { get; set; }
     public required string Password { get; set; }
 
-    public ValidationResult Validate() {
+    public ICollection<ValidationError> Validate() {
         var result = ValidationResult.Success();
         result += Email.IsNotNull()
                        .And.IsNotEmptyOrWhiteSpace()
-                       .And.IsEmail().Result;
+                       .And.IsEmail().Errors;
         result += Password.IsNotNull()
                           .And.IsNotEmptyOrWhiteSpace()
-                          .And.MaximumLengthIs(Validation.Password.MaximumLength).Result;
-        return result;
+                          .And.MaximumLengthIs(Validation.Password.MaximumLength).Errors;
+        return result.Errors;
     }
 }

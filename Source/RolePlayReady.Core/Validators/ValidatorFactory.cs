@@ -16,8 +16,8 @@ public sealed class ValidatorFactory {
 
     public IValidator Create(Type dataType, string validator, object?[] arguments) {
         return GetTypeComponents() switch {
-            ["Integer"] => CreateNumericValidator<int>(validator, arguments),
-            ["Decimal"] => CreateNumericValidator<decimal>(validator, arguments),
+            ["Integer"] => CreateNumberValidator<int>(validator, arguments),
+            ["Decimal"] => CreateNumberValidator<decimal>(validator, arguments),
             ["String"] => CreateStringValidator(validator, arguments),
             ["List", "Integer"] => CreateCollectionValidator<int>(validator, arguments),
             ["List", "String"] => CreateCollectionValidator<string>(validator, arguments),
@@ -34,7 +34,7 @@ public sealed class ValidatorFactory {
               .ToArray();
     }
 
-    private IValidator CreateNumericValidator<TValue>(string validator, IReadOnlyList<object?> arguments)
+    private IValidator CreateNumberValidator<TValue>(string validator, IReadOnlyList<object?> arguments)
         where TValue : IComparable<TValue> {
         return validator switch {
             nameof(IsLessThan<TValue>) => new IsLessThan<TValue>(_source, GetLimit()),

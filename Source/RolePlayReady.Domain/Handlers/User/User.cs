@@ -15,11 +15,11 @@ public record User : IKey, IValidatable {
 
     public string FolderName => (Base64Guid)Id;
 
-    public ValidationResult Validate() {
+    public ICollection<ValidationError> Validate() {
         var result = ValidationResult.Success();
         result += Email.IsNotNull()
                        .And.IsNotEmptyOrWhiteSpace()
-                       .And.IsEmail().Result;
-        return result;
+                       .And.IsEmail().Errors;
+        return result.Errors;
     }
 }

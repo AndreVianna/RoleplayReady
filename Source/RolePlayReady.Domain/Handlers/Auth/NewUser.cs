@@ -5,14 +5,14 @@ public record NewUser : IValidatable {
     public required string Password { get; set; }
     public string? Name { get; init; }
 
-    public ValidationResult Validate() {
+    public ICollection<ValidationError> Validate() {
         var result = ValidationResult.Success();
         result += Email.IsNotNull()
             .And.IsNotEmptyOrWhiteSpace()
-            .And.IsEmail().Result;
+            .And.IsEmail().Errors;
         result += Password.IsNotNull()
             .And.IsNotEmptyOrWhiteSpace()
-            .And.IsPassword(null).Result;
-        return result;
+            .And.IsPassword(null).Errors;
+        return result.Errors;
     }
 }

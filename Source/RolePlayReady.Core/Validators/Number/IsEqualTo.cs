@@ -9,6 +9,6 @@ public sealed class IsEqualTo<TValue> : NumberValidator<TValue>
         _value = value;
     }
 
-    protected override ValidationResult ValidateValue(NumberValidation<TValue> validation)
-        => validation.IsEqualTo(_value).Result;
+    protected override ICollection<ValidationError> ValidateValue(NumberValidations<TValue> validation)
+        => validation.IsEqualTo(_value).Errors;
 }

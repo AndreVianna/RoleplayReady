@@ -4,7 +4,7 @@ public class CollectionValidationTests {
     public record TestObject : IValidatable {
         public required ICollection<int> Numbers { get; init; } = Array.Empty<int>();
         public required ICollection<(string Name, int Age)> Names { get; init; } = Array.Empty<(string Name, int Age)>();
-        public ValidationResult Validate() {
+        public ICollection<ValidationError> Validate() {
             var result = ValidationResult.Success();
             result += Numbers.List()
                 .IsNotEmpty()
@@ -13,9 +13,9 @@ public class CollectionValidationTests {
                 .And.CountIs(3)
                 .And.Contains(5)
                 .And.NotContains(13)
-                .And.ForEach(item => item.Value().IsGreaterThan(0)).Result;
-            result += Names.ForEach(value => value.Name.IsNotNull()).Result;
-            return result;
+                .And.ForEach(item => item.Value().IsGreaterThan(0).Errors).ToList();
+            result += Names.ForEach(value => value.Name.IsNotNull().Errors).ToList();
+            return result.Errors;
         }
     }
 
@@ -35,7 +35,6 @@ public class CollectionValidationTests {
         var result = subject.Validate();
 
         // Assert
-        result.IsSuccess.Should().Be(isSuccess);
-        result.Errors.Should().HaveCount(errorCount);
+        result.Should().HaveCount(errorCount);
     }
 }

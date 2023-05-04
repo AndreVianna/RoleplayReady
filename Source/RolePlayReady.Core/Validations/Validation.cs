@@ -1,41 +1,8 @@
-﻿using static System.Results.ValidationResult;
-
-namespace System.Validations;
+﻿namespace System.Validations;
 
 public static class Validation {
-    public static IEnumerable<ValidationError> EnsureNotNull(object? subject, string? source)
+    public static IEnumerable<ValidationError> EnsureNotNull(object? subject, string source)
         => subject is null
             ? new[] { new ValidationError(CannotBeNull, source!) }
             : Array.Empty<ValidationError>();
-}
-
-public abstract class Validation<TSubject, TValidators>
-    : IValidation<TSubject>,
-      IConnectsTo<TValidators>
-    where TValidators : class {
-    protected Validation(TSubject? subject, string? source, IEnumerable<ValidationError>? previousErrors = null) {
-        Subject = subject;
-        Source = source!;
-        Errors = new List<ValidationError>(previousErrors ?? Array.Empty<ValidationError>());
-    }
-
-    public TSubject? Subject { get; }
-    public string Source { get; }
-    public ICollection<ValidationError> Errors { get; }
-    public TValidators And => (this as TValidators)!;
-    public ValidationResult Result => Invalid(Errors);
-}
-
-public sealed class Validation<TSubject>
-    : IConnectsToOrFinishes<TSubject?> {
-    private readonly IEnumerable<ValidationError> _errors;
-
-    public Validation(TSubject? subject, IEnumerable<ValidationError>? errors = null) {
-        And = subject;
-        _errors = new List<ValidationError>(errors ?? Array.Empty<ValidationError>());
-    }
-
-    public TSubject? And { get; }
-
-    public ValidationResult Result => Invalid(_errors);
 }

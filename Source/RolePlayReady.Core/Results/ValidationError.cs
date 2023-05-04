@@ -1,6 +1,4 @@
-﻿using System.Utilities;
-
-namespace System.Results;
+﻿namespace System.Results;
 
 public sealed record ValidationError {
     public ValidationError(string messageTemplate, string source, params object?[] args) {

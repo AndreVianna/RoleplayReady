@@ -8,6 +8,6 @@ public sealed class MaximumCountIs<TItem> : CollectionValidator<TItem> {
         _count = count;
     }
 
-    protected override ValidationResult ValidateValue(CollectionValidation<TItem> validation)
-        => validation.MaximumCountIs(_count).Result;
+    protected override ICollection<ValidationError> ValidateValue(CollectionValidations<TItem> validation)
+        => validation.MaximumCountIs(_count).Errors;
 }

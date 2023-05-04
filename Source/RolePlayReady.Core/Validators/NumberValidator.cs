@@ -10,9 +10,9 @@ public abstract class NumberValidator<TNumber> : IValidator
 
     public ValidationResult Validate(object? input, [CallerArgumentExpression(nameof(input))] string? source = null) {
         var value = (TNumber)input!;
-        var validation = new NumberValidation<TNumber>(value, _source);
-        return ValidateValue(validation);
+        var validation = new NumberValidations<TNumber>(value, _source);
+        return ValidateValue(validation).ToArray();
     }
 
-    protected abstract ValidationResult ValidateValue(NumberValidation<TNumber> validation);
+    protected abstract ICollection<ValidationError> ValidateValue(NumberValidations<TNumber> validation);
 }

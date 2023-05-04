@@ -9,6 +9,6 @@ public sealed class IsLessThan<TValue> : NumberValidator<TValue>
         _threshold = threshold;
     }
 
-    protected override ValidationResult ValidateValue(NumberValidation<TValue> validation)
-        => validation.IsLessThan(_threshold).Result;
+    protected override ICollection<ValidationError> ValidateValue(NumberValidations<TValue> validation)
+        => validation.IsLessThan(_threshold).Errors;
 }

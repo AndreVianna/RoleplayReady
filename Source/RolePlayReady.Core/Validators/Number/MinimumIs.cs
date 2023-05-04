@@ -9,6 +9,6 @@ public sealed class MinimumIs<TValue> : NumberValidator<TValue>
         _threshold = threshold;
     }
 
-    protected override ValidationResult ValidateValue(NumberValidation<TValue> validation)
-        => validation.MinimumIs(_threshold).Result;
+    protected override ICollection<ValidationError> ValidateValue(NumberValidations<TValue> validation)
+        => validation.MinimumIs(_threshold).Errors;
 }
