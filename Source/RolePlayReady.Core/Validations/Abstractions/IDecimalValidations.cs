@@ -1,6 +1,6 @@
 ﻿namespace System.Validations.Abstractions;
 
-public interface INumberValidations<TValue> : IValidations<IComparable<TValue>, NumberValidations<TValue>>
+public interface IDecimalValidations<TValue> : IValidations<IComparable<TValue>, NumberValidations<TValue>>
     where TValue : IComparable<TValue> {
     IValidationsConnector<IComparable<TValue>?, NumberValidations<TValue>> MinimumIs(TValue minimum);
     IValidationsConnector<IComparable<TValue>?, NumberValidations<TValue>> IsGreaterThan(TValue minimum);

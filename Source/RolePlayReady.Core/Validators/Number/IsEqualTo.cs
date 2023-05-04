@@ -1,7 +1,7 @@
 ﻿namespace System.Validators.Number;
 
 public sealed class IsEqualTo<TValue> : NumberValidator<TValue>
-    where TValue : IComparable<TValue> {
+    where TValue : struct, IComparable<TValue> {
     private readonly TValue _value;
 
     public IsEqualTo(string source, TValue value)
@@ -9,6 +9,6 @@ public sealed class IsEqualTo<TValue> : NumberValidator<TValue>
         _value = value;
     }
 
-    protected override ICollection<ValidationError> ValidateValue(NumberValidations<TValue> validation)
-        => validation.IsEqualTo(_value).Errors;
+    protected override ValidationResult ValidateValue(NumberValidations<TValue> validation)
+        => validation.IsEqualTo(_value).Result;
 }

@@ -4,17 +4,18 @@ public class StringValidationTests {
     public record TestObject : IValidatable {
         public string? RequiredText { get; init; }
         public string? OptionalText { get; init; }
-        public ValidationResult Validate() {
+
+        public ValidationResult ValidateSelf() {
             var result = ValidationResult.Success();
-            result += RequiredText.IsNotNull()
-                          .And.IsNotEmptyOrWhiteSpace()
-                          .And.MinimumLengthIs(3)
-                          .And.MaximumLengthIs(10)
-                          .And.LengthIs(5)
-                          .And.IsIn("Text1", "Text2", "Text3").Result;
-            result += OptionalText.IsNullOr()
-                                  .IsNotEmptyOrWhiteSpace()
-                                  .And.IsEmail().Result;
+            result += RequiredText.IsRequired()
+                          .And().IsNotEmptyOrWhiteSpace()
+                          .And().MinimumLengthIs(3)
+                          .And().MaximumLengthIs(10)
+                          .And().LengthIs(5)
+                          .And().IsIn("Text1", "Text2", "Text3").Result;
+            result += OptionalText.IsOptional()
+                                  .And().IsNotEmptyOrWhiteSpace()
+                                  .And().IsEmail().Result;
             return result;
         }
     }
@@ -39,7 +40,7 @@ public class StringValidationTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

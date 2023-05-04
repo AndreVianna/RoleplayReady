@@ -1,7 +1,7 @@
 ﻿namespace System.Validators.Number;
 
 public sealed class IsGreaterThan<TValue> : NumberValidator<TValue>
-    where TValue : IComparable<TValue> {
+    where TValue : struct, IComparable<TValue> {
     private readonly TValue _threshold;
 
     public IsGreaterThan(string source, TValue threshold)
@@ -9,6 +9,6 @@ public sealed class IsGreaterThan<TValue> : NumberValidator<TValue>
         _threshold = threshold;
     }
 
-    protected override ICollection<ValidationError> ValidateValue(NumberValidations<TValue> validation)
-        => validation.IsGreaterThan(_threshold).Errors;
+    protected override ValidationResult ValidateValue(NumberValidations<TValue> validation)
+        => validation.IsGreaterThan(_threshold).Result;
 }

@@ -4,18 +4,19 @@ public class CollectionValidationTests {
     public record TestObject : IValidatable {
         public required ICollection<int> Numbers { get; init; } = Array.Empty<int>();
         public required ICollection<(string Name, int Age)> Names { get; init; } = Array.Empty<(string Name, int Age)>();
-        public ICollection<ValidationError> Validate() {
+
+        public ValidationResult ValidateSelf() {
             var result = ValidationResult.Success();
-            result += Numbers.List()
-                .IsNotEmpty()
-                .And.MinimumCountIs(2)
-                .And.MaximumCountIs(4)
-                .And.CountIs(3)
-                .And.Contains(5)
-                .And.NotContains(13)
-                .And.ForEach(item => item.Value().IsGreaterThan(0).Errors).ToList();
-            result += Names.ForEach(value => value.Name.IsNotNull().Errors).ToList();
-            return result.Errors;
+            result += Numbers.IsRequired()
+                .And().IsNotEmpty()
+                .And().MinimumCountIs(2)
+                .And().MaximumCountIs(4)
+                .And().CountIs(3)
+                .And().Contains(5)
+                .And().NotContains(13)
+                .And().ForEach(item => item.Value().IsGreaterThan(0)).Result;
+            result += Names.ForEach(value => value.Name.IsRequired()).Result;
+            return result;
         }
     }
 
@@ -32,9 +33,9 @@ public class CollectionValidationTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         // Assert
-        result.Should().HaveCount(errorCount);
+        result.Errors.Should().HaveCount(errorCount);
     }
 }

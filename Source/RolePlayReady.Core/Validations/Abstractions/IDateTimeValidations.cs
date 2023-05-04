@@ -1,8 +1,8 @@
 ﻿namespace System.Validations.Abstractions;
 
-public interface IDateTimeValidations : IValidations<DateTime?> {
-    IConnects<IDateTimeValidations> IsAfter(DateTime reference);
-    IConnects<IDateTimeValidations> IsBefore(DateTime reference);
-    IConnects<IDateTimeValidations> StartsOn(DateTime reference);
-    IConnects<IDateTimeValidations> EndsOn(DateTime reference);
+public interface IDateTimeValidations : IValidations<DateTime?, DateTimeValidations> {
+    IValidationsConnector<DateTime?, DateTimeValidations> IsAfter(DateTime reference);
+    IValidationsConnector<DateTime?, DateTimeValidations> IsBefore(DateTime reference);
+    IValidationsConnector<DateTime?, DateTimeValidations> StartsOn(DateTime reference);
+    IValidationsConnector<DateTime?, DateTimeValidations> EndsOn(DateTime reference);
 }

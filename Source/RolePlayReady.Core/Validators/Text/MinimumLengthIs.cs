@@ -8,6 +8,6 @@ public sealed class MinimumLengthIs : TextValidator {
         _length = length;
     }
 
-    protected override ICollection<ValidationError> ValidateValue(TextValidations validation)
-        => validation.MinimumLengthIs(_length).Errors;
+    protected override ValidationResult ValidateValue(TextValidations validation)
+        => validation.MinimumLengthIs(_length).Result;
 }

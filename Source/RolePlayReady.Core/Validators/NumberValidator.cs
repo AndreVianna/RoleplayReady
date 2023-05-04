@@ -1,7 +1,7 @@
 ﻿namespace System.Validators;
 
 public abstract class NumberValidator<TNumber> : IValidator
-    where TNumber : IComparable<TNumber> {
+    where TNumber : struct, IComparable<TNumber> {
     private readonly string _source;
 
     protected NumberValidator(string source) {
@@ -10,9 +10,9 @@ public abstract class NumberValidator<TNumber> : IValidator
 
     public ValidationResult Validate(object? input, [CallerArgumentExpression(nameof(input))] string? source = null) {
         var value = (TNumber)input!;
-        var validation = new NumberValidations<TNumber>(value, _source);
-        return ValidateValue(validation).ToArray();
+        var validation = NumberValidations<TNumber>.CreateAsOptional<TNumber>(value, _source);
+        return ValidateValue(validation);
     }
 
-    protected abstract ICollection<ValidationError> ValidateValue(NumberValidations<TNumber> validation);
+    protected abstract ValidationResult ValidateValue(NumberValidations<TNumber> validation);
 }

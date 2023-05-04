@@ -8,6 +8,6 @@ public sealed class Contains<TItem> : CollectionValidator<TItem> {
         _item = item;
     }
 
-    protected override ICollection<ValidationError> ValidateValue(CollectionValidations<TItem> validation)
-        => validation.Contains(_item).Errors;
+    protected override ValidationResult ValidateValue(CollectionValidations<TItem> validation)
+        => validation.Contains(_item).Result;
 }

@@ -8,10 +8,10 @@ public abstract class TextValidator : IValidator {
     }
 
     public ValidationResult Validate(object? input, [CallerArgumentExpression(nameof(input))] string? source = null) {
-        var value = (string)input!;
-        var validation = new TextValidations(value.Trim(), _source);
-        return ValidateValue(validation).ToArray();
+        var value = (string?)input;
+        var validation = TextValidations.CreateAsOptional(value, _source);
+        return ValidateValue(validation);
     }
 
-    protected abstract ICollection<ValidationError> ValidateValue(TextValidations validation);
+    protected abstract ValidationResult ValidateValue(TextValidations validation);
 }

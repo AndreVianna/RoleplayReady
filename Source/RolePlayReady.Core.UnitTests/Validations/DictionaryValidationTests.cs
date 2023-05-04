@@ -4,17 +4,18 @@ public class DictionaryValidationTests {
     public record TestObject : IValidatable {
         public required IDictionary<string, int> Numbers { get; init; } = new Dictionary<string, int>();
         public required IDictionary<string, string> Names { get; init; } = new Dictionary<string, string>();
-        public ValidationResult Validate() {
+
+        public ValidationResult ValidateSelf() {
             var result = ValidationResult.Success();
-            result += Numbers.Map()
-                .IsNotEmpty()
-                .And.MinimumCountIs(2)
-                .And.MaximumCountIs(4)
-                .And.CountIs(3)
-                .And.ContainsKey("Five")
-                .And.NotContainsKey("Nine")
-                .And.ForEach(item => item.Value().IsGreaterThan(0)).Result;
-            result += Names!.ForEach(value => value.IsNotNull()).Result;
+            result += Numbers.IsRequired()
+                .And().IsNotEmpty()
+                .And().MinimumCountIs(2)
+                .And().MaximumCountIs(4)
+                .And().CountIs(3)
+                .And().ContainsKey("Five")
+                .And().NotContainsKey("Nine")
+                .And().ForEach(item => item.Value().IsGreaterThan(0)).Result;
+            result += Names!.ForEach(value => value.IsRequired()).Result;
             return result;
         }
     }
@@ -32,7 +33,7 @@ public class DictionaryValidationTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

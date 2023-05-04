@@ -4,10 +4,11 @@ public class DecimalValidationTests {
     public record TestObject : IValidatable {
         public decimal? Nullable { get; init; }
         public decimal? Required { get; init; }
-        public ValidationResult Validate() {
+
+        public ValidationResult ValidateSelf() {
             var result = ValidationResult.Success();
-            result += Nullable.IsNullOr().IsGreaterThan(10).And.IsLessThan(20).And.IsEqualTo(15).Result;
-            result += Required.IsNotNull().And.MinimumIs(10).And.MaximumIs(20).Result;
+            result += Nullable.IsOptional().And().IsGreaterThan(10).And().IsLessThan(20).And().IsEqualTo(15).Result;
+            result += Required.IsRequired().And().MinimumIs(10).And().MaximumIs(20).Result;
             return result;
         }
     }
@@ -25,7 +26,7 @@ public class DecimalValidationTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

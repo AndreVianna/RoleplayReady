@@ -9,9 +9,9 @@ public abstract class CollectionValidator<TItem> : IValidator {
 
     public ValidationResult Validate(object? input, [CallerArgumentExpression(nameof(input))] string? source = null) {
         var value = (ICollection<TItem?>)input!;
-        var validation = new CollectionValidations<TItem>(value, _source);
-        return ValidateValue(validation).ToArray();
+        var validation = CollectionValidations<TItem>.CreateAsRequired(value, _source);
+        return ValidateValue(validation);
     }
 
-    protected abstract ICollection<ValidationError> ValidateValue(CollectionValidations<TItem> validation);
+    protected abstract ValidationResult ValidateValue(CollectionValidations<TItem> validation);
 }

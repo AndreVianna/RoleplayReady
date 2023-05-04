@@ -36,7 +36,7 @@ public class CrudHandler<TModel, TRowModel, TRepository>
     }
 
     public async Task<CrudResult<TModel>> AddAsync(TModel input, CancellationToken cancellation = default) {
-        var validation = input.Validate();
+        var validation = input.ValidateSelf();
         if (validation.IsInvalid) return Invalid(input, validation.Errors);
         var output = await _repository.AddAsync(input, cancellation).ConfigureAwait(false);
         return output is null
@@ -45,7 +45,7 @@ public class CrudHandler<TModel, TRowModel, TRepository>
     }
 
     public async Task<CrudResult<TModel>> UpdateAsync(TModel input, CancellationToken cancellation = default) {
-        var validation = input.Validate();
+        var validation = input.ValidateSelf();
         if (validation.IsInvalid) return Invalid(input, validation.Errors);
         var output = await _repository.UpdateAsync(input, cancellation).ConfigureAwait(false);
         return output is null

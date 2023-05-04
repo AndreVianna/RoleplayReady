@@ -3,20 +3,22 @@ namespace System.Validations;
 public class ValidatableValidationTests {
     public record ChildObject : IValidatable {
         public required string Name { get; init; }
-        public ValidationResult Validate() {
+
+        public ValidationResult ValidateSelf() {
             var result = ValidationResult.Success();
-            result += Name.IsNotNull()
-                .And.LengthIs(5).Result;
+            result += Name.IsRequired()
+                .And().LengthIs(5).Result;
             return result;
         }
     }
 
     public record TestObject : IValidatable {
         public required ChildObject Child { get; init; }
-        public ValidationResult Validate() {
+
+        public ValidationResult ValidateSelf() {
             var result = ValidationResult.Success();
-            result += Child.IsNotNull()
-                .And.IsValid().Result;
+            result += Child.IsRequired()
+                .And().IsValid().Result;
             return result;
         }
     }
@@ -33,7 +35,7 @@ public class ValidatableValidationTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

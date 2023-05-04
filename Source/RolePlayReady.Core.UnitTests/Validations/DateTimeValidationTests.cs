@@ -7,11 +7,12 @@ public class DateTimeValidationTests {
         public DateTime NotNull { get; init; }
         public DateTime? Nullable { get; init; }
         public DateTime? Required { get; init; }
-        public ValidationResult Validate() {
+
+        public ValidationResult ValidateSelf() {
             var result = ValidationResult.Success();
-            result += NotNull.Value().IsAfter(_baseDate).And.IsBefore(_baseDate.AddDays(1)).Result;
-            result += Nullable.IsNullOr().IsAfter(_baseDate).And.IsBefore(_baseDate.AddDays(1)).Result;
-            result += Required.IsNotNull().And.StartsOn(_baseDate).And.EndsOn(_baseDate.AddDays(1)).Result;
+            result += NotNull.IsRequired().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;
+            result += Nullable.IsOptional().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;
+            result += Required.IsRequired().And().StartsOn(_baseDate).And().EndsOn(_baseDate.AddDays(1)).Result;
             return result;
         }
     }
@@ -29,7 +30,7 @@ public class DateTimeValidationTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

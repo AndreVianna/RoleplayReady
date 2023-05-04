@@ -1,6 +1,6 @@
 ﻿namespace System.Validations;
 
-public class NumberValidations<TValue>
+public class DecimalValidations<TValue>
     : Validations<IComparable<TValue>, NumberValidations<TValue>>
         , INumberValidations<TValue>
     where TValue : IComparable<TValue> {

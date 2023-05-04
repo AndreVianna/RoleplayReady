@@ -1,67 +1,64 @@
 ﻿namespace System.Validations;
 
-public class CollectionValidations<TItem> : ICollectionValidations<TItem?> {
-    private readonly Connects<CollectionValidations<TItem>> _connector;
+public sealed class CollectionValidations<TItem> 
+    : Validations<ICollection<TItem?>, CollectionValidations<TItem>>
+        , ICollectionValidations<TItem> {
+    public static CollectionValidations<TSubject> CreateAsRequired<TSubject>(ICollection<TSubject?>? subject, string source)
+        => new(subject, source, EnsureNotNull(subject, source));
 
-    public CollectionValidations(ICollection<TItem?>? subject, string source, IEnumerable<ValidationError>? previousErrors = null) {
-        Subject = subject;
-        Source = source;
-        Errors = previousErrors?.ToList() ?? new List<ValidationError>();
-        _connector = new Connects<CollectionValidations<TItem>>(this);
+    private CollectionValidations(ICollection<TItem?>? subject, string source, IEnumerable<ValidationError>? previousErrors = null)
+        : base(ValidationMode.None, subject, source, previousErrors) {
+        Connector = new ValidationsConnector<ICollection<TItem?>, CollectionValidations<TItem>>(Subject, this);
     }
 
-    public ICollection<TItem?>? Subject { get; }
-    public string Source { get; }
-    public List<ValidationError> Errors { get; }
-
-    public IConnects<ICollectionValidations<TItem?>> IsNotEmpty() {
+    public IValidationsConnector<ICollection<TItem?>, CollectionValidations<TItem>> IsNotEmpty() {
         if (Subject is not null && !Subject.Any())
             Errors.Add(new(CannotBeEmpty, Source));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<ICollectionValidations<TItem?>> MinimumCountIs(int size) {
+    public IValidationsConnector<ICollection<TItem?>, CollectionValidations<TItem>> MinimumCountIs(int size) {
         if (Subject is not null && Subject.Count < size)
             Errors.Add(new(CannotHaveLessThan, Source, size, Subject.Count));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<ICollectionValidations<TItem?>> CountIs(int size) {
+    public IValidationsConnector<ICollection<TItem?>, CollectionValidations<TItem>> CountIs(int size) {
         if (Subject is not null && Subject.Count != size)
             Errors.Add(new(MustHave, Source, size, Subject.Count));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<ICollectionValidations<TItem?>> Contains(TItem? item) {
+    public IValidationsConnector<ICollection<TItem?>, CollectionValidations<TItem>> Contains(TItem? item) {
         if (Subject is not null && !Subject.Contains(item))
             Errors.Add(new(MustContain, Source, item));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<ICollectionValidations<TItem?>> NotContains(TItem? item) {
+    public IValidationsConnector<ICollection<TItem?>, CollectionValidations<TItem>> NotContains(TItem? item) {
         if (Subject is not null && Subject.Contains(item))
             Errors.Add(new(MustNotContain, Source, item));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<ICollectionValidations<TItem?>> MaximumCountIs(int size) {
+    public IValidationsConnector<ICollection<TItem?>, CollectionValidations<TItem>> MaximumCountIs(int size) {
         if (Subject is not null && Subject.Count > size)
             Errors.Add(new(CannotHaveMoreThan, Source, size, Subject.Count));
 
-        return _connector;
+        return Connector;
     }
 
-    public ICollection<ValidationError> ForEach(Func<TItem?, ICollection<ValidationError>> validateUsing) {
-        if (Subject is null) return Errors;
+    public IValidationsConnector<ICollection<TItem?>, CollectionValidations<TItem>> ForEach(Func<TItem?, IValidationsConnector<TItem?, IValidations>> validate) {
+        if (Subject is null) return Connector;
         var index = 0;
         foreach (var item in Subject)
-            AddItemErrors(validateUsing(item), $"{Source}[{index++}]");
-        return Errors;
+            AddItemErrors(validate(item).Result.Errors, $"{Source}[{index++}]");
+        return Connector;
     }
 
     private void AddItemErrors(IEnumerable<ValidationError> errors, string source) {

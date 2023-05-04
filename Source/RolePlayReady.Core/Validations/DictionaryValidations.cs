@@ -1,67 +1,66 @@
 ﻿namespace System.Validations;
 
-public class DictionaryValidations<TKey, TValue> : IDictionaryValidations<TKey, TValue?>
+public class DictionaryValidations<TKey, TValue>
+    : Validations<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>>
+        , IDictionaryValidations<TKey, TValue>
     where TKey : notnull {
-    private readonly Connects<DictionaryValidations<TKey, TValue>> _connector;
 
-    public DictionaryValidations(IDictionary<TKey, TValue?>? subject, string source, IEnumerable<ValidationError>? previousErrors = null) {
-        Subject = subject;
-        Source = source;
-        Errors = previousErrors?.ToList() ?? new List<ValidationError>();
-        _connector = new Connects<DictionaryValidations<TKey, TValue>>(this);
+    public static DictionaryValidations<TSubjectKey, TSubjectValue> CreateAsRequired<TSubjectKey, TSubjectValue>(IDictionary<TSubjectKey, TSubjectValue?>? subject, string source)
+        where TSubjectKey : notnull
+        => new(subject, source, EnsureNotNull(subject, source));
+
+    private DictionaryValidations(IDictionary<TKey, TValue?>? subject, string source, IEnumerable<ValidationError>? previousErrors = null)
+        : base(ValidationMode.None, subject, source, previousErrors) {
+        Connector = new ValidationsConnector<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>>(Subject, this);
     }
 
-    public IDictionary<TKey, TValue?>? Subject { get; }
-    public string Source { get; }
-    public List<ValidationError> Errors { get; }
-
-    public IConnects<IDictionaryValidations<TKey, TValue?>> IsNotEmpty() {
+    public IValidationsConnector<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>> IsNotEmpty() {
         if (Subject is not null && !Subject.Any())
             Errors.Add(new(CannotBeEmpty, Source));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<IDictionaryValidations<TKey, TValue?>> MinimumCountIs(int size) {
+    public IValidationsConnector<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>> MinimumCountIs(int size) {
         if (Subject is not null && Subject.Count < size)
             Errors.Add(new(CannotHaveLessThan, Source, size, Subject.Count));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<IDictionaryValidations<TKey, TValue?>> CountIs(int size) {
+    public IValidationsConnector<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>> CountIs(int size) {
         if (Subject is not null && Subject.Count != size)
             Errors.Add(new(MustHave, Source, size, Subject.Count));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<IDictionaryValidations<TKey, TValue?>> ContainsKey(TKey key) {
+    public IValidationsConnector<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>> ContainsKey(TKey key) {
         if (Subject is not null && !Subject.ContainsKey(key))
             Errors.Add(new(MustContainKey, Source, key));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<IDictionaryValidations<TKey, TValue?>> NotContainsKey(TKey key) {
+    public IValidationsConnector<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>> NotContainsKey(TKey key) {
         if (Subject is not null && Subject.ContainsKey(key))
             Errors.Add(new(MustNotContainKey, Source, key));
 
-        return _connector;
+        return Connector;
     }
 
-    public IConnects<IDictionaryValidations<TKey, TValue?>> MaximumCountIs(int size) {
+    public IValidationsConnector<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>> MaximumCountIs(int size) {
         if (Subject is not null && Subject.Count > size)
             Errors.Add(new(CannotHaveMoreThan, Source, size, Subject.Count));
 
-        return _connector;
+        return Connector;
     }
 
-    public ICollection<ValidationError> ForEach(Func<TValue?, ICollection<ValidationError>> validateUsing) {
-        if (Subject is null) return Errors;
+    public IValidationsConnector<IDictionary<TKey, TValue?>, DictionaryValidations<TKey, TValue>> ForEach(Func<TValue?, IValidationsConnector<TValue?, IValidations>> validateUsing) {
+        if (Subject is null) return Connector;
         foreach (var key in Subject.Keys)
-            AddItemErrors(validateUsing(Subject[key]), $"{Source}[{key}]");
-        return Errors;
+            AddItemErrors(validateUsing(Subject[key]).Result.Errors, $"{Source}[{key}]");
+        return Connector;
     }
 
     private void AddItemErrors(IEnumerable<ValidationError> errors, string source) {

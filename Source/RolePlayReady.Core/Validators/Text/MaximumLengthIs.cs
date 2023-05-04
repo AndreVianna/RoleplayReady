@@ -8,6 +8,6 @@ public sealed class MaximumLengthIs : TextValidator {
         _length = length;
     }
 
-    protected override ICollection<ValidationError> ValidateValue(TextValidations validation)
-        => validation.MaximumLengthIs(_length).Errors;
+    protected override ValidationResult ValidateValue(TextValidations validation)
+        => validation.MaximumLengthIs(_length).Result;
 }

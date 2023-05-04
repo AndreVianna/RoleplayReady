@@ -1,8 +1,8 @@
 ﻿namespace System.Validations.Extensions;
 
 public static class StringExtensions {
-    public static ITextValidations IsNullOr(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
-        => new TextValidations(subject, source!);
-    public static IConnects<ITextValidations> IsNotNull(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
-        => new Connects<ITextValidations>(new TextValidations(subject, source!, Validation.EnsureNotNull(subject, source!)));
+    public static IValidationsConnector<string?, TextValidations> IsOptional(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+        => TextValidations.CreateAsOptional(subject, source!).AsConnection<string?, TextValidations>();
+    public static IValidationsConnector<string?, TextValidations> IsRequired(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+        => TextValidations.CreateAsRequired(subject, source!).AsConnection<string?, TextValidations>();
 }

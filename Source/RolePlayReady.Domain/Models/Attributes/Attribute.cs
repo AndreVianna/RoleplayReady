@@ -8,11 +8,11 @@ public abstract record Attribute<TValue> : IAttribute {
     object? IAttribute.Value => Value;
     public TValue Value { get; init; } = default!;
 
-    public ICollection<ValidationError> Validate() {
+    public ValidationResult ValidateSelf() {
         var result = Success();
-        result += Definition.DataType.IsNotNull().And.IsEqualTo<TValue>().Errors;
+        result += Definition.DataType.IsRequired().And().IsEqualTo<TValue>().Result;
         result += Definition.Constraints.Aggregate(Success(), (r, c)
             => r + c.Create<TValue>(Definition.Name).Validate(Value));
-        return result.Errors;
+        return result;
     }
 }

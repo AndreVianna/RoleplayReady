@@ -1,18 +1,18 @@
 ﻿namespace System.Validations;
 
-public class ObjectValidations : IObjectValidations {
-    private readonly Connects<ObjectValidations> _connector;
+public class ObjectValidations
+    : Validations<object?, ObjectValidations>
+        , IObjectValidations {
 
-    public ObjectValidations(object? subject, string source, IEnumerable<ValidationError>? previousErrors = null) {
-        Subject = subject;
-        Source = source;
-        Errors = previousErrors?.ToList() ?? new List<ValidationError>();
-        _connector = new Connects<ObjectValidations>(this);
+    public static ObjectValidations CreateAsOptional(object? subject, string source)
+        => new(subject, source);
+    public static ObjectValidations CreateAsRequired(string subject, string source)
+        => new(subject, source, EnsureNotNull(subject, source));
+
+    private ObjectValidations(object? subject, string source, IEnumerable<ValidationError>? previousErrors = null)
+        : base(ValidationMode.None, subject, source, previousErrors) {
+        Connector = new ValidationsConnector<object?, ObjectValidations>(Subject, this);
     }
-
-    public object? Subject { get; }
-    public string Source { get; }
-    public List<ValidationError> Errors { get; }
 
     //public IConnects<TSubject> IsOfType<TSubject>() {
     //    if (Subject is not TSubject)

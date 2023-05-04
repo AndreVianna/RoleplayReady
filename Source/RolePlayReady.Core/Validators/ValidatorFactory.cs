@@ -35,7 +35,7 @@ public sealed class ValidatorFactory {
     }
 
     private IValidator CreateNumberValidator<TValue>(string validator, IReadOnlyList<object?> arguments)
-        where TValue : IComparable<TValue> {
+        where TValue : struct, IComparable<TValue> {
         return validator switch {
             nameof(IsLessThan<TValue>) => new IsLessThan<TValue>(_source, GetLimit()),
             nameof(MinimumIs<TValue>) => new MinimumIs<TValue>(_source, GetLimit()),
