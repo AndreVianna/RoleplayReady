@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Handlers.User;
+﻿using System.Validation.Abstractions;
+
+namespace RolePlayReady.Handlers.User;
 
 public record User : IKey, IValidatable {
     public required Guid Id { get; init; }

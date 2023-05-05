@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Models.Attributes;
+﻿using System.Validation.Abstractions;
+
+namespace RolePlayReady.Models.Attributes;
 
 public record ValidatableAttribute<TValue>
     : Attribute<TValue>

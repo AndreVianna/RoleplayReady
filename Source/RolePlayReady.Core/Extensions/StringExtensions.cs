@@ -1,4 +1,7 @@
-﻿namespace System.Extensions;
+﻿using System.Validation;
+using System.Validation.Abstractions;
+
+namespace System.Extensions;
 
 public static partial class StringExtensions {
     private static readonly Regex _splitIntoWordsRegex = SplitIntoWords();
@@ -44,4 +47,9 @@ public static partial class StringExtensions {
 
     [GeneratedRegex("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=\\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\\d)|[^a-zA-Z0-9]+", RegexOptions.Compiled | RegexOptions.Singleline)]
     private static partial Regex SplitIntoWords();
+
+    public static IValidatorsConnector<string?, TextValidators> IsOptional(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+        => TextValidators.CreateAsOptional(subject, source!).AsConnection<string?, TextValidators>();
+    public static IValidatorsConnector<string?, TextValidators> IsRequired(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+        => TextValidators.CreateAsRequired(subject, source!).AsConnection<string?, TextValidators>();
 }

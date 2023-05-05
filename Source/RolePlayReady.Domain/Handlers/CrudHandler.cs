@@ -1,4 +1,6 @@
-﻿using static System.Results.CrudResult;
+﻿using System.Validation.Abstractions;
+
+using static System.Results.CrudResult;
 
 namespace RolePlayReady.Handlers;
 

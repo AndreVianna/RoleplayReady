@@ -5,6 +5,7 @@ public static class Constants {
         public const string CannotAssignNull = "Cannot assign null to '{0}'.";
         public const string CannotAssign = "Cannot assign '{1}' to '{0}'.";
         public const string IsNotOfType = "'{0}' is not of type '{1}'. Found: '{2}'.";
+        public const string MustBeNull = "'{0}' must be null.";
         public const string CannotBeNull = "'{0}' cannot be null.";
         public const string CannotBeEmpty = "'{0}' cannot be empty.";
         public const string CannotBeWhitespace = "'{0}' cannot be whitespace.";
@@ -18,8 +19,8 @@ public static class Constants {
 
         public const string IsNotEqual = "'{0}' is not equal to {1}. Found: {2}.";
 
-        public const string MinimumLengthIs = "'{0}' minimum length is {1} character(s). Found: {2}.";
-        public const string MaximumLengthIs = "'{0}' maximum length is {1} character(s). Found: {2}.";
+        public const string LengthCannotBeGreaterThan = "'{0}' minimum length is {1} character(s). Found: {2}.";
+        public const string LengthCannotBeLessThan = "'{0}' maximum length is {1} character(s). Found: {2}.";
         public const string MustBeIn = "'{0}' must be in [{1}]. Found: {2}.";
         public const string LengthMustBe = "'{0}' length must be exactly {1}. Found: {2}.";
         public const string CannotHaveLessThan = "'{0}' cannot have less than {1} item(s). Found: {2}.";

@@ -1,7 +1,10 @@
-﻿namespace System.Extensions;
+﻿using System.Validation;
+using System.Validation.Abstractions;
 
-public static class ValidationsExtensions {
-    public static IValidationsConnector<TSubject, TValidation> AsConnection<TSubject, TValidation>(this TValidation validation)
-        where TValidation : Validations<TSubject, TValidation>
-        => new ValidationsConnector<TSubject, TValidation>(validation.Subject, validation);
+namespace System.Extensions;
+
+public static class ValidatorsExtensions {
+    public static IValidatorsConnector<TSubject, TValidator> AsConnection<TSubject, TValidator>(this TValidator validation)
+        where TValidator : Validators<TSubject, TValidator>
+        => new Connectors<TSubject, TValidator>(validation.Subject, validation);
 }

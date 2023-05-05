@@ -1,4 +1,7 @@
-﻿namespace RolePlayReady.Models;
+﻿using System.Extensions;
+using System.Validation.Abstractions;
+
+namespace RolePlayReady.Models;
 
 public record Base : IBase, IValidatable {
     public required string Name { get; init; }

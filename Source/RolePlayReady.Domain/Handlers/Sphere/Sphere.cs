@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Handlers.Sphere;
+﻿using System.Extensions;
+
+namespace RolePlayReady.Handlers.Sphere;
 
 public record Sphere : Persisted {
     public ICollection<Base> Components { get; init; } = new List<Base>();

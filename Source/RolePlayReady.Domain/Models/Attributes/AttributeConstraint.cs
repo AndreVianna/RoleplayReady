@@ -1,5 +1,4 @@
-﻿using System.Validators;
-using System.Validators.Abstractions;
+﻿using System.Validation.Commands;
 
 namespace RolePlayReady.Models.Attributes;
 
@@ -11,8 +10,8 @@ public sealed record AttributeConstraint : IAttributeConstraint {
     public string ValidatorName { get; }
     public ICollection<object> Arguments { get; }
 
-    public IValidator Create<TType>(string definitionName)
-        => ValidatorFactory
+    public IValidationCommand Create<TType>(string definitionName)
+        => ValidationCommandFactory
           .For(definitionName)
           .Create(typeof(TType), ValidatorName, Arguments.ToArray());
 }

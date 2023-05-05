@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Handlers.Auth;
+﻿using System.Validation.Abstractions;
+
+namespace RolePlayReady.Handlers.Auth;
 
 public record NewUser : IValidatable {
     public required string Email { get; set; }

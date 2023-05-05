@@ -1,4 +1,6 @@
-﻿namespace RolePlayReady.Handlers;
+﻿using System.Validation.Abstractions;
+
+namespace RolePlayReady.Handlers;
 
 public interface ICrudHandler<TModel>
     : ICrudHandler<TModel, Row>
