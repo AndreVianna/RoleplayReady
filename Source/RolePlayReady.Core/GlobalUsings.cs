@@ -12,6 +12,7 @@ global using System.Security;
 global using System.Text;
 global using System.Text.RegularExpressions;
 global using System.Utilities;
+global using System.Validation.Builder.Abstractions;
 
 global using Microsoft.Extensions.DependencyInjection;
 

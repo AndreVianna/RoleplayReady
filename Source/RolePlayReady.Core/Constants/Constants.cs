@@ -2,51 +2,60 @@
 
 public static class Constants {
     public static class ErrorMessages {
-        public const string CannotAssignNull = "Cannot assign null to '{0}'.";
-        public const string CannotAssign = "Cannot assign '{1}' to '{0}'.";
-        public const string IsNotOfType = "'{0}' is not of type '{1}'. Found: '{2}'.";
-        public const string MustBeNull = "'{0}' must be null.";
-        public const string CannotBeNull = "'{0}' cannot be null.";
-        public const string CannotBeEmpty = "'{0}' cannot be empty.";
-        public const string CannotBeWhitespace = "'{0}' cannot be whitespace.";
-        public const string CannotBeEmptyOrWhitespace = "'{0}' cannot be empty or whitespace.";
-        public const string CannotContainNull = "'{0}' cannot contain null.";
-        public const string CannotContainNullOrEmpty = "'{0}' cannot contain null or empty.";
-        public const string CannotContainEmpty = "'{0}' cannot contain empty.";
-        public const string CannotContainNullOrWhitespace = "'{0}' cannot contain null or whitespace.";
-        public const string CannotContainWhitespace = "'{0}' cannot contain whitespace.";
-        public const string CannotContainEmptyOrWhitespace = "'{0}' cannot contain empty or whitespace.";
 
-        public const string IsNotEqual = "'{0}' is not equal to {1}. Found: {2}.";
+        public static string InvertMessage(string message)
+            => message.Contains("cannot")
+                ? message.Replace("cannot", "must")
+                : message.Contains("must")
+                    ? message.Replace("must", "cannot")
+                    : message;
 
-        public const string LengthCannotBeGreaterThan = "'{0}' minimum length is {1} character(s). Found: {2}.";
-        public const string LengthCannotBeLessThan = "'{0}' maximum length is {1} character(s). Found: {2}.";
-        public const string MustBeIn = "'{0}' must be in [{1}]. Found: {2}.";
-        public const string LengthMustBe = "'{0}' length must be exactly {1}. Found: {2}.";
-        public const string CannotHaveLessThan = "'{0}' cannot have less than {1} item(s). Found: {2}.";
-        public const string CannotHaveMoreThan = "'{0}' cannot have more than {1} item(s). Found: {2}.";
-        public const string MustHave = "'{0}' must have exactly {1} item(s). Found: {2}.";
-        public const string MustContain = "'{0}' must contain '{1}'.";
-        public const string MustNotContain = "'{0}' must not contain '{1}'.";
-        public const string MustContainKey = "'{0}' must contain '{1}' as key.";
-        public const string MustNotContainKey = "'{0}' must not contain '{1}' as key.";
-        public const string IsNotAValidEmail = "'{0}' is not a valid email.";
-        public const string IsNotAValidPassword = "'{0}' is not a valid email.";
 
-        public const string CannotBeLessThan = "'{0}' cannot be less then {1}. Found: {2}.";
-        public const string MustBeLessThan = "'{0}' must be less than {1}. Found: {2}.";
-        public const string CannotBeGreaterThan = "'{0}' cannot be greater then {1}. Found: {2}.";
-        public const string MustBeGraterThan = "'{0}' must be grather than {1}. Found: {2}.";
+        public const string FailedToAssign = "Cannot assign '{1}' to '{0}'.";
+        public const string FailedToAssignNull = "Cannot assign null to '{0}'.";
+        public const string FailedToAssignToResult = "The value cannot be assined to a result of type '{0}'.";
+
+        //public const string CannotBeAfter = "'{0}' cannot be after {1}. Found: {2}.";
+        //public const string CannotBeBefore = "'{0}' cannot be before {1}. Found: {2}.";
+        //public const string CannotContainEmpty = "'{0}' cannot contain empty.";
+        //public const string CannotContainEmptyOrWhitespace = "'{0}' cannot contain empty or whitespace.";
+        //public const string CannotContainNull = "'{0}' cannot contain null.";
+        //public const string CannotContainNullOrEmpty = "'{0}' cannot contain null or empty.";
+        //public const string CannotContainNullOrWhitespace = "'{0}' cannot contain null or whitespace.";
+        //public const string CannotContainWhitespace = "'{0}' cannot contain whitespace.";
+        //public const string CannotHave = "'{0}' cannot have {1} item(s). Found: {2}.";
+        //public const string CannotHaveLessThan = "'{0}' cannot have less than {1} item(s). Found: {2}.";
+        //public const string CannotHaveMoreThan = "'{0}' cannot have more than {1} item(s). Found: {2}.";
+
+        //public const string MustBeAfter = "'{0}' must be after {1}. Found: {2}.";
+        //public const string MustBeBefore = "'{0}' must be before {1}. Found: {2}.";
+        public const string MustBeEmpty = "'{0}' must be empty.";
+        public const string MustBeEmptyOrWhitespace = "'{0}' must be empty or whitespace.";
         public const string MustBeEqualTo = "'{0}' must be equal to {1}. Found: {2}.";
-        public const string CannotBeBefore = "'{0}' cannot be before {1}. Found: {2}.";
-        public const string MustBeBefore = "'{0}' must be befor {1}. Found: {2}.";
-        public const string CannotBeAfter = "'{0}' cannot be after {1}. Found: {2}.";
-        public const string MustBeAfter = "'{0}' must be after {1}. Found: {2}.";
+        public const string MustBeGraterThan = "'{0}' must be greater than {1}. Found: {2}.";
+        public const string MustBeIn = "'{0}' must be one of these: '{1}'. Found: {2}.";
+        public const string MustBeLessThan = "'{0}' must be less than {1}. Found: {2}.";
+        public const string MustBeNull = "'{0}' must be null.";
+        public const string MustContain = "'{0}' must contain '{1}'.";
+        public const string MustContainValue = "'{0}' must contain the value '{1}'.";
+        public const string MustContainKey = "'{0}' must contain the key '{1}'.";
+        public const string MustContainEmpty = "'{0}' must contain empty string(s).";
+        public const string MustContainEmptyOrWhitespace = "'{0}' must contain empty or whitespace string(s).";
+        public const string MustContainNull = "'{0}' contain null item(s).";
+        public const string MustContainNullOrEmpty = "'{0}' must contain null or empty string(s).";
+        public const string MustContainNullOrWhitespace = "'{0}' must contain null or whitespace string(s).";
+        public const string MustHaveACountOf = "'{0}' count must be {1}. Found: {2}.";
+        public const string MustHaveALengthOf = "'{0}' length must be {1}. Found: {2}.";
+        public const string MustHaveAMaximumCountOf = "'{0}' maximum count must be {1}. Found: {2}.";
+        public const string MustHaveAMaximumLengthOf = "'{0}' maximum length must be {1}. Found: {2}.";
+        public const string MustHaveAMinimumCountOf = "'{0}' minimum count must be {1}. Found: {2}.";
+        public const string MustHaveAMinimumLengthOf = "'{0}' minimum length must be {1}. Found: {2}.";
+        public const string MustBeValid = "'{0}' must be valid.";
+        public const string MustBeAValidEmail = "'{0}' must be a valid email.";
+        public const string MustBeAValidPassword = "'{0}' must be a valid email.";
+        public const string MustBeOfType = "'{0}' must be of type '{1}'. Found: '{2}'.";
 
-        public const string CountOutOfRange = "'{0}' cannot have less than {1} or more than {2} items. Found: {3}.";
-
-        public const string CannotAssignToResult = "The value cannot be assined to a result of type '{0}'.";
-        public const string ResultIsNull = "The result cannot be null.";
         public const string ResultContainErrors = "The result contains {0} errors.";
+        public const string ResultIsNull = "The result cannot be null.";
     }
 }

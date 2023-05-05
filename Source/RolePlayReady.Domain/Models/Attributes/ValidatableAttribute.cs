@@ -1,4 +1,4 @@
-﻿using System.Validation.Abstractions;
+﻿using System.Validation;
 
 namespace RolePlayReady.Models.Attributes;
 

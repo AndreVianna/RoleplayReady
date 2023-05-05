@@ -1,8 +1,6 @@
-﻿using System.Validation.Abstractions;
-using System.Validation.Commands.Collection;
-using System.Validation.Commands.Number;
-using System.Validation.Commands.Object;
-using System.Validation.Commands.Text;
+﻿using System.Validation.Commands.Abstractions;
+
+using ValidationResult = System.Results.ValidationResult;
 
 namespace System.Validation.Commands;
 
@@ -42,20 +40,17 @@ public sealed class ValidationCommandFactory<TSubject> {
         };
 
     private IValidationCommand CreateObjectValidator(object? subject, string? validator) => validator switch {
-        nameof(IsNotNull) => new IsNotNull(subject, _source, _validation),
-        nameof(IsNull) => new IsNull(subject, _source, _validation),
-        nameof(IsValid) => new IsValid((IValidatable)subject!, _source, _validation),
+        nameof(IsNullCommand) => new IsNullCommand(subject, _source, _validation),
+        nameof(IsValidCommand) => new IsValidCommand((IValidatable)subject!, _source, _validation),
         _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
     };
 
     private IValidationCommand CreateNumberValidator<TValue>(TValue subject, string validator, IReadOnlyList<object?> arguments)
         where TValue : struct, IComparable<TValue> {
         return validator switch {
-            nameof(IsLessThan<TValue>) => new IsLessThan<TValue>(subject, GetLimit(), _source, _validation),
-            nameof(MinimumIs<TValue>) => new MinimumIs<TValue>(subject, GetLimit(), _source, _validation),
-            nameof(IsEqualTo<TValue>) => new IsEqualTo<TValue>(subject, GetLimit(), _source, _validation),
-            nameof(MaximumIs<TValue>) => new MaximumIs<TValue>(subject, GetLimit(), _source, _validation),
-            nameof(IsGreaterThan<TValue>) => new IsGreaterThan<TValue>(subject, GetLimit(), _source, _validation),
+            nameof(IsLessThanCommand<TValue>) => new IsLessThanCommand<TValue>(subject, GetLimit(), _source, _validation),
+            nameof(IsEqualToCommand<TValue>) => new IsEqualToCommand<TValue>(subject, GetLimit(), _source, _validation),
+            nameof(IsGreaterThanCommand<TValue>) => new IsGreaterThanCommand<TValue>(subject, GetLimit(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
@@ -64,10 +59,12 @@ public sealed class ValidationCommandFactory<TSubject> {
 
     private IValidationCommand CreateStringValidator(string subject, string? validator, IReadOnlyList<object?> arguments) {
         return validator switch {
-            nameof(MinimumLengthIs) => new MinimumLengthIs(subject, GetLength(), _source, _validation),
-            nameof(MaximumLengthIs) => new MaximumLengthIs(subject, GetLength(), _source, _validation),
-            nameof(LengthIs) => new LengthIs(subject, GetLength(), _source, _validation),
-            nameof(IsOneOf) => new IsOneOf(subject, GetList(), _source, _validation),
+            nameof(IsEmptyCommand) => new IsEmptyCommand(subject, _source, _validation),
+            nameof(IsEmptyOrWhiteSpaceCommand) => new IsEmptyOrWhiteSpaceCommand(subject, _source, _validation),
+            nameof(MinimumLengthIsCommand) => new MinimumLengthIsCommand(subject, GetLength(), _source, _validation),
+            nameof(MaximumLengthIsCommand) => new MaximumLengthIsCommand(subject, GetLength(), _source, _validation),
+            nameof(LengthIsCommand) => new LengthIsCommand(subject, GetLength(), _source, _validation),
+            nameof(IsOneOfCommand<string>) => new IsOneOfCommand<string>(subject, GetList(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
@@ -77,12 +74,11 @@ public sealed class ValidationCommandFactory<TSubject> {
 
     private IValidationCommand CreateCollectionValidator<TItem>(ICollection<TItem?> subject, string validator, IReadOnlyList<object?> arguments) {
         return validator switch {
-            nameof(IsNotEmpty<int>) => new IsNotEmpty<TItem>(subject, _source, _validation),
-            nameof(MinimumCountIs<int>) => new MinimumCountIs<TItem>(subject, GetCount(), _source, _validation),
-            nameof(MaximumCountIs<int>) => new MaximumCountIs<TItem>(subject, GetCount(), _source, _validation),
-            nameof(CountIs<int>) => new CountIs<TItem>(subject, GetCount(), _source, _validation),
+            nameof(IsEmpty<int>) => new IsEmpty<TItem>(subject, _source, _validation),
+            nameof(MinimumCountIsCommand<int>) => new MinimumCountIsCommand<TItem>(subject, GetCount(), _source, _validation),
+            nameof(MaximumCountIsCommand<int>) => new MaximumCountIsCommand<TItem>(subject, GetCount(), _source, _validation),
+            nameof(CountIsCommand<int>) => new CountIsCommand<TItem>(subject, GetCount(), _source, _validation),
             nameof(Contains<int>) => new Contains<TItem>(subject, GetItem(), _source, _validation),
-            nameof(NotContains<int>) => new NotContains<TItem>(subject, GetItem(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
@@ -90,15 +86,20 @@ public sealed class ValidationCommandFactory<TSubject> {
         TItem? GetItem() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TItem>(validator, arguments, 0);
     }
 
-    private IValidationCommand CreateDictionaryValidator<TKey, TValue>(ICollection<KeyValuePair<TKey, TValue?>> subject, string validator, IReadOnlyList<object?> arguments) {
+    private IValidationCommand CreateDictionaryValidator<TKey, TValue>(IDictionary<TKey, TValue?> subject, string validator, IReadOnlyList<object?> arguments)
+        where TKey : notnull {
         return validator switch {
-            nameof(IsNotEmpty<int>) => new IsNotEmpty<KeyValuePair<TKey, TValue?>>(subject, _source, _validation),
-            nameof(MinimumCountIs<int>) => new MinimumCountIs<KeyValuePair<TKey, TValue?>>(subject, GetCount(), _source, _validation),
-            nameof(MaximumCountIs<int>) => new MaximumCountIs<KeyValuePair<TKey, TValue?>>(subject, GetCount(), _source, _validation),
-            nameof(CountIs<int>) => new CountIs<KeyValuePair<TKey, TValue?>>(subject, GetCount(), _source, _validation),
+            nameof(IsEmpty<int>) => new IsEmpty<KeyValuePair<TKey, TValue?>>(subject, _source, _validation),
+            nameof(MinimumCountIsCommand<int>) => new MinimumCountIsCommand<KeyValuePair<TKey, TValue?>>(subject, GetCount(), _source, _validation),
+            nameof(MaximumCountIsCommand<int>) => new MaximumCountIsCommand<KeyValuePair<TKey, TValue?>>(subject, GetCount(), _source, _validation),
+            nameof(CountIsCommand<int>) => new CountIsCommand<KeyValuePair<TKey, TValue?>>(subject, GetCount(), _source, _validation),
+            nameof(ContainsKeyCommand<int, int>) => new ContainsKeyCommand<TKey, TValue?>(subject, GetKey(), _source, _validation),
+            nameof(ContainsValueCommand<int, int>) => new ContainsValueCommand<TKey, TValue?>(subject, GetValue(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported validator '{validator}'.")
         };
 
         int GetCount() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<int>(validator, arguments, 0);
+        TKey? GetKey() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TKey>(validator, arguments, 0);
+        TValue? GetValue() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TValue>(validator, arguments, 0);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Validation.Abstractions;
+﻿using System.Validation;
 
 using static System.Results.CrudResult;
 

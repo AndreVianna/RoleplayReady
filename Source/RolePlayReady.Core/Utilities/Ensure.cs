@@ -6,13 +6,13 @@ public static class Ensure {
     [return: NotNull]
     public static TArgument IsNotNull<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         => argument is null
-            ? throw new ArgumentNullException(paramName, string.Format(CannotBeNull, paramName))
+            ? throw new ArgumentNullException(paramName, string.Format(InvertMessage(MustBeNull), paramName))
             : argument;
 
     [return: NotNull]
     public static TArgument IsOfType<TArgument>(object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         => IsNotNull(argument, paramName) is not TArgument result
-            ? throw new ArgumentException(string.Format(IsNotOfType, paramName, typeof(TArgument).Name, argument!.GetType().Name), paramName)
+            ? throw new ArgumentException(string.Format(MustBeOfType, paramName, typeof(TArgument).Name, argument!.GetType().Name), paramName)
             : result;
 
     [return: NotNull]
@@ -20,17 +20,17 @@ public static class Ensure {
         where TArgument : IEnumerable {
         argument = IsNotNull(argument, paramName);
         return argument switch {
-            string { Length: 0 } => throw new ArgumentException(string.Format(CannotBeEmpty, paramName), paramName),
+            string { Length: 0 } => throw new ArgumentException(string.Format(InvertMessage(MustBeEmpty), paramName), paramName),
             string => argument,
-            ICollection { Count: 0 } => throw new ArgumentException(string.Format(CannotBeEmpty, paramName), paramName),
+            ICollection { Count: 0 } => throw new ArgumentException(string.Format(InvertMessage(MustBeEmpty), paramName), paramName),
             _ => argument,
         };
     }
 
     public static string IsNotNullOrWhiteSpace(string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
-        argument = IsNotNullOrEmpty(argument, paramName);
+        argument = IsNotNull(argument, paramName);
         return argument.Trim().Length == 0
-            ? throw new ArgumentException(string.Format(CannotBeWhitespace, paramName), paramName)
+            ? throw new ArgumentException(string.Format(InvertMessage(MustBeEmptyOrWhitespace), paramName), paramName)
             : argument;
     }
 
@@ -39,7 +39,7 @@ public static class Ensure {
         where TArgument : IEnumerable {
         argument = IsNotNull(argument, paramName);
         return argument switch {
-            IEnumerable collection when collection.Cast<object?>().Any(item => item is null) => throw new ArgumentException(string.Format(CannotContainNull, paramName), paramName),
+            IEnumerable collection when collection.Cast<object?>().Any(item => item is null) => throw new ArgumentException(string.Format(InvertMessage(MustContainNull), paramName), paramName),
             _ => argument
         };
     }
@@ -50,7 +50,7 @@ public static class Ensure {
         argument = IsNotNull(argument, paramName);
         return argument switch {
             // ReSharper disable once ConvertClosureToMethodGroup - it messes with code coverage
-            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrEmpty(i)) => throw new ArgumentException(string.Format(CannotContainNullOrEmpty, paramName), paramName),
+            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrEmpty(i)) => throw new ArgumentException(string.Format(InvertMessage(MustContainNullOrEmpty), paramName), paramName),
             _ => argument,
         };
     }
@@ -61,7 +61,7 @@ public static class Ensure {
         argument = IsNotNull(argument, paramName);
         return argument switch {
             // ReSharper disable once ConvertClosureToMethodGroup - it messes with code coverage
-            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrWhiteSpace(i)) => throw new ArgumentException(string.Format(CannotContainNullOrWhitespace, paramName), paramName),
+            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrWhiteSpace(i)) => throw new ArgumentException(string.Format(InvertMessage(MustContainNullOrWhitespace), paramName), paramName),
             _ => argument,
         };
     }
@@ -71,7 +71,7 @@ public static class Ensure {
         where TArgument : IEnumerable {
         argument = IsNotNullOrEmpty(argument, paramName);
         return argument switch {
-            IEnumerable collection when collection.Cast<object?>().Any(x => x is null) => throw new ArgumentException(string.Format(CannotContainNull, paramName), paramName),
+            IEnumerable collection when collection.Cast<object?>().Any(x => x is null) => throw new ArgumentException(string.Format(InvertMessage(MustContainNull), paramName), paramName),
             _ => argument,
         };
     }
@@ -81,7 +81,7 @@ public static class Ensure {
         where TArgument : IEnumerable<string?> {
         argument = IsNotNullOrEmpty(argument, paramName);
         return argument switch {
-            IEnumerable<string?> collection when collection.Any(string.IsNullOrEmpty) => throw new ArgumentException(string.Format(CannotContainNullOrEmpty, paramName), paramName),
+            IEnumerable<string?> collection when collection.Any(string.IsNullOrEmpty) => throw new ArgumentException(string.Format(InvertMessage(MustContainNullOrEmpty), paramName), paramName),
             _ => argument,
         };
     }
@@ -91,7 +91,7 @@ public static class Ensure {
         where TArgument : IEnumerable<string?> {
         argument = IsNotNullOrEmpty(argument, paramName);
         return argument switch {
-            IEnumerable<string?> collection when collection.Any(string.IsNullOrWhiteSpace) => throw new ArgumentException(string.Format(CannotContainNullOrWhitespace, paramName), paramName),
+            IEnumerable<string?> collection when collection.Any(string.IsNullOrWhiteSpace) => throw new ArgumentException(string.Format(InvertMessage(MustContainNullOrWhitespace), paramName), paramName),
             _ => argument,
         };
     }

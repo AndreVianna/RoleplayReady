@@ -1,4 +1,5 @@
 ﻿using System.Validation.Commands;
+using System.Validation.Commands.Abstractions;
 
 namespace RolePlayReady.Models.Attributes;
 
