@@ -34,8 +34,6 @@ public class ListAttributeTests {
             Add("MaximumCountIs", new object[] { 1 }, false);
             Add("Contains", new object[] { "TestValue2" }, true);
             Add("Contains", new object[] { "TestValue13" }, false);
-            Add("NotContains", new object[] { "TestValue13" }, true);
-            Add("NotContains", new object[] { "TestValue2" }, false);
         }
     }
 

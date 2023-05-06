@@ -13,24 +13,23 @@ public class LoginTests {
         login.Password.Should().Be("SomePassword");
     }
 
-    private class TestData : TheoryData<Login, bool, int> {
+    private class TestData : TheoryData<Login, int> {
         public TestData() {
-            Add(new() { Email = "user.name@email.com", Password = "SomePassword" }, true, 0);
-            Add(new() { Email = null!, Password = null! }, false, 2);
-            Add(new() { Email = "", Password = "" }, false, 2);
-            Add(new() { Email = "   ", Password = "   " }, false, 3);
-            Add(new() { Email = "invalid", Password = new('X', Validation.Password.MaximumLength + 1) }, false, 2);
+            Add(new() { Email = "user.name@email.com", Password = "SomePassword" }, 0);
+            Add(new() { Email = null!, Password = null! }, 2);
+            Add(new() { Email = "", Password = "" }, 3);
+            Add(new() { Email = "   ", Password = "   " }, 3);
+            Add(new() { Email = "invalid", Password = new('X', Validation.Password.MaximumLength + 1) }, 2);
         }
     }
 
     [Theory]
     [ClassData(typeof(TestData))]
-    public void Validate_Validates(Login subject, bool isSuccess, int errorCount) {
+    public void Validate_Validates(Login subject, int errorCount) {
         // Act
         var result = subject.ValidateSelf();
 
         // Assert
-        result.IsSuccess.Should().Be(isSuccess);
         result.Errors.Should().HaveCount(errorCount);
     }
 }

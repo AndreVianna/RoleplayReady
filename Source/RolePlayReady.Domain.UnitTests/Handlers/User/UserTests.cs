@@ -39,6 +39,6 @@ public class UserTests {
 
         result.IsSuccess.Should().BeFalse();
         result.Errors.Select(i => i.Message).Should().BeEquivalentTo(
-        "'Email' is not a valid email.");
+        "'Email' must be a valid email.");
     }
 }

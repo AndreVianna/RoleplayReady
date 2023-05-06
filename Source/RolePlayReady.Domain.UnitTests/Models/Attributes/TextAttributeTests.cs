@@ -26,10 +26,10 @@ public class TextAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("LengthCannotBeLessThan", new object[] { 20 }, true);
-            Add("LengthCannotBeLessThan", new object[] { 2 }, false);
-            Add("LengthCannotBeGreaterThan", new object[] { 2 }, true);
-            Add("LengthCannotBeGreaterThan", new object[] { 20 }, false);
+            Add("MaximumLengthIs", new object[] { 20 }, true);
+            Add("MaximumLengthIs", new object[] { 2 }, false);
+            Add("MinimumLengthIs", new object[] { 2 }, true);
+            Add("MinimumLengthIs", new object[] { 20 }, false);
             Add("LengthIs", new object[] { 9 }, true);
             Add("LengthIs", new object[] { 20 }, false);
             Add("IsOneOf", new object[] { "One", "TestValue", "Three" }, true);
@@ -49,20 +49,20 @@ public class TextAttributeTests {
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("LengthIs", "wrong"));
 
-        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>().WithMessage("Invalid type of arguments[0] of 'LengthIs'. Expected: Integer. Found: String. (Parameter 'arguments[0]')");
+        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>().WithMessage("Invalid type of arguments[0] of 'LengthIsCommand'. Expected: Integer. Found: String. (Parameter 'arguments[0]')");
     }
 
     [Fact]
     public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("LengthIs"));
 
-        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>().WithMessage("Invalid number of arguments for 'LengthIs'. Missing argument 0. (Parameter 'arguments')");
+        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>().WithMessage("Invalid number of arguments for 'LengthIsCommand'. Missing argument 0. (Parameter 'arguments')");
     }
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
-        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<InvalidOperationException>().WithMessage("Unsupported validator 'Invalid'.");
+        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<InvalidOperationException>().WithMessage("Unsupported command 'InvalidCommand'.");
     }
 }

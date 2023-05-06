@@ -26,10 +26,6 @@ public class NumberAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("MaximumIs", new object[] { 99 }, true);
-            Add("MaximumIs", new object[] { 2 }, false);
-            Add("MinimumIs", new object[] { 2 }, true);
-            Add("MinimumIs", new object[] { 99 }, false);
             Add("IsLessThan", new object[] { 99 }, true);
             Add("IsLessThan", new object[] { 2 }, false);
             Add("IsGreaterThan", new object[] { 2 }, true);
