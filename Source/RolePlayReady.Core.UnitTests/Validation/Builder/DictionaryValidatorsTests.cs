@@ -1,5 +1,3 @@
-using System.Extensions;
-
 namespace System.Validation.Builder;
 
 public class DictionaryValidatorsTests {
@@ -7,7 +5,7 @@ public class DictionaryValidatorsTests {
         public required IDictionary<string, int> Numbers { get; init; } = new Dictionary<string, int>();
         public required IDictionary<string, string> Names { get; init; } = new Dictionary<string, string>();
 
-        public ValidationResult ValidateSelf() {
+        public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
             result += Numbers.IsRequired()
                 .And().IsNotEmpty()
@@ -15,7 +13,7 @@ public class DictionaryValidatorsTests {
                 .And().MaximumCountIs(4)
                 .And().CountIs(3)
                 .And().ContainsKey("Five")
-                .And().ForEach(item => item.Value().IsGreaterThan(0)).Result;
+                .And().ForEach(item => item.IsRequired().And().IsGreaterThan(0)).Result;
             result += Names!.ForEach(value => value.IsRequired()).Result;
             return result;
         }
@@ -25,7 +23,7 @@ public class DictionaryValidatorsTests {
         public TestData() {
             Add(new() { Numbers = new Dictionary<string, int> { ["One"] = 1, ["Three"] = 3, ["Five"] = 5 }, Names = new Dictionary<string, string> { ["Some"] = "Name" } }, true, 0);
             Add(new() { Numbers = new Dictionary<string, int>(), Names = new Dictionary<string, string> { ["Name"] = default! } }, false, 5);
-            Add(new() { Numbers = new Dictionary<string, int> { ["One"] = 1, ["Two"] = default!, ["Three"] = 3, ["Four"] = 4, ["Nine"] = 9 }, Names = new Dictionary<string, string> { ["Some"] = "Name" } }, false, 5);
+            Add(new() { Numbers = new Dictionary<string, int> { ["One"] = 1, ["Two"] = default!, ["Three"] = 3, ["Four"] = 4, ["Nine"] = 9 }, Names = new Dictionary<string, string> { ["Some"] = "Name" } }, false, 4);
             Add(new() { Numbers = null!, Names = null! }, false, 2);
         }
     }

@@ -7,6 +7,6 @@ public sealed class CountIsCommand<TItem>
         : base(subject, source, validation) {
         ValidateAs = s => s.Count == count;
         ValidationErrorMessage = MustHaveACountOf;
-        ValidationArguments = AddArguments(count);
+        Arguments = SetArguments(count, subject.Count);
     }
 }

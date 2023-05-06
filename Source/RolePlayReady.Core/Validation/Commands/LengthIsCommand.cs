@@ -7,6 +7,6 @@ public sealed class LengthIsCommand
         : base(subject, source, validation) {
         ValidateAs = s => s.Length == length;
         ValidationErrorMessage = MustHaveALengthOf;
-        ValidationArguments = AddArguments(length);
+        Arguments = SetArguments(length, subject.Length);
     }
 }

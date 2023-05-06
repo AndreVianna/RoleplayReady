@@ -6,6 +6,6 @@ public sealed class MinimumLengthIsCommand : ValidationCommand<string> {
         : base(subject, source, validation) {
         ValidateAs = s => s.Length >= length;
         ValidationErrorMessage = MustHaveAMinimumLengthOf;
-        ValidationArguments = AddArguments(length);
+        Arguments = SetArguments(length, subject.Length);
     }
 }

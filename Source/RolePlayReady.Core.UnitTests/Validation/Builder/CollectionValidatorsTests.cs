@@ -1,5 +1,3 @@
-using System.Extensions;
-
 namespace System.Validation.Builder;
 
 public class CollectionValidatorsTests {
@@ -15,24 +13,24 @@ public class CollectionValidatorsTests {
                 .And().MaximumCountIs(4)
                 .And().CountIs(3)
                 .And().Contains(5)
-                .And().ForEach<IntegerValidators>(item => item.IsRequired().And().IsGreaterThan(0)).Result;
+                .And().ForEach(item => item.IsRequired().And().IsGreaterThan(0)).Result;
             result += Names.ForEach(value => value.Name.IsRequired()).Result;
             return result;
         }
     }
 
-    private class TestData : TheoryData<TestObject, bool, int> {
+    private class TestData : TheoryData<TestObject, int> {
         public TestData() {
-            Add(new() { Numbers = new[] { 1, 3, 5 }, Names = new[] { ("Name", 30) } }, true, 0);
-            Add(new() { Numbers = Array.Empty<int>(), Names = new[] { ("Name", 30), default! } }, false, 5);
-            Add(new() { Numbers = new[] { 0, 5, 10, 13, 20 }, Names = new[] { ("Name", 30) } }, false, 4);
-            Add(new() { Numbers = null!, Names = null! }, false, 2);
+            Add(new() { Numbers = new[] { 1, 3, 5 }, Names = new[] { ("Name", 30) } }, 0);
+            Add(new() { Numbers = Array.Empty<int>(), Names = new[] { ("Name", 30), default! } }, 5);
+            Add(new() { Numbers = new[] { 0, 5, 10, 13, 20 }, Names = new[] { ("Name", 30) } }, 3);
+            Add(new() { Numbers = null!, Names = null! }, 2);
         }
     }
 
     [Theory]
     [ClassData(typeof(TestData))]
-    public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
+    public void Validate_Validates(TestObject subject, int errorCount) {
         // Act
         var result = subject.ValidateSelf();
 

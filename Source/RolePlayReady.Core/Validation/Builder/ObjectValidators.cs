@@ -1,8 +1,8 @@
 ﻿namespace System.Validation.Builder;
 
-public class ObjectValidators
-    : Validators<object?, ObjectValidators>
-        , IObjectValidators {
+public class ObjectValidators : Validators<object?>, IObjectValidators {
+    private readonly Connectors<object?, ObjectValidators> _connector;
+    private readonly ValidationCommandFactory<object> _commandFactory;
 
     public static ObjectValidators CreateAsOptional(object? subject, string source)
         => new(subject, source);
@@ -11,7 +11,8 @@ public class ObjectValidators
 
     private ObjectValidators(object? subject, string source, ValidationResult? previousResult = null)
         : base(ValidatorMode.None, subject, source, previousResult) {
-        Connector = new Connectors<object?, ObjectValidators>(Subject, this);
+        _connector = new Connectors<object?, ObjectValidators>(this);
+        _commandFactory = ValidationCommandFactory.For(Subject, Source, Result);
     }
 
     //public IConnects<TSubject> IsOfType<TSubject>() {

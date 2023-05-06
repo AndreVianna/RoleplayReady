@@ -10,10 +10,10 @@ public sealed class IsEmptyCommand
     }
 }
 
-public sealed class IsEmpty<TItem>
+public sealed class IsEmptyCommand<TItem>
     : ValidationCommand<ICollection<TItem?>> {
 
-    public IsEmpty(ICollection<TItem?> subject, string source, ValidationResult? validation = null)
+    public IsEmptyCommand(ICollection<TItem?> subject, string source, ValidationResult? validation = null)
         : base(subject, source, validation) {
         ValidateAs = s => s.Count == 0;
         ValidationErrorMessage = MustBeEmpty;

@@ -1,10 +1,8 @@
-﻿using System.Validation.Builder;
-
-namespace System.Extensions;
+﻿namespace System.Extensions;
 
 public static class TypeExtensions {
     public static IConnectors<Type?, TypeValidators> IsRequired(this Type? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
-        => TypeValidators.CreateAsRequired(subject, source!).AsConnection<Type?, TypeValidators>();
+        => TypeValidators.Create(subject, source!).AsConnection<Type?, TypeValidators>();
 
     public static string GetName(this Type type) {
         if (type is { IsGenericType: false, IsArray: false })

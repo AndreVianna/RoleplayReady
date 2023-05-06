@@ -8,7 +8,7 @@ public record CrudResult : Result {
         Type = IsInvalid ? CRUDResultType.Invalid : type;
     }
 
-    public CRUDResultType Type { get; }
+    public CRUDResultType Type { get; protected set; }
     public override bool IsSuccess => !IsInvalid && Type is CRUDResultType.Success;
     public bool IsNotFound => !IsInvalid ? Type is CRUDResultType.NotFound : throw new InvalidOperationException("The result has validation errors. You must check for errors before checking if result is null.");
     public bool IsConflict => !IsInvalid ? Type is CRUDResultType.Conflict : throw new InvalidOperationException("The result has validation errors. You must check for errors before checking if result has conflicts.");
@@ -32,8 +32,9 @@ public record CrudResult : Result {
     public static implicit operator CrudResult(ValidationError error) => new(CRUDResultType.Invalid, new[] { error }.AsEnumerable());
 
     public static CrudResult operator +(CrudResult left, ValidationResult right) {
-        var errors = left.Errors.Union(right.Errors).ToList();
-        return new(errors.Any() ? CRUDResultType.Invalid : left.Type, errors);
+        left.Errors.MergeWith(right.Errors.Distinct());
+        left.Type = left.IsInvalid ? CRUDResultType.Invalid : left.Type;
+        return left;
     }
 }
 
@@ -48,8 +49,9 @@ public record CrudResult<TResult> : CrudResult {
     public static implicit operator CrudResult<TResult>(TResult? value) => new(CRUDResultType.Success, value);
 
     public static CrudResult<TResult> operator +(CrudResult<TResult> left, ValidationResult right) {
-        var errors = left.Errors.Union(right.Errors).ToList();
-        return new(errors.Any() ? CRUDResultType.Invalid : left.Type, left.Value, errors);
+        left.Errors.MergeWith(right.Errors.Distinct());
+        left.Type = left.IsInvalid ? CRUDResultType.Invalid : left.Type;
+        return left;
     }
 
     public CrudResult<TOutput> MapTo<TOutput>(Func<TResult?, TOutput?> map)

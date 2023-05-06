@@ -1,8 +1,9 @@
 ﻿namespace System.Validation.Builder;
 
-public class DateTimeValidators
-    : Validators<DateTime?, DateTimeValidators>
-        , IDateTimeValidators {
+public class DateTimeValidators : Validators<DateTime?>, IDateTimeValidators {
+    private readonly Connectors<DateTime?, DateTimeValidators> _connector;
+    private readonly ValidationCommandFactory<DateTime?> _commandFactory;
+
     public static DateTimeValidators CreateAsOptional(DateTime? subject, string source)
         => new(subject, source);
     public static DateTimeValidators CreateAsRequired(DateTime? subject, string source)
@@ -10,26 +11,27 @@ public class DateTimeValidators
 
     private DateTimeValidators(DateTime? subject, string source, ValidationResult? previousResult = null)
         : base(ValidatorMode.None, subject, source, previousResult) {
-        Connector = new Connectors<DateTime?, DateTimeValidators>(Subject, this);
+        _connector = new Connectors<DateTime?, DateTimeValidators>(this);
+        _commandFactory = ValidationCommandFactory.For(Subject, Source, Result);
     }
 
     public IConnectors<DateTime?, DateTimeValidators> IsBefore(DateTime threshold) {
-        CommandFactory.Create(nameof(IsBefore), threshold).Validate();
-        return Connector;
+        _commandFactory.Create(nameof(IsBeforeCommand), threshold).Validate();
+        return _connector;
     }
 
     public IConnectors<DateTime?, DateTimeValidators> StartsOn(DateTime threshold) {
-        CommandFactory.Create(nameof(StartsOn), threshold).Validate();
-        return Connector;
+        _commandFactory.Create(nameof(IsBeforeCommand), threshold).Negate();
+        return _connector;
     }
 
     public IConnectors<DateTime?, DateTimeValidators> EndsOn(DateTime threshold) {
-        CommandFactory.Create(nameof(EndsOn), threshold).Validate();
-        return Connector;
+        _commandFactory.Create(nameof(IsAfterCommand), threshold).Negate();
+        return _connector;
     }
 
     public IConnectors<DateTime?, DateTimeValidators> IsAfter(DateTime threshold) {
-        CommandFactory.Create(nameof(IsAfter), threshold).Validate();
-        return Connector;
+        _commandFactory.Create(nameof(IsAfterCommand), threshold).Validate();
+        return _connector;
     }
 }

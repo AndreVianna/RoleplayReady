@@ -16,7 +16,10 @@ public record ValidationResult : Result {
     public static implicit operator ValidationResult(ValidationError[] errors) => new(errors.AsEnumerable());
     public static implicit operator ValidationResult(ValidationError error) => new(new[] { error }.AsEnumerable());
 
-    public static ValidationResult operator +(ValidationResult left, ValidationResult right) => new(right.Errors.Union(left.Errors));
+    public static ValidationResult operator +(ValidationResult left, ValidationResult right) {
+        left.Errors.MergeWith(right.Errors.Distinct());
+        return left;
+    }
 
     public virtual bool Equals(ValidationResult? other) => base.Equals(other);
 

@@ -10,25 +10,12 @@ public static class Constants {
                     ? message.Replace("must", "cannot")
                     : message;
 
-
         public const string FailedToAssign = "Cannot assign '{1}' to '{0}'.";
         public const string FailedToAssignNull = "Cannot assign null to '{0}'.";
         public const string FailedToAssignToResult = "The value cannot be assined to a result of type '{0}'.";
 
-        //public const string CannotBeAfter = "'{0}' cannot be after {1}. Found: {2}.";
-        //public const string CannotBeBefore = "'{0}' cannot be before {1}. Found: {2}.";
-        //public const string CannotContainEmpty = "'{0}' cannot contain empty.";
-        //public const string CannotContainEmptyOrWhitespace = "'{0}' cannot contain empty or whitespace.";
-        //public const string CannotContainNull = "'{0}' cannot contain null.";
-        //public const string CannotContainNullOrEmpty = "'{0}' cannot contain null or empty.";
-        //public const string CannotContainNullOrWhitespace = "'{0}' cannot contain null or whitespace.";
-        //public const string CannotContainWhitespace = "'{0}' cannot contain whitespace.";
-        //public const string CannotHave = "'{0}' cannot have {1} item(s). Found: {2}.";
-        //public const string CannotHaveLessThan = "'{0}' cannot have less than {1} item(s). Found: {2}.";
-        //public const string CannotHaveMoreThan = "'{0}' cannot have more than {1} item(s). Found: {2}.";
-
-        //public const string MustBeAfter = "'{0}' must be after {1}. Found: {2}.";
-        //public const string MustBeBefore = "'{0}' must be before {1}. Found: {2}.";
+        public const string MustBeAfter = "'{0}' must be after {1}. Found: {2}.";
+        public const string MustBeBefore = "'{0}' must be before {1}. Found: {2}.";
         public const string MustBeEmpty = "'{0}' must be empty.";
         public const string MustBeEmptyOrWhitespace = "'{0}' must be empty or whitespace.";
         public const string MustBeEqualTo = "'{0}' must be equal to {1}. Found: {2}.";
@@ -41,7 +28,7 @@ public static class Constants {
         public const string MustContainKey = "'{0}' must contain the key '{1}'.";
         public const string MustContainEmpty = "'{0}' must contain empty string(s).";
         public const string MustContainEmptyOrWhitespace = "'{0}' must contain empty or whitespace string(s).";
-        public const string MustContainNull = "'{0}' contain null item(s).";
+        public const string MustContainNull = "'{0}' must contain null item(s).";
         public const string MustContainNullOrEmpty = "'{0}' must contain null or empty string(s).";
         public const string MustContainNullOrWhitespace = "'{0}' must contain null or whitespace string(s).";
         public const string MustHaveACountOf = "'{0}' count must be {1}. Found: {2}.";

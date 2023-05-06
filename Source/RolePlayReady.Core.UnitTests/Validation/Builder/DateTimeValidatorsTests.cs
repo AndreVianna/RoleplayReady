@@ -1,5 +1,3 @@
-using System.Extensions;
-
 namespace System.Validation.Builder;
 
 public class DateTimeValidatorsTests {
@@ -10,7 +8,7 @@ public class DateTimeValidatorsTests {
         public DateTime? Nullable { get; init; }
         public DateTime? Required { get; init; }
 
-        public ValidationResult ValidateSelf() {
+        public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
             result += NotNull.IsRequired().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;
             result += Nullable.IsOptional().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;

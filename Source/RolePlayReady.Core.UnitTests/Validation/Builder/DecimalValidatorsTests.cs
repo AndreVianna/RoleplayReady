@@ -1,5 +1,3 @@
-using System.Extensions;
-
 namespace System.Validation.Builder;
 
 public class DecimalValidatorsTests {
@@ -7,7 +5,7 @@ public class DecimalValidatorsTests {
         public decimal? Nullable { get; init; }
         public decimal? Required { get; init; }
 
-        public ValidationResult ValidateSelf() {
+        public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
             result += Nullable.IsOptional().And().IsGreaterThan(10).And().IsLessThan(20).And().IsEqualTo(15).Result;
             result += Required.IsRequired().And().MinimumIs(10).And().MaximumIs(20).Result;

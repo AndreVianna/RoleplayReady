@@ -1,6 +1,6 @@
 ﻿namespace System.Validation.Builder.Abstractions;
 
-public interface IDecimalValidators : IValidators<decimal?, DecimalValidators> {
+public interface IDecimalValidators : IValidators {
     IConnectors<decimal?, DecimalValidators> MinimumIs(decimal minimum);
     IConnectors<decimal?, DecimalValidators> IsGreaterThan(decimal minimum);
     IConnectors<decimal?, DecimalValidators> IsEqualTo(decimal value);

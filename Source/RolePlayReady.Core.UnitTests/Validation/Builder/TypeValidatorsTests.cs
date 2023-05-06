@@ -4,7 +4,7 @@ public class TypeValidatorsTests {
     public record TestObject : IValidatable {
         public Type? Type { get; init; }
 
-        public ValidationResult ValidateSelf() {
+        public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
             result += Type.IsRequired()
                 .And().IsEqualTo<string>().Result;
@@ -12,22 +12,21 @@ public class TypeValidatorsTests {
         }
     }
 
-    private class TestData : TheoryData<TestObject, bool, int> {
+    private class TestData : TheoryData<TestObject, int> {
         public TestData() {
-            Add(new() { Type = typeof(string) }, true, 0);
-            Add(new() { Type = null }, false, 1);
-            Add(new() { Type = typeof(int) }, false, 1);
+            Add(new() { Type = typeof(string) }, 0);
+            Add(new() { Type = null }, 1);
+            Add(new() { Type = typeof(int) }, 1);
         }
     }
 
     [Theory]
     [ClassData(typeof(TestData))]
-    public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
+    public void Validate_Validates(TestObject subject, int errorCount) {
         // Act
         var result = subject.ValidateSelf();
 
         // Assert
-        result.IsSuccess.Should().Be(isSuccess);
         result.Errors.Should().HaveCount(errorCount);
     }
 }

@@ -7,6 +7,6 @@ public sealed class MaximumLengthIsCommand
         : base(subject, source, validation) {
         ValidateAs = s => s.Length <= length;
         ValidationErrorMessage = MustHaveAMaximumLengthOf;
-        ValidationArguments = AddArguments(length);
+        Arguments = SetArguments(length, subject.Length);
     }
 }

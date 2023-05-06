@@ -1,7 +1,7 @@
 ﻿namespace System.Validation.Builder;
-public class ValidatableValidators
-    : Validators<IValidatable?, ValidatableValidators>
-        , IValidatableValidators {
+public class ValidatableValidators : Validators<IValidatable?>, IValidatableValidators {
+    private readonly Connectors<IValidatable?, ValidatableValidators> _connector;
+    private readonly ValidationCommandFactory<IValidatable> _commandFactory;
 
     public static ValidatableValidators CreateAsOptional(IValidatable? subject, string source)
         => new(subject, source);
@@ -10,11 +10,12 @@ public class ValidatableValidators
 
     private ValidatableValidators(IValidatable? subject, string source, ValidationResult? previousResult = null)
         : base(ValidatorMode.None, subject, source, previousResult) {
-        Connector = new Connectors<IValidatable?, ValidatableValidators>(Subject, this);
+        _connector = new Connectors<IValidatable?, ValidatableValidators>(this);
+        _commandFactory = ValidationCommandFactory.For(Subject, Source, Result);
     }
 
     public IConnectors<IValidatable?, IValidators> IsValid() {
-        CommandFactory.Create(nameof(IsValid)).Validate();
-        return Connector;
+        _commandFactory.Create(nameof(IsValidCommand)).Validate();
+        return _connector;
     }
 }

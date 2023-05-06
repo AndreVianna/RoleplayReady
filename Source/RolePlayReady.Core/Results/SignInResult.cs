@@ -10,7 +10,7 @@ public sealed record SignInResult : Result {
     }
 
     public string? Token { get; }
-    public SignInResultType Type { get; }
+    public SignInResultType Type { get; private set; }
     public bool RequiresTwoFactor => !IsInvalid && Type is SignInResultType.TwoFactorRequired;
     public override bool IsSuccess => !IsInvalid && Type is SignInResultType.Success or SignInResultType.TwoFactorRequired;
     public bool IsBlocked => !IsInvalid ? Type is SignInResultType.Blocked : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if user is blocked.");
@@ -36,10 +36,11 @@ public sealed record SignInResult : Result {
             _ => new SignInResult(resultType)
         };
 
-    public static SignInResult operator +(SignInResult left, ValidationResult right)
-        => right.Errors.Any()
-            ? new(SignInResultType.Invalid, null, !left.Errors.Any() ? right.Errors : left.Errors.Union(right.Errors))
-            : left;
+    public static SignInResult operator +(SignInResult left, ValidationResult right) {
+        left.Errors.MergeWith(right.Errors.Distinct());
+        left.Type = left.IsInvalid ? SignInResultType.Invalid : left.Type;
+        return left;
+    }
 
     public static bool operator ==(SignInResult left, SignInResultType right) => left.Type == right;
     public static bool operator !=(SignInResult left, SignInResultType right) => left.Type != right;

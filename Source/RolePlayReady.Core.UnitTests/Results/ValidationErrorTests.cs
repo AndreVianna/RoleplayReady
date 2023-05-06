@@ -17,7 +17,7 @@ public class ValidationErrorTests {
         var action = () => _ = new ValidationError("   ", "fieldName");
 
         //Assert
-        action.Should().Throw<ArgumentException>().WithMessage("'messageTemplate' cannot be whitespace. (Parameter 'messageTemplate')");
+        action.Should().Throw<ArgumentException>().WithMessage("'messageTemplate' cannot be empty or whitespace. (Parameter 'messageTemplate')");
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class ValidationErrorTests {
         var action = () => _ = new ValidationError("Error message", "   ");
 
         //Assert
-        action.Should().Throw<ArgumentException>().WithMessage("'source' cannot be whitespace. (Parameter 'source')");
+        action.Should().Throw<ArgumentException>().WithMessage("'source' cannot be empty or whitespace. (Parameter 'source')");
     }
 
     [Theory]

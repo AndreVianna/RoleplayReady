@@ -7,7 +7,7 @@ public class EnsureTests {
     public void IsOfType_WhenArgumentIsOfWrongType_ThrowsArgumentNullException() {
         const int input = 12;
         var action = () => IsOfType<string>(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' is not of type 'String'. Found: 'Int32'. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' must be of type 'String'. Found: 'Int32'. (Parameter 'input')");
     }
 
     [Fact]
@@ -63,14 +63,14 @@ public class EnsureTests {
     public void NotNullOrWhiteSpace_WhenStringIsEmpty_ThrowsArgumentException() {
         var input = string.Empty;
         var action = () => IsNotNullOrWhiteSpace(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be empty. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be empty or whitespace. (Parameter 'input')");
     }
 
     [Fact]
     public void NotNullOrWhiteSpace_WhenStringIsWhiteSpace_ThrowsArgumentException() {
         const string input = " ";
         var action = () => IsNotNullOrWhiteSpace(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be whitespace. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot be empty or whitespace. (Parameter 'input')");
     }
 
     [Fact]
@@ -91,14 +91,14 @@ public class EnsureTests {
     public void NotNullOrHasNull_WhenHasNull_ThrowsArgumentException() {
         var input = new[] { default(int?) };
         var action = () => IsNotNullAndDoesNotHaveNull(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null item(s). (Parameter 'input')");
     }
 
     [Fact]
     public void NotNullOrHasNullOrEmpty_WhenHasEmpty_ThrowsArgumentException() {
         var input = new[] { string.Empty };
         var action = () => IsNotNullAndDoesNotHaveNullOrEmpty(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or empty. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or empty string(s). (Parameter 'input')");
     }
 
     [Fact]
@@ -112,7 +112,7 @@ public class EnsureTests {
     public void NotNullOrHasNullOrWhiteSpace_WhenHasWhitespace_ThrowsArgumentException() {
         var input = new[] { " " };
         var action = () => IsNotNullAndDoesNotHaveNullOrWhiteSpace(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace string(s). (Parameter 'input')");
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class EnsureTests {
     public void NotNullOrEmptyOrHasNull_WhenHasNull_ThrowsArgumentException() {
         var input = new[] { default(int?) };
         var action = () => IsNotNullOrEmptyAndDoesNotHaveNull(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null item(s). (Parameter 'input')");
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public class EnsureTests {
     public void NotNullOrEmptyOrHasNullOrEmpty_WhenHasEmpty_ThrowsArgumentException() {
         var input = new[] { string.Empty };
         var action = () => IsNotNullOrEmptyAndDoesNotHaveNullOrEmpty(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or empty. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or empty string(s). (Parameter 'input')");
     }
 
     [Fact]
@@ -182,7 +182,7 @@ public class EnsureTests {
     public void NotNullOrEmptyOrHasNullOrWhiteSpace_WhenHasWhitespace_ThrowsArgumentException() {
         var input = new[] { " " };
         var action = () => IsNotNullOrEmptyAndDoesNotHaveNullOrWhiteSpace(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace string(s). (Parameter 'input')");
     }
 
     [Fact]
@@ -196,14 +196,14 @@ public class EnsureTests {
     public void NotNullOrEmptyOrHasNullOrWhiteSpace_WhenHasNull_ThrowsArgumentException() {
         string[] input = { default! };
         var action = () => IsNotNullOrEmptyAndDoesNotHaveNullOrWhiteSpace(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace string(s). (Parameter 'input')");
     }
 
     [Fact]
     public void NotNullOrEmptyOrHasNullOrWhiteSpace_WhenHasEmpty_ThrowsArgumentException() {
         var input = new[] { string.Empty };
         var action = () => IsNotNullOrEmptyAndDoesNotHaveNullOrWhiteSpace(input);
-        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace. (Parameter 'input')");
+        action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace string(s). (Parameter 'input')");
     }
 
     [Fact]

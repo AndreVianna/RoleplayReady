@@ -7,17 +7,17 @@ public sealed class ContainsCommand
         : base(subject, source, validation) {
         ValidateAs = s => s.Contains(subString);
         ValidationErrorMessage = MustContain;
-        ValidationArguments = AddArguments(subString);
+        Arguments = SetArguments(subString);
     }
 }
 
-public sealed class Contains<TItem>
+public sealed class ContainsCommand<TItem>
     : ValidationCommand<ICollection<TItem?>> {
 
-    public Contains(ICollection<TItem?> subject, TItem? item, string source, ValidationResult? validation = null)
+    public ContainsCommand(ICollection<TItem?> subject, TItem? item, string source, ValidationResult? validation = null)
         : base(subject, source, validation) {
         ValidateAs = s => s.Contains(item);
         ValidationErrorMessage = MustContain;
-        ValidationArguments = AddArguments(item);
+        Arguments = SetArguments(item);
     }
 }

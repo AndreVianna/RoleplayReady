@@ -8,6 +8,6 @@ public sealed class IsLessThanCommand<TValue>
         : base(subject, source, validation) {
         ValidateAs = s => s.CompareTo(threshold) < 0;
         ValidationErrorMessage = MustBeLessThan;
-        ValidationArguments = AddArguments(threshold);
+        Arguments = SetArguments(threshold, subject);
     }
 }

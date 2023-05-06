@@ -8,6 +8,6 @@ public sealed class ContainsValueCommand<TKey, TValue>
         : base(subject, source, validation) {
         ValidateAs = s => s.Values.Contains(value);
         ValidationErrorMessage = MustContainValue;
-        ValidationArguments = AddArguments(value);
+        Arguments = SetArguments(value);
     }
 }

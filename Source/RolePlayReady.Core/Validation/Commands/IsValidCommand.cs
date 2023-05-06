@@ -8,6 +8,7 @@ public sealed class IsValidCommand
     }
 
     public override ValidationResult Validate() {
+        if (Subject is null) return Validation;
         var validation = Subject.ValidateSelf();
         foreach (var error in validation.Errors) {
             error.Arguments[0] = $"{Source}.{error.Arguments[0]}";
@@ -18,6 +19,7 @@ public sealed class IsValidCommand
     }
 
     public override ValidationResult Negate() {
+        if (Subject is null) return Validation;
         var validation = Subject.ValidateSelf(true);
         foreach (var error in validation.Errors) {
             error.Arguments[0] = $"{Source}.{error.Arguments[0]}";

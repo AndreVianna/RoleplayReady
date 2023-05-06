@@ -1,11 +1,12 @@
-﻿using System.Validation;
-
-using TextValidators = System.Validation.Builder.TextValidators;
-
-namespace System.Extensions;
+﻿namespace System.Extensions;
 
 public static partial class StringExtensions {
     private static readonly Regex _splitIntoWordsRegex = SplitIntoWords();
+
+    public static IConnectors<string?, StringValidators> IsOptional(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+        => StringValidators.CreateAsOptional(subject, source!).AsConnection<string?, StringValidators>();
+    public static IConnectors<string?, StringValidators> IsRequired(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+        => StringValidators.CreateAsRequired(subject, source!).AsConnection<string?, StringValidators>();
 
     public static string ToPascalCase(this string input) {
         var words = _splitIntoWordsRegex.Split(input.Trim().Replace("'", "")).Where(s => s != string.Empty).ToArray();
@@ -48,9 +49,4 @@ public static partial class StringExtensions {
 
     [GeneratedRegex("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=\\d)(?=[A-Za-z])|(?<=[A-Za-z])(?=\\d)|[^a-zA-Z0-9]+", RegexOptions.Compiled | RegexOptions.Singleline)]
     private static partial Regex SplitIntoWords();
-
-    public static IConnectors<string?, TextValidators> IsOptional(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
-        => TextValidators.CreateAsOptional(subject, source!).AsConnection<string?, TextValidators>();
-    public static IConnectors<string?, TextValidators> IsRequired(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
-        => TextValidators.CreateAsRequired(subject, source!).AsConnection<string?, TextValidators>();
 }

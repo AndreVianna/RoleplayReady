@@ -1,6 +1,6 @@
 ﻿namespace System.Validation.Builder.Abstractions;
 
-public interface IIntegerValidators : IValidators<int?, IntegerValidators> {
+public interface IIntegerValidators : IValidators {
     IConnectors<int?, IntegerValidators> MinimumIs(int minimum);
     IConnectors<int?, IntegerValidators> IsGreaterThan(int minimum);
     IConnectors<int?, IntegerValidators> IsEqualTo(int value);

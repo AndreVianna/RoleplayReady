@@ -1,5 +1,3 @@
-using System.Utilities;
-
 namespace System.Extensions;
 
 public class TypeExtensionsTests {
@@ -27,19 +25,8 @@ public class TypeExtensionsTests {
     public void ToFriendlyName_CorrectlyConvertsInput(Type input, string expectedResult) {
         // Act
         var name = input.GetName();
-        var type = Make.TypeFrom(name);
 
         // Assert
         name.Should().Be(expectedResult);
-        type.Should().Be(input);
-    }
-
-    [Fact]
-    public void UnsupportedType_Throws() {
-        // Act
-        var action = () => Make.TypeFrom("Invalid");
-
-        // Assert
-        action.Should().Throw<InvalidOperationException>();
     }
 }

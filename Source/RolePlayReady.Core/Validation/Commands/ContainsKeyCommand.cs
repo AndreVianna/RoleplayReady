@@ -6,9 +6,9 @@ public sealed class ContainsKeyCommand<TKey, TValue>
 
     public ContainsKeyCommand(IDictionary<TKey, TValue?> subject, TKey? key, string source, ValidationResult? validation = null)
         : base(subject, source, validation) {
-        ValidateAs = s => key is not null && s.Keys.Contains(key);
-        NegateAs = s => key is not null && !s.Keys.Contains(key);
+        ValidateAs = s => key is not null && s.ContainsKey(key);
+        NegateAs = s => key is not null && !s.ContainsKey(key);
         ValidationErrorMessage = MustContainKey;
-        ValidationArguments = AddArguments(key);
+        Arguments = SetArguments(key);
     }
 }

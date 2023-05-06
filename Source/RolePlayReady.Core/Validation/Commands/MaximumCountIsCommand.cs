@@ -7,6 +7,6 @@ public sealed class MaximumCountIsCommand<TItem>
         : base(subject, source, validation) {
         ValidateAs = s => s.Count <= count;
         ValidationErrorMessage = MustHaveAMaximumCountOf;
-        ValidationArguments = AddArguments(count);
+        Arguments = SetArguments(count, subject.Count);
     }
 }

@@ -1,12 +1,10 @@
-using System.Extensions;
-
 namespace System.Validation.Builder;
 
 public class ValidatableValidatorsTests {
     public record ChildObject : IValidatable {
         public required string Name { get; init; }
 
-        public ValidationResult ValidateSelf() {
+        public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
             result += Name.IsRequired()
                 .And().LengthIs(5).Result;
@@ -17,7 +15,7 @@ public class ValidatableValidatorsTests {
     public record TestObject : IValidatable {
         public required ChildObject Child { get; init; }
 
-        public ValidationResult ValidateSelf() {
+        public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
             result += Child.IsRequired()
                 .And().IsValid().Result;

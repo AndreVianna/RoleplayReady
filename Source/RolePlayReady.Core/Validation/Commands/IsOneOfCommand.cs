@@ -7,6 +7,6 @@ public sealed class IsOneOfCommand<TValue>
         : base(subject, source, validation) {
         ValidateAs = list.Contains;
         ValidationErrorMessage = MustBeIn;
-        ValidationArguments = AddArguments(list.OfType<object?>().ToArray());
+        Arguments = SetArguments(list.OfType<object?>().ToArray());
     }
 }
