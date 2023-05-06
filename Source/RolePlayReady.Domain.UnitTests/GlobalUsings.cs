@@ -1,6 +1,6 @@
 global using System.Abstractions;
 global using System.Results;
-global using System.Validations.Abstractions;
+global using System.Validation;
 
 global using FluentAssertions;
 

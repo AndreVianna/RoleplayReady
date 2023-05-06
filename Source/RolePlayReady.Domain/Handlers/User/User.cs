@@ -17,7 +17,7 @@ public record User : IKey, IValidatable {
 
     public string FolderName => (Base64Guid)Id;
 
-    public ValidationResult ValidateSelf() {
+    public ValidationResult ValidateSelf(bool negate = false) {
         var result = ValidationResult.Success();
         result += Email.IsRequired()
                        .And().IsNotEmptyOrWhiteSpace()

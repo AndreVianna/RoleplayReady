@@ -44,6 +44,6 @@ public static class SphereMapper {
             ShortName = input.ShortName,
             Name = input.Name,
             Description = input.Description,
-            DataType = Make.TypeFrom(input.DataType),
+            DataType = Create.TypeFrom(input.DataType),
         };
 }

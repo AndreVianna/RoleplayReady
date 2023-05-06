@@ -1,5 +1,3 @@
-using System.Validation;
-
 using static System.Results.ValidationResult;
 
 namespace RolePlayReady.Models.Attributes;
@@ -10,7 +8,7 @@ public class ValidatableAttributeTests {
     private readonly TestObject _testObject = new("Hello");
 
     private record TestObject(string Name) : IValidatable {
-        public ValidationResult ValidateSelf() => Success();
+        public ValidationResult ValidateSelf(bool negate = false) => Success();
     }
 
     public ValidatableAttributeTests() {
@@ -30,15 +28,13 @@ public class ValidatableAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Definition.Should().Be(_definition);
         _attribute.Value.Should().Be(_testObject);
-        _attribute.Validate().IsSuccess.Should().BeTrue();
+        _attribute.ValidateSelf().IsSuccess.Should().BeTrue();
     }
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
-        var action = _attribute.Validate;
-
-        action.Should().Throw<InvalidOperationException>();
+        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<InvalidOperationException>();
     }
 }

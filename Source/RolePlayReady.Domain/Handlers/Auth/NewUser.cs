@@ -7,7 +7,7 @@ public record NewUser : IValidatable {
     public required string Password { get; set; }
     public string? Name { get; init; }
 
-    public ValidationResult ValidateSelf() {
+    public ValidationResult ValidateSelf(bool negate = false) {
         var result = ValidationResult.Success();
         result += Email.IsRequired()
             .And().IsNotEmptyOrWhiteSpace()

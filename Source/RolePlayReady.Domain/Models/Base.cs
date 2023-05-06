@@ -1,5 +1,4 @@
-﻿using System.Extensions;
-using System.Validation;
+﻿using System.Validation;
 
 namespace RolePlayReady.Models;
 
@@ -10,7 +9,7 @@ public record Base : IBase, IValidatable {
 
     public ICollection<string> Tags { get; init; } = new List<string>();
 
-    public virtual ValidationResult ValidateSelf() {
+    public virtual ValidationResult ValidateSelf(bool negate = false) {
         var result = ValidationResult.Success();
         result += Name.IsRequired()
             .And().IsNotEmptyOrWhiteSpace()

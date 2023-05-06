@@ -48,7 +48,7 @@ public class SphereTests {
             Components = components,
         };
 
-        var result = testBase.Validate();
+        var result = testBase.ValidateSelf();
 
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().HaveCount(0);
@@ -82,7 +82,7 @@ public class SphereTests {
             Components = components,
         };
 
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         result.IsSuccess.Should().BeFalse();
         result.Errors.Select(i => i.Message).Should().BeEquivalentTo(

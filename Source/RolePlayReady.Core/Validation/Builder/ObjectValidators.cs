@@ -15,10 +15,9 @@ public class ObjectValidators : Validators<object?>, IObjectValidators {
         _commandFactory = ValidationCommandFactory.For(Subject, Source, Result);
     }
 
-    //public IConnects<TSubject> IsOfType<TSubject>() {
-    //    if (Subject is not TSubject)
-    //        Errors.Add(new(IsNotOfType, Source, typeof(TSubject), Source.GetType().Name));
-    //    var value = Subject is TSubject typedValue ? typedValue : default;
-    //    return new Connects<ValidationCommand<TSubject>>(value, Errors)!;
-    //}
+    public IConnectors<object?, IValidators> IsOfType<TSubject>() {
+        // TODO -- This is a hack to get around the fact that the command factory is not generic
+        _commandFactory.Create(nameof(NullCommand)).Validate();
+        return _connector;
+    }
 }

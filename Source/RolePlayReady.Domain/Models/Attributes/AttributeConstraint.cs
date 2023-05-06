@@ -11,8 +11,8 @@ public sealed record AttributeConstraint : IAttributeConstraint {
     public string ValidatorName { get; }
     public ICollection<object> Arguments { get; }
 
-    public IValidationCommand Create<TType>(string definitionName)
+    public IValidationCommand Create<TValue>(TValue value, string definitionName)
         => ValidationCommandFactory
-          .For(definitionName)
-          .Create(typeof(TType), ValidatorName, Arguments.ToArray());
+          .For(value, definitionName)
+          .Create(ValidatorName, Arguments.ToArray());
 }

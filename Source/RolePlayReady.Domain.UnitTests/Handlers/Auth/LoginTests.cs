@@ -27,7 +27,7 @@ public class LoginTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(Login subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

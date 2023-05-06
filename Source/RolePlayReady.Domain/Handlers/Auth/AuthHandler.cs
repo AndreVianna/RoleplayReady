@@ -14,7 +14,7 @@ public class AuthHandler : IAuthHandler {
     }
 
     public SignInResult SignIn(Login login) {
-        var validation = login.Validate();
+        var validation = login.ValidateSelf();
         if (validation.IsInvalid) {
             _logger.LogDebug("Login attempt with invalid request.");
             return Invalid(validation.Errors);

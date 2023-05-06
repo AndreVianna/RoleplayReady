@@ -21,7 +21,7 @@ public class DictionaryAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Definition.Should().Be(_definition);
         _attribute.Value.Should().BeEquivalentTo(new Dictionary<string, int> { ["TestValue1"] = 1, ["TestValue2"] = 2, ["TestValue3"] = 3 });
-        _attribute.Validate().IsSuccess.Should().BeTrue();
+        _attribute.ValidateSelf().IsSuccess.Should().BeTrue();
     }
 
     private class TestData : TheoryData<string, object[], bool> {
@@ -40,33 +40,27 @@ public class DictionaryAttributeTests {
     public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
         _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
 
-        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
+        _attribute.ValidateSelf().IsSuccess.Should().Be(expectedResult);
     }
 
     [Fact]
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("CountIs", "wrong"));
 
-        var action = _attribute.Validate;
-
-        action.Should().Throw<ArgumentException>();
+        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("CountIs"));
 
-        var action = _attribute.Validate;
-
-        action.Should().Throw<ArgumentException>();
+        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
-        var action = _attribute.Validate;
-
-        action.Should().Throw<InvalidOperationException>();
+        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<InvalidOperationException>();
     }
 }

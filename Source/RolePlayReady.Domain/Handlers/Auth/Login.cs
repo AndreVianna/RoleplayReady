@@ -6,7 +6,7 @@ public record Login : IValidatable {
     public required string Email { get; set; }
     public required string Password { get; set; }
 
-    public ValidationResult ValidateSelf() {
+    public ValidationResult ValidateSelf(bool negate = false) {
         var result = ValidationResult.Success();
         result += Email.IsRequired()
                        .And().IsNotEmptyOrWhiteSpace()

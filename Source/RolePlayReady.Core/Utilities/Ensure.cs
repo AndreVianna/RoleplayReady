@@ -45,6 +45,7 @@ public static class Ensure {
     }
 
     [return: NotNull]
+    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "<Pending>")]
     public static TArgument IsNotNullAndDoesNotHaveNullOrEmpty<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         where TArgument : IEnumerable<string?> {
         argument = IsNotNull(argument, paramName);
@@ -56,6 +57,7 @@ public static class Ensure {
     }
 
     [return: NotNull]
+    [SuppressMessage("Style", "IDE0200:Remove unnecessary lambda expression", Justification = "<Pending>")]
     public static TArgument IsNotNullAndDoesNotHaveNullOrWhiteSpace<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         where TArgument : IEnumerable<string?> {
         argument = IsNotNull(argument, paramName);

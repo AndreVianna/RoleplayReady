@@ -22,7 +22,7 @@ public class UserTests {
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
 
-        var result = testBase.Validate();
+        var result = testBase.ValidateSelf();
 
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().HaveCount(0);
@@ -35,7 +35,7 @@ public class UserTests {
             Email = "invalid",
         };
 
-        var result = subject.Validate();
+        var result = subject.ValidateSelf();
 
         result.IsSuccess.Should().BeFalse();
         result.Errors.Select(i => i.Message).Should().BeEquivalentTo(

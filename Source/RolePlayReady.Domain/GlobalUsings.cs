@@ -1,13 +1,12 @@
 // Global using directives
 
 global using System.Abstractions;
+global using System.Extensions;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Results;
 global using System.Security.Claims;
 global using System.Text;
 global using System.Utilities;
-global using System.Validations.Abstractions;
-global using System.Validations.Extensions;
 
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
