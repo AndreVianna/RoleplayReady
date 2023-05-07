@@ -1,11 +1,11 @@
 ﻿namespace System.Validation.Commands;
 
-public sealed class IsOneOfCommand<TValue>
-    : ValidationCommand<TValue> {
-    public IsOneOfCommand(TValue?[] list, string source, ValidationResult? validation = null)
+public sealed class IsOneOfCommand<TItem>
+    : ValidationCommand {
+    public IsOneOfCommand(TItem?[] list, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = list.Contains;
+        ValidateAs = i => list.Contains((TItem)i!);
         ValidationErrorMessage = MustBeIn;
-        Arguments = SetArguments(list.OfType<object?>().ToArray());
+        GetArguments = i => new [] { list, i };
     }
 }

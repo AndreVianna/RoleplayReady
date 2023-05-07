@@ -1,11 +1,11 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class IsAfterCommand
-    : ValidationCommand<DateTime> {
-    public IsAfterCommand(DateTime threshold, string source, ValidationResult? validation = null)
+    : ValidationCommand {
+    public IsAfterCommand(DateTime @event, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.CompareTo(threshold) > 0;
+        ValidateAs = dt => (DateTime)dt! > @event;
         ValidationErrorMessage = MustBeAfter;
-        Arguments = SetArguments(threshold);
+        GetArguments = dt => new object?[] { @event, (DateTime)dt! };
     }
 }

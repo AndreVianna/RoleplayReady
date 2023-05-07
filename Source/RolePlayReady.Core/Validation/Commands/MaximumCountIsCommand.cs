@@ -1,11 +1,11 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class MaximumCountIsCommand<TItem>
-    : ValidationCommand<ICollection<TItem?>> {
+    : ValidationCommand {
     public MaximumCountIsCommand(int count, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.Count <= count;
+        ValidateAs = o => o is ICollection<TItem?> c && c.Count <= count;
         ValidationErrorMessage = MustHaveAMaximumCountOf;
-        Arguments = SetArguments(count);
+        GetArguments = c => new object?[] { count, ((ICollection<TItem?>)c!).Count };
     }
 }

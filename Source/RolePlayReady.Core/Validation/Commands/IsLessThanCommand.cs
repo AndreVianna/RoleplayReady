@@ -1,12 +1,12 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class IsLessThanCommand<TValue>
-    : ValidationCommand<TValue>
+    : ValidationCommand
     where TValue : IComparable<TValue> {
     public IsLessThanCommand(TValue threshold, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.CompareTo(threshold) < 0;
+        ValidateAs = v => ((TValue)v!).CompareTo(threshold) < 0;
         ValidationErrorMessage = MustBeLessThan;
-        Arguments = SetArguments(threshold);
+        GetArguments = v => new[] { threshold, v };
     }
 }

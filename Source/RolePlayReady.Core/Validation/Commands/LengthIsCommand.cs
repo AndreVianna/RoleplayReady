@@ -1,11 +1,11 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class LengthIsCommand
-    : ValidationCommand<string> {
+    : ValidationCommand {
     public LengthIsCommand(int length, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.Length == length;
+        ValidateAs = s => ((string)s!).Length == length;
         ValidationErrorMessage = MustHaveALengthOf;
-        Arguments = SetArguments(length);
+        GetArguments = s => new object?[] { length, ((string)s!).Length };
     }
 }

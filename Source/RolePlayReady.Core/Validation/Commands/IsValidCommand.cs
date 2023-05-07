@@ -1,14 +1,14 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class IsValidCommand
-    : ValidationCommand<IValidatable> {
+    : ValidationCommand {
     public IsValidCommand(string source, ValidationResult? validation = null)
         : base(source, validation) {
     }
 
-    public override ValidationResult Validate(IValidatable? subject) {
-        if (subject is null) return Validation;
-        var validation = subject.ValidateSelf();
+    public override ValidationResult Validate(object? subject) {
+        if (subject is not IValidatable v) return Validation;
+        var validation = v.ValidateSelf();
         foreach (var error in validation.Errors) {
             error.Arguments[0] = $"{Source}.{error.Arguments[0]}";
             AddError(error);
@@ -17,9 +17,9 @@ public sealed class IsValidCommand
         return Validation;
     }
 
-    public override ValidationResult Negate(IValidatable? subject) {
-        if (subject is null) return Validation;
-        var validation = subject.ValidateSelf(true);
+    public override ValidationResult Negate(object? subject) {
+        if (subject is not IValidatable v) return Validation;
+        var validation = v.ValidateSelf(true);
         foreach (var error in validation.Errors) {
             error.Arguments[0] = $"{Source}.{error.Arguments[0]}";
             AddError(error);

@@ -1,21 +1,21 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class ContainsCommand
-    : ValidationCommand<string> {
+    : ValidationCommand {
     public ContainsCommand(string subString, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.Contains(subString);
+        ValidateAs = s => ((string)s!).Contains(subString);
         ValidationErrorMessage = MustContain;
-        Arguments = SetArguments(subString);
+        GetArguments = _ => new object?[] { subString };
     }
 }
 
 public sealed class ContainsCommand<TItem>
-    : ValidationCommand<ICollection<TItem?>> {
+    : ValidationCommand {
     public ContainsCommand(TItem? item, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.Contains(item);
+        ValidateAs = c => ((ICollection<TItem?>)c!).Contains(item);
         ValidationErrorMessage = MustContain;
-        Arguments = SetArguments(item);
+        GetArguments = _ => new object?[] { item };
     }
 }

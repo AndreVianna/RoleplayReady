@@ -23,44 +23,44 @@
 //    }
 
 //    public interface ISetter {
-//        IActionConnector Be<TValue>(TValue value);
-//        IActionConnector Be<TValue>(Func<IPersisted, TValue> getValueFrom);
+//        IActionConnector Be<TItem>(TItem value);
+//        IActionConnector Be<TItem>(Func<IPersisted, TItem> getValueFrom);
 
-//        IActionConnector IncreaseBy<TValue>(TValue bonus) where TValue : IAdditionOperators<TValue, TValue, TValue>;
-//        IActionConnector IncreaseBy<TValue>(Func<IPersisted, TValue> getBonusFrom) where TValue : IAdditionOperators<TValue, TValue, TValue>;
-//        IActionConnector DecreaseBy<TValue>(TValue bonus) where TValue : ISubtractionOperators<TValue, TValue, TValue>;
-//        IActionConnector DecreaseBy<TValue>(Func<IPersisted, TValue> getBonusFrom) where TValue : ISubtractionOperators<TValue, TValue, TValue>;
+//        IActionConnector IncreaseBy<TItem>(TItem bonus) where TItem : IAdditionOperators<TItem, TItem, TItem>;
+//        IActionConnector IncreaseBy<TItem>(Func<IPersisted, TItem> getBonusFrom) where TItem : IAdditionOperators<TItem, TItem, TItem>;
+//        IActionConnector DecreaseBy<TItem>(TItem bonus) where TItem : ISubtractionOperators<TItem, TItem, TItem>;
+//        IActionConnector DecreaseBy<TItem>(Func<IPersisted, TItem> getBonusFrom) where TItem : ISubtractionOperators<TItem, TItem, TItem>;
 
-//        IActionConnector Have<TKey, TValue>(TKey key, TValue value) where TKey : notnull;
-//        IActionConnector Have<TKey, TValue>(TKey key, Func<IPersisted, TValue> getValueFrom) where TKey : notnull;
-//        IActionConnector Have<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> items) where TKey : notnull;
-//        IActionConnector Have<TKey, TValue>(Func<IPersisted, IEnumerable<KeyValuePair<TKey, TValue>>> getItemsFrom) where TKey : notnull;
+//        IActionConnector Have<TKey, TItem>(TKey key, TItem value) where TKey : notnull;
+//        IActionConnector Have<TKey, TItem>(TKey key, Func<IPersisted, TItem> getValueFrom) where TKey : notnull;
+//        IActionConnector Have<TKey, TItem>(IEnumerable<KeyValuePair<TKey, TItem>> items) where TKey : notnull;
+//        IActionConnector Have<TKey, TItem>(Func<IPersisted, IEnumerable<KeyValuePair<TKey, TItem>>> getItemsFrom) where TKey : notnull;
 
-//        IActionConnector Have<TValue>(TValue item);
-//        IActionConnector Have<TValue>(Func<IPersisted, TValue> getItemFrom);
-//        IActionConnector Have<TValue>(params TValue[] items);
-//        IActionConnector Have<TValue>(Func<IPersisted, IEnumerable<TValue>> getItemsFrom);
+//        IActionConnector Have<TItem>(TItem item);
+//        IActionConnector Have<TItem>(Func<IPersisted, TItem> getItemFrom);
+//        IActionConnector Have<TItem>(params TItem[] items);
+//        IActionConnector Have<TItem>(Func<IPersisted, IEnumerable<TItem>> getItemsFrom);
 //    }
 
 //    public interface IFinishesValidation {
-//        IActionConnector Contains<TValue>(TValue candidate, string message);
+//        IActionConnector Contains<TItem>(TItem candidate, string message);
 //        IActionConnector ContainsKey<TKey>(TKey key, string message) where TKey : notnull;
-//        IActionConnector IsEqualTo<TValue>(TValue validValue, string message) where TValue : IEquatable<TValue>;
-//        IActionConnector IsBetween<TValue>(TValue minimum, TValue maximum, string message) where TValue : IComparable<TValue>;
-//        IActionConnector IsGreaterThan<TValue>(TValue minimum, string message) where TValue : IComparable<TValue>;
-//        IActionConnector IsGreaterOrEqualTo<TValue>(TValue minimum, string message) where TValue : IComparable<TValue>;
-//        IActionConnector IsLessThan<TValue>(TValue maximum, string message) where TValue : IComparable<TValue>;
-//        IActionConnector IsLessOrEqualTo<TValue>(TValue maximum, string message) where TValue : IComparable<TValue>;
+//        IActionConnector IsEqualTo<TItem>(TItem validValue, string message) where TItem : IEquatable<TItem>;
+//        IActionConnector IsBetween<TItem>(TItem minimum, TItem maximum, string message) where TItem : IComparable<TItem>;
+//        IActionConnector IsGreaterThan<TItem>(TItem minimum, string message) where TItem : IComparable<TItem>;
+//        IActionConnector IsGreaterOrEqualTo<TItem>(TItem minimum, string message) where TItem : IComparable<TItem>;
+//        IActionConnector IsLessThan<TItem>(TItem maximum, string message) where TItem : IComparable<TItem>;
+//        IActionConnector IsLessOrEqualTo<TItem>(TItem maximum, string message) where TItem : IComparable<TItem>;
 //    }
 
 //    public interface IConditional {
-//        ILogicalConnector Contains<TValue>(TValue candidate);
+//        ILogicalConnector Contains<TItem>(TItem candidate);
 //        ILogicalConnector ContainsKey<TKey>(TKey key) where TKey : notnull;
-//        ILogicalConnector IsEqualTo<TValue>(TValue validValue) where TValue : IEquatable<TValue>;
-//        ILogicalConnector IsBetween<TValue>(TValue minimum, TValue maximum) where TValue : IComparable<TValue>;
-//        ILogicalConnector IsGreaterThan<TValue>(TValue minimum) where TValue : IComparable<TValue>;
-//        ILogicalConnector IsGreaterOrEqualTo<TValue>(TValue minimum) where TValue : IComparable<TValue>;
-//        ILogicalConnector IsLessThan<TValue>(TValue maximum) where TValue : IComparable<TValue>;
-//        ILogicalConnector IsLessOrEqualTo<TValue>(TValue maximum) where TValue : IComparable<TValue>;
+//        ILogicalConnector IsEqualTo<TItem>(TItem validValue) where TItem : IEquatable<TItem>;
+//        ILogicalConnector IsBetween<TItem>(TItem minimum, TItem maximum) where TItem : IComparable<TItem>;
+//        ILogicalConnector IsGreaterThan<TItem>(TItem minimum) where TItem : IComparable<TItem>;
+//        ILogicalConnector IsGreaterOrEqualTo<TItem>(TItem minimum) where TItem : IComparable<TItem>;
+//        ILogicalConnector IsLessThan<TItem>(TItem maximum) where TItem : IComparable<TItem>;
+//        ILogicalConnector IsLessOrEqualTo<TItem>(TItem maximum) where TItem : IComparable<TItem>;
 //    }
 //}

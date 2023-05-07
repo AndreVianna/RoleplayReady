@@ -5,38 +5,6 @@ namespace System.Validation.Commands;
 public class ValidationCommandFactoryTests {
     private static object?[] Args(params object?[] args) => args;
 
-    private class TestDataForCommands : TheoryData<string, Type, object?[], Type> {
-        public TestDataForCommands() {
-            Add(CommandNames.ContainsCommand, typeof(string), Args("cDe"), typeof(ContainsCommand));
-            Add(CommandNames.ContainsCommand, typeof(List<int>), Args(20), typeof(ContainsCommand<int>));
-            Add(CommandNames.CountIsCommand, typeof(List<int>), Args(3), typeof(CountIsCommand<int>));
-            Add(CommandNames.CountIsCommand, typeof(Dictionary<string, decimal>), Args(2), typeof(CountIsCommand<KeyValuePair<string, decimal>>));
-            Add(CommandNames.CountIsCommand, typeof(Dictionary<string, int>), Args(2), typeof(CountIsCommand<KeyValuePair<string, int>>));
-            Add(CommandNames.CountIsCommand, typeof(Dictionary<string, string>), Args(2), typeof(CountIsCommand<KeyValuePair<string, string>>));
-            Add(CommandNames.CountIsCommand, typeof(List<string>), Args(3), typeof(CountIsCommand<string>));
-            Add(CommandNames.IsEqualToCommand, typeof(int), Args(20), typeof(IsEqualToCommand<int>));
-            Add(CommandNames.IsGreaterThanCommand, typeof(int), Args(20), typeof(IsGreaterThanCommand<int>));
-            Add(CommandNames.IsLessThanCommand, typeof(decimal), Args(20.0m), typeof(IsLessThanCommand<decimal>));
-            Add(CommandNames.IsLessThanCommand, typeof(int), Args(20), typeof(IsLessThanCommand<int>));
-            Add(CommandNames.IsOneOfCommand, typeof(string), Args("Abc", "Def"), typeof(IsOneOfCommand<string>));
-            Add(CommandNames.LengthIsCommand, typeof(string), Args(5), typeof(LengthIsCommand));
-            Add(CommandNames.MaximumCountIsCommand, typeof(Dictionary<string, string>), Args(2), typeof(MaximumCountIsCommand<KeyValuePair<string, string>>));
-            Add(CommandNames.MaximumCountIsCommand, typeof(List<string>), Args(2), typeof(MaximumCountIsCommand<string>));
-            Add(CommandNames.MaximumLengthIsCommand, typeof(string), Args(5), typeof(MaximumLengthIsCommand));
-            Add(CommandNames.MinimumCountIsCommand, typeof(Dictionary<string, string>), Args(2), typeof(MinimumCountIsCommand<KeyValuePair<string, string>>));
-            Add(CommandNames.MinimumCountIsCommand, typeof(List<string>), Args(2), typeof(MinimumCountIsCommand<string>));
-            Add(CommandNames.MinimumLengthIsCommand, typeof(string), Args(5), typeof(MinimumLengthIsCommand));
-        }
-    }
-
-    [Theory]
-    [ClassData(typeof(TestDataForCommands))]
-    public void Create_ReturnsCommand(string commandName, Type subjectType, object?[] args, Type coommandType) {
-        var validator = ValidationCommandFactory.For(subjectType, "Attribute").Create(commandName, args);
-
-        validator.Should().BeOfType(coommandType);
-    }
-
     [Theory]
     [InlineData(typeof(decimal))]
     [InlineData(typeof(int))]
@@ -55,27 +23,47 @@ public class ValidationCommandFactoryTests {
         action.Should().Throw<InvalidOperationException>();
     }
 
+    private const string _string = "AbcDef";
+    private const int _integer = 42;
+    private const decimal _decimal = 42.0m;
+    private static readonly DateTime _dateTime = DateTime.Parse("2020-01-01 10:10:10.12345");
+    private static readonly Type _type = typeof(string);
+    private static readonly List<int> _integers = new() { 1, 2, 3 };
+    private static readonly List<string> _strings = new() { "A", "B", "C" };
+    private static readonly Dictionary<string, int> _strings2Integers = new() { ["A"] = 1, ["B"] = 2, ["C"] = 3 };
+    private static readonly Dictionary<string, decimal> _strings2Decimals = new() { ["A"] = 1m, ["B"] = 2m, ["C"] = 3m };
+    private static readonly Dictionary<string, string> _strings2Strings = new() { ["A"] = "1", ["B"] = "2", ["C"] = "3" };
+
     private class TestDataForValidateSuccess : TheoryData<string, object?[], object> {
         public TestDataForValidateSuccess() {
-            Add(CommandNames.ContainsCommand, Args("cDe"), "AbcDef");
-            Add(CommandNames.ContainsCommand, Args(20), new List<int> { 20 });
-            Add(CommandNames.CountIsCommand, Args(3), new List<int> { 1, 2, 3 });
-            Add(CommandNames.CountIsCommand, Args(2), new Dictionary<string, decimal> { ["A"] = 1m, ["B"] = 2m });
-            Add(CommandNames.CountIsCommand, Args(2), new Dictionary<string, int> { ["A"] = 1, ["B"] = 2 });
-            Add(CommandNames.CountIsCommand, Args(2), new Dictionary<string, string> { ["A"] = "1", ["B"] = "2" });
-            Add(CommandNames.CountIsCommand, Args(2), new List<string> { "A", "B" });
-            Add(CommandNames.IsEqualToCommand, Args(20), 20);
-            Add(CommandNames.IsGreaterThanCommand, Args(20), 30);
-            Add(CommandNames.IsLessThanCommand, Args(20.0m), 10m);
-            Add(CommandNames.IsLessThanCommand, Args(20), 10);
-            Add(CommandNames.IsOneOfCommand, Args("Abc", "Def"), "Abc");
-            Add(CommandNames.LengthIsCommand, Args(6), "AbcDef");
-            Add(CommandNames.MaximumCountIsCommand, Args(2), new Dictionary<string, string> { ["A"] = "1", ["B"] = "2" });
-            Add(CommandNames.MaximumCountIsCommand, Args(2), new List<string> { "A", "B" });
-            Add(CommandNames.MaximumLengthIsCommand, Args(5), "Abc");
-            Add(CommandNames.MinimumCountIsCommand, Args(2), new Dictionary<string, string> { ["A"] = "1", ["B"] = "2" });
-            Add(CommandNames.MinimumCountIsCommand, Args(2), new List<string> { "A", "B" });
-            Add(CommandNames.MinimumLengthIsCommand, Args(5), "AbcDef");
+            Add(CommandNames.ContainsCommand, Args(_string[1..^1]), _string);
+            Add(CommandNames.ContainsCommand, Args(_integers[1]), _integers);
+            Add(CommandNames.ContainsKeyCommand, Args(_strings2Strings.Keys.First()), _strings2Strings);
+            Add(CommandNames.ContainsValueCommand, Args(_strings2Integers.Values.Last()), _strings2Integers);
+            Add(CommandNames.CountIsCommand, Args(_integers.Count), _integers);
+            Add(CommandNames.CountIsCommand, Args(_strings2Decimals.Count), _strings2Decimals);
+            Add(CommandNames.CountIsCommand, Args(_strings2Integers.Count), _strings2Integers);
+            Add(CommandNames.CountIsCommand, Args(_strings2Strings.Count), _strings2Strings);
+            Add(CommandNames.CountIsCommand, Args(_strings.Count), _strings);
+            Add(CommandNames.IsAfterCommand, Args(_dateTime), _dateTime.AddSeconds(1));
+            Add(CommandNames.IsBeforeCommand, Args(_dateTime), _dateTime.AddSeconds(-1));
+            Add(CommandNames.IsEqualToCommand, Args(_string), _string);
+            Add(CommandNames.IsEqualToCommand, Args(_integer), _integer);
+            Add(CommandNames.IsEqualToCommand, Args(_decimal), _decimal);
+            Add(CommandNames.IsEqualToCommand, Args(_dateTime), _dateTime);
+            Add(CommandNames.IsEqualToCommand, Args(_type), _type);
+            Add(CommandNames.IsGreaterThanCommand, Args(_integer), _integer + 1);
+            Add(CommandNames.IsGreaterThanCommand, Args(_decimal), _decimal + 0.01m);
+            Add(CommandNames.IsLessThanCommand, Args(_decimal), _decimal - 0.01m);
+            Add(CommandNames.IsLessThanCommand, Args(_integer), _integer - 1);
+            Add(CommandNames.IsOneOfCommand, Args(_strings.OfType<object?>().ToArray()), _strings[1]);
+            Add(CommandNames.LengthIsCommand, Args(_string.Length), _string);
+            Add(CommandNames.MaximumCountIsCommand, Args(_strings2Strings.Count), _strings2Strings);
+            Add(CommandNames.MaximumCountIsCommand, Args(_strings.Count), _strings);
+            Add(CommandNames.MaximumLengthIsCommand, Args(_string.Length), _string);
+            Add(CommandNames.MinimumCountIsCommand, Args(_strings2Strings.Count), _strings2Strings);
+            Add(CommandNames.MinimumCountIsCommand, Args(_strings.Count), _strings);
+            Add(CommandNames.MinimumLengthIsCommand, Args(_string.Length), _string);
         }
     }
 

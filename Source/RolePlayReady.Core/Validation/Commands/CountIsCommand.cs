@@ -1,11 +1,11 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class CountIsCommand<TItem>
-    : ValidationCommand<ICollection<TItem?>> {
+    : ValidationCommand {
     public CountIsCommand(int count, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.Count == count;
+        ValidateAs = c => ((ICollection<TItem?>)c!).Count == count;
         ValidationErrorMessage = MustHaveACountOf;
-        Arguments = SetArguments(count);
+        GetArguments = c => new object?[] { count, ((ICollection<TItem?>)c!).Count };
     }
 }

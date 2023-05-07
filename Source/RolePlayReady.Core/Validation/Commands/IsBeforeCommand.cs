@@ -1,11 +1,11 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class IsBeforeCommand
-    : ValidationCommand<DateTime> {
-    public IsBeforeCommand(DateTime threshold, string source, ValidationResult? validation = null)
+    : ValidationCommand {
+    public IsBeforeCommand(DateTime @event, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.CompareTo(threshold) < 0;
+        ValidateAs = dt => (DateTime)dt! < @event;
         ValidationErrorMessage = MustBeBefore;
-        Arguments = SetArguments(threshold);
+        GetArguments = dt => new object?[] { @event, (DateTime)dt! };
     }
 }

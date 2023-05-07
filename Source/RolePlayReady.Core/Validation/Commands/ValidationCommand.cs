@@ -1,42 +1,29 @@
 ﻿namespace System.Validation.Commands;
 
-public abstract class ValidationCommand<TSubject> : IValidationCommand {
-    protected ValidationCommand(/*TSubject? subject, */string source, ValidationResult? validation = null) {
-//        Subject = subject;
+public abstract class ValidationCommand : IValidationCommand {
+    protected ValidationCommand(string source, ValidationResult? validation = null) {
         Source = source;
         Validation = validation ?? ValidationResult.Success();
     }
 
-    //protected TSubject? Subject { get; }
     protected string Source { get; }
     protected ValidationResult Validation { get; set; }
 
-    ValidationResult IValidationCommand.Validate(object? subject)
-        => subject is not null
-            ? Validate((TSubject)subject)
+    public virtual ValidationResult Validate(object? subject)
+        => subject is not null && !ValidateAs(subject)
+            ? AddError(ValidationErrorMessage, GetArguments(subject))
             : Validation;
 
-    public virtual ValidationResult Validate(TSubject subject)
-        => !ValidateAs(subject)
-            ? AddError(ValidationErrorMessage, Arguments)
+    public virtual ValidationResult Negate(object? subject)
+        => subject is not null && (!NegateAs?.Invoke(subject) ?? ValidateAs(subject))
+            ? AddError(NegationErrorMessage ?? InvertMessage(ValidationErrorMessage), GetArguments(subject))
             : Validation;
 
-    ValidationResult IValidationCommand.Negate(object? subject)
-        => subject is not null
-            ? Negate((TSubject)subject)
-            : Validation;
-
-    public virtual ValidationResult Negate(TSubject subject)
-        => !NegateAs?.Invoke(subject) ?? ValidateAs(subject)
-            ? AddError(NegationErrorMessage ?? InvertMessage(ValidationErrorMessage), Arguments)
-            : Validation;
-
-    protected Func<TSubject, bool> ValidateAs { get; init; } = _ => true;
-    protected Func<TSubject, bool>? NegateAs { get; init; }
+    protected Func<object?, bool> ValidateAs { get; init; } = _ => true;
+    protected Func<object?, bool>? NegateAs { get; init; }
     protected string ValidationErrorMessage { get; init; } = MustBeValid;
     protected string? NegationErrorMessage { get; init; }
-    protected object?[] Arguments { get; init; } = Array.Empty<object?>();
-    protected object?[] SetArguments(params object?[] args) => args;
+    protected Func<object?, object?[]> GetArguments { get; init; } = _ => Array.Empty<object?>();
     protected ValidationResult AddError(string message, params object?[] args)
         => AddError(new ValidationError(message, Source, args));
     protected ValidationResult AddError(ValidationError error)

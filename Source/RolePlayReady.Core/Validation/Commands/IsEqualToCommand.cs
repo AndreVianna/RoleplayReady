@@ -1,11 +1,11 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class IsEqualToCommand<TValue>
-    : ValidationCommand<TValue> {
+    : ValidationCommand{
     public IsEqualToCommand(TValue value, string source, ValidationResult? validation = null)
         : base(source, validation) {
         ValidateAs = s => s!.Equals(value);
         ValidationErrorMessage = MustBeEqualTo;
-        Arguments = SetArguments(value);
+        GetArguments = o => new[] { value, o };
     }
 }

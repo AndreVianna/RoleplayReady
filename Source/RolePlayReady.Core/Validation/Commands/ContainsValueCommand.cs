@@ -1,12 +1,12 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class ContainsValueCommand<TKey, TValue>
-    : ValidationCommand<IDictionary<TKey, TValue?>>
+    : ValidationCommand
     where TKey : notnull {
     public ContainsValueCommand(TValue? value, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.Values.Contains(value);
+        ValidateAs = d => ((IDictionary<TKey, TValue?>)d!).Values.Contains(value);
         ValidationErrorMessage = MustContainValue;
-        Arguments = SetArguments(value);
+        GetArguments = _ => new object?[] { value };
     }
 }

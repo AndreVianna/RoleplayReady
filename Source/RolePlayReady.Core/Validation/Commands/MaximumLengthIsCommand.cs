@@ -1,11 +1,11 @@
 ﻿namespace System.Validation.Commands;
 
 public sealed class MaximumLengthIsCommand
-    : ValidationCommand<string> {
+    : ValidationCommand {
     public MaximumLengthIsCommand(int length, string source, ValidationResult? validation = null)
         : base(source, validation) {
-        ValidateAs = s => s.Length <= length;
+        ValidateAs = s => ((string)s!).Length <= length;
         ValidationErrorMessage = MustHaveAMaximumLengthOf;
-        Arguments = SetArguments(length);
+        GetArguments = s => new object?[] { length, ((string)s!).Length };
     }
 }
