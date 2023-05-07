@@ -2,11 +2,10 @@
 
 public sealed class LengthIsCommand
     : ValidationCommand<string> {
-
-    public LengthIsCommand(string subject, int length, string source, ValidationResult? validation = null)
-        : base(subject, source, validation) {
+    public LengthIsCommand(int length, string source, ValidationResult? validation = null)
+        : base(source, validation) {
         ValidateAs = s => s.Length == length;
         ValidationErrorMessage = MustHaveALengthOf;
-        Arguments = SetArguments(length, subject.Length);
+        Arguments = SetArguments(length);
     }
 }

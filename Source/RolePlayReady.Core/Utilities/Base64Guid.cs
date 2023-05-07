@@ -1,7 +1,6 @@
 ﻿namespace System.Utilities;
 
 public partial record struct Base64Guid(Guid Value) {
-
     public Base64Guid(string? value)
         : this(ToGuid(value)) {
     }

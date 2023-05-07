@@ -2,11 +2,10 @@
 
 public sealed class MaximumLengthIsCommand
     : ValidationCommand<string> {
-
-    public MaximumLengthIsCommand(string subject, int length, string source, ValidationResult? validation = null)
-        : base(subject, source, validation) {
+    public MaximumLengthIsCommand(int length, string source, ValidationResult? validation = null)
+        : base(source, validation) {
         ValidateAs = s => s.Length <= length;
         ValidationErrorMessage = MustHaveAMaximumLengthOf;
-        Arguments = SetArguments(length, subject.Length);
+        Arguments = SetArguments(length);
     }
 }

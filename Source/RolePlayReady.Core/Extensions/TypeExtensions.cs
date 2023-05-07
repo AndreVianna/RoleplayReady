@@ -2,7 +2,7 @@
 
 public static class TypeExtensions {
     public static IConnectors<Type?, TypeValidators> IsRequired(this Type? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
-        => TypeValidators.Create(subject, source!).AsConnection<Type?, TypeValidators>();
+        => Create(subject, source!);
 
     public static string GetName(this Type type) {
         if (type is { IsGenericType: false, IsArray: false })

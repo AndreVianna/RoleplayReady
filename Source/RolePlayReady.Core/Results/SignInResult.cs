@@ -29,7 +29,7 @@ public sealed record SignInResult : Result {
     public static implicit operator SignInResult(ValidationError[] errors) => new(SignInResultType.Invalid, null, IsNotNullAndDoesNotHaveNull(errors));
     public static implicit operator SignInResult(ValidationError error) => new(SignInResultType.Invalid, null, new[] { error }.AsEnumerable());
     public static implicit operator SignInResult(string token) => new(SignInResultType.Success, token);
-    public static implicit operator SignInResult(SignInResultType resultType) 
+    public static implicit operator SignInResult(SignInResultType resultType)
         => resultType switch {
             SignInResultType.Invalid => throw new InvalidCastException("To make an invalid result assigned the errors directly. i.e. SingInResult result = \"[Token]\";"),
             SignInResultType.Success or SignInResultType.TwoFactorRequired => throw new InvalidCastException("To make a successful result assigned the token to it. i.e. SingInResult result = \"[Token]\";"),

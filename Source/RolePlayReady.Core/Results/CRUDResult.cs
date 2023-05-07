@@ -57,4 +57,3 @@ public record CrudResult<TResult> : CrudResult {
     public CrudResult<TOutput> MapTo<TOutput>(Func<TResult?, TOutput?> map)
         => new(Type, map(Value), Errors);
 }
-

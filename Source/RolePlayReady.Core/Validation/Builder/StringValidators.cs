@@ -2,46 +2,41 @@
 
 public partial class StringValidators : Validators<string?>, IStringValidators {
     private readonly Connectors<string?, StringValidators> _connector;
-    private readonly ValidationCommandFactory<string> _commandFactory;
+    private readonly ValidationCommandFactory _commandFactory;
 
-    public static StringValidators CreateAsOptional(string? subject, string source)
-        => new(subject, source);
-    public static StringValidators CreateAsRequired(string? subject, string source)
-        => new(subject, source, EnsureNotNull(subject, source));
-
-    private StringValidators(string? subject, string source, ValidationResult? previousResult = null)
+    public StringValidators(string? subject, string source, ValidationResult? previousResult = null)
         : base(ValidatorMode.None, subject, source, previousResult) {
         _connector = new Connectors<string?, StringValidators>(this);
-        _commandFactory = ValidationCommandFactory.For(Subject, Source, Result);
+        _commandFactory = ValidationCommandFactory.For(typeof(string), Source, Result);
     }
 
     public IConnectors<string?, StringValidators> IsNotEmpty() {
-        _commandFactory.Create(nameof(IsEmptyCommand)).Negate();
+        _commandFactory.Create(nameof(IsEmptyCommand)).Negate(Subject);
         return _connector;
     }
 
     public IConnectors<string?, StringValidators> IsNotEmptyOrWhiteSpace() {
-        _commandFactory.Create(nameof(IsEmptyOrWhiteSpaceCommand)).Negate();
+        _commandFactory.Create(nameof(IsEmptyOrWhiteSpaceCommand)).Negate(Subject);
         return _connector;
     }
 
     public IConnectors<string?, StringValidators> MinimumLengthIs(int length) {
-        _commandFactory.Create(nameof(MinimumLengthIsCommand), length).Validate();
+        _commandFactory.Create(nameof(MinimumLengthIsCommand), length).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<string?, StringValidators> IsIn(params string[] list) {
-        _commandFactory.Create(nameof(IsOneOfCommand<int>), list.OfType<object?>().ToArray()).Validate();
+        _commandFactory.Create(nameof(IsOneOfCommand<int>), list.OfType<object?>().ToArray()).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<string?, StringValidators> LengthIs(int length) {
-        _commandFactory.Create(nameof(LengthIsCommand), length).Validate();
+        _commandFactory.Create(nameof(LengthIsCommand), length).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<string?, StringValidators> MaximumLengthIs(int length) {
-        _commandFactory.Create(nameof(MaximumLengthIsCommand), length).Validate();
+        _commandFactory.Create(nameof(MaximumLengthIsCommand), length).Validate(Subject);
         return _connector;
     }
 

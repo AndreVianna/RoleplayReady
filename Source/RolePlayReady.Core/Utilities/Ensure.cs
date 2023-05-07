@@ -6,7 +6,7 @@ public static class Ensure {
     [return: NotNull]
     public static TArgument IsNotNull<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         => argument is null
-            ? throw new ArgumentNullException(paramName, string.Format(InvertMessage(MustBeNull), paramName))
+            ? throw new ArgumentNullException(paramName, GetInvertedErrorMessage(MustBeNull, paramName))
             : argument;
 
     [return: NotNull]
@@ -20,9 +20,11 @@ public static class Ensure {
         where TArgument : IEnumerable {
         argument = IsNotNull(argument, paramName);
         return argument switch {
-            string { Length: 0 } => throw new ArgumentException(string.Format(InvertMessage(MustBeEmpty), paramName), paramName),
+            string { Length: 0 }
+                => throw new ArgumentException(GetInvertedErrorMessage(MustBeEmpty, paramName), paramName),
             string => argument,
-            ICollection { Count: 0 } => throw new ArgumentException(string.Format(InvertMessage(MustBeEmpty), paramName), paramName),
+            ICollection { Count: 0 }
+                => throw new ArgumentException(GetInvertedErrorMessage(MustBeEmpty, paramName), paramName),
             _ => argument,
         };
     }
@@ -30,7 +32,7 @@ public static class Ensure {
     public static string IsNotNullOrWhiteSpace(string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) {
         argument = IsNotNull(argument, paramName);
         return argument.Trim().Length == 0
-            ? throw new ArgumentException(string.Format(InvertMessage(MustBeEmptyOrWhitespace), paramName), paramName)
+            ? throw new ArgumentException(GetInvertedErrorMessage(MustBeEmptyOrWhitespace, paramName), paramName)
             : argument;
     }
 
@@ -39,7 +41,8 @@ public static class Ensure {
         where TArgument : IEnumerable {
         argument = IsNotNull(argument, paramName);
         return argument switch {
-            IEnumerable collection when collection.Cast<object?>().Any(item => item is null) => throw new ArgumentException(string.Format(InvertMessage(MustContainNull), paramName), paramName),
+            IEnumerable collection when collection.Cast<object?>().Any(item => item is null)
+                => throw new ArgumentException(GetInvertedErrorMessage(MustContainNull, paramName), paramName),
             _ => argument
         };
     }
@@ -51,7 +54,8 @@ public static class Ensure {
         argument = IsNotNull(argument, paramName);
         return argument switch {
             // ReSharper disable once ConvertClosureToMethodGroup - it messes with code coverage
-            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrEmpty(i)) => throw new ArgumentException(string.Format(InvertMessage(MustContainNullOrEmpty), paramName), paramName),
+            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrEmpty(i))
+                => throw new ArgumentException(GetInvertedErrorMessage(MustContainNullOrEmpty, paramName), paramName),
             _ => argument,
         };
     }
@@ -63,7 +67,8 @@ public static class Ensure {
         argument = IsNotNull(argument, paramName);
         return argument switch {
             // ReSharper disable once ConvertClosureToMethodGroup - it messes with code coverage
-            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrWhiteSpace(i)) => throw new ArgumentException(string.Format(InvertMessage(MustContainNullOrWhitespace), paramName), paramName),
+            IEnumerable<string?> collection when collection.Any(i => string.IsNullOrWhiteSpace(i))
+                => throw new ArgumentException(GetInvertedErrorMessage(MustContainNullOrWhitespace, paramName), paramName),
             _ => argument,
         };
     }
@@ -73,7 +78,8 @@ public static class Ensure {
         where TArgument : IEnumerable {
         argument = IsNotNullOrEmpty(argument, paramName);
         return argument switch {
-            IEnumerable collection when collection.Cast<object?>().Any(x => x is null) => throw new ArgumentException(string.Format(InvertMessage(MustContainNull), paramName), paramName),
+            IEnumerable collection when collection.Cast<object?>().Any(x => x is null)
+                => throw new ArgumentException(GetInvertedErrorMessage(MustContainNull, paramName), paramName),
             _ => argument,
         };
     }
@@ -83,7 +89,8 @@ public static class Ensure {
         where TArgument : IEnumerable<string?> {
         argument = IsNotNullOrEmpty(argument, paramName);
         return argument switch {
-            IEnumerable<string?> collection when collection.Any(string.IsNullOrEmpty) => throw new ArgumentException(string.Format(InvertMessage(MustContainNullOrEmpty), paramName), paramName),
+            IEnumerable<string?> collection when collection.Any(string.IsNullOrEmpty)
+                => throw new ArgumentException(GetInvertedErrorMessage(MustContainNullOrEmpty, paramName), paramName),
             _ => argument,
         };
     }
@@ -93,7 +100,8 @@ public static class Ensure {
         where TArgument : IEnumerable<string?> {
         argument = IsNotNullOrEmpty(argument, paramName);
         return argument switch {
-            IEnumerable<string?> collection when collection.Any(string.IsNullOrWhiteSpace) => throw new ArgumentException(string.Format(InvertMessage(MustContainNullOrWhitespace), paramName), paramName),
+            IEnumerable<string?> collection when collection.Any(string.IsNullOrWhiteSpace)
+                => throw new ArgumentException(GetInvertedErrorMessage(MustContainNullOrWhitespace, paramName), paramName),
             _ => argument,
         };
     }
@@ -114,13 +122,14 @@ public static class Ensure {
         return list.Cast<TItem>().ToArray();
     }
 
-    public static TItem? ArgumentExistsAndIsOfTypeOrDefault<TItem>(string methodName, IReadOnlyList<object?> arguments, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))]string? paramName = null)
+    public static TItem? ArgumentExistsAndIsOfTypeOrDefault<TItem>(string methodName, IReadOnlyList<object?> arguments, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))] string? paramName = null)
         => argumentIndex >= arguments.Count
             ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", paramName)
             : arguments[(int)argumentIndex] switch {
                 null => default,
                 TItem value => value,
-                _ => throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]")
+                _
+                => throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]")
             };
 
     public static TItem?[] ArgumentsAreAllOfTypeOrDefault<TItem>(string methodName, IReadOnlyList<object?> arguments, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {

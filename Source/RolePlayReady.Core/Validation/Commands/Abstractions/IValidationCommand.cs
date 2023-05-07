@@ -1,6 +1,6 @@
 ﻿namespace System.Validation.Commands.Abstractions;
 
 public interface IValidationCommand {
-    ValidationResult Validate();
-    ValidationResult Negate();
+    ValidationResult Validate(object? subject);
+    ValidationResult Negate(object? subject);
 }

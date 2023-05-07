@@ -2,19 +2,16 @@
 
 public class TypeValidators : Validators<Type?>, ITypeValidators {
     private readonly Connectors<Type?, TypeValidators> _connector;
-    private readonly ValidationCommandFactory<Type> _commandFactory;
+    private readonly ValidationCommandFactory _commandFactory;
 
-    public static TypeValidators Create(Type? subject, string source)
-        => new(subject, source, EnsureNotNull(subject, source));
-
-    private TypeValidators(Type? subject, string source, ValidationResult? previousResult = null)
+    public TypeValidators(Type? subject, string source, ValidationResult? previousResult = null)
         : base(ValidatorMode.None, subject, source, previousResult) {
         _connector = new Connectors<Type?, TypeValidators>(this);
-        _commandFactory = ValidationCommandFactory.For(Subject, Source, Result);
+        _commandFactory = ValidationCommandFactory.For(typeof(Type), Source, Result);
     }
 
     public IConnectors<Type?, TypeValidators> IsEqualTo<TType>() {
-        _commandFactory.Create(nameof(IsEqualToCommand<int>), typeof(TType)).Validate();
+        _commandFactory.Create(nameof(IsEqualToCommand<int>), typeof(TType)).Validate(Subject);
         return _connector;
     }
 }

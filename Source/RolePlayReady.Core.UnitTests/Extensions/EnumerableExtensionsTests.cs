@@ -4,7 +4,7 @@ public class EnumerableExtensionsTests {
     [Fact]
     public void ToArray_FromNull_GetsArray() {
         // Arrange
-        IEnumerable<int>? subject = default; 
+        IEnumerable<int>? subject = default;
 
         // Act
         var result = subject.ToArray<int>(i => i + 2);

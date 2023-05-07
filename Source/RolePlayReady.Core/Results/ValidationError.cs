@@ -12,7 +12,7 @@ public sealed record ValidationError {
 
     public string MessageTemplate { get; }
     public object?[] Arguments { get; }
-    public string Message => string.Format(MessageTemplate, Arguments);
+    public string Message => GetErrorMessage(MessageTemplate, Arguments);
 
     public bool Equals(ValidationError? other)
         => other is not null

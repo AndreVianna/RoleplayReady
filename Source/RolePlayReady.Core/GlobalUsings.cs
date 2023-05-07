@@ -21,3 +21,5 @@ global using System.Validation.Commands.Abstractions;
 global using Microsoft.Extensions.DependencyInjection;
 
 global using static System.Constants.Constants.ErrorMessages;
+global using static System.Diagnostics.CodeAnalysis.StringSyntaxAttribute;
+global using static System.Validation.Builder.ValidatorFactory;

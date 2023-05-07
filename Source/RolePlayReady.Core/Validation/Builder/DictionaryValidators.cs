@@ -5,44 +5,36 @@ public class DictionaryValidators<TKey, TValue>
         , IDictionaryValidators<TKey, TValue>
     where TKey : notnull {
     private readonly Connectors<IDictionary<TKey, TValue?>, DictionaryValidators<TKey, TValue>> _connector;
-    private readonly ValidationCommandFactory<IDictionary<TKey, TValue?>> _commandFactory;
+    private readonly ValidationCommandFactory _commandFactory;
 
-    public static DictionaryValidators<TSubjectKey, TSubjectValue> Create<TSubjectKey, TSubjectValue>(IDictionary<TSubjectKey, TSubjectValue?>? subject, string source)
-        where TSubjectKey : notnull
-        => new(subject, source, EnsureNotNull(subject, source));
-
-    public static Connectors<IDictionary<TSubjectKey, TSubjectValue?>, DictionaryValidators<TSubjectKey, TSubjectValue>> CreatedAndConnect<TSubjectKey, TSubjectValue>(IDictionary<TSubjectKey, TSubjectValue?>? subject, string source)
-        where TSubjectKey : notnull
-        => new(Create(subject, source));
-
-    private DictionaryValidators(IDictionary<TKey, TValue?>? subject, string source, ValidationResult? previousResult = null)
+    public DictionaryValidators(IDictionary<TKey, TValue?>? subject, string source, ValidationResult? previousResult = null)
         : base(ValidatorMode.None, subject, source, previousResult) {
         _connector = new Connectors<IDictionary<TKey, TValue?>, DictionaryValidators<TKey, TValue>>(this);
-        _commandFactory = ValidationCommandFactory.For(Subject, Source, Result);
+        _commandFactory = ValidationCommandFactory.For(typeof(IDictionary<TKey, TValue?>), Source, Result);
     }
 
     public IConnectors<IDictionary<TKey, TValue?>, DictionaryValidators<TKey, TValue>> IsNotEmpty() {
-        _commandFactory.Create(nameof(IsEmptyCommand)).Negate();
+        _commandFactory.Create(nameof(IsEmptyCommand)).Negate(Subject);
         return _connector;
     }
 
     public IConnectors<IDictionary<TKey, TValue?>, DictionaryValidators<TKey, TValue>> MinimumCountIs(int size) {
-        _commandFactory.Create(nameof(MinimumCountIsCommand<int>), size).Validate();
+        _commandFactory.Create(nameof(MinimumCountIsCommand<int>), size).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<IDictionary<TKey, TValue?>, DictionaryValidators<TKey, TValue>> CountIs(int size) {
-        _commandFactory.Create(nameof(CountIsCommand<int>), size).Validate();
+        _commandFactory.Create(nameof(CountIsCommand<int>), size).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<IDictionary<TKey, TValue?>, DictionaryValidators<TKey, TValue>> ContainsKey(TKey key) {
-        _commandFactory.Create(nameof(ContainsKeyCommand<int,int>), key).Validate();
+        _commandFactory.Create(nameof(ContainsKeyCommand<int,int>), key).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<IDictionary<TKey, TValue?>, DictionaryValidators<TKey, TValue>> MaximumCountIs(int size) {
-        _commandFactory.Create(nameof(MaximumCountIsCommand<int>), size).Validate();
+        _commandFactory.Create(nameof(MaximumCountIsCommand<int>), size).Validate(Subject);
         return _connector;
     }
 

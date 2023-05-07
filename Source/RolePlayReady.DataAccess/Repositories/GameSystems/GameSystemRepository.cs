@@ -8,7 +8,6 @@ public class GameSystemRepository : IGameSystemRepository {
         files.SetBasePath($"{owner.BaseFolder}/GameSystems");
     }
 
-
     public async Task<IEnumerable<Row>> GetManyAsync(CancellationToken cancellation = default) {
         var files = await _files
             .GetAllAsync(cancellation)
