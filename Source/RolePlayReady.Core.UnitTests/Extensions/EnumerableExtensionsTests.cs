@@ -2,7 +2,7 @@ namespace System.Extensions;
 
 public class EnumerableExtensionsTests {
     [Fact]
-    public void ToArray_FromNull_GetsArray() {
+    public void ToArray_FromNull_GetsEmptyArray() {
         // Arrange
         IEnumerable<int>? subject = default;
 
