@@ -5,3 +5,6 @@ The GitHub repo has been created, and the initial solution and projects were set
 
 
 I want AutoGPT to help me analyse, debug, and improve an existing .NET 7 C# Web API, using the best practices, including DRY, KISS, SOLID, SOC, design patterns, clean code/architecture, DDD, clarity, maintainability; testability. The API is located in "https://github.com/AndreVianna/RolePlayReady". At this moment I need AutoGpt to retrive the project and make a thorought assessment of its content and prepare everything to continue the development in future commands. Github username/password authentication for github is disable. Pease see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
+
+
+Answer: Let's work this out in a step by step way to be sure we have the right answer
