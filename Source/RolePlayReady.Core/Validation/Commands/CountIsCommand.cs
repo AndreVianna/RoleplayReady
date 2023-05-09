@@ -6,6 +6,6 @@ public sealed class HasCommand<TItem>
         : base(source, validation) {
         ValidateAs = c => ((ICollection<TItem?>)c!).Count == count;
         ValidationErrorMessage = MustHaveACountOf;
-        GetArguments = c => new object?[] { count, ((ICollection<TItem?>)c!).Count };
+        GetErrorMessageArguments = c => new object?[] { count, ((ICollection<TItem?>)c!).Count };
     }
 }

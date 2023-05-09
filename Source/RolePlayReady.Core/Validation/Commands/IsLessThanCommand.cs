@@ -7,6 +7,6 @@ public sealed class IsLessThanCommand<TValue>
         : base(source, validation) {
         ValidateAs = v => ((TValue)v!).CompareTo(threshold) < 0;
         ValidationErrorMessage = MustBeLessThan;
-        GetArguments = v => new[] { threshold, v };
+        GetErrorMessageArguments = v => new[] { threshold, v };
     }
 }

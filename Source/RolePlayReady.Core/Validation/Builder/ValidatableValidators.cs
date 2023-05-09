@@ -10,7 +10,7 @@ public class ValidatableValidators : Validators<IValidatable?>, IValidatableVali
     }
 
     public IConnectors<IValidatable?, IValidators> IsValid() {
-        _commandFactory.Create(nameof(IsValidCommand)).Validate(Subject);
+        _commandFactory.Create(nameof(IsValid)).Validate(Subject);
         return _connector;
     }
 }

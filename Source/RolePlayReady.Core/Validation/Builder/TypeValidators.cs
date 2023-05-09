@@ -11,7 +11,7 @@ public class TypeValidators : Validators<Type?>, ITypeValidators {
     }
 
     public IConnectors<Type?, TypeValidators> IsEqualTo<TType>() {
-        _commandFactory.Create(nameof(IsEqualToCommand<int>), typeof(TType)).Validate(Subject);
+        _commandFactory.Create(nameof(IsEqualTo), typeof(TType)).Validate(Subject);
         return _connector;
     }
 }

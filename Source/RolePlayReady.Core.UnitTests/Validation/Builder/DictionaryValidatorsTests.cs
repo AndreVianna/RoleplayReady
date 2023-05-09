@@ -4,6 +4,7 @@ public class DictionaryValidatorsTests {
     public record TestObject : IValidatable {
         public required IDictionary<string, int> Numbers { get; init; } = new Dictionary<string, int>();
         public required IDictionary<string, string> Names { get; init; } = new Dictionary<string, string>();
+        public IDictionary<string, string> Empty { get; } = new Dictionary<string, string>();
 
         public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
@@ -15,6 +16,7 @@ public class DictionaryValidatorsTests {
                 .And().ContainsKey("Five")
                 .And().Each(item => item.IsRequired().And().IsGreaterThan(0)).Result;
             result += Names!.CheckIfEach(value => value.IsRequired()).Result;
+            result += Empty!.IsRequired().And().IsEmpty().Result;
             return result;
         }
     }

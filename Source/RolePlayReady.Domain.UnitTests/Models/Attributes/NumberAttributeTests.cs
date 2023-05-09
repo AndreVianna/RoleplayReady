@@ -45,14 +45,14 @@ public class NumberAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("IsEqualTo", "wrong"));
+        _definition.Constraints.Add(new AttributeConstraint("IsLessThan", "wrong"));
 
         _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("IsEqualTo"));
+        _definition.Constraints.Add(new AttributeConstraint("IsLessThan"));
 
         _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>();
     }

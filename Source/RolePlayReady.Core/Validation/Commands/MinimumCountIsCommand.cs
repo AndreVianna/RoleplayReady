@@ -6,6 +6,6 @@ public sealed class HasAtLeastCommand<TItem>
         : base(source, validation) {
         ValidateAs = c => ((ICollection<TItem?>)c!).Count >= count;
         ValidationErrorMessage = MustHaveAMinimumCountOf;
-        GetArguments = c => new object?[] { count, ((ICollection<TItem?>)c!).Count };
+        GetErrorMessageArguments = c => new object?[] { count, ((ICollection<TItem?>)c!).Count };
     }
 }

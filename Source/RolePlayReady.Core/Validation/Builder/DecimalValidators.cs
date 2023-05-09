@@ -11,27 +11,27 @@ public class DecimalValidators : Validators<decimal?>, IDecimalValidators {
     }
 
     public IConnectors<decimal?, DecimalValidators> MinimumIs(decimal threshold) {
-        _commandFactory.Create(nameof(IsLessThanCommand<int>), threshold).Negate(Subject);
+        _commandFactory.Create(nameof(IsLessThan), threshold).Negate(Subject);
         return _connector;
     }
 
     public IConnectors<decimal?, DecimalValidators> IsGreaterThan(decimal threshold) {
-        _commandFactory.Create(nameof(IsGreaterThanCommand<int>), threshold).Validate(Subject);
+        _commandFactory.Create(nameof(IsGreaterThan), threshold).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<decimal?, DecimalValidators> IsEqualTo(decimal threshold) {
-        _commandFactory.Create(nameof(IsEqualToCommand<int>), threshold).Validate(Subject);
+        _commandFactory.Create(nameof(IsEqualTo), threshold).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<decimal?, DecimalValidators> IsLessThan(decimal threshold) {
-        _commandFactory.Create(nameof(IsLessThanCommand<int>), threshold).Validate(Subject);
+        _commandFactory.Create(nameof(IsLessThan), threshold).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<decimal?, DecimalValidators> MaximumIs(decimal threshold) {
-        _commandFactory.Create(nameof(IsGreaterThanCommand<int>), threshold).Negate(Subject);
+        _commandFactory.Create(nameof(IsGreaterThan), threshold).Negate(Subject);
         return _connector;
     }
 }

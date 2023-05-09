@@ -11,27 +11,27 @@ public class IntegerValidators : Validators<int?>, IIntegerValidators {
     }
 
     public IConnectors<int?, IntegerValidators> MinimumIs(int threshold) {
-        _commandFactory.Create(nameof(IsLessThanCommand<int>), threshold).Negate(Subject);
+        _commandFactory.Create(nameof(IsLessThan), threshold).Negate(Subject);
         return _connector;
     }
 
     public IConnectors<int?, IntegerValidators> IsGreaterThan(int threshold) {
-        _commandFactory.Create(nameof(IsGreaterThanCommand<int>), threshold).Validate(Subject);
+        _commandFactory.Create(nameof(IsGreaterThan), threshold).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<int?, IntegerValidators> IsEqualTo(int threshold) {
-        _commandFactory.Create(nameof(IsEqualToCommand<int>), threshold).Validate(Subject);
+        _commandFactory.Create(nameof(IsEqualTo), threshold).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<int?, IntegerValidators> IsLessThan(int threshold) {
-        _commandFactory.Create(nameof(IsLessThanCommand<int>), threshold).Validate(Subject);
+        _commandFactory.Create(nameof(IsLessThan), threshold).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<int?, IntegerValidators> MaximumIs(int threshold) {
-        _commandFactory.Create(nameof(IsGreaterThanCommand<int>), threshold).Negate(Subject);
+        _commandFactory.Create(nameof(IsGreaterThan), threshold).Negate(Subject);
         return _connector;
     }
 }

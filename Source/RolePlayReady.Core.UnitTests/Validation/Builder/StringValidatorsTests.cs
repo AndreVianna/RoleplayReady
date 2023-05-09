@@ -19,6 +19,8 @@ public class StringValidatorsTests {
         public string? Name { get; init; }
         public string? Email { get; init; }
         public string? Password { get; init; }
+        public string Empty { get; } = string.Empty;
+
         public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
             result += Name.IsRequired()
@@ -34,6 +36,7 @@ public class StringValidatorsTests {
             result += Password.IsOptional()
                            .And().IsNotEmpty()
                            .And().IsPassword(_fakePolicy).Result;
+            result += Empty.IsRequired().And().IsEmpty().And().IsEmptyOrWhiteSpace().Result;
             return result;
         }
     }

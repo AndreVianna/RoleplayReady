@@ -16,15 +16,4 @@ public sealed class IsValidCommand
 
         return Validation;
     }
-
-    public override ValidationResult Negate(object? subject) {
-        if (subject is not IValidatable v) return Validation;
-        var validation = v.ValidateSelf(true);
-        foreach (var error in validation.Errors) {
-            error.Arguments[0] = $"{Source}.{error.Arguments[0]}";
-            AddError(error);
-        }
-
-        return Validation;
-    }
 }

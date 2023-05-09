@@ -19,6 +19,8 @@ public sealed class ValidationCommandFactory {
         => new(subjectType, source, validation);
 
     public IValidationCommand Create(string command, params object?[] arguments) {
+        if (command == IsNull) return new IsNullCommand(_source, _validation);
+        if (command == IsEqualTo) return new IsEqualToCommand(arguments[0]!, _source, _validation);
         if (_subjectType == typeof(int)) return CreateNumberCommand<int>(command, arguments);
         if (_subjectType == typeof(decimal)) return CreateNumberCommand<decimal>(command, arguments);
         if (_subjectType == typeof(DateTime)) return CreateDateTimeCommand(command, arguments);
@@ -26,7 +28,6 @@ public sealed class ValidationCommandFactory {
         if (_subjectType == typeof(decimal?)) return CreateNumberCommand<decimal>(command, arguments);
         if (_subjectType == typeof(DateTime?)) return CreateDateTimeCommand(command, arguments);
         if (_subjectType == typeof(string)) return CreateStringCommand(command, arguments);
-        if (_subjectType.IsAssignableTo(typeof(Type))) return CreateTypeCommand(command, arguments);
         if (_subjectType.IsAssignableTo(typeof(ICollection<int>))) return CreateCollectionCommand<int>(command, arguments);
         if (_subjectType.IsAssignableTo(typeof(ICollection<decimal>))) return CreateCollectionCommand<decimal>(command, arguments);
         if (_subjectType.IsAssignableTo(typeof(ICollection<int?>))) return CreateCollectionCommand<int>(command, arguments);
@@ -38,66 +39,40 @@ public sealed class ValidationCommandFactory {
         if (_subjectType.IsAssignableTo(typeof(IDictionary<string, decimal?>))) return CreateDictionaryCommand<string, decimal>(command, arguments);
         if (_subjectType.IsAssignableTo(typeof(IDictionary<string, string>))) return CreateDictionaryCommand<string, string>(command, arguments);
         if (_subjectType.IsAssignableTo(typeof(IValidatable))) return CreateValidatableCommand(command);
-        return CreateObjectCommand(command);
+        throw new InvalidOperationException($"Unsupported command '{command}' for type '{_subjectType.Name}'.");
     }
 
-    private IValidationCommand CreateValidatableCommand(string command)
-        => command switch {
-            IsRequiredCommand => new IsNullCommand(_source, _validation),
-            ValidatesCommand => new IsValidCommand(_source, _validation),
-            _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
-        };
-
-    private IValidationCommand CreateObjectCommand(string command)
-        => command switch {
-            IsRequiredCommand => new IsNullCommand(_source, _validation),
-            _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
-        };
+    private IValidationCommand CreateValidatableCommand(string command) {
+        if (command == IsValid) return new IsValidCommand(_source, _validation);
+        throw new InvalidOperationException($"Unsupported command '{command}' for {_subjectType.Name}.");
+    }
 
     private IValidationCommand CreateNumberCommand<TValue>(string command, IReadOnlyList<object?> arguments)
         where TValue : struct, IComparable<TValue> {
-        return command switch {
-            _ when command == EqualsCommand => new IsEqualToCommand<TValue>(GetLimit(), _source, _validation),
-            _ when command == IsLessThanCommand => new IsLessThanCommand<TValue>(GetLimit(), _source, _validation),
-            _ when command == IsGreaterThanCommand => new IsGreaterThanCommand<TValue>(GetLimit(), _source, _validation),
-            _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
-        };
+        if (command == IsLessThan) return new IsLessThanCommand<TValue>(GetLimit(), _source, _validation);
+        if (command == IsGreaterThan) return new IsGreaterThanCommand<TValue>(GetLimit(), _source, _validation);
+        throw new InvalidOperationException($"Unsupported command '{command}' for type '{_subjectType.Name}'.");
 
         TValue GetLimit() => Ensure.ArgumentExistsAndIsOfType<TValue>(command, arguments, 0);
     }
 
     private IValidationCommand CreateDateTimeCommand(string command, IReadOnlyList<object?> arguments) {
-        return command switch {
-            _ when command == EqualsCommand => new IsEqualToCommand<DateTime>(GetLimit(), _source, _validation),
-            IsLessThanDateCommand => new IsBeforeCommand(GetLimit(), _source, _validation),
-            IsGreaterThanDateCommand => new IsAfterCommand(GetLimit(), _source, _validation),
-            _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
-        };
+        if (command == IsBefore) return new IsBeforeCommand(GetLimit(), _source, _validation);
+        if (command == IsAfter) return new IsAfterCommand(GetLimit(), _source, _validation);
+        throw new InvalidOperationException($"Unsupported command '{command}' for type '{_subjectType.Name}'.");
 
         DateTime GetLimit() => Ensure.ArgumentExistsAndIsOfType<DateTime>(command, arguments, 0);
     }
 
-    private IValidationCommand CreateTypeCommand(string command, IReadOnlyList<object?> arguments) {
-        return command switch {
-            _ when command == EqualsCommand => new IsEqualToCommand<Type>(GetTypeArg(), _source, _validation),
-            _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
-        };
-
-        Type GetTypeArg() => Ensure.ArgumentExistsAndIsOfType<Type>(command, arguments, 0);
-    }
-
     private IValidationCommand CreateStringCommand(string command, IReadOnlyList<object?> arguments) {
-        return command switch {
-            HasNoItems => new IsEmptyCommand(_source, _validation),
-            HasNoOrOnlyEmptyItems => new IsEmptyOrWhiteSpaceCommand(_source, _validation),
-            SizeIsAtLeastCommand => new LengthIsAtLeastCommand(GetLength(), _source, _validation),
-            SizeIsAtMostCommand => new LengthIsAtMostCommand(GetLength(), _source, _validation),
-            SizeIsCommand => new LengthIsCommand(GetLength(), _source, _validation),
-            HasCommand => new ContainsCommand(GetString(), _source, _validation),
-            _ when command == EqualsCommand => new IsEqualToCommand<string>(GetString(), _source, _validation),
-            _ when command == IsOneOfCommand => new IsOneOfCommand<string>(GetList(), _source, _validation),
-            _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
-        };
+        if (command == IsEmpty) return new IsEmptyCommand(_source, _validation);
+        if (command == IsEmptyOrWhiteSpace) return new IsEmptyOrWhiteSpaceCommand(_source, _validation);
+        if (command == LengthIsAtLeast) return new LengthIsAtLeastCommand(GetLength(), _source, _validation);
+        if (command == LengthIsAtMost) return new LengthIsAtMostCommand(GetLength(), _source, _validation);
+        if (command == LengthIs) return new LengthIsCommand(GetLength(), _source, _validation);
+        if (command == Contains) return new ContainsCommand(GetString(), _source, _validation);
+        if (command == IsIn) return new IsInCommand<string>(GetList(), _source, _validation);
+        throw new InvalidOperationException($"Unsupported command '{command}' for type '{_subjectType.Name}'.");
 
         int GetLength() => Ensure.ArgumentExistsAndIsOfType<int>(command, arguments, 0);
         string GetString() => Ensure.ArgumentExistsAndIsOfType<string>(command, arguments, 0);
@@ -105,14 +80,12 @@ public sealed class ValidationCommandFactory {
     }
 
     private IValidationCommand CreateCollectionCommand<TItem>(string command, IReadOnlyList<object?> arguments) {
-        return command switch {
-            HasNoItems => new IsEmptyCommand<TItem>(_source, _validation),
-            HasCommand => new ContainsCommand<TItem>(GetItem(), _source, _validation),
-            _ when command == MinimumCountIsCommand => new HasAtLeastCommand<TItem>(GetCount(), _source, _validation),
-            _ when command == MaximumCountIsCommand => new HasAtMostCommand<TItem>(GetCount(), _source, _validation),
-            _ when command == CountIsCommand => new HasCommand<TItem>(GetCount(), _source, _validation),
-            _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
-        };
+        if (command == IsEmpty) return new IsEmptyCommand<TItem>(_source, _validation);
+        if (command == Contains) return new ContainsCommand<TItem>(GetItem(), _source, _validation);
+        if (command == HasAtLeast) return new HasAtLeastCommand<TItem>(GetCount(), _source, _validation);
+        if (command == HasAtMost) return new HasAtMostCommand<TItem>(GetCount(), _source, _validation);
+        if (command == Has) return new HasCommand<TItem>(GetCount(), _source, _validation);
+        throw new InvalidOperationException($"Unsupported command '{command}' for type '{_subjectType.Name}'.");
 
         int GetCount() => Ensure.ArgumentExistsAndIsOfType<int>(command, arguments, 0);
         TItem? GetItem() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TItem>(command, arguments, 0);
@@ -120,15 +93,13 @@ public sealed class ValidationCommandFactory {
 
     private IValidationCommand CreateDictionaryCommand<TKey, TValue>(string command, IReadOnlyList<object?> arguments)
         where TKey : notnull {
-        return command switch {
-            HasNoItems => new IsEmptyCommand<KeyValuePair<TKey, TValue?>>(_source, _validation),
-            _ when command == MinimumCountIsCommand => new HasAtLeastCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
-            _ when command == MaximumCountIsCommand => new HasAtMostCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
-            _ when command == CountIsCommand => new HasCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
-            _ when command == ContainsKeyCommand => new ContainsKeyCommand<TKey, TValue?>(GetKey(), _source, _validation),
-            _ when command == ContainsValueCommand => new ContainsValueCommand<TKey, TValue?>(GetValue(), _source, _validation),
-            _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
-        };
+        if (command == IsEmpty) return new IsEmptyCommand<KeyValuePair<TKey, TValue?>>(_source, _validation);
+        if (command == HasAtLeast) return new HasAtLeastCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation);
+        if (command == HasAtMost) return new HasAtMostCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation);
+        if (command == Has) return new HasCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation);
+        if (command == ContainsKey) return new ContainsKeyCommand<TKey, TValue?>(GetKey(), _source, _validation);
+        if (command == ContainsValue) return new ContainsValueCommand<TKey, TValue?>(GetValue(), _source, _validation);
+        throw new InvalidOperationException($"Unsupported command '{command}' for type '{_subjectType.Name}'.");
 
         int GetCount() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<int>(command, arguments, 0);
         TKey? GetKey() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TKey>(command, arguments, 0);

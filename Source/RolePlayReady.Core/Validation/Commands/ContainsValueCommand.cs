@@ -7,6 +7,6 @@ public sealed class ContainsValueCommand<TKey, TValue>
         : base(source, validation) {
         ValidateAs = d => ((IDictionary<TKey, TValue?>)d!).Values.Contains(value);
         ValidationErrorMessage = MustContainValue;
-        GetArguments = _ => new object?[] { value };
+        GetErrorMessageArguments = _ => new object?[] { value };
     }
 }

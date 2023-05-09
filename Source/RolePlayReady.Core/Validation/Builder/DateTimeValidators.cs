@@ -11,22 +11,22 @@ public class DateTimeValidators : Validators<DateTime?>, IDateTimeValidators {
     }
 
     public IConnectors<DateTime?, DateTimeValidators> IsBefore(DateTime threshold) {
-        _commandFactory.Create(nameof(IsBeforeCommand), threshold).Validate(Subject);
+        _commandFactory.Create(nameof(IsBefore), threshold).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<DateTime?, DateTimeValidators> StartsOn(DateTime threshold) {
-        _commandFactory.Create(nameof(IsBeforeCommand), threshold).Negate(Subject);
+        _commandFactory.Create(nameof(IsBefore), threshold).Negate(Subject);
         return _connector;
     }
 
     public IConnectors<DateTime?, DateTimeValidators> EndsOn(DateTime threshold) {
-        _commandFactory.Create(nameof(IsAfterCommand), threshold).Negate(Subject);
+        _commandFactory.Create(nameof(IsAfter), threshold).Negate(Subject);
         return _connector;
     }
 
     public IConnectors<DateTime?, DateTimeValidators> IsAfter(DateTime threshold) {
-        _commandFactory.Create(nameof(IsAfterCommand), threshold).Validate(Subject);
+        _commandFactory.Create(nameof(IsAfter), threshold).Validate(Subject);
         return _connector;
     }
 }

@@ -6,6 +6,6 @@ public sealed class IsAfterCommand
         : base(source, validation) {
         ValidateAs = dt => (DateTime)dt! > @event;
         ValidationErrorMessage = MustBeAfter;
-        GetArguments = dt => new object?[] { @event, (DateTime)dt! };
+        GetErrorMessageArguments = dt => new object?[] { @event, (DateTime)dt! };
     }
 }

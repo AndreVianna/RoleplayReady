@@ -5,6 +5,6 @@ public sealed class LengthIsAtLeastCommand : ValidationCommand {
         : base(source, validation) {
         ValidateAs = s => ((string)s!).Length >= length;
         ValidationErrorMessage = MustHaveAMinimumLengthOf;
-        GetArguments = s => new object?[] { length, ((string)s!).Length };
+        GetErrorMessageArguments = s => new object?[] { length, ((string)s!).Length };
     }
 }

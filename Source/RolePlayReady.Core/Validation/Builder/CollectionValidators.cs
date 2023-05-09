@@ -10,28 +10,33 @@ public sealed class CollectionValidators<TItem> : Validators<ICollection<TItem?>
         _commandFactory = ValidationCommandFactory.For(typeof(ICollection<TItem?>), Source, Result);
     }
 
+    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> IsEmpty() {
+        _commandFactory.Create(nameof(IsEmpty)).Validate(Subject);
+        return _connector;
+    }
+
     public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> IsNotEmpty() {
-        _commandFactory.Create(nameof(IsEmptyCommand)).Negate(Subject);
+        _commandFactory.Create(nameof(IsEmpty)).Negate(Subject);
         return _connector;
     }
 
     public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> HasAtLeast(int size) {
-        _commandFactory.Create(nameof(HasAtLeastCommand<int>), size).Validate(Subject);
+        _commandFactory.Create(nameof(HasAtLeast), size).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> Has(int size) {
-        _commandFactory.Create(nameof(HasCommand<int>), size).Validate(Subject);
+        _commandFactory.Create(nameof(Has), size).Validate(Subject);
         return _connector;
     }
 
     public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> Contains(TItem item) {
-        _commandFactory.Create(nameof(ContainsCommand), item).Validate(Subject);
+        _commandFactory.Create(nameof(Contains), item).Validate(Subject);
         return _connector;
     }
 
-    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> AtMostHas(int size) {
-        _commandFactory.Create(nameof(HasAtMostCommand<int>), size).Validate(Subject);
+    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> HasAtMost(int size) {
+        _commandFactory.Create(nameof(HasAtMost), size).Validate(Subject);
         return _connector;
     }
 

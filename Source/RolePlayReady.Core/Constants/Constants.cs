@@ -2,26 +2,25 @@
 
 public static class Constants {
     public static class Commands {
-        public const string HasCommand = nameof(ContainsCommand);
-        public static string ContainsKeyCommand = typeof(ContainsKeyCommand<,>).Name.Split('`')[0];
-        public static string ContainsValueCommand = typeof(ContainsValueCommand<,>).Name.Split('`')[0];
-        public static string CountIsCommand = typeof(HasCommand<>).Name.Split('`')[0];
-        public const string IsGreaterThanDateCommand = nameof(IsAfterCommand);
-        public const string IsLessThanDateCommand = nameof(IsBeforeCommand);
-        public const string HasNoItems = nameof(IsEmptyCommand);
-        public const string HasNoOrOnlyEmptyItems = nameof(IsEmptyOrWhiteSpaceCommand);
-        public static string EqualsCommand = typeof(IsEqualToCommand<>).Name.Split('`')[0];
-        public static string IsGreaterThanCommand = typeof(IsGreaterThanCommand<>).Name.Split('`')[0];
-        public static string IsLessThanCommand = typeof(IsLessThanCommand<>).Name.Split('`')[0];
-        public const string IsRequiredCommand = nameof(IsNullCommand);
-        public static string IsOneOfCommand = typeof(IsOneOfCommand<>).Name.Split('`')[0];
-        public const string ValidatesCommand = nameof(IsValidCommand);
-        public const string SizeIsCommand = nameof(LengthIsCommand);
-        public static string MaximumCountIsCommand = typeof(HasAtMostCommand<>).Name.Split('`')[0];
-        public const string SizeIsAtMostCommand = nameof(LengthIsAtMostCommand);
-        public static string MinimumCountIsCommand = typeof(HasAtLeastCommand<>).Name.Split('`')[0];
-        public const string SizeIsAtLeastCommand = nameof(LengthIsAtLeastCommand);
-        public const string NoneCommand = nameof(NullCommand);
+        public static string IsEqualTo = nameof(IsEqualToCommand).Replace("Command", string.Empty);
+        public static string Contains = nameof(ContainsCommand).Replace("Command", string.Empty);
+        public static string ContainsKey = typeof(ContainsKeyCommand<,>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string ContainsValue = typeof(ContainsValueCommand<,>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string Has = typeof(HasCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string IsAfter = nameof(IsAfterCommand).Replace("Command", string.Empty);
+        public static string IsBefore = nameof(IsBeforeCommand).Replace("Command", string.Empty);
+        public static string IsEmpty = nameof(IsEmptyCommand).Replace("Command", string.Empty);
+        public static string IsEmptyOrWhiteSpace = nameof(IsEmptyOrWhiteSpaceCommand).Replace("Command", string.Empty);
+        public static string IsGreaterThan = typeof(IsGreaterThanCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string IsLessThan = typeof(IsLessThanCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string IsNull = nameof(IsNullCommand).Replace("Command", string.Empty);
+        public static string IsIn = typeof(IsInCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string IsValid = nameof(IsValidCommand).Replace("Command", string.Empty);
+        public static string LengthIs = nameof(LengthIsCommand).Replace("Command", string.Empty);
+        public static string HasAtMost = typeof(HasAtMostCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string LengthIsAtMost = nameof(LengthIsAtMostCommand).Replace("Command", string.Empty);
+        public static string HasAtLeast = typeof(HasAtLeastCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string LengthIsAtLeast = nameof(LengthIsAtLeastCommand).Replace("Command", string.Empty);
     }
 
     public static class ErrorMessages {
