@@ -20,8 +20,13 @@ public partial class StringValidators : Validators<string?>, IStringValidators {
         return _connector;
     }
 
-    public IConnectors<string?, StringValidators> MinimumLengthIs(int length) {
-        _commandFactory.Create(nameof(MinimumLengthIsCommand), length).Validate(Subject);
+    public IConnectors<string?, StringValidators> LengthIsAtLeast(int length) {
+        _commandFactory.Create(nameof(LengthIsAtLeastCommand), length).Validate(Subject);
+        return _connector;
+    }
+
+    public IConnectors<string?, StringValidators> Contains(string substring) {
+        _commandFactory.Create(nameof(ContainsCommand), substring).Validate(Subject);
         return _connector;
     }
 
@@ -35,8 +40,8 @@ public partial class StringValidators : Validators<string?>, IStringValidators {
         return _connector;
     }
 
-    public IConnectors<string?, StringValidators> MaximumLengthIs(int length) {
-        _commandFactory.Create(nameof(MaximumLengthIsCommand), length).Validate(Subject);
+    public IConnectors<string?, StringValidators> LengthIsAtMost(int length) {
+        _commandFactory.Create(nameof(LengthIsAtMostCommand), length).Validate(Subject);
         return _connector;
     }
 

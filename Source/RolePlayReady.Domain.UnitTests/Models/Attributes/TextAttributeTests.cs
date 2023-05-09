@@ -26,10 +26,10 @@ public class TextAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("MaximumLengthIs", new object[] { 20 }, true);
-            Add("MaximumLengthIs", new object[] { 2 }, false);
-            Add("MinimumLengthIs", new object[] { 2 }, true);
-            Add("MinimumLengthIs", new object[] { 20 }, false);
+            Add("LengthIsAtMost", new object[] { 20 }, true);
+            Add("LengthIsAtMost", new object[] { 2 }, false);
+            Add("LengthIsAtLeast", new object[] { 2 }, true);
+            Add("LengthIsAtLeast", new object[] { 20 }, false);
             Add("LengthIs", new object[] { 9 }, true);
             Add("LengthIs", new object[] { 20 }, false);
             Add("IsOneOf", new object[] { "One", "TestValue", "Three" }, true);

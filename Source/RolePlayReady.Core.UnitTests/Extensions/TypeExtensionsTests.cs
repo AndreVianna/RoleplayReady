@@ -1,6 +1,30 @@
 namespace System.Extensions;
 
 public class TypeExtensionsTests {
+    [Fact]
+    public void IsRequired_ReturnsConnector() {
+        // Arrange
+        var subject = typeof(string);
+
+        // Act
+        var result = subject.IsRequired();
+
+        // Assert
+        result.Should().BeOfType<Connectors<Type?, TypeValidators>>();
+    }
+
+    [Fact]
+    public void IsRequired_ForNullable_ReturnsConnector() {
+        // Arrange
+        Type? subject = default;
+
+        // Act
+        var result = subject.IsRequired();
+
+        // Assert
+        result.Should().BeOfType<Connectors<Type?, TypeValidators>>();
+    }
+
     [Theory]
     [InlineData(typeof(int), "Integer")]
     [InlineData(typeof(string), "String")]
@@ -22,6 +46,7 @@ public class TypeExtensionsTests {
     [InlineData(typeof(string[]), "String[]")]
     [InlineData(typeof(decimal[]), "Decimal[]")]
     [InlineData(typeof(long[]), "Int64[]")]
+    [InlineData(typeof(HashSet<string>), "HashSet<String>")]
     public void ToFriendlyName_CorrectlyConvertsInput(Type input, string expectedResult) {
         // Act
         var name = input.GetName();

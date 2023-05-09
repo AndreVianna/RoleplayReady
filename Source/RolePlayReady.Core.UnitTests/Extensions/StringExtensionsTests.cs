@@ -1,6 +1,42 @@
 namespace System.Extensions;
 
 public class StringExtensionsTests {
+    [Fact]
+    public void IsRequired_ReturnsConnector() {
+        // Arrange
+        var subject = "42.0m";
+
+        // Act
+        var result = subject.IsRequired();
+
+        // Assert
+        result.Should().BeOfType<Connectors<string?, StringValidators>>();
+    }
+
+    [Fact]
+    public void IsRequired_ForNullable_ReturnsConnector() {
+        // Arrange
+        string? subject = default;
+
+        // Act
+        var result = subject.IsRequired();
+
+        // Assert
+        result.Should().BeOfType<Connectors<string?, StringValidators>>();
+    }
+
+    [Fact]
+    public void IsOptional_ForNullable_ReturnsConnector() {
+        // Arrange
+        string? subject = default;
+
+        // Act
+        var result = subject.IsOptional();
+
+        // Assert
+        result.Should().BeOfType<Connectors<string?, StringValidators>>();
+    }
+
     [Theory]
     [InlineData("shadow", "Shadow")]
     [InlineData("hello world", "HelloWorld")]

@@ -12,7 +12,7 @@ public static class ValidatorFactory {
         => new(new(subject, source, AllowNull(false, subject, source)));
 
     public static IConnectors<ICollection<TSubject?>, CollectionValidators<TSubject>> Create<TSubject>(ICollection<TSubject?>? subject, string source, Func<TSubject?, ITerminator> validateItem)
-        => new CollectionValidators<TSubject>(subject, source, AllowNull(false, subject, source)).ForEach(validateItem);
+        => new CollectionValidators<TSubject>(subject, source, AllowNull(false, subject, source)).Each(validateItem);
 
     public static Connectors<DateTime?, DateTimeValidators> Create(bool allowNull, DateTime? subject, string source)
         => new(new(subject, source, AllowNull(allowNull, subject, source)));
@@ -26,7 +26,7 @@ public static class ValidatorFactory {
 
     public static IConnectors<IDictionary<TSubjectKey, TSubjectValue?>, DictionaryValidators<TSubjectKey, TSubjectValue>> Create<TSubjectKey, TSubjectValue>(IDictionary<TSubjectKey, TSubjectValue?>? subject, string source, Func<TSubjectValue?, ITerminator> validateValue)
         where TSubjectKey : notnull
-        => new DictionaryValidators<TSubjectKey, TSubjectValue>(subject, source, AllowNull(false, subject, source)).ForEach(validateValue);
+        => new DictionaryValidators<TSubjectKey, TSubjectValue>(subject, source, AllowNull(false, subject, source)).Each(validateValue);
 
     public static Connectors<int?, IntegerValidators> Create(bool allowNull, int? subject, string source)
         => new(new(subject, source, AllowNull(allowNull, subject, source)));

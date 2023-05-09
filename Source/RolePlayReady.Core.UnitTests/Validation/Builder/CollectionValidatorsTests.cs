@@ -9,12 +9,12 @@ public class CollectionValidatorsTests {
             var result = ValidationResult.Success();
             result += Numbers.IsRequired()
                 .And().IsNotEmpty()
-                .And().MinimumCountIs(2)
-                .And().MaximumCountIs(4)
-                .And().CountIs(3)
+                .And().HasAtLeast(2)
+                .And().AtMostHas(4)
+                .And().Has(3)
                 .And().Contains(5)
-                .And().ForEach(item => item.IsRequired().And().IsGreaterThan(0)).Result;
-            result += Names.ForEach(value => value.Name.IsRequired()).Result;
+                .And().Each(item => item.IsRequired().And().IsGreaterThan(0)).Result;
+            result += Names.CheckIfEach(value => value.Name.IsRequired()).Result;
             return result;
         }
     }

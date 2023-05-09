@@ -9,12 +9,12 @@ public class DictionaryValidatorsTests {
             var result = ValidationResult.Success();
             result += Numbers.IsRequired()
                 .And().IsNotEmpty()
-                .And().MinimumCountIs(2)
-                .And().MaximumCountIs(4)
-                .And().CountIs(3)
+                .And().HasAtLeast(2)
+                .And().HasAtMost(4)
+                .And().Has(3)
                 .And().ContainsKey("Five")
-                .And().ForEach(item => item.IsRequired().And().IsGreaterThan(0)).Result;
-            result += Names!.ForEach(value => value.IsRequired()).Result;
+                .And().Each(item => item.IsRequired().And().IsGreaterThan(0)).Result;
+            result += Names!.CheckIfEach(value => value.IsRequired()).Result;
             return result;
         }
     }

@@ -15,13 +15,13 @@ public sealed class CollectionValidators<TItem> : Validators<ICollection<TItem?>
         return _connector;
     }
 
-    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> MinimumCountIs(int size) {
-        _commandFactory.Create(nameof(MinimumCountIsCommand<int>), size).Validate(Subject);
+    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> HasAtLeast(int size) {
+        _commandFactory.Create(nameof(HasAtLeastCommand<int>), size).Validate(Subject);
         return _connector;
     }
 
-    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> CountIs(int size) {
-        _commandFactory.Create(nameof(CountIsCommand<int>), size).Validate(Subject);
+    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> Has(int size) {
+        _commandFactory.Create(nameof(HasCommand<int>), size).Validate(Subject);
         return _connector;
     }
 
@@ -30,12 +30,12 @@ public sealed class CollectionValidators<TItem> : Validators<ICollection<TItem?>
         return _connector;
     }
 
-    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> MaximumCountIs(int size) {
-        _commandFactory.Create(nameof(MaximumCountIsCommand<int>), size).Validate(Subject);
+    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> AtMostHas(int size) {
+        _commandFactory.Create(nameof(HasAtMostCommand<int>), size).Validate(Subject);
         return _connector;
     }
 
-    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> ForEach(Func<TItem?, ITerminator> validate) {
+    public IConnectors<ICollection<TItem?>, CollectionValidators<TItem>> Each(Func<TItem?, ITerminator> validate) {
         if (Subject is null) return _connector;
         var index = 0;
         foreach (var item in Subject)

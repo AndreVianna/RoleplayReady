@@ -6,8 +6,8 @@ public record Sphere : Persisted {
 
     public override ValidationResult ValidateSelf(bool negate = false) {
         var result = base.ValidateSelf();
-        result += Components!.ForEach(item => item.IsRequired().And().IsValid()).Result;
-        result += AttributeDefinitions!.ForEach(item => item.IsRequired().And().IsValid()).Result;
+        result += Components!.CheckIfEach(item => item.IsRequired().And().IsValid()).Result;
+        result += AttributeDefinitions!.CheckIfEach(item => item.IsRequired().And().IsValid()).Result;
         return result;
     }
 }

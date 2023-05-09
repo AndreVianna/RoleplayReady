@@ -13,7 +13,7 @@ public record Login : IValidatable {
                        .And().IsEmail().Result;
         result += Password.IsRequired()
                           .And().IsNotEmptyOrWhiteSpace()
-                          .And().MaximumLengthIs(Validation.Password.MaximumLength).Result;
+                          .And().LengthIsAtMost(Validation.Password.MaximumLength).Result;
         return result;
     }
 }

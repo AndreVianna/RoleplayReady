@@ -56,6 +56,7 @@ public class CreateTests {
     [InlineData("Integer[]", typeof(int[]))]
     [InlineData("String[]", typeof(string[]))]
     [InlineData("Decimal[]", typeof(decimal[]))]
+    [InlineData("Int64", typeof(long))]
     public void TypeFrom_ReturnsType(string name, Type expectedType) {
         var result = Create.TypeFrom(name);
 

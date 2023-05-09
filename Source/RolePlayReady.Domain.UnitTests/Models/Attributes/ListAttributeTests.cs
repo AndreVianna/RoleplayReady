@@ -26,12 +26,12 @@ public class ListAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("CountIs", new object[] { 3 }, true);
-            Add("CountIs", new object[] { 13 }, false);
-            Add("MinimumCountIs", new object[] { 1 }, true);
-            Add("MinimumCountIs", new object[] { 99 }, false);
-            Add("MaximumCountIs", new object[] { 99 }, true);
-            Add("MaximumCountIs", new object[] { 1 }, false);
+            Add("Has", new object[] { 3 }, true);
+            Add("Has", new object[] { 13 }, false);
+            Add("HasAtLeast", new object[] { 1 }, true);
+            Add("HasAtLeast", new object[] { 99 }, false);
+            Add("HasAtMost", new object[] { 99 }, true);
+            Add("HasAtMost", new object[] { 1 }, false);
             Add("Contains", new object[] { "TestValue2" }, true);
             Add("Contains", new object[] { "TestValue13" }, false);
         }
@@ -47,14 +47,14 @@ public class ListAttributeTests {
 
     [Fact]
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("CountIs", "wrong"));
+        _definition.Constraints.Add(new AttributeConstraint("Has", "wrong"));
 
         _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
-        _definition.Constraints.Add(new AttributeConstraint("CountIs"));
+        _definition.Constraints.Add(new AttributeConstraint("Has"));
 
         _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>();
     }

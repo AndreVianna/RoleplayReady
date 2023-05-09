@@ -13,17 +13,17 @@ public record Base : IBase, IValidatable {
         var result = ValidationResult.Success();
         result += Name.IsRequired()
             .And().IsNotEmptyOrWhiteSpace()
-            .And().MaximumLengthIs(Validation.Name.MaximumLength).Result;
+            .And().LengthIsAtMost(Validation.Name.MaximumLength).Result;
         result += Description.IsRequired()
             .And().IsNotEmptyOrWhiteSpace()
-            .And().MaximumLengthIs(Validation.Description.MaximumLength).Result;
+            .And().LengthIsAtMost(Validation.Description.MaximumLength).Result;
         result += ShortName.IsOptional()
             .And().IsNotEmptyOrWhiteSpace()
-            .And().MaximumLengthIs(Validation.ShortName.MaximumLength).Result;
-        result += Tags!.ForEach(item =>
+            .And().LengthIsAtMost(Validation.ShortName.MaximumLength).Result;
+        result += Tags!.CheckIfEach(item =>
             item.IsRequired()
                 .And().IsNotEmptyOrWhiteSpace()
-                .And().MaximumLengthIs(Validation.Tag.MaximumLength)).Result;
+                .And().LengthIsAtMost(Validation.Tag.MaximumLength)).Result;
         return result;
     }
 }

@@ -1,4 +1,5 @@
-﻿using CommandsNames = System.Constants.Constants.Commands;
+﻿using static System.Constants.Constants.Commands;
+
 using ValidationResult = System.Results.ValidationResult;
 
 namespace System.Validation.Commands;
@@ -42,23 +43,23 @@ public sealed class ValidationCommandFactory {
 
     private IValidationCommand CreateValidatableCommand(string command)
         => command switch {
-            CommandsNames.IsNullCommand => new IsNullCommand(_source, _validation),
-            CommandsNames.IsValidCommand => new IsValidCommand(_source, _validation),
+            IsRequiredCommand => new IsNullCommand(_source, _validation),
+            ValidatesCommand => new IsValidCommand(_source, _validation),
             _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
         };
 
     private IValidationCommand CreateObjectCommand(string command)
         => command switch {
-            CommandsNames.IsNullCommand => new IsNullCommand(_source, _validation),
+            IsRequiredCommand => new IsNullCommand(_source, _validation),
             _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
         };
 
     private IValidationCommand CreateNumberCommand<TValue>(string command, IReadOnlyList<object?> arguments)
         where TValue : struct, IComparable<TValue> {
         return command switch {
-            _ when command == CommandsNames.IsEqualToCommand => new IsEqualToCommand<TValue>(GetLimit(), _source, _validation),
-            _ when command == CommandsNames.IsLessThanCommand => new IsLessThanCommand<TValue>(GetLimit(), _source, _validation),
-            _ when command == CommandsNames.IsGreaterThanCommand => new IsGreaterThanCommand<TValue>(GetLimit(), _source, _validation),
+            _ when command == EqualsCommand => new IsEqualToCommand<TValue>(GetLimit(), _source, _validation),
+            _ when command == IsLessThanCommand => new IsLessThanCommand<TValue>(GetLimit(), _source, _validation),
+            _ when command == IsGreaterThanCommand => new IsGreaterThanCommand<TValue>(GetLimit(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
         };
 
@@ -67,9 +68,9 @@ public sealed class ValidationCommandFactory {
 
     private IValidationCommand CreateDateTimeCommand(string command, IReadOnlyList<object?> arguments) {
         return command switch {
-            _ when command == CommandsNames.IsEqualToCommand => new IsEqualToCommand<DateTime>(GetLimit(), _source, _validation),
-            CommandsNames.IsBeforeCommand => new IsBeforeCommand(GetLimit(), _source, _validation),
-            CommandsNames.IsAfterCommand => new IsAfterCommand(GetLimit(), _source, _validation),
+            _ when command == EqualsCommand => new IsEqualToCommand<DateTime>(GetLimit(), _source, _validation),
+            IsLessThanDateCommand => new IsBeforeCommand(GetLimit(), _source, _validation),
+            IsGreaterThanDateCommand => new IsAfterCommand(GetLimit(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
         };
 
@@ -78,7 +79,7 @@ public sealed class ValidationCommandFactory {
 
     private IValidationCommand CreateTypeCommand(string command, IReadOnlyList<object?> arguments) {
         return command switch {
-            _ when command == CommandsNames.IsEqualToCommand => new IsEqualToCommand<Type>(GetTypeArg(), _source, _validation),
+            _ when command == EqualsCommand => new IsEqualToCommand<Type>(GetTypeArg(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
         };
 
@@ -87,14 +88,14 @@ public sealed class ValidationCommandFactory {
 
     private IValidationCommand CreateStringCommand(string command, IReadOnlyList<object?> arguments) {
         return command switch {
-            _ when command == CommandsNames.IsEqualToCommand => new IsEqualToCommand<string>(GetString(), _source, _validation),
-            CommandsNames.IsEmptyCommand => new IsEmptyCommand(_source, _validation),
-            CommandsNames.IsEmptyOrWhiteSpaceCommand => new IsEmptyOrWhiteSpaceCommand(_source, _validation),
-            CommandsNames.MinimumLengthIsCommand => new MinimumLengthIsCommand(GetLength(), _source, _validation),
-            CommandsNames.MaximumLengthIsCommand => new MaximumLengthIsCommand(GetLength(), _source, _validation),
-            CommandsNames.LengthIsCommand => new LengthIsCommand(GetLength(), _source, _validation),
-            CommandsNames.ContainsCommand => new ContainsCommand(GetString(), _source, _validation),
-            _ when command == CommandsNames.IsOneOfCommand => new IsOneOfCommand<string>(GetList(), _source, _validation),
+            HasNoItems => new IsEmptyCommand(_source, _validation),
+            HasNoOrOnlyEmptyItems => new IsEmptyOrWhiteSpaceCommand(_source, _validation),
+            SizeIsAtLeastCommand => new LengthIsAtLeastCommand(GetLength(), _source, _validation),
+            SizeIsAtMostCommand => new LengthIsAtMostCommand(GetLength(), _source, _validation),
+            SizeIsCommand => new LengthIsCommand(GetLength(), _source, _validation),
+            HasCommand => new ContainsCommand(GetString(), _source, _validation),
+            _ when command == EqualsCommand => new IsEqualToCommand<string>(GetString(), _source, _validation),
+            _ when command == IsOneOfCommand => new IsOneOfCommand<string>(GetList(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
         };
 
@@ -105,11 +106,11 @@ public sealed class ValidationCommandFactory {
 
     private IValidationCommand CreateCollectionCommand<TItem>(string command, IReadOnlyList<object?> arguments) {
         return command switch {
-            CommandsNames.IsEmptyCommand => new IsEmptyCommand<TItem>(_source, _validation),
-            CommandsNames.ContainsCommand => new ContainsCommand<TItem>(GetItem(), _source, _validation),
-            _ when command == CommandsNames.MinimumCountIsCommand => new MinimumCountIsCommand<TItem>(GetCount(), _source, _validation),
-            _ when command == CommandsNames.MaximumCountIsCommand => new MaximumCountIsCommand<TItem>(GetCount(), _source, _validation),
-            _ when command == CommandsNames.CountIsCommand => new CountIsCommand<TItem>(GetCount(), _source, _validation),
+            HasNoItems => new IsEmptyCommand<TItem>(_source, _validation),
+            HasCommand => new ContainsCommand<TItem>(GetItem(), _source, _validation),
+            _ when command == MinimumCountIsCommand => new HasAtLeastCommand<TItem>(GetCount(), _source, _validation),
+            _ when command == MaximumCountIsCommand => new HasAtMostCommand<TItem>(GetCount(), _source, _validation),
+            _ when command == CountIsCommand => new HasCommand<TItem>(GetCount(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
         };
 
@@ -120,12 +121,12 @@ public sealed class ValidationCommandFactory {
     private IValidationCommand CreateDictionaryCommand<TKey, TValue>(string command, IReadOnlyList<object?> arguments)
         where TKey : notnull {
         return command switch {
-            CommandsNames.IsEmptyCommand => new IsEmptyCommand<KeyValuePair<TKey, TValue?>>(_source, _validation),
-            _ when command == CommandsNames.MinimumCountIsCommand => new MinimumCountIsCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
-            _ when command == CommandsNames.MaximumCountIsCommand => new MaximumCountIsCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
-            _ when command == CommandsNames.CountIsCommand => new CountIsCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
-            _ when command == CommandsNames.ContainsKeyCommand => new ContainsKeyCommand<TKey, TValue?>(GetKey(), _source, _validation),
-            _ when command == CommandsNames.ContainsValueCommand => new ContainsValueCommand<TKey, TValue?>(GetValue(), _source, _validation),
+            HasNoItems => new IsEmptyCommand<KeyValuePair<TKey, TValue?>>(_source, _validation),
+            _ when command == MinimumCountIsCommand => new HasAtLeastCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
+            _ when command == MaximumCountIsCommand => new HasAtMostCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
+            _ when command == CountIsCommand => new HasCommand<KeyValuePair<TKey, TValue?>>(GetCount(), _source, _validation),
+            _ when command == ContainsKeyCommand => new ContainsKeyCommand<TKey, TValue?>(GetKey(), _source, _validation),
+            _ when command == ContainsValueCommand => new ContainsValueCommand<TKey, TValue?>(GetValue(), _source, _validation),
             _ => throw new InvalidOperationException($"Unsupported command '{command}'.")
         };
 
