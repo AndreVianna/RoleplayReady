@@ -3,9 +3,9 @@
 public static partial class StringExtensions {
     private static readonly Regex _splitIntoWordsRegex = SplitIntoWords();
 
-    public static IConnectors<string?, StringValidators> IsOptional(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+    public static IConnector<StringValidator> IsOptional(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
         => Create(allowNull: true, subject, source!);
-    public static IConnectors<string?, StringValidators> IsRequired(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+    public static IConnector<StringValidator> IsRequired(this string? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
         => Create(allowNull: false, subject, source!);
 
     public static string ToPascalCase(this string input) {

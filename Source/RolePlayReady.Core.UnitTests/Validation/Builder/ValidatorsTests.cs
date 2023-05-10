@@ -1,26 +1,26 @@
 namespace System.Validation.Builder;
 
 public class ValidatorsTests {
-    public class TestObject : Validators<long> {
-        public TestObject(ValidatorMode mode, long subject, string source, ValidationResult? previousResult = null)
-            : base(mode, subject, source, previousResult) {
+    public class TestObject : Validator<long> {
+        public TestObject(long subject, string source, ValidatorMode mode = ValidatorMode.And)
+            : base(subject, source, mode) {
         }
     }
 
     [Fact]
     public void Constructor_CreatesBuilder() {
         // Act
-        var result = new TestObject(ValidatorMode.Or, 100, "SomeSubject", ValidationResult.Invalid("Some error.", "Source"));
+        var result = new TestObject(100, "SomeSubject");
 
         // Assert
-        result.Mode.Should().Be(ValidatorMode.Or);
-        result.Result.IsInvalid.Should().BeTrue();
+        result.Mode.Should().Be(ValidatorMode.And);
+        result.Result.IsSuccess.Should().BeTrue();
     }
 
     [Fact]
-    public void Constructor_WithoutPreviousError_CreatesBuilder() {
+    public void Constructor_WithModeAndPreviousResult_CreatesBuilder() {
         // Act
-        var result = new TestObject(ValidatorMode.Or, 100, "SomeSubject");
+        var result = new TestObject(100, "SomeSubject", ValidatorMode.Or);
 
         // Assert
         result.Mode.Should().Be(ValidatorMode.Or);

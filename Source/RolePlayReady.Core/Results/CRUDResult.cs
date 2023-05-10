@@ -16,7 +16,7 @@ public record CrudResult : Result {
     public static CrudResult Success() => new(CRUDResultType.Success);
     public static CrudResult NotFound() => new(CRUDResultType.NotFound);
     public static CrudResult Conflict() => new(CRUDResultType.Conflict);
-    public static CrudResult Invalid(string message, string source) => Invalid(new ValidationError(message, source));
+    public static CrudResult Invalid(string message, string source, params object?[] args) => Invalid(new ValidationError(message, source, args));
     public static CrudResult Invalid(ValidationError error) => Invalid(new[] { error });
     public static CrudResult Invalid(IEnumerable<ValidationError> errors) => new(CRUDResultType.Invalid, IsNotNullAndDoesNotHaveNull(errors));
 

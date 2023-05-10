@@ -10,7 +10,7 @@ public class DateTimeExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<DateTime?, DateTimeValidators>>();
+        result.Should().BeOfType<Connector<DateTime?, DateTimeValidator>>();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class DateTimeExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<DateTime?, DateTimeValidators>>();
+        result.Should().BeOfType<Connector<DateTime?, DateTimeValidator>>();
     }
 
     [Fact]
@@ -34,6 +34,6 @@ public class DateTimeExtensionsTests {
         var result = subject.IsOptional();
 
         // Assert
-        result.Should().BeOfType<Connectors<DateTime?, DateTimeValidators>>();
+        result.Should().BeOfType<Connector<DateTime?, DateTimeValidator>>();
     }
 }

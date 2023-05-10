@@ -2,18 +2,19 @@
 
 public sealed class IsValidCommand
     : ValidationCommand {
-    public IsValidCommand(string source, ValidationResult? validation = null)
-        : base(source, validation) {
+    public IsValidCommand(string source)
+        : base(source) {
     }
 
     public override ValidationResult Validate(object? subject) {
-        if (subject is not IValidatable v) return Validation;
+        var result = ValidationResult.Success();
+        if (subject is not IValidatable v) return result;
         var validation = v.ValidateSelf();
         foreach (var error in validation.Errors) {
             error.Arguments[0] = $"{Source}.{error.Arguments[0]}";
-            AddError(error);
+            result += error;
         }
 
-        return Validation;
+        return result;
     }
 }

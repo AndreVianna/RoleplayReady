@@ -10,7 +10,7 @@ public class IntegerExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<int?, IntegerValidators>>();
+        result.Should().BeOfType<Connector<int?, IntegerValidator>>();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class IntegerExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<int?, IntegerValidators>>();
+        result.Should().BeOfType<Connector<int?, IntegerValidator>>();
     }
 
     [Fact]
@@ -34,6 +34,6 @@ public class IntegerExtensionsTests {
         var result = subject.IsOptional();
 
         // Assert
-        result.Should().BeOfType<Connectors<int?, IntegerValidators>>();
+        result.Should().BeOfType<Connector<int?, IntegerValidator>>();
     }
 }

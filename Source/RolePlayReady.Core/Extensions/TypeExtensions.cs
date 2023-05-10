@@ -1,7 +1,7 @@
 ﻿namespace System.Extensions;
 
 public static class TypeExtensions {
-    public static IConnectors<Type?, TypeValidators> IsRequired(this Type? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
+    public static IConnector<TypeValidator> IsRequired(this Type? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
         => Create(subject, source!);
 
     public static string GetName(this Type type) {

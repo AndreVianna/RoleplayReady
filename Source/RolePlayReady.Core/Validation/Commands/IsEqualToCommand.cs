@@ -4,8 +4,8 @@ namespace System.Validation.Commands;
 
 public sealed class IsEqualToCommand
     : ValidationCommand{
-    public IsEqualToCommand(object value, string source, ValidationResult? validation = null)
-        : base(source, validation) {
+    public IsEqualToCommand(object value, string source)
+        : base(source) {
         ValidateAs = o => IsEquivalent(value, o);
         ValidationErrorMessage = MustBeEqualTo;
         GetErrorMessageArguments = o => new object?[] { GetString(value), GetString(o) };

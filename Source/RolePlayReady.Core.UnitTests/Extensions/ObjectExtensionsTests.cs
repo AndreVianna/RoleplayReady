@@ -10,7 +10,7 @@ public class ObjectExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<object?, ObjectValidators>>();
+        result.Should().BeOfType<Connector<object?, ObjectValidator>>();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class ObjectExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<object?, ObjectValidators>>();
+        result.Should().BeOfType<Connector<object?, ObjectValidator>>();
     }
 
     [Fact]
@@ -34,6 +34,6 @@ public class ObjectExtensionsTests {
         var result = subject.IsOptional();
 
         // Assert
-        result.Should().BeOfType<Connectors<object?, ObjectValidators>>();
+        result.Should().BeOfType<Connector<object?, ObjectValidator>>();
     }
 }

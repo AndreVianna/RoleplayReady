@@ -2,8 +2,8 @@
 
 public sealed class IsEmptyOrWhiteSpaceCommand
     : ValidationCommand {
-    public IsEmptyOrWhiteSpaceCommand(string source, ValidationResult? validation = null)
-        : base(source, validation) {
+    public IsEmptyOrWhiteSpaceCommand(string source)
+        : base(source) {
         ValidateAs = s => ((string)s!).Trim().Length == 0;
         ValidationErrorMessage = MustBeEmptyOrWhitespace;
     }

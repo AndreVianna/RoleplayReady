@@ -10,7 +10,7 @@ public class StringExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<string?, StringValidators>>();
+        result.Should().BeOfType<Connector<string?, StringValidator>>();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class StringExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<string?, StringValidators>>();
+        result.Should().BeOfType<Connector<string?, StringValidator>>();
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class StringExtensionsTests {
         var result = subject.IsOptional();
 
         // Assert
-        result.Should().BeOfType<Connectors<string?, StringValidators>>();
+        result.Should().BeOfType<Connector<string?, StringValidator>>();
     }
 
     [Theory]

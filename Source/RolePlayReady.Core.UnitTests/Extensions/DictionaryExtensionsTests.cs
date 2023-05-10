@@ -10,7 +10,7 @@ public class DictionaryExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<IDictionary<int, string?>, DictionaryValidators<int, string>>>();
+        result.Should().BeOfType<Connector<IDictionary<int, string?>, DictionaryValidator<int, string>>>();
     }
 
     [Fact]
@@ -22,6 +22,6 @@ public class DictionaryExtensionsTests {
         var result = subject.CheckIfEach(i => i.IsRequired());
 
         // Assert
-        result.Should().BeOfType<Connectors<IDictionary<int, string?>, DictionaryValidators<int, string>>>();
+        result.Should().BeOfType<Connector<IDictionary<int, string?>, DictionaryValidator<int, string>>>();
     }
 }

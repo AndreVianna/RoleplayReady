@@ -10,7 +10,7 @@ public class TypeExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<Type?, TypeValidators>>();
+        result.Should().BeOfType<Connector<Type?, TypeValidator>>();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class TypeExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<Type?, TypeValidators>>();
+        result.Should().BeOfType<Connector<Type?, TypeValidator>>();
     }
 
     [Theory]

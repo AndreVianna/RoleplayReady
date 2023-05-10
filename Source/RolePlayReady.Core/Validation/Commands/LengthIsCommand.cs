@@ -2,8 +2,8 @@
 
 public sealed class LengthIsCommand
     : ValidationCommand {
-    public LengthIsCommand(int length, string source, ValidationResult? validation = null)
-        : base(source, validation) {
+    public LengthIsCommand(int length, string source)
+        : base(source) {
         ValidateAs = s => ((string)s!).Length == length;
         ValidationErrorMessage = MustHaveALengthOf;
         GetErrorMessageArguments = s => new object?[] { length, ((string)s!).Length };

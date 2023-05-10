@@ -18,7 +18,7 @@ public sealed record SignInResult : Result {
     public bool IsFailure => !IsInvalid ? Type is SignInResultType.Failed : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if the sign in attempt failed.");
 
     public static SignInResult Success(string token, bool requires2Factor = false) => new(requires2Factor ? SignInResultType.TwoFactorRequired : SignInResultType.Success, token);
-    public static SignInResult Invalid(string message, string source) => Invalid(new ValidationError(message, source));
+    public static SignInResult Invalid(string message, string source, params object?[] args) => Invalid(new ValidationError(message, source, args));
     public static SignInResult Invalid(ValidationError error) => Invalid(new[] { error });
     public static SignInResult Invalid(IEnumerable<ValidationError> errors) => new(SignInResultType.Invalid, null, IsNotNullAndDoesNotHaveNull(errors));
     public static SignInResult Blocked() => new(SignInResultType.Blocked);

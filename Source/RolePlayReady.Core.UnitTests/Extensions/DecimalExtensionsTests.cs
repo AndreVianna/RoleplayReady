@@ -10,7 +10,7 @@ public class DecimalExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<decimal?, DecimalValidators>>();
+        result.Should().BeOfType<Connector<decimal?, DecimalValidator>>();
     }
 
     [Fact]
@@ -22,7 +22,7 @@ public class DecimalExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<decimal?, DecimalValidators>>();
+        result.Should().BeOfType<Connector<decimal?, DecimalValidator>>();
     }
 
     [Fact]
@@ -34,6 +34,6 @@ public class DecimalExtensionsTests {
         var result = subject.IsOptional();
 
         // Assert
-        result.Should().BeOfType<Connectors<decimal?, DecimalValidators>>();
+        result.Should().BeOfType<Connector<decimal?, DecimalValidator>>();
     }
 }

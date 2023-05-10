@@ -89,7 +89,7 @@ public static class Constants {
         [StringSyntax(CompositeFormat)]
         public const string MustBeAValidEmail = "'{0}' must be a valid email.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeAValidPassword = "'{0}' must be a valid email.";
+        public const string MustBeAValidPassword = "'{0}' must be a valid password.";
         [StringSyntax(CompositeFormat)]
         public const string MustBeOfType = "'{0}' must be of type '{1}'. Found: '{2}'.";
     }

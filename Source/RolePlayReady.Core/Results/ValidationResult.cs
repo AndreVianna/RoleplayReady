@@ -8,7 +8,7 @@ public record ValidationResult : Result {
     public override bool IsSuccess => !IsInvalid;
     public static ValidationResult Success() => new();
 
-    public static ValidationResult Invalid(string message, string source) => Invalid(new ValidationError(message, source));
+    public static ValidationResult Invalid(string message, string source, params object?[] args) => Invalid(new ValidationError(message, source, args));
     public static ValidationResult Invalid(ValidationError error) => Invalid(new[] { error });
     public static ValidationResult Invalid(IEnumerable<ValidationError> errors) => new(Ensure.IsNotNull(errors));
 

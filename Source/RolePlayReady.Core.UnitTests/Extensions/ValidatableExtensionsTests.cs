@@ -15,7 +15,7 @@ public class ValidatableExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<IValidatable?, ValidatableValidators>>();
+        result.Should().BeOfType<Connector<IValidatable?, ValidatableValidator>>();
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class ValidatableExtensionsTests {
         var result = subject.IsRequired();
 
         // Assert
-        result.Should().BeOfType<Connectors<IValidatable?, ValidatableValidators>>();
+        result.Should().BeOfType<Connector<IValidatable?, ValidatableValidator>>();
     }
 
     [Fact]
@@ -39,6 +39,6 @@ public class ValidatableExtensionsTests {
         var result = subject.IsOptional();
 
         // Assert
-        result.Should().BeOfType<Connectors<IValidatable?, ValidatableValidators>>();
+        result.Should().BeOfType<Connector<IValidatable?, ValidatableValidator>>();
     }
 }
