@@ -5,7 +5,7 @@ public class StringValidatorsTests {
         private readonly IPasswordPolicy _fakePolicy = Substitute.For<IPasswordPolicy>();
 
         public TestObject() {
-            _fakePolicy.TryValidate(Arg.Any<string>(), out Arg.Any<ICollection<ValidationError>>()).Returns(x => {
+            _fakePolicy.TryValidate(Arg.Any<string>(), out Arg.Any<ValidationResult>()).Returns(x => {
                 var errors = new List<ValidationError>();
                 if (x[0] is "Invalid") {
                     errors.Add(new("Some error.", "Password"));

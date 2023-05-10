@@ -12,12 +12,14 @@ public class ObjectValidator : Validator<object?>, IObjectValidator {
     public Connector<object?, ObjectValidator> Connector { get; }
 
     public IConnector<ObjectValidator> IsNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<ObjectValidator> IsNotNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 }

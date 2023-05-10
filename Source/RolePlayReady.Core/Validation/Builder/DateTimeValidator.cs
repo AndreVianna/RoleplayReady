@@ -12,32 +12,38 @@ public class DateTimeValidator : Validator<DateTime?>, IDateTimeValidator {
     public IConnector<DateTimeValidator> Connector { get; }
 
     public IConnector<DateTimeValidator> IsNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DateTimeValidator> IsNotNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DateTimeValidator> IsBefore(DateTime threshold) {
-        Result += _commandFactory.Create(nameof(IsBefore), threshold).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsBefore), threshold);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DateTimeValidator> StartsOn(DateTime threshold) {
-        Result += _commandFactory.Create(nameof(IsBefore), threshold).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsBefore), threshold);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DateTimeValidator> EndsOn(DateTime threshold) {
-        Result += _commandFactory.Create(nameof(IsAfter), threshold).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsAfter), threshold);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DateTimeValidator> IsAfter(DateTime threshold) {
-        Result += _commandFactory.Create(nameof(IsAfter), threshold).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsAfter), threshold);
+        ValidateWith(validator);
         return Connector;
     }
 }

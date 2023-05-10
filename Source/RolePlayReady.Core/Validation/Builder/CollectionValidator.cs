@@ -13,42 +13,50 @@ public sealed class CollectionValidator<TItem>
     public IConnector<CollectionValidator<TItem>> Connector { get; }
 
     public IConnector<CollectionValidator<TItem>> IsNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<CollectionValidator<TItem>> IsNotNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<CollectionValidator<TItem>> IsEmpty() {
-        Result += _commandFactory.Create(nameof(IsEmpty)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsEmpty));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<CollectionValidator<TItem>> IsNotEmpty() {
-        Result += _commandFactory.Create(nameof(IsEmpty)).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsEmpty));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<CollectionValidator<TItem>> HasAtLeast(int size) {
-        Result += _commandFactory.Create(nameof(HasAtLeast), size).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(HasAtLeast), size);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<CollectionValidator<TItem>> Has(int size) {
-        Result += _commandFactory.Create(nameof(Has), size).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(Has), size);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<CollectionValidator<TItem>> Contains(TItem item) {
-        Result += _commandFactory.Create(nameof(Contains), item).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(Contains), item);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<CollectionValidator<TItem>> HasAtMost(int size) {
-        Result += _commandFactory.Create(nameof(HasAtMost), size).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(HasAtMost), size);
+        ValidateWith(validator);
         return Connector;
     }
 

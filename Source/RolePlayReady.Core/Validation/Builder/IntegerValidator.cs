@@ -12,37 +12,45 @@ public class IntegerValidator : Validator<int?>, IIntegerValidator {
     public IConnector<IntegerValidator> Connector { get; }
 
     public IConnector<IntegerValidator> IsNull() {
-        Result += Result += _commandFactory.Create(nameof(IsNull)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<IntegerValidator> IsNotNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<IntegerValidator> MinimumIs(int threshold) {
-        Result += _commandFactory.Create(nameof(IsLessThan), threshold).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsLessThan), threshold);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<IntegerValidator> IsGreaterThan(int threshold) {
+        var validator = _commandFactory.Create(nameof(IsGreaterThan), threshold);
+        ValidateWith(validator);
         Result += _commandFactory.Create(nameof(IsGreaterThan), threshold).Validate(Subject);
         return Connector;
     }
 
     public IConnector<IntegerValidator> IsEqualTo(int threshold) {
-        Result += _commandFactory.Create(nameof(IsEqualTo), threshold).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsEqualTo), threshold);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<IntegerValidator> IsLessThan(int threshold) {
-        Result += _commandFactory.Create(nameof(IsLessThan), threshold).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsLessThan), threshold);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<IntegerValidator> MaximumIs(int threshold) {
-        Result += _commandFactory.Create(nameof(IsGreaterThan), threshold).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsGreaterThan), threshold);
+        ValidateWith(validator);
         return Connector;
     }
 }

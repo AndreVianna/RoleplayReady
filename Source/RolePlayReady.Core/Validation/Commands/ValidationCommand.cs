@@ -3,7 +3,6 @@
 public abstract class ValidationCommand : IValidationCommand {
     protected ValidationCommand(string source) {
         Source = source;
-//        Validation = validation ?? ValidationResult.Success();
     }
 
     protected string Source { get; }

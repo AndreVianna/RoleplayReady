@@ -15,42 +15,50 @@ public class DictionaryValidator<TKey, TValue>
     public IConnector<DictionaryValidator<TKey, TValue>> Connector { get; }
 
     public IConnector<DictionaryValidator<TKey, TValue>> IsNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> IsNotNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> IsEmpty() {
-        Result += _commandFactory.Create(nameof(IsEmpty)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsEmpty));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> IsNotEmpty() {
-        Result += _commandFactory.Create(nameof(IsEmpty)).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsEmpty));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> HasAtLeast(int size) {
-        Result += _commandFactory.Create(nameof(HasAtLeast), size).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(HasAtLeast), size);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> Has(int size) {
-        Result += _commandFactory.Create(nameof(Has), size).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(Has), size);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> ContainsKey(TKey key) {
-        Result += _commandFactory.Create(nameof(ContainsKey), key).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(ContainsKey), key);
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> HasAtMost(int size) {
-        Result += _commandFactory.Create(nameof(HasAtMost), size).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(HasAtMost), size);
+        ValidateWith(validator);
         return Connector;
     }
 

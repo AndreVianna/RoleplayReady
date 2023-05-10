@@ -11,17 +11,20 @@ public class ValidatableValidator : Validator<IValidatable?>, IValidatableValida
     public IConnector<ValidatableValidator> Connector { get; }
 
     public IConnector<ValidatableValidator> IsNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<ValidatableValidator> IsNotNull() {
-        Result += _commandFactory.Create(nameof(IsNull)).Negate(Subject);
+        var validator = _commandFactory.Create(nameof(IsNull));
+        ValidateWith(validator);
         return Connector;
     }
 
     public IConnector<ValidatableValidator> IsValid() {
-        Result += _commandFactory.Create(nameof(IsValid)).Validate(Subject);
+        var validator = _commandFactory.Create(nameof(IsValid));
+        ValidateWith(validator);
         return Connector;
     }
 }

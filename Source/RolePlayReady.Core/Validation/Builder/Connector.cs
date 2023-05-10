@@ -13,14 +13,10 @@ public class Connector<TSubject, TValidator>
 
     public ValidationResult Result => _left.Result;
 
-    public TValidator And()
-        => _left; //Create.Instance<TValidator>(_left.Subject, _left.Source, ValidatorMode.And);
-    public TValidator Or()
-        => Create.Instance<TValidator>(_left.Subject, _left.Source, ValidatorMode.Or);
-    public TValidator AndNot()
-        => Create.Instance<TValidator>(_left.Subject, _left.Source, ValidatorMode.AndNot);
-    public TValidator OrNot()
-        => Create.Instance<TValidator>(_left.Subject, _left.Source, ValidatorMode.OrNot);
+    public TValidator And() => (TValidator)_left.SetMode(ValidatorMode.And);
+    public TValidator Or() => (TValidator)_left.SetMode(ValidatorMode.Or);
+    public TValidator AndNot() => (TValidator)_left.SetMode(ValidatorMode.AndNot);
+    public TValidator OrNot() => (TValidator)_left.SetMode(ValidatorMode.OrNot);
 
     public TValidator And(Func<TValidator, TValidator> validateRight)
         => ProcessAnd(validateRight, ValidatorMode.And);
