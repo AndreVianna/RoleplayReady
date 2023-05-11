@@ -21,7 +21,7 @@ public class NumberAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Definition.Should().Be(_definition);
         _attribute.Value.Should().Be(42);
-        _attribute.ValidateSelf().IsSuccess.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
     private class TestData : TheoryData<string, object[], bool> {
@@ -40,27 +40,27 @@ public class NumberAttributeTests {
     public void Validate_WithValidConstraint_ReturnsTrue(string validator, object[] arguments, bool expectedResult) {
         _definition.Constraints.Add(new AttributeConstraint(validator, arguments));
 
-        _attribute.ValidateSelf().IsSuccess.Should().Be(expectedResult);
+        _attribute.Validate().IsSuccess.Should().Be(expectedResult);
     }
 
     [Fact]
     public void Validate_WithInvalidArgument_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("IsLessThan", "wrong"));
 
-        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>();
+        _attribute.Invoking(x => x.Validate()).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void Validate_WithInvalidNumberOfArguments_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("IsLessThan"));
 
-        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<ArgumentException>();
+        _attribute.Invoking(x => x.Validate()).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
-        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<InvalidOperationException>();
+        _attribute.Invoking(x => x.Validate()).Should().Throw<InvalidOperationException>();
     }
 }

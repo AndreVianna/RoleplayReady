@@ -101,7 +101,7 @@ public sealed class ValidationCommandFactory {
         throw new InvalidOperationException($"Unsupported command '{command}' for type '{_subjectType.Name}'.");
 
         int GetCount() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<int>(command, arguments, 0);
-        TKey? GetKey() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TKey>(command, arguments, 0);
+        TKey GetKey() => Ensure.ArgumentExistsAndIsOfType<TKey>(command, arguments, 0);
         TValue? GetValue() => Ensure.ArgumentExistsAndIsOfTypeOrDefault<TValue>(command, arguments, 0);
     }
 }

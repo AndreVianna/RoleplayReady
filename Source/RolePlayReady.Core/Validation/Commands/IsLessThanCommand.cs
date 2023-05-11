@@ -5,7 +5,7 @@ public sealed class IsLessThanCommand<TValue>
     where TValue : IComparable<TValue> {
     public IsLessThanCommand(TValue threshold, string source)
         : base(source) {
-        ValidateAs = v => ((TValue)v!).CompareTo(threshold) < 0;
+        ValidateAs = v => ((TValue)v).CompareTo(threshold) < 0;
         ValidationErrorMessage = MustBeLessThan;
         GetErrorMessageArguments = v => new[] { threshold, v };
     }

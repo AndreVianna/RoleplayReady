@@ -22,7 +22,7 @@ public class StringValidatorsTests {
         public string? Password { get; init; }
         public string Empty { get; } = string.Empty;
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += Name.IsRequired()
                           .And().IsNotEmptyOrWhiteSpace()
@@ -60,7 +60,7 @@ public class StringValidatorsTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.Errors.Should().HaveCount(errorCount);

@@ -6,7 +6,7 @@ public class DictionaryValidatorsTests {
         public required IDictionary<string, string> Names { get; init; } = new Dictionary<string, string>();
         public IDictionary<string, string> Empty { get; } = new Dictionary<string, string>();
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += Numbers.Is()
                 .And().IsNotEmpty()
@@ -34,7 +34,7 @@ public class DictionaryValidatorsTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

@@ -1,6 +1,4 @@
-﻿using System.Validation;
-
-namespace RolePlayReady.Handlers;
+﻿namespace RolePlayReady.Handlers;
 
 public interface ICrudHandler<TModel>
     : ICrudHandler<TModel, Row>

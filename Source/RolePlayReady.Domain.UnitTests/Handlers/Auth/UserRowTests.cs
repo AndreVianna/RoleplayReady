@@ -1,4 +1,4 @@
-namespace RolePlayReady.Handlers.User;
+namespace RolePlayReady.Handlers.Auth;
 
 public class UserRowRowTests {
     [Fact]

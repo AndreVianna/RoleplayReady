@@ -8,11 +8,11 @@ namespace RolePlayReady.Api.Controllers.Users;
 [ApiExplorerSettings(GroupName = "Users")]
 [Produces("application/json")]
 public class UsersController : ControllerBase {
-    private readonly IUserHandler _handler;
+    private readonly IAuthHandler _handler;
     private readonly IDateTime _dateTime;
     private readonly ILogger<UsersController> _logger;
 
-    public UsersController(IUserHandler handler, IDateTime dateTime, ILogger<UsersController> logger) {
+    public UsersController(IAuthHandler handler, IDateTime dateTime, ILogger<UsersController> logger) {
         _handler = handler;
         _dateTime = dateTime;
         _logger = logger;

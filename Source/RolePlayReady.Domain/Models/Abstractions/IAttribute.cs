@@ -1,6 +1,4 @@
-﻿using System.Validation;
-
-namespace RolePlayReady.Models.Abstractions;
+﻿namespace RolePlayReady.Models.Abstractions;
 
 public interface IAttribute : IValidatable {
     AttributeDefinition Definition { get; }

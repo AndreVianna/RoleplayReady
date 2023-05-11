@@ -6,7 +6,7 @@ public class DecimalValidatorsTests {
         public decimal? Nullable { get; init; }
         public decimal? Required { get; init; }
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += NonNull.Is().Result;
             result += Nullable.IsOptional().And().IsGreaterThan(10).And().IsLessThan(20).And().IsEqualTo(15).Result;
@@ -28,7 +28,7 @@ public class DecimalValidatorsTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

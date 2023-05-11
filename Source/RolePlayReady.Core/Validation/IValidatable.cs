@@ -1,5 +1,5 @@
 ﻿namespace System.Validation;
 
 public interface IValidatable {
-    ValidationResult ValidateSelf(bool negate = false);
+    ValidationResult Validate(IDictionary<string, object?>? context = null);
 }

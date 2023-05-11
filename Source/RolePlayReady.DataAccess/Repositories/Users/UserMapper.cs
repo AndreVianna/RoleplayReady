@@ -1,10 +1,13 @@
-﻿namespace RolePlayReady.DataAccess.Repositories.Users;
+﻿using RolePlayReady.Handlers.Auth;
+
+namespace RolePlayReady.DataAccess.Repositories.Users;
 
 public static class UserMapper {
     public static UserData ToData(this User input)
         => new() {
             Id = input.Id,
             Email = input.Email,
+            HashedPassword = input.HashedPassword,
             LockExpiration = input.LockExpiration,
             SignInRetryCount = input.SignInRetryCount,
             IsBlocked = input.IsBlocked,
@@ -26,6 +29,7 @@ public static class UserMapper {
             : new() {
                 Id = input.Id,
                 Email = input.Email,
+                HashedPassword = input.HashedPassword,
                 LockExpiration = input.LockExpiration,
                 SignInRetryCount = input.SignInRetryCount,
                 IsBlocked = input.IsBlocked,

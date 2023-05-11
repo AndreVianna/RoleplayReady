@@ -21,6 +21,6 @@ public class FlagAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Definition.Should().Be(_definition);
         _attribute.Value.Should().Be(true);
-        _attribute.ValidateSelf().IsSuccess.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 }

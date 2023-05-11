@@ -6,7 +6,7 @@ public class CollectionValidatorsTests {
         public required ICollection<(string Name, int Age)> Names { get; init; } = Array.Empty<(string Name, int Age)>();
         public ICollection<string> Empty { get; } = Array.Empty<string>();
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += Numbers.Is()
                 .And().IsNotEmpty()
@@ -34,7 +34,7 @@ public class CollectionValidatorsTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.Errors.Should().HaveCount(errorCount);

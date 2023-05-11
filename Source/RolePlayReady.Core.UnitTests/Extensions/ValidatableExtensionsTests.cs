@@ -2,7 +2,7 @@ namespace System.Extensions;
 
 public class ValidatableExtensionsTests {
     private class TestValidatable : IValidatable {
-        public ValidationResult ValidateSelf(bool negate = false)
+        public ValidationResult Validate(IDictionary<string, object?>? context = null)
             => throw new NotImplementedException();
     }
 

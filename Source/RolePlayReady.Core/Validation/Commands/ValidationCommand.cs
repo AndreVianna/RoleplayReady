@@ -17,7 +17,7 @@ public abstract class ValidationCommand : IValidationCommand {
         return ValidationResult.Invalid(InvertMessage(ValidationErrorMessage), Source, GetErrorMessageArguments(subject));
     }
 
-    protected Func<object?, bool> ValidateAs { get; init; } = _ => true;
+    protected Func<object, bool> ValidateAs { get; init; } = _ => true;
     protected string ValidationErrorMessage { get; init; } = MustBeValid;
-    protected Func<object?, object?[]> GetErrorMessageArguments { get; init; } = _ => Array.Empty<object?>();
+    protected Func<object, object?[]> GetErrorMessageArguments { get; init; } = _ => Array.Empty<object?>();
 }

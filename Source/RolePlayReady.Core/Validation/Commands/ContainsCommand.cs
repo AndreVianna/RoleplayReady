@@ -4,7 +4,7 @@ public sealed class ContainsCommand
     : ValidationCommand {
     public ContainsCommand(string subString, string source)
         : base(source) {
-        ValidateAs = s => ((string)s!).Contains(subString);
+        ValidateAs = s => ((string)s).Contains(subString);
         ValidationErrorMessage = MustContain;
         GetErrorMessageArguments = _ => new object?[] { subString };
     }
@@ -14,7 +14,7 @@ public sealed class ContainsCommand<TItem>
     : ValidationCommand {
     public ContainsCommand(TItem? item, string source)
         : base(source) {
-        ValidateAs = c => ((ICollection<TItem?>)c!).Contains(item);
+        ValidateAs = c => ((ICollection<TItem?>)c).Contains(item);
         ValidationErrorMessage = MustContain;
         GetErrorMessageArguments = _ => new object?[] { item };
     }

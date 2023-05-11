@@ -2,35 +2,59 @@
 
 namespace RolePlayReady.Handlers.Auth;
 
-public class AuthHandler : IAuthHandler {
+public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHandler {
+    private readonly IHasher _hasher;
     private readonly IConfiguration _configuration;
     private readonly IDateTime _dateTime;
     private readonly ILogger<AuthHandler> _logger;
 
-    public AuthHandler(IConfiguration configuration, IDateTime dateTime, ILogger<AuthHandler> logger) {
+    public AuthHandler(IUserRepository repository, IHasher hasher, IConfiguration configuration, IDateTime dateTime, ILogger<AuthHandler> logger) : 
+        base(repository) {
+        _hasher = hasher;
         _configuration = configuration;
         _dateTime = dateTime;
         _logger = logger;
     }
 
-    public SignInResult SignIn(Login login) {
-        var validation = login.ValidateSelf();
+    public async Task<SignInResult> SignInAsync(SignIn signIn, CancellationToken cancellation = default) {
+        var validation = signIn.Validate();
         if (validation.IsInvalid) {
             _logger.LogDebug("Login attempt with invalid request.");
             return Invalid(validation.Errors);
         }
 
-        if (!IsCorrect(login)) {
-            _logger.LogDebug("Login attempt for '{email}' failed.", login.Email);
+        var isVerified = await Repository.VerifyAsync(signIn, cancellation);
+        if (!isVerified) {
+            _logger.LogDebug("Login attempt for '{email}' failed.", signIn.Email);
             return Failure();
         }
 
         var token = GenerateSignInToken();
-        _logger.LogDebug("Login for '{email}' succeeded.", login.Email);
+        _logger.LogDebug("Login for '{email}' succeeded.", signIn.Email);
         return Success(token);
     }
 
-    public SignInResult Register(User.User login) => throw new NotImplementedException();
+    public async Task<CrudResult> RegisterAsync(SignOn signOn, CancellationToken cancellation = default) {
+        var validation = signOn.Validate();
+        if (validation.IsInvalid) {
+            _logger.LogDebug("Register attempt with invalid request.");
+            return CrudResult.Invalid(validation.Errors);
+        }
+
+        var user = new User {
+            Id = Guid.NewGuid(),
+            Name = signOn.Name,
+            Email = signOn.Email,
+            HashedPassword = _hasher.HashSecret(signOn.Password),
+        };
+
+        //ToDo - Verify if user already exists by email
+        var addedUser = await Repository.AddAsync(user, cancellation);
+
+        return addedUser is null
+            ? CrudResult.Conflict()
+            : CrudResult.Success();
+    }
 
     private string GenerateSignInToken() {
         var claims = new[] {
@@ -55,8 +79,4 @@ public class AuthHandler : IAuthHandler {
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
-
-    private bool IsCorrect(Login login)
-        => login.Email.ToLower().Equals(_configuration["Security:DefaultUser:Email"]!.ToLower())
-        && login.Password.Equals(_configuration["Security:DefaultUser:Password"]);
 }

@@ -1,10 +1,9 @@
-﻿using System.Validation;
+﻿namespace RolePlayReady.Handlers.Auth;
 
-namespace RolePlayReady.Handlers.User;
-
-public record User : IKey, IValidatable {
+public record User : IValidatable, IKey {
     public required Guid Id { get; init; }
     public required string Email { get; init; }
+    public HashedSecret? HashedPassword { get; init; }
     public DateTime LockExpiration { get; init; } = DateTime.MinValue;
     public int SignInRetryCount { get; init; }
     public bool IsBlocked { get; init; }
@@ -12,16 +11,17 @@ public record User : IKey, IValidatable {
 
     [PersonalInformation]
     public string? Name { get; init; }
+
     [PersonalInformation]
     public DateOnly? Birthday { get; init; }
 
     public string FolderName => (Base64Guid)Id;
 
-    public ValidationResult ValidateSelf(bool negate = false) {
+    public ValidationResult Validate(IDictionary<string, object?>? context = null) {
         var result = ValidationResult.Success();
         result += Email.IsRequired()
-                       .And().IsNotEmptyOrWhiteSpace()
-                       .And().IsEmail().Result;
+            .And().IsNotEmptyOrWhiteSpace()
+            .And().IsEmail().Result;
         return result;
     }
 }

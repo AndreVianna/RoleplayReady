@@ -8,7 +8,7 @@ public abstract record Attribute<TValue> : IAttribute {
     object? IAttribute.Value => Value;
     public TValue Value { get; init; } = default!;
 
-    public ValidationResult ValidateSelf(bool negate = false) {
+    public ValidationResult Validate(IDictionary<string, object?>? context = null) {
         var result = Success();
         result += Definition.DataType.Is().And().IsEqualTo<TValue>().Result;
         result += Definition.Constraints.Aggregate(Success(), (r, c)

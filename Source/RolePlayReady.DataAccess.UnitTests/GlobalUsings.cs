@@ -16,7 +16,6 @@ global using NSubstitute.ExceptionExtensions;
 
 global using RolePlayReady.Handlers.GameSystem;
 global using RolePlayReady.Handlers.Sphere;
-global using RolePlayReady.Handlers.User;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;

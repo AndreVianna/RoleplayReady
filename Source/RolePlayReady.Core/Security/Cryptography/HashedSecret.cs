@@ -1,26 +1,23 @@
 ﻿namespace System.Security.Cryptography;
 
-public record HashedSecret {
+public sealed record HashedSecret {
     public HashedSecret(string hash, string salt) {
         Hash = Ensure.IsNotNullOrWhiteSpace(hash);
         Salt = Ensure.IsNotNullOrWhiteSpace(salt);
+        HashBytes = Convert.FromBase64String(Hash);
+        SaltBytes = Convert.FromBase64String(Salt);
     }
 
     public HashedSecret(byte[] hashBytes, byte[] saltBytes) {
-        Hash = Convert.ToBase64String(Ensure.IsNotNullOrEmpty(hashBytes));
-        Salt = Convert.ToBase64String(Ensure.IsNotNullOrEmpty(saltBytes));
+        HashBytes = Ensure.IsNotNullOrEmpty(hashBytes);
+        SaltBytes = Ensure.IsNotNullOrEmpty(saltBytes);
+        Hash = Convert.ToBase64String(HashBytes);
+        Salt = Convert.ToBase64String(SaltBytes);
     }
 
-    public string Hash { get; init; }
-    public string Salt { get; init; }
+    public string Hash { get; }
+    public string Salt { get; }
 
-    public void Deconstruct(out string hash, out string salt) {
-        hash = Hash;
-        salt = Salt;
-    }
-
-    public void Deconstruct(out byte[] hashBytes, out byte[] saltBytes) {
-        hashBytes = Convert.FromBase64String(Hash);
-        saltBytes = Convert.FromBase64String(Salt);
-    }
+    public byte[] HashBytes { get; }
+    public byte[] SaltBytes { get; }
 }

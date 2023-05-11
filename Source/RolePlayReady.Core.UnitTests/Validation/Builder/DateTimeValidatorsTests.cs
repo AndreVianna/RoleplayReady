@@ -8,7 +8,7 @@ public class DateTimeValidatorsTests {
         public DateTime? Nullable { get; init; }
         public DateTime? Required { get; init; }
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += NotNull.Is().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;
             result += Nullable.IsOptional().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;
@@ -30,7 +30,7 @@ public class DateTimeValidatorsTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

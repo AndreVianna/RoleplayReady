@@ -28,8 +28,4 @@
     <ProjectReference Include="..\RolePlayReady.Api\RolePlayReady.Api.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

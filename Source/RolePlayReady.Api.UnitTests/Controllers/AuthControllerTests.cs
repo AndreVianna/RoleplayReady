@@ -1,27 +1,23 @@
-﻿using RolePlayReady.Api.Controllers.Auth;
-using RolePlayReady.Api.Controllers.Auth.Models;
-using RolePlayReady.Handlers.Auth;
-
-using SignInResult = System.Results.SignInResult;
+﻿using SignInResult = System.Results.SignInResult;
 
 namespace RolePlayReady.Api.Controllers;
 
-public class AccountsControllerTests {
+public class AuthControllerTests {
     private readonly IAuthHandler _handler = Substitute.For<IAuthHandler>();
     private static readonly ILogger<AuthController> _logger = Substitute.For<ILogger<AuthController>>();
-    private static readonly Login _sample = new() {
+    private static readonly SignIn _sample = new() {
         Email = "some.user@host.com",
         Password = "Password!1234",
     };
 
     private readonly AuthController _controller;
 
-    public AccountsControllerTests() {
+    public AuthControllerTests() {
         _controller = new AuthController(_handler, _logger);
     }
 
     [Fact]
-    public void Login_WithValidLogin_ReturnsToken() {
+    public async Task Login_WithValidLogin_ReturnsToken() {
         // Arrange
         var request = new LoginRequest {
             Email = _sample.Email,
@@ -29,10 +25,10 @@ public class AccountsControllerTests {
         };
         const string token = "ValidToken";
         var expected = token.ToLoginResponse();
-        _handler.SignIn(Arg.Any<Login>()).Returns(SignInResult.Success(token));
+        _handler.SignInAsync(Arg.Any<SignIn>()).Returns(SignInResult.Success(token));
 
         // Act
-        var response = _controller.Login(request);
+        var response = await _controller.LoginAsync(request);
 
         // Assert
         var result = response.Should().BeOfType<OkObjectResult>().Subject;
@@ -41,34 +37,32 @@ public class AccountsControllerTests {
     }
 
     [Fact]
-    public void Login_WithIncorrectLogin_ReturnsToken() {
+    public async Task Login_WithIncorrectLogin_ReturnsToken() {
         // Arrange
         var request = new LoginRequest {
             Email = _sample.Email,
             Password = _sample.Password,
         };
-        _handler.SignIn(Arg.Any<Login>())
-                .Returns(SignInResult.Failure());
+        _handler.SignInAsync(Arg.Any<SignIn>()).Returns(SignInResult.Failure());
 
         // Act
-        var response = _controller.Login(request);
+        var response = await _controller.LoginAsync(request);
 
         // Assert
         response.Should().BeOfType<UnauthorizedResult>();
     }
 
     [Fact]
-    public void Login_WithInvalidRequest_ReturnsToken() {
+    public async Task Login_WithInvalidRequest_ReturnsToken() {
         // Arrange
         var request = new LoginRequest {
             Email = "invalid",
             Password = "invalid",
         };
-        _handler.SignIn(Arg.Any<Login>())
-                .Returns(SignInResult.Invalid("Some validation error.", "login"));
+        _handler.SignInAsync(Arg.Any<SignIn>()).Returns(SignInResult.Invalid("Some validation error.", "login"));
 
         // Act
-        var response = _controller.Login(request);
+        var response = await _controller.LoginAsync(request);
 
         // Assert
         var result = response.Should().BeOfType<BadRequestObjectResult>().Subject;

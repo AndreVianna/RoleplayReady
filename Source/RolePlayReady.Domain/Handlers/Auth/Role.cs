@@ -1,4 +1,4 @@
-﻿namespace RolePlayReady.Handlers.User;
+﻿namespace RolePlayReady.Handlers.Auth;
 
 public enum Role {
     User = 1,

@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.Handlers.Auth;
 
-public interface IAuthHandler {
-    SignInResult SignIn(Login login);
-    SignInResult Register(User.User login);
+public interface IAuthHandler : ICrudHandler<User, UserRow> {
+    Task<SignInResult> SignInAsync(SignIn signIn, CancellationToken cancellation = default);
+    Task<CrudResult> RegisterAsync(SignOn signOn, CancellationToken cancellation = default);
 }

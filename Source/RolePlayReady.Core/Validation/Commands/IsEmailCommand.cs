@@ -4,7 +4,7 @@ public sealed partial class IsEmailCommand
     : ValidationCommand {
     public IsEmailCommand(string source)
         : base(source) {
-        ValidateAs = s => EmailChecker().IsMatch((string)s!);
+        ValidateAs = s => EmailChecker().IsMatch((string)s);
         ValidationErrorMessage = MustBeAValidEmail;
     }
 

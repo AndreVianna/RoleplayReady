@@ -1,6 +1,4 @@
-﻿using System.Validation;
-
-namespace RolePlayReady.Models;
+﻿namespace RolePlayReady.Models;
 
 public record Base : IBase, IValidatable {
     public required string Name { get; init; }
@@ -9,7 +7,7 @@ public record Base : IBase, IValidatable {
 
     public ICollection<string> Tags { get; init; } = new List<string>();
 
-    public virtual ValidationResult ValidateSelf(bool negate = false) {
+    public virtual ValidationResult Validate(IDictionary<string, object?>? context = null) {
         var result = ValidationResult.Success();
         result += Name.IsRequired()
             .And().IsNotEmptyOrWhiteSpace()

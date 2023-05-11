@@ -4,7 +4,7 @@ public class TypeValidatorsTests {
     public record TestObject : IValidatable {
         public Type? Type { get; init; }
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += Type.Is()
                 .And().IsEqualTo<string>().Result;
@@ -24,7 +24,7 @@ public class TypeValidatorsTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.Errors.Should().HaveCount(errorCount);

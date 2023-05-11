@@ -36,7 +36,7 @@ public class BaseTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestBase subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

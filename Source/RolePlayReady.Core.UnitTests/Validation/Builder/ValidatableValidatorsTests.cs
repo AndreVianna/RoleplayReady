@@ -4,7 +4,7 @@ public class ValidatableValidatorsTests {
     public record ChildObject : IValidatable {
         public required string Name { get; init; }
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += Name.IsRequired()
                 .And().LengthIs(5).Result;
@@ -15,7 +15,7 @@ public class ValidatableValidatorsTests {
     public record TestObject : IValidatable {
         public required ChildObject Child { get; init; }
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += Child.IsRequired()
                 .And().IsValid().Result;
@@ -35,7 +35,7 @@ public class ValidatableValidatorsTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, bool isSuccess, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.IsSuccess.Should().Be(isSuccess);

@@ -3,7 +3,7 @@
 namespace RolePlayReady.Api.Controllers;
 
 public class UsersControllerTests {
-    private readonly IUserHandler _handler = Substitute.For<IUserHandler>();
+    private readonly IAuthHandler _handler = Substitute.For<IAuthHandler>();
     private static readonly ILogger<UsersController> _logger = Substitute.For<ILogger<UsersController>>();
     private static readonly UserRow[] _rows = new[] {
         new UserRow {

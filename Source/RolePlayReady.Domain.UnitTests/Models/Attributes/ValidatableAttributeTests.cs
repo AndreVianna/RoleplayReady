@@ -8,7 +8,7 @@ public class ValidatableAttributeTests {
     private readonly TestObject _testObject = new("Hello");
 
     private record TestObject(string Name) : IValidatable {
-        public ValidationResult ValidateSelf(bool negate = false) => Success();
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) => Success();
     }
 
     public ValidatableAttributeTests() {
@@ -28,13 +28,13 @@ public class ValidatableAttributeTests {
     public void Constructor_InitializesProperties() {
         _attribute.Definition.Should().Be(_definition);
         _attribute.Value.Should().Be(_testObject);
-        _attribute.ValidateSelf().IsSuccess.Should().BeTrue();
+        _attribute.Validate().IsSuccess.Should().BeTrue();
     }
 
     [Fact]
     public void Validate_WithInvalidConstraint_ThrowsArgumentException() {
         _definition.Constraints.Add(new AttributeConstraint("Invalid"));
 
-        _attribute.Invoking(x => x.ValidateSelf()).Should().Throw<InvalidOperationException>();
+        _attribute.Invoking(x => x.Validate()).Should().Throw<InvalidOperationException>();
     }
 }

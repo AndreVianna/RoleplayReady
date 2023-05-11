@@ -6,7 +6,7 @@ public class IntegerValidatorsTests {
         public int? Nullable { get; init; }
         public int? Required { get; init; }
 
-        public ValidationResult ValidateSelf(bool negate = false) {
+        public ValidationResult Validate(IDictionary<string, object?>? context = null) {
             var result = ValidationResult.Success();
             result += NonNull.Is().Result;
             result += Nullable.IsOptional().And().IsGreaterThan(10).And().IsLessThan(20).And().IsEqualTo(15).Result;
@@ -28,7 +28,7 @@ public class IntegerValidatorsTests {
     [ClassData(typeof(TestData))]
     public void Validate_Validates(TestObject subject, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.Errors.Should().HaveCount(errorCount);

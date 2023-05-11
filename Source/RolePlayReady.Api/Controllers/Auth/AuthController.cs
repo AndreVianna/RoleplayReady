@@ -1,5 +1,3 @@
-using RolePlayReady.Api.Controllers.Auth.Models;
-
 namespace RolePlayReady.Api.Controllers.Auth;
 
 [Authorize]
@@ -19,9 +17,9 @@ public class AuthController : ControllerBase {
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public IActionResult Login(LoginRequest request) {
+    public async Task<IActionResult> LoginAsync(LoginRequest request) {
         var login = request.ToDomain();
-        var result = _handler.SignIn(login);
+        var result = await _handler.SignInAsync(login).ConfigureAwait(false);
         if (result.IsInvalid) {
             _logger.LogDebug("'{user}' fail to login (bad request).", request.Email);
             return BadRequest(result.Errors.UpdateModelState(ModelState));

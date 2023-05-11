@@ -19,7 +19,6 @@ global using RolePlayReady.DataAccess.Repositories.GameSystems;
 global using RolePlayReady.DataAccess.Repositories.Users;
 global using RolePlayReady.Handlers.GameSystem;
 global using RolePlayReady.Handlers.Sphere;
-global using RolePlayReady.Handlers.User;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;

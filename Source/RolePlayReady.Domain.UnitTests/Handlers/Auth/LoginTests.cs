@@ -3,7 +3,7 @@ namespace RolePlayReady.Handlers.Auth;
 public class LoginTests {
     [Fact]
     public void Constructor_CreatesInstance() {
-        var login = new Login {
+        var login = new SignIn {
             Email = "user.name@email.com",
             Password = "SomePassword",
         };
@@ -13,7 +13,7 @@ public class LoginTests {
         login.Password.Should().Be("SomePassword");
     }
 
-    private class TestData : TheoryData<Login, int> {
+    private class TestData : TheoryData<SignIn, int> {
         public TestData() {
             Add(new() { Email = "user.name@email.com", Password = "SomePassword" }, 0);
             Add(new() { Email = null!, Password = null! }, 2);
@@ -25,9 +25,9 @@ public class LoginTests {
 
     [Theory]
     [ClassData(typeof(TestData))]
-    public void Validate_Validates(Login subject, int errorCount) {
+    public void Validate_Validates(SignIn subject, int errorCount) {
         // Act
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         // Assert
         result.Errors.Should().HaveCount(errorCount);

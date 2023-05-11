@@ -1,4 +1,4 @@
-namespace RolePlayReady.Handlers.User;
+namespace RolePlayReady.Handlers.Auth;
 
 public class UserTests {
     [Fact]
@@ -22,7 +22,7 @@ public class UserTests {
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
 
-        var result = testBase.ValidateSelf();
+        var result = testBase.Validate();
 
         result.IsSuccess.Should().BeTrue();
         result.Errors.Should().HaveCount(0);
@@ -35,7 +35,7 @@ public class UserTests {
             Email = "invalid",
         };
 
-        var result = subject.ValidateSelf();
+        var result = subject.Validate();
 
         result.IsSuccess.Should().BeFalse();
         result.Errors.Select(i => i.Message).Should().BeEquivalentTo(
