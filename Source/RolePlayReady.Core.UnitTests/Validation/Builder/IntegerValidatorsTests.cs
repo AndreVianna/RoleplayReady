@@ -8,7 +8,7 @@ public class IntegerValidatorsTests {
 
         public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
-            result += NonNull.IsRequired().Result;
+            result += NonNull.Is().Result;
             result += Nullable.IsOptional().And().IsGreaterThan(10).And().IsLessThan(20).And().IsEqualTo(15).Result;
             result += Required.IsRequired().And().MinimumIs(10).And().MaximumIs(20).Result;
             return result;

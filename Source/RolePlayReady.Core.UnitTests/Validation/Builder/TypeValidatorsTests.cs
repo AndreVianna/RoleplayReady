@@ -6,7 +6,7 @@ public class TypeValidatorsTests {
 
         public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
-            result += Type.IsRequired()
+            result += Type.Is()
                 .And().IsEqualTo<string>().Result;
             return result;
         }

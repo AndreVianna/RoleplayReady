@@ -7,7 +7,7 @@ public class TypeExtensionsTests {
         var subject = typeof(string);
 
         // Act
-        var result = subject.IsRequired();
+        var result = subject.Is();
 
         // Assert
         result.Should().BeOfType<Connector<Type?, TypeValidator>>();
@@ -19,7 +19,7 @@ public class TypeExtensionsTests {
         Type? subject = default;
 
         // Act
-        var result = subject.IsRequired();
+        var result = subject.Is();
 
         // Assert
         result.Should().BeOfType<Connector<Type?, TypeValidator>>();

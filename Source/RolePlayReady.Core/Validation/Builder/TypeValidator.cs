@@ -18,13 +18,12 @@ public class TypeValidator : Validator<Type?>, ITypeValidator {
     }
 
     public IConnector<TypeValidator> IsNotNull() {
-        var validator = _commandFactory.Create(nameof(IsNull));
-        ValidateWith(validator);
-        return Connector1;
+        Negate();
+        return IsNull();
     }
 
     public IConnector<TypeValidator> IsEqualTo<TType>() {
-        var validator = _commandFactory.Create(nameof(IsEqualTo));
+        var validator = _commandFactory.Create(nameof(IsEqualTo), typeof(TType));
         ValidateWith(validator);
         return Connector1;
     }

@@ -68,11 +68,14 @@ public sealed class ValidationCommandFactory {
         if (command == LengthIs) return new LengthIsCommand(GetLength(), _source);
         if (command == Contains) return new ContainsCommand(GetString(), _source);
         if (command == IsIn) return new IsInCommand<string>(GetList(), _source);
+        if (command == IsEmail) return new IsEmailCommand(_source);
+        if (command == IsPassword) return new IsPasswordCommand(GetPolicy(), _source);
         throw new InvalidOperationException($"Unsupported command '{command}' for type '{_subjectType.Name}'.");
 
         int GetLength() => Ensure.ArgumentExistsAndIsOfType<int>(command, arguments, 0);
         string GetString() => Ensure.ArgumentExistsAndIsOfType<string>(command, arguments, 0);
         string?[] GetList() => Ensure.ArgumentsAreAllOfTypeOrDefault<string>(command, arguments).ToArray();
+        IPasswordPolicy GetPolicy() => Ensure.ArgumentExistsAndIsOfType<IPasswordPolicy>(command, arguments, 0);
     }
 
     private IValidationCommand CreateCollectionCommand<TItem>(string command, IReadOnlyList<object?> arguments) {

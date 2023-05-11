@@ -18,39 +18,35 @@ public class IntegerValidator : Validator<int?>, IIntegerValidator {
     }
 
     public IConnector<IntegerValidator> IsNotNull() {
-        var validator = _commandFactory.Create(nameof(IsNull));
+        Negate();
+        return IsNull();
+    }
+
+    public IConnector<IntegerValidator> MinimumIs(int minimum) {
+        Negate();
+        return IsLessThan(minimum);
+    }
+
+    public IConnector<IntegerValidator> IsGreaterThan(int minimum) {
+        var validator = _commandFactory.Create(nameof(IsGreaterThan), minimum);
         ValidateWith(validator);
         return Connector;
     }
 
-    public IConnector<IntegerValidator> MinimumIs(int threshold) {
-        var validator = _commandFactory.Create(nameof(IsLessThan), threshold);
+    public IConnector<IntegerValidator> IsEqualTo(int value) {
+        var validator = _commandFactory.Create(nameof(IsEqualTo), value);
         ValidateWith(validator);
         return Connector;
     }
 
-    public IConnector<IntegerValidator> IsGreaterThan(int threshold) {
-        var validator = _commandFactory.Create(nameof(IsGreaterThan), threshold);
-        ValidateWith(validator);
-        Result += _commandFactory.Create(nameof(IsGreaterThan), threshold).Validate(Subject);
-        return Connector;
-    }
-
-    public IConnector<IntegerValidator> IsEqualTo(int threshold) {
-        var validator = _commandFactory.Create(nameof(IsEqualTo), threshold);
+    public IConnector<IntegerValidator> IsLessThan(int maximum) {
+        var validator = _commandFactory.Create(nameof(IsLessThan), maximum);
         ValidateWith(validator);
         return Connector;
     }
 
-    public IConnector<IntegerValidator> IsLessThan(int threshold) {
-        var validator = _commandFactory.Create(nameof(IsLessThan), threshold);
-        ValidateWith(validator);
-        return Connector;
-    }
-
-    public IConnector<IntegerValidator> MaximumIs(int threshold) {
-        var validator = _commandFactory.Create(nameof(IsGreaterThan), threshold);
-        ValidateWith(validator);
-        return Connector;
+    public IConnector<IntegerValidator> MaximumIs(int maximum) {
+        Negate();
+        return IsGreaterThan(maximum);
     }
 }

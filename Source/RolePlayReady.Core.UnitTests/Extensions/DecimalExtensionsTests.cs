@@ -7,7 +7,7 @@ public class DecimalExtensionsTests {
         var subject = 42.0m;
 
         // Act
-        var result = subject.IsRequired();
+        var result = subject.Is();
 
         // Assert
         result.Should().BeOfType<Connector<decimal?, DecimalValidator>>();

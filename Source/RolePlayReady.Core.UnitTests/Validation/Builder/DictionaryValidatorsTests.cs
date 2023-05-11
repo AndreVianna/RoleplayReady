@@ -8,15 +8,15 @@ public class DictionaryValidatorsTests {
 
         public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
-            result += Numbers.IsRequired()
+            result += Numbers.Is()
                 .And().IsNotEmpty()
                 .And().HasAtLeast(2)
                 .And().HasAtMost(4)
                 .And().Has(3)
                 .And().ContainsKey("Five")
-                .And().Each(item => item.IsRequired().And().IsGreaterThan(0)).Result;
+                .And().Each(item => item.Is().And().IsGreaterThan(0)).Result;
             result += Names!.CheckIfEach(value => value.IsRequired()).Result;
-            result += Empty!.IsRequired().And().IsEmpty().Result;
+            result += Empty!.Is().And().IsEmpty().Result;
             return result;
         }
     }

@@ -21,9 +21,8 @@ public class DictionaryValidator<TKey, TValue>
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> IsNotNull() {
-        var validator = _commandFactory.Create(nameof(IsNull));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsNull();
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> IsEmpty() {
@@ -33,9 +32,8 @@ public class DictionaryValidator<TKey, TValue>
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> IsNotEmpty() {
-        var validator = _commandFactory.Create(nameof(IsEmpty));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsEmpty();
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> HasAtLeast(int size) {
@@ -73,7 +71,7 @@ public class DictionaryValidator<TKey, TValue>
         foreach (var error in errors) {
             var path = ((string)error.Arguments[0]!).Split('.');
             error.Arguments[0] = $"{source}.{string.Join('.', path[1..])}";
-            Result += error;
+            AddError(error);
         }
     }
 }

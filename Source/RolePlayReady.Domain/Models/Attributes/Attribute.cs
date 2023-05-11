@@ -10,7 +10,7 @@ public abstract record Attribute<TValue> : IAttribute {
 
     public ValidationResult ValidateSelf(bool negate = false) {
         var result = Success();
-        result += Definition.DataType.IsRequired().And().IsEqualTo<TValue>().Result;
+        result += Definition.DataType.Is().And().IsEqualTo<TValue>().Result;
         result += Definition.Constraints.Aggregate(Success(), (r, c)
             => r + c.Create<TValue>(Definition.Name).Validate(Value));
         return result;

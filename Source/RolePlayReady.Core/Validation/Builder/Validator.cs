@@ -11,12 +11,20 @@ public abstract class Validator : IValidator {
 
     public ValidatorMode Mode { get; private set; }
     public string Source { get; }
-    public ValidationResult Result { get; protected set; }
+    public ValidationResult Result { get; private set; }
 
     public Validator SetMode(ValidatorMode mode) {
         Mode = mode;
         return this;
     }
+
+    public void Negate() => Mode ^= ValidatorMode.Not;
+
+    public void ClearErrors() => Result = ValidationResult.Success();
+
+    public void AddError(ValidationError error) => Result += error;
+
+    public void AddErrors(IEnumerable<ValidationError> errors) => Result += errors.ToArray();
 }
 
 public abstract class Validator<TSubject> : Validator {
@@ -32,10 +40,10 @@ public abstract class Validator<TSubject> : Validator {
             ? validator.Negate(Subject)
             : validator.Validate(Subject);
         if (Mode.Has(Or) && (rightResult.IsSuccess || Result.IsSuccess)) {
-            Result = ValidationResult.Success();
+            ClearErrors();
             return;
         }
 
-        Result += rightResult;
+        AddErrors(rightResult.Errors);
     }
 }

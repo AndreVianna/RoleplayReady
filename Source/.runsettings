@@ -11,12 +11,14 @@
                 <ModulePath>.*RolePlayReady\..*\.dll$</ModulePath>
               </Include>
               <Exclude>
-                <ModulePath>.*fluentvalidation\..*dll$</ModulePath>
+                <ModulePath>.*fluentassertions\..*dll$</ModulePath>
                 <ModulePath>.*nsubstitute\..*dll$</ModulePath>
                 <ModulePath>.*xunit\..*dll$</ModulePath>
                 <ModulePath>.*\.views\.dll$</ModulePath>
                 <ModulePath>.*\.resources\.dll$</ModulePath>
                 <ModulePath>.*\.unittests\.dll$</ModulePath>
+                <ModulePath>.*\.interationtests\.dll$</ModulePath>
+                <ModulePath>.*\.testing\.dll$</ModulePath>
               </Exclude>
             </ModulePaths>
 

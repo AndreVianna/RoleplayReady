@@ -10,7 +10,7 @@ public class DateTimeValidatorsTests {
 
         public ValidationResult ValidateSelf(bool negate = false) {
             var result = ValidationResult.Success();
-            result += NotNull.IsRequired().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;
+            result += NotNull.Is().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;
             result += Nullable.IsOptional().And().IsAfter(_baseDate).And().IsBefore(_baseDate.AddDays(1)).Result;
             result += Required.IsRequired().And().StartsOn(_baseDate).And().EndsOn(_baseDate.AddDays(1)).Result;
             return result;

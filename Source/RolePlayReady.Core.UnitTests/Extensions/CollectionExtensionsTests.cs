@@ -7,7 +7,7 @@ public class CollectionExtensionsTests {
         var subject = new List<int>();
 
         // Act
-        var result = subject.IsRequired();
+        var result = subject.Is();
 
         // Assert
         result.Should().BeOfType<Connector<ICollection<int>, CollectionValidator<int>>>();
@@ -19,7 +19,7 @@ public class CollectionExtensionsTests {
         var subject = new List<int>();
 
         // Act
-        var result = subject.CheckIfEach(i => i.IsRequired());
+        var result = subject.CheckIfEach(i => i.Is());
 
         // Assert
         result.Should().BeOfType<Connector<ICollection<int>, CollectionValidator<int>>>();

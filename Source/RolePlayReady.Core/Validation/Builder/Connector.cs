@@ -18,31 +18,32 @@ public class Connector<TSubject, TValidator>
     public TValidator AndNot() => (TValidator)_left.SetMode(ValidatorMode.AndNot);
     public TValidator OrNot() => (TValidator)_left.SetMode(ValidatorMode.OrNot);
 
-    public TValidator And(Func<TValidator, TValidator> validateRight)
+    public TValidator And(Func<TValidator, ITerminator> validateRight)
         => ProcessAnd(validateRight, ValidatorMode.And);
 
-    public TValidator AndNot(Func<TValidator, TValidator> validateRight)
+    public TValidator AndNot(Func<TValidator, ITerminator> validateRight)
         => ProcessAnd(validateRight, ValidatorMode.AndNot);
 
-    public TValidator Or(Func<TValidator, TValidator> validateRight)
+    public TValidator Or(Func<TValidator, ITerminator> validateRight)
         => ProcessOr(validateRight, ValidatorMode.And);
 
-    public TValidator OrNot(Func<TValidator, TValidator> validateRight)
+    public TValidator OrNot(Func<TValidator, ITerminator> validateRight)
         => ProcessOr(validateRight, ValidatorMode.AndNot);
 
-    private TValidator ProcessAnd(Func<TValidator, TValidator> validateRight, ValidatorMode mode) {
+    private TValidator ProcessAnd(Func<TValidator, ITerminator> validateRight, ValidatorMode mode) {
         var rightValidator = Create.Instance<TValidator>(_left.Subject, _left.Source, mode);
-        rightValidator = validateRight(rightValidator);
-        var combinedErrors = _left.Result.Errors.Union(rightValidator.Result.Errors);
-        return Create.Instance<TValidator>(_left.Subject, _left.Source, _left.Mode, combinedErrors);
+        var rightResult = validateRight(rightValidator).Result;
+        _left.AddErrors(rightResult.Errors);
+        return _left;
     }
 
-    private TValidator ProcessOr(Func<TValidator, TValidator> validateRight, ValidatorMode mode) {
+    private TValidator ProcessOr(Func<TValidator, ITerminator> validateRight, ValidatorMode mode) {
         var rightValidator = Create.Instance<TValidator>(_left.Subject, _left.Source, mode);
-        rightValidator = validateRight(rightValidator);
-        var combinedErrors = _left.Result.IsInvalid && rightValidator.Result.IsInvalid
-            ? _left.Result.Errors.Union(rightValidator.Result.Errors)
-            : Array.Empty<ValidationError>();
-        return Create.Instance<TValidator>(_left.Subject, _left.Source, _left.Mode, combinedErrors);
+        var rightResult = validateRight(rightValidator).Result;
+        if (_left.Result.IsInvalid && rightResult.IsInvalid)
+            _left.AddErrors(rightResult.Errors);
+        else
+            _left.ClearErrors();
+        return _left;
     }
 }

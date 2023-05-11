@@ -18,39 +18,35 @@ public class DecimalValidator : Validator<decimal?>, IDecimalValidator {
     }
 
     public IConnector<DecimalValidator> IsNotNull() {
-        var validator = _commandFactory.Create(nameof(IsNull));
+        Negate();
+        return IsNull();
+    }
+
+    public IConnector<DecimalValidator> MinimumIs(decimal minimum) {
+        Negate();
+        return IsLessThan(minimum);
+    }
+
+    public IConnector<DecimalValidator> IsGreaterThan(decimal minimum) {
+        var validator = _commandFactory.Create(nameof(IsGreaterThan), minimum);
         ValidateWith(validator);
         return Connector;
     }
 
-    public IConnector<DecimalValidator> MinimumIs(decimal threshold) {
-        var validator = _commandFactory.Create(nameof(IsLessThan), threshold);
+    public IConnector<DecimalValidator> IsEqualTo(decimal value) {
+        var validator = _commandFactory.Create(nameof(IsEqualTo), value);
         ValidateWith(validator);
         return Connector;
     }
 
-    public IConnector<DecimalValidator> IsGreaterThan(decimal threshold) {
-        var validator = _commandFactory.Create(nameof(IsGreaterThan), threshold);
-        ValidateWith(validator);
-        Result += _commandFactory.Create(nameof(IsGreaterThan), threshold).Validate(Subject);
-        return Connector;
-    }
-
-    public IConnector<DecimalValidator> IsEqualTo(decimal threshold) {
-        var validator = _commandFactory.Create(nameof(IsEqualTo), threshold);
+    public IConnector<DecimalValidator> IsLessThan(decimal maximum) {
+        var validator = _commandFactory.Create(nameof(IsLessThan), maximum);
         ValidateWith(validator);
         return Connector;
     }
 
-    public IConnector<DecimalValidator> IsLessThan(decimal threshold) {
-        var validator = _commandFactory.Create(nameof(IsLessThan), threshold);
-        ValidateWith(validator);
-        return Connector;
-    }
-
-    public IConnector<DecimalValidator> MaximumIs(decimal threshold) {
-        var validator = _commandFactory.Create(nameof(IsGreaterThan), threshold);
-        ValidateWith(validator);
-        return Connector;
+    public IConnector<DecimalValidator> MaximumIs(decimal maximum) {
+        Negate();
+        return IsGreaterThan(maximum);
     }
 }

@@ -7,7 +7,7 @@ public class IntegerExtensionsTests {
         var subject = 42;
 
         // Act
-        var result = subject.IsRequired();
+        var result = subject.Is();
 
         // Assert
         result.Should().BeOfType<Connector<int?, IntegerValidator>>();

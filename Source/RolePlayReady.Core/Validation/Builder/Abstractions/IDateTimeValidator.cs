@@ -3,8 +3,8 @@
 public interface IDateTimeValidator : IValidator {
     IConnector<DateTimeValidator> IsNull();
     IConnector<DateTimeValidator> IsNotNull();
-    IConnector<DateTimeValidator> IsAfter(DateTime reference);
-    IConnector<DateTimeValidator> IsBefore(DateTime reference);
-    IConnector<DateTimeValidator> StartsOn(DateTime reference);
-    IConnector<DateTimeValidator> EndsOn(DateTime reference);
+    IConnector<DateTimeValidator> IsAfter(DateTime dateTime);
+    IConnector<DateTimeValidator> IsBefore(DateTime dateTime);
+    IConnector<DateTimeValidator> StartsOn(DateTime dateTime);
+    IConnector<DateTimeValidator> EndsOn(DateTime dateTime);
 }

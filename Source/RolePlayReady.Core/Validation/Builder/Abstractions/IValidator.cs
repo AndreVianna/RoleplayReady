@@ -6,4 +6,8 @@ public interface IValidator {
     ValidationResult Result { get; }
 
     Validator SetMode(ValidatorMode mode);
+    void Negate();
+    void ClearErrors();
+    void AddError(ValidationError error);
+    void AddErrors(IEnumerable<ValidationError> errors);
 }

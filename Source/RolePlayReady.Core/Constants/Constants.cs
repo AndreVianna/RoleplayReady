@@ -2,25 +2,27 @@
 
 public static class Constants {
     public static class Commands {
-        public static string IsEqualTo = nameof(IsEqualToCommand).Replace("Command", string.Empty);
-        public static string Contains = nameof(ContainsCommand).Replace("Command", string.Empty);
-        public static string ContainsKey = typeof(ContainsKeyCommand<,>).Name.Split('`')[0].Replace("Command", string.Empty);
-        public static string ContainsValue = typeof(ContainsValueCommand<,>).Name.Split('`')[0].Replace("Command", string.Empty);
-        public static string Has = typeof(HasCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
-        public static string IsAfter = nameof(IsAfterCommand).Replace("Command", string.Empty);
-        public static string IsBefore = nameof(IsBeforeCommand).Replace("Command", string.Empty);
-        public static string IsEmpty = nameof(IsEmptyCommand).Replace("Command", string.Empty);
-        public static string IsEmptyOrWhiteSpace = nameof(IsEmptyOrWhiteSpaceCommand).Replace("Command", string.Empty);
-        public static string IsGreaterThan = typeof(IsGreaterThanCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
-        public static string IsLessThan = typeof(IsLessThanCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
-        public static string IsNull = nameof(IsNullCommand).Replace("Command", string.Empty);
-        public static string IsIn = typeof(IsInCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
-        public static string IsValid = nameof(IsValidCommand).Replace("Command", string.Empty);
-        public static string LengthIs = nameof(LengthIsCommand).Replace("Command", string.Empty);
-        public static string HasAtMost = typeof(HasAtMostCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
-        public static string LengthIsAtMost = nameof(LengthIsAtMostCommand).Replace("Command", string.Empty);
-        public static string HasAtLeast = typeof(HasAtLeastCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
-        public static string LengthIsAtLeast = nameof(LengthIsAtLeastCommand).Replace("Command", string.Empty);
+        public static string IsEqualTo { get; } = nameof(IsEqualToCommand).Replace("Command", string.Empty);
+        public static string Contains { get; } =  nameof(ContainsCommand).Replace("Command", string.Empty);
+        public static string ContainsKey { get; } =  typeof(ContainsKeyCommand<,>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string ContainsValue { get; } =  typeof(ContainsValueCommand<,>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string Has { get; } =  typeof(HasCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string IsAfter { get; } =  nameof(IsAfterCommand).Replace("Command", string.Empty);
+        public static string IsBefore { get; } =  nameof(IsBeforeCommand).Replace("Command", string.Empty);
+        public static string IsEmpty { get; } =  nameof(IsEmptyCommand).Replace("Command", string.Empty);
+        public static string IsEmptyOrWhiteSpace { get; } =  nameof(IsEmptyOrWhiteSpaceCommand).Replace("Command", string.Empty);
+        public static string IsGreaterThan { get; } =  typeof(IsGreaterThanCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string IsLessThan { get; } =  typeof(IsLessThanCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string IsNull { get; } =  nameof(IsNullCommand).Replace("Command", string.Empty);
+        public static string IsIn { get; } =  typeof(IsInCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string IsEmail { get; } =  nameof(IsEmailCommand).Replace("Command", string.Empty);
+        public static string IsPassword { get; } =  nameof(IsPasswordCommand).Replace("Command", string.Empty);
+        public static string IsValid { get; } =  nameof(IsValidCommand).Replace("Command", string.Empty);
+        public static string LengthIs { get; } =  nameof(LengthIsCommand).Replace("Command", string.Empty);
+        public static string HasAtMost { get; } =  typeof(HasAtMostCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string LengthIsAtMost { get; } =  nameof(LengthIsAtMostCommand).Replace("Command", string.Empty);
+        public static string HasAtLeast { get; } =  typeof(HasAtLeastCommand<>).Name.Split('`')[0].Replace("Command", string.Empty);
+        public static string LengthIsAtLeast { get; } =  nameof(LengthIsAtLeastCommand).Replace("Command", string.Empty);
     }
 
     public static class ErrorMessages {
@@ -39,58 +41,54 @@ public static class Constants {
         };
 
         [StringSyntax(CompositeFormat)]
-        public const string MustBeAfter = "'{0}' must be after {1}. Found: {2}.";
+        public static string MustBeAfter { get; } = "'{0}' must be after {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeBefore = "'{0}' must be before {1}. Found: {2}.";
+        public static string MustBeBefore { get; } = "'{0}' must be before {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeEmpty = "'{0}' must be empty.";
+        public static string MustBeEmpty { get; } = "'{0}' must be empty.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeEmptyOrWhitespace = "'{0}' must be empty or whitespace.";
+        public static string MustBeEmptyOrWhitespace { get; } = "'{0}' must be empty or whitespace.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeEqualTo = "'{0}' must be equal to {1}. Found: {2}.";
+        public static string MustBeEqualTo { get; } = "'{0}' must be equal to {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeGraterThan = "'{0}' must be greater than {1}. Found: {2}.";
+        public static string MustBeGraterThan { get; } = "'{0}' must be greater than {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeIn = "'{0}' must be one of these: '{1}'. Found: {2}.";
+        public static string MustBeIn { get; } = "'{0}' must be one of these: '{1}'. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeLessThan = "'{0}' must be less than {1}. Found: {2}.";
+        public static string MustBeLessThan { get; } = "'{0}' must be less than {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeNull = "'{0}' must be null.";
+        public static string MustBeNull { get; } = "'{0}' must be null.";
         [StringSyntax(CompositeFormat)]
-        public const string MustContain = "'{0}' must contain '{1}'.";
+        public static string MustContain { get; } = "'{0}' must contain '{1}'.";
         [StringSyntax(CompositeFormat)]
-        public const string MustContainValue = "'{0}' must contain the value '{1}'.";
+        public static string MustContainValue { get; } = "'{0}' must contain the value '{1}'.";
         [StringSyntax(CompositeFormat)]
-        public const string MustContainKey = "'{0}' must contain the key '{1}'.";
+        public static string MustContainKey { get; } = "'{0}' must contain the key '{1}'.";
         [StringSyntax(CompositeFormat)]
-        public const string MustContainEmpty = "'{0}' must contain empty string(s).";
+        public static string MustContainNull { get; } = "'{0}' must contain null item(s).";
         [StringSyntax(CompositeFormat)]
-        public const string MustContainEmptyOrWhitespace = "'{0}' must contain empty or whitespace string(s).";
+        public static string MustContainNullOrEmpty { get; } = "'{0}' must contain null or empty string(s).";
         [StringSyntax(CompositeFormat)]
-        public const string MustContainNull = "'{0}' must contain null item(s).";
+        public static string MustContainNullOrWhitespace { get; } = "'{0}' must contain null or whitespace string(s).";
         [StringSyntax(CompositeFormat)]
-        public const string MustContainNullOrEmpty = "'{0}' must contain null or empty string(s).";
+        public static string MustHaveACountOf { get; } = "'{0}' count must be {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustContainNullOrWhitespace = "'{0}' must contain null or whitespace string(s).";
+        public static string MustHaveALengthOf { get; } = "'{0}' length must be {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustHaveACountOf = "'{0}' count must be {1}. Found: {2}.";
+        public static string MustHaveAMaximumCountOf { get; } = "'{0}' maximum count must be {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustHaveALengthOf = "'{0}' length must be {1}. Found: {2}.";
+        public static string MustHaveAMaximumLengthOf { get; } = "'{0}' maximum length must be {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustHaveAMaximumCountOf = "'{0}' maximum count must be {1}. Found: {2}.";
+        public static string MustHaveAMinimumCountOf { get; } = "'{0}' minimum count must be {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustHaveAMaximumLengthOf = "'{0}' maximum length must be {1}. Found: {2}.";
+        public static string MustHaveAMinimumLengthOf { get; } = "'{0}' minimum length must be {1}. Found: {2}.";
         [StringSyntax(CompositeFormat)]
-        public const string MustHaveAMinimumCountOf = "'{0}' minimum count must be {1}. Found: {2}.";
+        public static string MustBeValid { get; } = "'{0}' must be valid.";
         [StringSyntax(CompositeFormat)]
-        public const string MustHaveAMinimumLengthOf = "'{0}' minimum length must be {1}. Found: {2}.";
+        public static string MustBeAValidEmail { get; } = "'{0}' must be a valid email.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeValid = "'{0}' must be valid.";
+        public static string MustBeAValidPassword { get; } = "'{0}' must be a valid password.";
         [StringSyntax(CompositeFormat)]
-        public const string MustBeAValidEmail = "'{0}' must be a valid email.";
-        [StringSyntax(CompositeFormat)]
-        public const string MustBeAValidPassword = "'{0}' must be a valid password.";
-        [StringSyntax(CompositeFormat)]
-        public const string MustBeOfType = "'{0}' must be of type '{1}'. Found: '{2}'.";
+        public static string MustBeOfType { get; } = "'{0}' must be of type '{1}'. Found: '{2}'.";
     }
 }

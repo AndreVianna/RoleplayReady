@@ -17,9 +17,8 @@ public class ValidatableValidator : Validator<IValidatable?>, IValidatableValida
     }
 
     public IConnector<ValidatableValidator> IsNotNull() {
-        var validator = _commandFactory.Create(nameof(IsNull));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsNull();
     }
 
     public IConnector<ValidatableValidator> IsValid() {

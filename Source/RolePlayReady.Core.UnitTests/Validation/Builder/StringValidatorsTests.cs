@@ -6,12 +6,13 @@ public class StringValidatorsTests {
 
         public TestObject() {
             _fakePolicy.TryValidate(Arg.Any<string>(), out Arg.Any<ValidationResult>()).Returns(x => {
-                var errors = new List<ValidationError>();
+                var result = ValidationResult.Success();
                 if (x[0] is "Invalid") {
-                    errors.Add(new("Some error.", "Password"));
+                    result += new ValidationError("Some error.", "Password");
+                    result += new ValidationError("Some other error.", "Password");
                 }
 
-                x[1] = errors;
+                x[1] = result;
                 return x[0] is not "Invalid";
             });
         }
@@ -43,15 +44,15 @@ public class StringValidatorsTests {
 
     private class TestData : TheoryData<TestObject, int> {
         public TestData() {
-            //Add(new() { Name = "Text1", Email = "some@email.com" }, 0);
-            //Add(new() { Name = "Text1", Email = "" }, 2);
-            //Add(new() { Name = "Text1", Email = "NotEmail" }, 1);
-            //Add(new() { Name = null, Password = "AnyTh1n6!" }, 2);
-            //Add(new() { Name = "" }, 6);
-            //Add(new() { Name = "  " }, 6);
+            Add(new() { Name = "Text1", Email = "some@email.com" }, 0);
+            Add(new() { Name = "Text1", Email = "" }, 2);
+            Add(new() { Name = "Text1", Email = "NotEmail" }, 1);
+            Add(new() { Name = null, Password = "AnyTh1n6!" }, 2);
+            Add(new() { Name = "" }, 6);
+            Add(new() { Name = "  " }, 6);
             Add(new() { Name = "12" }, 5);
-            //Add(new() { Name = "12345678901" }, 5);
-            //Add(new() { Name = "Other", Password = "Invalid" }, 5);
+            Add(new() { Name = "12345678901" }, 5);
+            Add(new() { Name = "Other", Password = "Invalid" }, 6);
         }
     }
 

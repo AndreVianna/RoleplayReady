@@ -7,7 +7,7 @@ public class DictionaryExtensionsTests {
         var subject = new Dictionary<int, string?>();
 
         // Act
-        var result = subject.IsRequired();
+        var result = subject.Is();
 
         // Assert
         result.Should().BeOfType<Connector<IDictionary<int, string?>, DictionaryValidator<int, string>>>();

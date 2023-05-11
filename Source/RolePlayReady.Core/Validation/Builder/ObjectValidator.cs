@@ -18,8 +18,7 @@ public class ObjectValidator : Validator<object?>, IObjectValidator {
     }
 
     public IConnector<ObjectValidator> IsNotNull() {
-        var validator = _commandFactory.Create(nameof(IsNull));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsNull();
     }
 }

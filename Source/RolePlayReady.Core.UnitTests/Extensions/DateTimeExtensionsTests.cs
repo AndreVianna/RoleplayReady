@@ -7,7 +7,7 @@ public class DateTimeExtensionsTests {
         var subject = DateTime.Now;
 
         // Act
-        var result = subject.IsRequired();
+        var result = subject.Is();
 
         // Assert
         result.Should().BeOfType<Connector<DateTime?, DateTimeValidator>>();

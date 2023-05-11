@@ -1,9 +1,9 @@
 ﻿namespace System.Validation.Builder.Abstractions;
 
-public interface IBinaryOperator<TValidator>
+public interface IBinaryOperator<out TValidator>
     where TValidator : IValidator {
-    TValidator And(Func<TValidator, TValidator> validateRight);
-    TValidator Or(Func<TValidator, TValidator> validateRight);
-    TValidator AndNot(Func<TValidator, TValidator> validateRight);
-    TValidator OrNot(Func<TValidator, TValidator> validateRight);
+    TValidator And(Func<TValidator, ITerminator> validateRight);
+    TValidator Or(Func<TValidator, ITerminator> validateRight);
+    TValidator AndNot(Func<TValidator, ITerminator> validateRight);
+    TValidator OrNot(Func<TValidator, ITerminator> validateRight);
 }

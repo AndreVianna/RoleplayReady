@@ -19,9 +19,8 @@ public sealed class CollectionValidator<TItem>
     }
 
     public IConnector<CollectionValidator<TItem>> IsNotNull() {
-        var validator = _commandFactory.Create(nameof(IsNull));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsNull();
     }
 
     public IConnector<CollectionValidator<TItem>> IsEmpty() {
@@ -31,9 +30,8 @@ public sealed class CollectionValidator<TItem>
     }
 
     public IConnector<CollectionValidator<TItem>> IsNotEmpty() {
-        var validator = _commandFactory.Create(nameof(IsEmpty));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsEmpty();
     }
 
     public IConnector<CollectionValidator<TItem>> HasAtLeast(int size) {
@@ -72,7 +70,7 @@ public sealed class CollectionValidator<TItem>
         foreach (var error in errors) {
             var path = ((string)error.Arguments[0]!).Split('.');
             error.Arguments[0] = path.Length > 1 ? $"{source}.{string.Join('.', path[1..])}" : source;
-            Result += error;
+            AddError(error);
         }
     }
 }

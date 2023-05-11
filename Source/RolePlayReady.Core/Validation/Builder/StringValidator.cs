@@ -18,9 +18,8 @@ public class StringValidator : Validator<string?>, IStringValidator {
     }
 
     public IConnector<StringValidator> IsNotNull() {
-        var validator = _commandFactory.Create(nameof(IsNull));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsNull();
     }
 
     public IConnector<StringValidator> IsEmpty() {
@@ -30,9 +29,8 @@ public class StringValidator : Validator<string?>, IStringValidator {
     }
 
     public IConnector<StringValidator> IsNotEmpty() {
-        var validator = _commandFactory.Create(nameof(IsEmpty));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsEmpty();
     }
 
     public IConnector<StringValidator> IsEmptyOrWhiteSpace() {
@@ -42,9 +40,8 @@ public class StringValidator : Validator<string?>, IStringValidator {
     }
 
     public IConnector<StringValidator> IsNotEmptyOrWhiteSpace() {
-        var validator = _commandFactory.Create(nameof(IsEmptyOrWhiteSpace));
-        ValidateWith(validator);
-        return Connector;
+        Negate();
+        return IsEmptyOrWhiteSpace();
     }
 
     public IConnector<StringValidator> LengthIsAtLeast(int length) {
