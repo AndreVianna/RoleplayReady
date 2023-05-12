@@ -5,22 +5,49 @@ namespace RolePlayReady.DataAccess.Repositories.Users;
 public class UserRepositoryTests {
     private readonly IJsonFileStorage<UserData> _storage;
     private readonly UserRepository _repository;
-    private readonly IHasher _hasher;
+
+    private readonly UserData _user1;
+    private readonly UserData _user2;
+    private readonly UserData _user3;
 
     public UserRepositoryTests() {
+        var hasher = Substitute.For<IHasher>();
+        var hashedSecret = new HashedSecret("ValidHashedPassword="u8.ToArray(), "SomeSalt"u8.ToArray());
+        var invalidSecret = new HashedSecret("WrongHashedPassword="u8.ToArray(), "SomeSalt"u8.ToArray());
+        hasher.HashSecret(Arg.Any<string>(), Arg.Any<byte[]>()).Returns(invalidSecret);
+        hasher.HashSecret("ValidPassword", Arg.Any<byte[]>()).Returns(hashedSecret);
+
+        _user1 = new() {
+            Id = Guid.Parse("26409801-0d28-4df4-97e9-53b678919416"),
+            Email = "some.user@email.com",
+            HashedPassword = hashedSecret,
+            Name = "Some User",
+            Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
+        };
+        _user2 = new() {
+            Id = Guid.Parse("57e48beb-8e3d-4996-bbea-885515591c3d"),
+            Email = "other.user@email.com",
+        };
+        _user3 = new() {
+            Id = Guid.Parse("16290ee9-70a6-4e34-a03c-b397bb97407e"),
+            Email = "temp.user@email.com",
+        };
+
         _storage = Substitute.For<IJsonFileStorage<UserData>>();
-        _hasher = Substitute.For<IHasher>();
-        _hasher.HashSecret("ValidHashedPassword=").Returns(new HashedSecret("ValidHashedPassword=", "SomeSalt"));
-        _hasher.VerifySecret("ValidPassword", Arg.Any<HashedSecret>()).Returns(true);
-        _hasher.VerifySecret(Arg.Any<string>(), Arg.Any<HashedSecret>()).Returns(false);
-        _repository = new(_storage, _hasher);
+        _storage.GetAllAsync(Arg.Any<CancellationToken>()).Returns(new [] { _user1, _user2, _user3 });
+        _storage.GetByIdAsync(_user1.Id, Arg.Any<CancellationToken>()).Returns(_user1);
+        _storage.GetByIdAsync(_user2.Id, Arg.Any<CancellationToken>()).Returns(_user2);
+        _storage.GetByIdAsync(_user3.Id, Arg.Any<CancellationToken>()).Returns(_user3);
+
+        _repository = new(_storage, hasher);
     }
 
     [Theory]
-    //[InlineData("some.user@email.com", "ValidPassword", true)]
+    [InlineData("some.user@email.com", "ValidPassword", true)]
     [InlineData("some.user@email.com", "WrongPassword", false)]
+    [InlineData("other.user@email.com", "AnyPassword", false)]
     [InlineData("wrong.user@email.com", "ValidPassword", false)]
-    public async Task VerifyAsync_WithValidSecret_ReturnsSuccess(string email, string password, bool expectedResult) {
+    public async Task VerifyAsync_WithValidSecret_ReturnsSuccess(string email, string password, bool isValid) {
         // Arrange
         var signIn = new SignIn {
             Email = email,
@@ -32,42 +59,35 @@ public class UserRepositoryTests {
         var result = await _repository.VerifyAsync(signIn, tokenSource.Token);
 
         // Assert
-        result.Should().Be(expectedResult);
+        if (isValid) result.Should().NotBeNull();
+        else result.Should().BeNull();
     }
-
 
     [Fact]
     public async Task GetManyAsync_ReturnsAll() {
-        // Arrange
-        var dataFiles = GenerateList();
-        _storage.GetAllAsync().Returns(dataFiles);
-
         // Act
         var users = await _repository.GetManyAsync();
 
         // Assert
-        users.Should().HaveCount(dataFiles.Length);
+        users.Should().HaveCount(3);
     }
 
     [Fact]
-    public async Task GetByIdAsync_SystemFound_ReturnsSystem() {
+    public async Task GetByIdAsync_UserFound_ReturnsUser() {
         // Arrange
-        var dataFile = GenerateData();
         var tokenSource = new CancellationTokenSource();
-        _storage.GetByIdAsync(dataFile.Id, tokenSource.Token).Returns(dataFile);
 
         // Act
-        var user = await _repository.GetByIdAsync(dataFile.Id, tokenSource.Token);
+        var user = await _repository.GetByIdAsync(_user1.Id, tokenSource.Token);
 
         // Assert
         user.Should().NotBeNull();
     }
 
     [Fact]
-    public async Task GetByIdAsync_SystemNotFound_ReturnsNull() {
+    public async Task GetByIdAsync_UserNotFound_ReturnsNull() {
         // Arrange
         var id = Guid.NewGuid();
-        _storage.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(UserData));
 
         // Act
         var user = await _repository.GetByIdAsync(id);
@@ -77,11 +97,17 @@ public class UserRepositoryTests {
     }
 
     [Fact]
-    public async Task InsertAsync_InsertsNewSystem() {
+    public async Task InsertAsync_InsertsNewUser() {
         // Arrange
-        var id = Guid.NewGuid();
-        var input = GenerateInput(id);
-        var expected = GenerateData(id);
+        var newUser1 = new UserData {
+            Id = Guid.Parse("e3ade862-addf-4628-88f5-ed0938ca91c9"),
+            Email = "new.user@email.com",
+            HashedPassword = new HashedSecret("NewHashedPassword="u8.ToArray(), "SomeSalt"u8.ToArray()),
+            Name = "New User",
+            Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
+        };
+        var input = newUser1.ToModel()!;
+        var expected = newUser1;
         _storage.CreateAsync(Arg.Any<UserData>()).Returns(expected);
 
         // Act
@@ -92,11 +118,22 @@ public class UserRepositoryTests {
     }
 
     [Fact]
-    public async Task UpdateAsync_UpdatesExistingSystem() {
+    public async Task InsertAsync_WithDuplicatedUser_ReturnsNull() {
         // Arrange
-        var id = Guid.NewGuid();
-        var input = GenerateInput(id);
-        var expected = GenerateData(id);
+        var input = _user1.ToModel()!;
+
+        // Act
+        var result = await _repository.AddAsync(input);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_UpdatesExistingUser() {
+        // Arrange
+        var input = _user1.ToModel()!;
+        var expected = _user1;
         _storage.UpdateAsync(Arg.Any<UserData>()).Returns(expected);
 
         // Act
@@ -109,8 +146,7 @@ public class UserRepositoryTests {
     [Fact]
     public async Task UpdateAsync_WithNonExistingId_ReturnsNull() {
         // Arrange
-        var id = Guid.NewGuid();
-        var input = GenerateInput(id);
+        var input = _user1.ToModel()!;
         _storage.UpdateAsync(Arg.Any<UserData>()).Returns(default(UserData));
 
         // Act
@@ -121,9 +157,9 @@ public class UserRepositoryTests {
     }
 
     [Fact]
-    public void Delete_RemovesSystem() {
+    public void Delete_RemovesUser() {
         // Arrange
-        var id = Guid.NewGuid();
+        var id = _user3.Id;
         _storage.Delete(id).Returns(true);
 
         // Act
@@ -132,27 +168,4 @@ public class UserRepositoryTests {
         // Assert
         result.Should().BeTrue();
     }
-
-    private UserData[] GenerateList()
-        => new[] {
-            GenerateData(),
-            GenerateData(hasPassword: false, hasName: false)
-        };
-
-    private UserData GenerateData(Guid? id = null, bool hasPassword = true, bool hasName = true)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            Email = "some.user@email.com",
-            HashedPassword = hasPassword ? _hasher.HashSecret("ValidHashedPassword=") : null,
-            Name = hasName ? "Some User" : null,
-            Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
-        };
-
-    private static User GenerateInput(Guid? id = null, bool hasName = true)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            Email = "some.user@email.com",
-            Name = hasName ? "Some User" : null,
-            Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
-        };
 }

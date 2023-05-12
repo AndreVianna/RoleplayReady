@@ -5,15 +5,13 @@ public class StringValidatorsTests {
         private readonly IPasswordPolicy _fakePolicy = Substitute.For<IPasswordPolicy>();
 
         public TestObject() {
-            _fakePolicy.TryValidate(Arg.Any<string>(), out Arg.Any<ValidationResult>()).Returns(x => {
+            _fakePolicy.Enforce(Arg.Any<string>()).Returns(x => {
                 var result = ValidationResult.Success();
-                if (x[0] is "Invalid") {
-                    result += new ValidationError("Some error.", "Password");
-                    result += new ValidationError("Some other error.", "Password");
-                }
+                if (x[0] is not "Invalid") return result;
 
-                x[1] = result;
-                return x[0] is not "Invalid";
+                result += new ValidationError("Some error.", "Password");
+                result += new ValidationError("Some other error.", "Password");
+                return result;
             });
         }
 

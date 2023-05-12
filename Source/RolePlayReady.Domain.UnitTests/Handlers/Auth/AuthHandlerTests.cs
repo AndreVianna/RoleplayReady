@@ -2,25 +2,30 @@ namespace RolePlayReady.Handlers.Auth;
 
 public class AuthHandlerTests {
     private readonly AuthHandler _handler;
-    private static readonly string _validUser = "some.user@host.com";
+    private static readonly string _validEmail = "some.user@host.com";
     private static readonly string _validPassword = "Secret1234!";
     private static readonly string _invalidPassword = "Invalid";
     private readonly IUserRepository _repository;
     private static readonly IHasher _hasher = Substitute.For<IHasher>();
-    private static readonly HashedSecret _validSecret = new HashedSecret("ValidHashedPassword=", "SomeSalt");
+    private static readonly HashedSecret _validSecret = new("Secret1234!"u8.ToArray(), "Secret1234!"u8.ToArray());
 
     public AuthHandlerTests() {
-        _hasher.HashSecret(Arg.Any<string>()).Returns(_validSecret);
-        _hasher.VerifySecret("RightPassword", Arg.Any<HashedSecret>()).Returns(true);
-        _hasher.VerifySecret("WrongPassword", Arg.Any<HashedSecret>()).Returns(false);
-
+        _hasher.HashSecret(Arg.Any<string>(), Arg.Any<byte[]>()).Returns(_validSecret);
 
         _repository = Substitute.For<IUserRepository>();
+        var validUser = new User() {
+            Id = Guid.NewGuid(),
+            Email = _validEmail,
+            HashedPassword = _validSecret,
+            Name = "Some User",
+        };
+        _repository.VerifyAsync(Arg.Is<SignIn>(i => i.Email == _validEmail && i.Password == _validPassword), Arg.Any<CancellationToken>()).Returns(validUser);
+
         var configuration = Substitute.For<IConfiguration>();
         configuration["Security:DefaultUser:Id"].Returns("a8788588-929a-4859-83d4-c106b30e3afd");
         configuration["Security:DefaultUser:Name"].Returns("Some User");
         configuration["Security:DefaultUser:FolderName"].Returns("SomeUser123");
-        configuration["Security:DefaultUser:Email"].Returns(_validUser);
+        configuration["Security:DefaultUser:Email"].Returns(_validEmail);
         configuration["Security:DefaultUser:Password"].Returns(_validPassword);
         configuration["Security:IssuerSigningKey"].Returns("12345678901234567890123456789012");
         configuration["Security:TokenExpirationInHours"].Returns("7");
@@ -32,8 +37,8 @@ public class AuthHandlerTests {
 
     private class TestLoginData : TheoryData<SignIn, bool, string[]> {
         public TestLoginData() {
-            //Add(new() { Email = _validUser, Password = _validPassword }, true, Array.Empty<string>());
-            Add(new() { Email = _validUser, Password = _invalidPassword }, false, Array.Empty<string>());
+            Add(new() { Email = _validEmail, Password = _validPassword }, true, Array.Empty<string>());
+            Add(new() { Email = _validEmail, Password = _invalidPassword }, false, Array.Empty<string>());
             Add(new() { Email = "invalid.user@email.com", Password = _validPassword }, false, Array.Empty<string>());
             Add(new() { Email = null!, Password = null! }, false, new[] { "'Email' cannot be null.", "'Password' cannot be null." });
         }
@@ -52,8 +57,8 @@ public class AuthHandlerTests {
 
     private class TestRegisterData : TheoryData<SignOn, bool, string[]> {
         public TestRegisterData() {
-            Add(new() { Email = _validUser, Password = _validPassword }, true, Array.Empty<string>());
-            //Add(new() { Email = "duplicated.user@email.com", Password = _validPassword }, false, Array.Empty<string>());
+            Add(new() { Email = _validEmail, Password = _validPassword, Name = "Some Name" }, true, Array.Empty<string>());
+            Add(new() { Email = "duplicated.user@email.com", Password = _validPassword }, false, Array.Empty<string>());
             Add(new() { Email = null!, Password = null! }, false, new[] { "'Email' cannot be null.", "'Password' cannot be null." });
         }
     }
@@ -64,6 +69,7 @@ public class AuthHandlerTests {
         // Arrange
         var input = CreateInput();
         _repository.AddAsync(Arg.Any<User>(), Arg.Any<CancellationToken>()).Returns(input);
+        _repository.AddAsync(Arg.Is<User>(i => i.Email == "duplicated.user@email.com"), Arg.Any<CancellationToken>()).Returns(default(User?));
 
         // Act
         var result = await _handler.RegisterAsync(signOn);
@@ -72,7 +78,6 @@ public class AuthHandlerTests {
         result.IsSuccess.Should().Be(isSuccess);
         result.Errors.Select(i => i.Message).Should().BeEquivalentTo(errors);
     }
-
 
     [Fact]
     public async Task GetManyAsync_ReturnsUsers() {

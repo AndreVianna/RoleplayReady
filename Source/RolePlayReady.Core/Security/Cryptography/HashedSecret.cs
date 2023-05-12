@@ -20,4 +20,9 @@ public sealed record HashedSecret {
 
     public byte[] HashBytes { get; }
     public byte[] SaltBytes { get; }
+
+    public bool Verify(string secret, IHasher hasher) {
+        var hashedSecret = hasher.HashSecret(secret, SaltBytes);
+        return hashedSecret.Hash == Hash;
+    }
 }

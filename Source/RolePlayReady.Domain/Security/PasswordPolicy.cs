@@ -1,8 +1,7 @@
-﻿namespace System.Security;
+﻿using System.Security;
 
-public abstract class PasswordPolicy : IPasswordPolicy {
-    public bool TryValidate(string password, out ValidationResult result) {
-        result = ValidationResult.Success();
-        return true;
-    }
+namespace RolePlayReady.Security;
+
+public class PasswordPolicy : IPasswordPolicy {
+    public ValidationResult Enforce(string password) => ValidationResult.Success();
 }

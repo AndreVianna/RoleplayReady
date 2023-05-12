@@ -23,4 +23,20 @@ public class HashedSecretTests {
         subject.SaltBytes.Should().BeEquivalentTo("SomeSalt"u8.ToArray());
     }
 
+    [Theory]
+    [InlineData("SomeHash", true)]
+    [InlineData("Invalid", false)]
+    public void Verify_CreatesObject(string input, bool expectedResult) {
+        var hasher = Substitute.For<IHasher>();
+        var other = new HashedSecret("Invalid"u8.ToArray(), "SomeSalt"u8.ToArray());
+        hasher.HashSecret(Arg.Any<string>(), Arg.Any<byte[]>()).Returns(other);
+        var correct = new HashedSecret("SomeHash"u8.ToArray(), "SomeSalt"u8.ToArray());
+        hasher.HashSecret("SomeHash", Arg.Any<byte[]>()).Returns(correct);
+
+        var subject = new HashedSecret("SomeHash"u8.ToArray(), "SomeSalt"u8.ToArray());
+
+        var result = subject.Verify(input, hasher);
+
+        result.Should().Be(expectedResult);
+    }
 }

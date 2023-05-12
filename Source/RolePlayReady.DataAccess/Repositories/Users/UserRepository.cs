@@ -3,48 +3,64 @@
 namespace RolePlayReady.DataAccess.Repositories.Users;
 
 public class UserRepository : IUserRepository {
-    private readonly IJsonFileStorage<UserData> _files;
+    private static IDictionary<string, Guid>? _emailIndex;
+
+    private readonly IJsonFileStorage<UserData> _users;
     private readonly IHasher _hasher;
 
-    public UserRepository(IJsonFileStorage<UserData> files, IHasher hasher) {
-        _files = files;
+    public UserRepository(IJsonFileStorage<UserData> users, IHasher hasher) {
+        _users = users;
+        _emailIndex ??= LoadEmailIndex();
         _hasher = hasher;
-        files.SetBasePath("Users");
+        users.SetBasePath("Users");
+    }
+
+    private IDictionary<string, Guid> LoadEmailIndex() {
+        var users = _users.GetAllAsync().Result;
+        return users.ToDictionary(i => i.Email, i => i.Id);
     }
 
     public async Task<IEnumerable<UserRow>> GetManyAsync(CancellationToken cancellation = default) {
-        var files = await _files
-            .GetAllAsync(cancellation)
-            .ConfigureAwait(false);
-        return files.ToArray(UserMapper.ToRow);
+        var users = await _users
+                        .GetAllAsync(cancellation)
+                        .ConfigureAwait(false);
+        return users.ToArray(UserMapper.ToRow);
     }
 
-    public Task<User?> GetByEmailAsync(string email, CancellationToken cancellation = default)
-        => Task.FromResult<User?>(default);
-
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
-        var file = await _files
-            .GetByIdAsync(id, cancellation)
-            .ConfigureAwait(false);
-        return file.ToModel();
+        var userData = await _users
+                            .GetByIdAsync(id, cancellation)
+                            .ConfigureAwait(false);
+        return userData.ToModel();
     }
 
     public async Task<User?> AddAsync(User input, CancellationToken cancellation = default) {
-        var file = await _files.CreateAsync(input.ToData(), cancellation).ConfigureAwait(false);
-        return file.ToModel();
+        if (_emailIndex!.ContainsKey(input.Email)) return default; 
+        var userData = await _users.CreateAsync(input.ToData(), cancellation).ConfigureAwait(false);
+        if (userData is not null) _emailIndex![userData.Email] = userData.Id;
+        return userData.ToModel();
     }
 
     public async Task<User?> UpdateAsync(User input, CancellationToken cancellation = default) {
-        var file = await _files.UpdateAsync(input.ToData(), cancellation);
-        return file.ToModel();
+        var userData = await _users.UpdateAsync(input.ToData(), cancellation);
+        return userData.ToModel();
     }
 
-    public bool Remove(Guid id)
-        => _files.Delete(id);
-
-    public async Task<bool> VerifyAsync(SignIn signIn, CancellationToken cancellation) {
-        var file = await GetByEmailAsync(signIn.Email, cancellation).ConfigureAwait(false);
-        return file?.HashedPassword is not null
-               && _hasher.VerifySecret(signIn.Password, file.HashedPassword);
+    public bool Remove(Guid id) {
+        var isDeleted = _users.Delete(id);
+        if (isDeleted) _emailIndex!.Remove(_emailIndex.First(i => i.Value == id).Key);
+        return isDeleted;
     }
+
+    public async Task<User?> VerifyAsync(SignIn signIn, CancellationToken cancellation) {
+        var user = await GetByEmailAsync(signIn.Email, cancellation).ConfigureAwait(false);
+        return user?.HashedPassword?.Verify(signIn.Password, _hasher) ?? false
+            ? user
+            : default;
+    }
+
+    private async Task<User?> GetByEmailAsync(string email, CancellationToken cancellation = default)
+        => _emailIndex!.ContainsKey(email)
+            ? await GetByIdAsync(_emailIndex[email], cancellation)
+            : default;
 }

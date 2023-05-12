@@ -10,9 +10,10 @@ public sealed class IsPasswordCommand
     }
 
     public override ValidationResult Validate(object? subject) {
-        if (subject is not string s || _policy.TryValidate(s, out var isValidEmailResult))
-            return ValidationResult.Success();
+        if (subject is not string password) return ValidationResult.Success();
+        var policyResult = _policy.Enforce(password);
+        if (policyResult.IsSuccess) return ValidationResult.Success();
         var result = ValidationResult.Invalid(MustBeAValidPassword, Source, GetErrorMessageArguments(subject));
-        return isValidEmailResult.Errors.Aggregate(result, (current, error) => current + error);
+        return policyResult.Errors.Aggregate(result, (current, error) => current + error);
     }
 }

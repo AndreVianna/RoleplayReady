@@ -8,8 +8,8 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
     private readonly IDateTime _dateTime;
     private readonly ILogger<AuthHandler> _logger;
 
-    public AuthHandler(IUserRepository repository, IHasher hasher, IConfiguration configuration, IDateTime dateTime, ILogger<AuthHandler> logger) : 
-        base(repository) {
+    public AuthHandler(IUserRepository repository, IHasher hasher, IConfiguration configuration, IDateTime dateTime, ILogger<AuthHandler> logger) 
+        : base(repository) {
         _hasher = hasher;
         _configuration = configuration;
         _dateTime = dateTime;
@@ -23,8 +23,8 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
             return Invalid(validation.Errors);
         }
 
-        var isVerified = await Repository.VerifyAsync(signIn, cancellation);
-        if (!isVerified) {
+        var user = await Repository.VerifyAsync(signIn, cancellation);
+        if (user is null) {
             _logger.LogDebug("Login attempt for '{email}' failed.", signIn.Email);
             return Failure();
         }
@@ -48,7 +48,6 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
             HashedPassword = _hasher.HashSecret(signOn.Password),
         };
 
-        //ToDo - Verify if user already exists by email
         var addedUser = await Repository.AddAsync(user, cancellation);
 
         return addedUser is null
