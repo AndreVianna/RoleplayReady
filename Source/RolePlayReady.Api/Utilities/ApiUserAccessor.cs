@@ -1,3 +1,5 @@
+using RolePlayReady.DataAccess.Identity;
+
 namespace RolePlayReady.Api.Utilities;
 
 [ExcludeFromCodeCoverage]

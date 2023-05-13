@@ -1,3 +1,4 @@
+using RolePlayReady.DataAccess.Repositories.Auth;
 using RolePlayReady.Handlers.Auth;
 
 namespace RolePlayReady.DataAccess.Repositories.Users;

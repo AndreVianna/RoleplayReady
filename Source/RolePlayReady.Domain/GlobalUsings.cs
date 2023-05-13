@@ -17,11 +17,8 @@ global using Microsoft.IdentityModel.Tokens;
 
 global using RolePlayReady.Constants;
 global using RolePlayReady.Handlers.Auth;
-global using RolePlayReady.Handlers.GameSystem;
-global using RolePlayReady.Handlers.Sphere;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;
 global using RolePlayReady.Repositories;
-global using RolePlayReady.Repositories.GameSystem;
 global using RolePlayReady.Repositories.User;

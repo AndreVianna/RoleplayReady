@@ -23,12 +23,13 @@ global using Microsoft.OpenApi.Models;
 
 global using RolePlayReady.Api.Controllers.Auth.Models;
 global using RolePlayReady.Api.Controllers.Common;
+global using RolePlayReady.Api.Controllers.Systems.Models;
 global using RolePlayReady.Api.Utilities;
 global using RolePlayReady.Constants;
 global using RolePlayReady.DataAccess.Extensions;
 global using RolePlayReady.Extensions;
 global using RolePlayReady.Handlers.Auth;
-global using RolePlayReady.Handlers.GameSystem;
+global using RolePlayReady.Handlers.System;
 global using RolePlayReady.Models;
 
 global using Serilog;

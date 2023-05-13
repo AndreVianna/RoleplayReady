@@ -1,3 +1,5 @@
+using RolePlayReady.DataAccess.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var env = builder.Environment;
