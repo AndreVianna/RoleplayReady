@@ -10,15 +10,19 @@ public record CrudResult : Result {
 
     public CRUDResultType Type { get; protected set; }
     public override bool IsSuccess => !IsInvalid && Type is CRUDResultType.Success;
-    public bool IsNotFound => !IsInvalid ? Type is CRUDResultType.NotFound : throw new InvalidOperationException("The result has validation errors. You must check for errors before checking if result is null.");
-    public bool IsConflict => !IsInvalid ? Type is CRUDResultType.Conflict : throw new InvalidOperationException("The result has validation errors. You must check for errors before checking if result has conflicts.");
+    public bool IsNotFound => !IsInvalid
+        ? Type is CRUDResultType.NotFound
+        : throw new InvalidOperationException("The result has validation errors. You must check for errors before checking if result is null.");
+    public bool IsConflict => !IsInvalid
+        ? Type is CRUDResultType.Conflict
+        : throw new InvalidOperationException("The result has validation errors. You must check for errors before checking if result has conflicts.");
 
     public static CrudResult Success() => new(CRUDResultType.Success);
     public static CrudResult NotFound() => new(CRUDResultType.NotFound);
     public static CrudResult Conflict() => new(CRUDResultType.Conflict);
+
     public static CrudResult Invalid(string message, string source, params object?[] args) => Invalid(new ValidationError(message, source, args));
-    public static CrudResult Invalid(ValidationError error) => Invalid(new[] { error });
-    public static CrudResult Invalid(IEnumerable<ValidationError> errors) => new(CRUDResultType.Invalid, IsNotNullAndDoesNotHaveNull(errors));
+    public static CrudResult Invalid(ValidationResult result) => new(CRUDResultType.Invalid, result.Errors);
 
     public static CrudResult<TValue> Success<TValue>(TValue value) => new(CRUDResultType.Success, value);
     public static CrudResult<TValue> NotFound<TValue>(TValue? value = default) => new(CRUDResultType.NotFound, value);

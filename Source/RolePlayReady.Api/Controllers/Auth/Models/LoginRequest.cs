@@ -7,3 +7,4 @@ public record LoginRequest {
     [Required]
     public required string Password { get; set; }
 }
+

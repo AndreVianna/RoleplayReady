@@ -26,15 +26,20 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
         _io.CreateFolderIfNotExists(_repositoryPath);
     }
 
-    public async Task<IEnumerable<TData>> GetAllAsync(CancellationToken cancellation = default) {
+    public async Task<IEnumerable<TData>> GetAllAsync(Func<TData, bool>? filter = null, CancellationToken cancellation = default) {
         try {
             _logger.LogDebug("Getting files from '{path}'...", _repositoryPath);
             var files = _io.GetFilesFrom(_repositoryPath, "+*.json", SearchOption.TopDirectoryOnly);
             var data = new List<TData>();
             foreach (var filePathWithName in files) {
                 var result = await GetFileDataOrDefaultAsync(filePathWithName, cancellation).ConfigureAwait(false);
-                if (result is null) continue;
+                if (result is null)
+                    continue;
                 data.Add(result);
+            }
+
+            if (filter is not null) {
+                data = data.Where(filter).ToList();
             }
 
             _logger.LogDebug("{fileCount} files retrieved from '{path}'.", data.Count, _repositoryPath);

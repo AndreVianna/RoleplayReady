@@ -4,7 +4,7 @@ namespace System.Results;
 
 public sealed record SignInResult : Result {
     public SignInResult(SignInResultType type, string? token = null, IEnumerable<ValidationError>? errors = null)
-        : base(errors){
+        : base(errors) {
         Type = IsInvalid ? SignInResultType.Invalid : type;
         Token = IsSuccess ? IsNotNull(token) : null; // only set token if success.
     }
@@ -13,14 +13,23 @@ public sealed record SignInResult : Result {
     public SignInResultType Type { get; private set; }
     public bool RequiresTwoFactor => !IsInvalid && Type is SignInResultType.TwoFactorRequired;
     public override bool IsSuccess => !IsInvalid && Type is SignInResultType.Success or SignInResultType.TwoFactorRequired;
-    public bool IsBlocked => !IsInvalid ? Type is SignInResultType.Blocked : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if user is blocked.");
-    public bool IsLocked => !IsInvalid ? Type is SignInResultType.Locked : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if user is locked.");
-    public bool IsFailure => !IsInvalid ? Type is SignInResultType.Failed : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if the sign in attempt failed.");
+    public bool IsBlocked => !IsInvalid
+        ? Type is SignInResultType.Blocked
+        : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if user is blocked.");
+    public bool IsLocked => !IsInvalid
+        ? Type is SignInResultType.Locked
+        : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if user is locked.");
+    public bool IsFailure => !IsInvalid
+        ? Type is SignInResultType.Failed
+        : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if the sign in attempt failed.");
 
-    public static SignInResult Success(string token, bool requires2Factor = false) => new(requires2Factor ? SignInResultType.TwoFactorRequired : SignInResultType.Success, token);
-    public static SignInResult Invalid(string message, string source, params object?[] args) => Invalid(new ValidationError(message, source, args));
-    public static SignInResult Invalid(ValidationError error) => Invalid(new[] { error });
-    public static SignInResult Invalid(IEnumerable<ValidationError> errors) => new(SignInResultType.Invalid, null, IsNotNullAndDoesNotHaveNull(errors));
+    public static SignInResult Success(string token, bool requires2Factor = false)
+        => new(requires2Factor ? SignInResultType.TwoFactorRequired : SignInResultType.Success, token);
+    public static SignInResult Invalid(string message, string source, params object?[] args)
+        => Invalid(new ValidationError(message, source, args));
+    public static SignInResult Invalid(ValidationResult result)
+        => new(SignInResultType.Invalid, null, result.Errors);
+
     public static SignInResult Blocked() => new(SignInResultType.Blocked);
     public static SignInResult Locked() => new(SignInResultType.Locked);
     public static SignInResult Failure() => new(SignInResultType.Failed);

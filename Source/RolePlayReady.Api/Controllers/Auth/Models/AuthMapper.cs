@@ -7,6 +7,13 @@ internal static class AuthMapper {
             Password = request.Password.Trim(),
         };
 
+    public static SignOn ToDomain(this RegisterRequest request)
+        => new() {
+            Name = request.Name?.Trim(),
+            Email = request.Email.Trim(),
+            Password = request.Password.Trim(),
+        };
+
     public static LoginResponse ToLoginResponse(this string response)
         => new() { Token = response };
 }

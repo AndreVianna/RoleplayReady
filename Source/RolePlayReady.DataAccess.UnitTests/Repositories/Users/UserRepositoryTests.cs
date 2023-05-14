@@ -35,7 +35,7 @@ public class UserRepositoryTests {
         };
 
         _storage = Substitute.For<IJsonFileStorage<UserData>>();
-        _storage.GetAllAsync(Arg.Any<CancellationToken>()).Returns(new [] { _user1, _user2, _user3 });
+        _storage.GetAllAsync(null, Arg.Any<CancellationToken>()).Returns(new [] { _user1, _user2, _user3 });
         _storage.GetByIdAsync(_user1.Id, Arg.Any<CancellationToken>()).Returns(_user1);
         _storage.GetByIdAsync(_user2.Id, Arg.Any<CancellationToken>()).Returns(_user2);
         _storage.GetByIdAsync(_user3.Id, Arg.Any<CancellationToken>()).Returns(_user3);

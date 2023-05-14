@@ -4,6 +4,7 @@ global using System.Abstractions;
 global using System.Defaults;
 global using System.Extensions;
 global using System.Globalization;
+global using System.Linq.Expressions;
 global using System.Security.Cryptography;
 global using System.Text.RegularExpressions;
 global using System.Utilities;

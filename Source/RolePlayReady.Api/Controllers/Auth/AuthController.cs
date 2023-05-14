@@ -33,4 +33,26 @@ public class AuthController : ControllerBase {
         _logger.LogDebug("'{user}' logged in successfully.", request.Email);
         return Ok(result.Token!.ToLoginResponse());
     }
+
+    [AllowAnonymous]
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterAsync(RegisterRequest request)
+    {
+        var registration = request.ToDomain();
+        var result = await _handler.RegisterAsync(registration).ConfigureAwait(false);
+        if (result.IsInvalid)
+        {
+            _logger.LogDebug("'{user}' failed to register (bad request).", request.Email);
+            return BadRequest(result.Errors.UpdateModelState(ModelState));
+        }
+
+        if (result.IsConflict)
+        {
+            _logger.LogDebug("'{user}' is already in use.", request.Email);
+            return Conflict($"'{request.Email}' is already in use.");
+        }
+
+        _logger.LogDebug("'{user}' registered successfully.", request.Email);
+        return Ok();
+    }
 }

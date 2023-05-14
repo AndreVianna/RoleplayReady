@@ -10,7 +10,7 @@ public class SystemRepository : ISystemRepository {
 
     public async Task<IEnumerable<Row>> GetManyAsync(CancellationToken cancellation = default) {
         var files = await _files
-            .GetAllAsync(cancellation)
+            .GetAllAsync(cancellation: cancellation)
             .ConfigureAwait(false);
         return files.ToArray(SystemMapper.ToRow);
     }

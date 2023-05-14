@@ -20,7 +20,7 @@ public class UserRepository : IUserRepository {
 
     public async Task<IEnumerable<UserRow>> GetManyAsync(CancellationToken cancellation = default) {
         var users = await _users
-                        .GetAllAsync(cancellation)
+                        .GetAllAsync(cancellation: cancellation)
                         .ConfigureAwait(false);
         return users.ToArray(UserMapper.ToRow);
     }

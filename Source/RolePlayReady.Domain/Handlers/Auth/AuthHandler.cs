@@ -20,7 +20,7 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
         var validation = signIn.Validate();
         if (validation.IsInvalid) {
             _logger.LogDebug("Login attempt with invalid request.");
-            return Invalid(validation.Errors);
+            return Invalid(validation);
         }
 
         var user = await Repository.VerifyAsync(signIn, cancellation);
@@ -38,7 +38,7 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
         var validation = signOn.Validate();
         if (validation.IsInvalid) {
             _logger.LogDebug("Register attempt with invalid request.");
-            return CrudResult.Invalid(validation.Errors);
+            return CrudResult.Invalid(validation);
         }
 
         var user = new User {
