@@ -8,7 +8,7 @@ public class SystemRepository : ISystemRepository {
         files.SetBasePath($"{owner.BaseFolder}/Systems");
     }
 
-    public async Task<IEnumerable<Row>> GetManyAsync(CancellationToken cancellation = default) {
+    public async Task<IEnumerable<SystemRow>> GetManyAsync(CancellationToken cancellation = default) {
         var files = await _files
             .GetAllAsync(cancellation: cancellation)
             .ConfigureAwait(false);

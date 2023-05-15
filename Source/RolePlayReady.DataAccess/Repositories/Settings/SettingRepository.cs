@@ -8,7 +8,7 @@ public class SettingRepository : ISettingRepository {
         files.SetBasePath($"{owner.BaseFolder}/Settings");
     }
 
-    public async Task<IEnumerable<Row>> GetManyAsync(CancellationToken cancellation = default) {
+    public async Task<IEnumerable<SettingRow>> GetManyAsync(CancellationToken cancellation = default) {
         var files = await _files
             .GetAllAsync(cancellation: cancellation)
             .ConfigureAwait(false);

@@ -1,4 +1,5 @@
 global using System.Defaults;
+global using System.Results;
 global using System.Utilities;
 
 global using FluentAssertions;

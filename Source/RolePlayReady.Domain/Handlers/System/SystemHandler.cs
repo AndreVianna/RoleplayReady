@@ -3,7 +3,7 @@
 namespace RolePlayReady.Handlers.System;
 
 public class SystemHandler
-    : CrudHandler<System, ISystemRepository>,
+    : CrudHandler<System, SystemRow, ISystemRepository>,
       ISystemHandler {
     public SystemHandler(ISystemRepository repository)
         : base(repository) {

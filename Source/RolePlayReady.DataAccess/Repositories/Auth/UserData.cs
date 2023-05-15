@@ -9,6 +9,7 @@ public record UserData : IKey {
     public bool IsBlocked { get; init; }
     public ICollection<Role> Roles { get; init; } = Array.Empty<Role>();
 
-    public string? Name { get; init; }
+    public string? FirstName { get; init; }
+    public string? LastName { get; init; }
     public DateOnly? Birthday { get; init; }
 }

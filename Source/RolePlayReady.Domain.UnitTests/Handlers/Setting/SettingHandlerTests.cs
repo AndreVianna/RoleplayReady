@@ -179,7 +179,7 @@ public class SettingHandlerTests {
         result.IsNotFound.Should().BeTrue();
     }
 
-    private static Row CreateRow(Guid? id = null)
+    private static SettingRow CreateRow(Guid? id = null)
         => new() {
             Id = id ?? Guid.NewGuid(),
             Name = "Some Name",

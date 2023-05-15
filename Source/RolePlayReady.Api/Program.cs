@@ -1,5 +1,3 @@
-using RolePlayReady.DataAccess.Identity;
-
 var builder = WebApplication.CreateBuilder(args);
 
 var env = builder.Environment;
@@ -35,6 +33,7 @@ builder.Services.AddVersionedApiExplorer(options => {
 builder.Services.AddDefaultSystemProviders();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUserAccessor, ApiUserAccessor>();
+builder.Services.AddScoped<IHasher, Hasher>();
 builder.Services.AddDomainHandlers();
 builder.Services.AddRepositories();
 builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService<ILoggerFactory>(), env));

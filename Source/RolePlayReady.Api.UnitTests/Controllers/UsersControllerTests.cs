@@ -20,7 +20,8 @@ public class UsersControllerTests {
     private static readonly User _sample = new() {
         Id = Guid.NewGuid(),
         Email = "some.user@email.com",
-        Name = "Some User",
+        FirstName = "Some",
+        LastName = "User",
         Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         Roles = new[] { Role.User },
     };
@@ -90,7 +91,8 @@ public class UsersControllerTests {
         // Arrange
         var request = new UserRequest {
             Email = "some.user@email.com",
-            Name = "Some User",
+            FirstName = "Some",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
         var expected = _sample.ToResponse(DateTime.Now);
@@ -111,7 +113,8 @@ public class UsersControllerTests {
         // Arrange
         var request = new UserRequest {
             Email = "some.user@email.com",
-            Name = "Some User",
+            FirstName = "Some",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
         var expected = request.ToDomain();
@@ -149,7 +152,8 @@ public class UsersControllerTests {
         var base64Id = (Base64Guid)_sample.Id;
         var request = new UserRequest {
             Email = "some.user@email.com",
-            Name = "Some User",
+            FirstName = "Some",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
         var expected = _sample.ToResponse(DateTime.Now);
@@ -170,7 +174,8 @@ public class UsersControllerTests {
         // Arrange
         var request = new UserRequest {
             Email = "some.user@email.com",
-            Name = "Some User",
+            FirstName = "Some",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
 
@@ -186,7 +191,8 @@ public class UsersControllerTests {
         var base64Id = (Base64Guid)Guid.NewGuid();
         var request = new UserRequest {
             Email = "some.user@email.com",
-            Name = "Some User",
+            FirstName = "Some",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
         var input = request.ToDomain();

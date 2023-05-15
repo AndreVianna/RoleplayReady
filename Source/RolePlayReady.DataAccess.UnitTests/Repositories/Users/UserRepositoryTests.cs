@@ -8,7 +8,6 @@ public class UserRepositoryTests {
     private readonly UserRepository _repository;
 
     private readonly UserData _user1;
-    private readonly UserData _user2;
     private readonly UserData _user3;
 
     public UserRepositoryTests() {
@@ -22,10 +21,11 @@ public class UserRepositoryTests {
             Id = Guid.Parse("26409801-0d28-4df4-97e9-53b678919416"),
             Email = "some.user@email.com",
             HashedPassword = hashedSecret,
-            Name = "Some User",
+            FirstName = "Some",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
-        _user2 = new() {
+        UserData user2 = new() {
             Id = Guid.Parse("57e48beb-8e3d-4996-bbea-885515591c3d"),
             Email = "other.user@email.com",
         };
@@ -35,9 +35,9 @@ public class UserRepositoryTests {
         };
 
         _storage = Substitute.For<IJsonFileStorage<UserData>>();
-        _storage.GetAllAsync(null, Arg.Any<CancellationToken>()).Returns(new [] { _user1, _user2, _user3 });
+        _storage.GetAllAsync(null, Arg.Any<CancellationToken>()).Returns(new [] { _user1, user2, _user3 });
         _storage.GetByIdAsync(_user1.Id, Arg.Any<CancellationToken>()).Returns(_user1);
-        _storage.GetByIdAsync(_user2.Id, Arg.Any<CancellationToken>()).Returns(_user2);
+        _storage.GetByIdAsync(user2.Id, Arg.Any<CancellationToken>()).Returns(user2);
         _storage.GetByIdAsync(_user3.Id, Arg.Any<CancellationToken>()).Returns(_user3);
 
         _repository = new(_storage, hasher);
@@ -104,7 +104,8 @@ public class UserRepositoryTests {
             Id = Guid.Parse("e3ade862-addf-4628-88f5-ed0938ca91c9"),
             Email = "new.user@email.com",
             HashedPassword = new HashedSecret("NewHashedPassword="u8.ToArray(), "SomeSalt"u8.ToArray()),
-            Name = "New User",
+            FirstName = "New",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
         var input = newUser1.ToModel()!;

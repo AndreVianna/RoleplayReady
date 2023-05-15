@@ -17,8 +17,11 @@ public record UserResponse {
     [SwaggerSchema("The indicates the list of roles assigned to the user.", ReadOnly = true)]
     public string[] Roles { get; init; } = Array.Empty<string>();
 
-    [SwaggerSchema("The name of the user.", ReadOnly = true)]
-    public string? Name { get; init; }
+    [SwaggerSchema("The first name of the user.", ReadOnly = true)]
+    public string? FirstName { get; init; }
+
+    [SwaggerSchema("The last name of the user.", ReadOnly = true)]
+    public string? LastName { get; init; }
 
     [SwaggerSchema("The name of the user.", ReadOnly = true)]
     public DateOnly? Birthday { get; init; }

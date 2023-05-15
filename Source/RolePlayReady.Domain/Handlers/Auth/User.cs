@@ -7,11 +7,12 @@ public record User : IValidatable, IKey {
     public DateTime LockExpiration { get; init; } = DateTime.MinValue;
     public int SignInRetryCount { get; init; }
     public bool IsBlocked { get; init; }
-    public ICollection<Role> Roles { get; init; } = Array.Empty<Role>();
+    public ICollection<Role> Roles { get; init; } = new HashSet<Role>();
 
     [PersonalInformation]
-    public string? Name { get; init; }
-
+    public string? FirstName { get; init; }
+    [PersonalInformation]
+    public string? LastName { get; init; }
     [PersonalInformation]
     public DateOnly? Birthday { get; init; }
 

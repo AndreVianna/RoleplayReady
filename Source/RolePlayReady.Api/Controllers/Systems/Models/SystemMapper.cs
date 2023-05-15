@@ -3,10 +3,10 @@ using GameSystem = RolePlayReady.Handlers.System.System;
 namespace RolePlayReady.Api.Controllers.Systems.Models;
 
 internal static class SystemMapper {
-    public static SystemRowResponse[] ToResponse(this IEnumerable<Row> rows)
+    public static SystemRowResponse[] ToResponse(this IEnumerable<SystemRow> rows)
         => rows.Select(ToResponse).ToArray();
 
-    private static SystemRowResponse ToResponse(this Row row)
+    private static SystemRowResponse ToResponse(this SystemRow row)
         => new() {
             Id = (Base64Guid)row.Id,
             Name = row.Name

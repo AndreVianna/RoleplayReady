@@ -165,7 +165,7 @@ public class SystemHandlerTests {
         result.IsSuccess.Should().BeFalse();
     }
 
-    private static Row CreateRow(Guid? id = null)
+    private static SystemRow CreateRow(Guid? id = null)
         => new() {
             Id = id ?? Guid.NewGuid(),
             Name = "Some Name",

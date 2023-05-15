@@ -17,7 +17,7 @@ public class AuthHandlerTests {
             Id = Guid.NewGuid(),
             Email = _validEmail,
             HashedPassword = _validSecret,
-            Name = "Some User",
+            FirstName = "Some User",
         };
         _repository.VerifyAsync(Arg.Is<SignIn>(i => i.Email == _validEmail && i.Password == _validPassword), Arg.Any<CancellationToken>()).Returns(validUser);
 
@@ -57,7 +57,7 @@ public class AuthHandlerTests {
 
     private class TestRegisterData : TheoryData<SignOn, bool, string[]> {
         public TestRegisterData() {
-            Add(new() { Email = _validEmail, Password = _validPassword, Name = "Some Name" }, true, Array.Empty<string>());
+            Add(new() { Email = _validEmail, Password = _validPassword, FirstName = "Some", LastName = "Name" }, true, Array.Empty<string>());
             Add(new() { Email = "duplicated.user@email.com", Password = _validPassword }, false, Array.Empty<string>());
             Add(new() { Email = null!, Password = null! }, false, new[] { "'Email' cannot be null.", "'Password' cannot be null." });
         }
@@ -248,6 +248,86 @@ public class AuthHandlerTests {
         result.IsNotFound.Should().BeTrue();
     }
 
+    [Fact]
+    public async Task GrantRoleAsync_WithValidUser_ReturnsTrue() {
+        // Arrange
+        var user = CreateInput();
+
+        _repository.GetByIdAsync(user.Id, Arg.Any<CancellationToken>()).Returns(user);
+        _repository.UpdateAsync(user, Arg.Any<CancellationToken>()).Returns(user);
+
+        var input = new UserRole {
+            UserId = user.Id,
+            Role = Role.Administrator,
+        };
+
+        // Act
+        var result = await _handler.GrantRoleAsync(input);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GrantRoleAsync_WithInvalidUser_ReturnsFalse() {
+        // Arrange
+        var id = Guid.NewGuid();
+
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(User));
+
+        var input = new UserRole {
+            UserId = id,
+            Role = Role.Administrator,
+        };
+
+        // Act
+        var result = await _handler.GrantRoleAsync(input);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.IsNotFound.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task RevokeRoleAsync_WithValidUser_ReturnsTrue() {
+        // Arrange
+        var user = CreateInput();
+
+        _repository.GetByIdAsync(user.Id, Arg.Any<CancellationToken>()).Returns(user);
+        _repository.UpdateAsync(user, Arg.Any<CancellationToken>()).Returns(user);
+
+        var input = new UserRole {
+            UserId = user.Id,
+            Role = Role.Administrator,
+        };
+
+        // Act
+        var result = await _handler.RevokeRoleAsync(input);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task RevokeRoleAsync_WithInvalidUser_ReturnsFalse() {
+        // Arrange
+        var id = Guid.NewGuid();
+
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(User));
+
+        var input = new UserRole {
+            UserId = id,
+            Role = Role.Administrator,
+        };
+
+        // Act
+        var result = await _handler.RevokeRoleAsync(input);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.IsNotFound.Should().BeTrue();
+    }
+
     private static UserRow CreateRow(Guid? id = null)
         => new() {
             Id = id ?? Guid.NewGuid(),
@@ -259,7 +339,7 @@ public class AuthHandlerTests {
         => new() {
             Id = id ?? Guid.NewGuid(),
             Email = "some.user@email.com",
-            Name = "Some User",
+            FirstName = "Some User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
 }

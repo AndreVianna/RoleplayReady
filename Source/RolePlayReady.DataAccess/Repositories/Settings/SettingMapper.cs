@@ -12,7 +12,7 @@ public static class SettingMapper {
             AttributeDefinitions = input.AttributeDefinitions.Select(ToData).ToArray(),
         };
 
-    public static Row ToRow(this SettingData input)
+    public static SettingRow ToRow(this SettingData input)
         => new() {
             Id = input.Id,
             Name = input.Name,

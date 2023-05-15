@@ -19,7 +19,8 @@ internal static class UserMapper {
             IsBlocked = model.IsBlocked,
             Roles = model.Roles.Select(x => x.ToString()).ToArray(),
             FolderName = model.FolderName,
-            Name = model.Name,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
             Birthday = model.Birthday,
         };
 
@@ -27,7 +28,8 @@ internal static class UserMapper {
         => new() {
             Id = id ?? Guid.NewGuid(),
             Email = request.Email,
-            Name = request.Name,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
             Birthday = request.Birthday,
         };
 }

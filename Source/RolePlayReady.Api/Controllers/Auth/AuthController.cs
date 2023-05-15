@@ -17,9 +17,9 @@ public class AuthController : ControllerBase {
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginRequest request) {
+    public async Task<IActionResult> LoginAsync(LoginRequest request, CancellationToken cancellation = default) {
         var login = request.ToDomain();
-        var result = await _handler.SignInAsync(login).ConfigureAwait(false);
+        var result = await _handler.SignInAsync(login, cancellation).ConfigureAwait(false);
         if (result.IsInvalid) {
             _logger.LogDebug("'{user}' fail to login (bad request).", request.Email);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
@@ -30,16 +30,16 @@ public class AuthController : ControllerBase {
             return Unauthorized();
         }
 
-        _logger.LogDebug("'{user}' logged in successfully.", request.Email);
+        _logger.LogDebug("'{user}' logged in.", request.Email);
         return Ok(result.Token!.ToLoginResponse());
     }
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterAsync(RegisterRequest request)
+    public async Task<IActionResult> RegisterAsync(RegisterRequest request, CancellationToken cancellation = default)
     {
         var registration = request.ToDomain();
-        var result = await _handler.RegisterAsync(registration).ConfigureAwait(false);
+        var result = await _handler.RegisterAsync(registration, cancellation).ConfigureAwait(false);
         if (result.IsInvalid)
         {
             _logger.LogDebug("'{user}' failed to register (bad request).", request.Email);
@@ -52,7 +52,45 @@ public class AuthController : ControllerBase {
             return Conflict($"'{request.Email}' is already in use.");
         }
 
-        _logger.LogDebug("'{user}' registered successfully.", request.Email);
+        _logger.LogDebug("'{user}' registered.", request.Email);
+        return Ok();
+    }
+
+    [Authorize(Roles = "Administrator")]
+    [HttpPost("users/{userId}/grant")]
+    public async Task<IActionResult> GrantRoleAsync([FromRoute] Guid userId, RoleRequest request, CancellationToken cancellation = default) {
+        var model = request.ToDomain(userId);
+        var result = await _handler.GrantRoleAsync(model, cancellation).ConfigureAwait(false);
+        if (result.IsInvalid) {
+            _logger.LogDebug("Failed to grant '{Role}' role to '{userId}' (bad request).", request.Role, userId);
+            return BadRequest(result.Errors.UpdateModelState(ModelState));
+        }
+
+        if (result.IsNotFound) {
+            _logger.LogDebug("Failed to grant '{role}' role to to '{userId}' (not found).", request.Role, userId);
+            return NotFound();
+        }
+
+        _logger.LogDebug("'{role}' role granted to user '{user}'.", request.Role, userId);
+        return Ok();
+    }
+
+    [Authorize(Roles = "Administrator")]
+    [HttpPost("users/{userId}/revoke")]
+    public async Task<IActionResult> RevokeRoleAsync([FromRoute] Guid userId, RoleRequest request, CancellationToken cancellation = default) {
+        var model = request.ToDomain(userId);
+        var result = await _handler.RevokeRoleAsync(model, cancellation).ConfigureAwait(false);
+        if (result.IsInvalid) {
+            _logger.LogDebug("Failed to revoke '{Role}' role from '{userId}' (bad request).", request.Role, userId);
+            return BadRequest(result.Errors.UpdateModelState(ModelState));
+        }
+
+        if (result.IsNotFound) {
+            _logger.LogDebug("Failed to revoke '{role}' role from '{userId}' (not found).", request.Role, userId);
+            return NotFound();
+        }
+
+        _logger.LogDebug("'{role}' role revoked from user '{user}'.", request.Role, userId);
         return Ok();
     }
 }

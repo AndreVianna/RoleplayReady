@@ -17,6 +17,8 @@ global using Microsoft.IdentityModel.Tokens;
 
 global using RolePlayReady.Constants;
 global using RolePlayReady.Handlers.Auth;
+global using RolePlayReady.Handlers.Setting;
+global using RolePlayReady.Handlers.System;
 global using RolePlayReady.Models;
 global using RolePlayReady.Models.Abstractions;
 global using RolePlayReady.Models.Attributes;

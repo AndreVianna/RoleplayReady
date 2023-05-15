@@ -8,9 +8,9 @@ public class UserRepository : IUserRepository {
 
     public UserRepository(IJsonFileStorage<UserData> users, IHasher hasher) {
         _users = users;
-        _emailIndex ??= LoadEmailIndex();
         _hasher = hasher;
         users.SetBasePath("Users");
+        _emailIndex ??= LoadEmailIndex();
     }
 
     private IDictionary<string, Guid> LoadEmailIndex() {

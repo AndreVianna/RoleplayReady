@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Handlers.System;
 
 public interface ISystemHandler
-    : ICrudHandler<System> {
+    : ICrudHandler<System, SystemRow> {
 }

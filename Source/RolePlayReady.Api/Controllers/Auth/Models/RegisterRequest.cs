@@ -1,12 +1,26 @@
+using DataType = System.ComponentModel.DataAnnotations.DataType;
+
 namespace RolePlayReady.Api.Controllers.Auth.Models;
 
 public record RegisterRequest
 {
     [Required]
-    public string Email { get; set; }
+    [EmailAddress]
+    [SwaggerSchema("The email of the user.")]
+    public required string Email { get; set; }
 
     [Required]
-    public string Password { get; set; }
+    [DataType(DataType.Password)]
+    [SwaggerSchema("The password of the user.", Format = "password")]
+    public required string Password { get; set; }
 
-    public string? Name { get; set; }
+    [MinLength(Validation.Name.MinimumLength)]
+    [MaxLength(Validation.Name.MaximumLength)]
+    [SwaggerSchema("The name of the user.")]
+    public string? FirstName { get; init; }
+
+    [MinLength(Validation.Name.MinimumLength)]
+    [MaxLength(Validation.Name.MaximumLength)]
+    [SwaggerSchema("The first name (given name) of the user.")]
+    public string? LastName { get; init; }
 }

@@ -1,5 +1,8 @@
-﻿namespace RolePlayReady.Repositories.System;
+﻿using GameSystem = RolePlayReady.Handlers.System.System;
+using GameSystemRow = RolePlayReady.Handlers.System.SystemRow;
+
+namespace RolePlayReady.Repositories.System;
 
 public interface ISystemRepository
-    : IRepository<Handlers.System.System> {
+    : IRepository<GameSystem, GameSystemRow> {
 }

@@ -9,12 +9,12 @@ namespace RolePlayReady.Api.Controllers;
 public class SystemsControllerTests {
     private readonly ISystemHandler _handler = Substitute.For<ISystemHandler>();
     private static readonly ILogger<SystemsController> _logger = Substitute.For<ILogger<SystemsController>>();
-    private static readonly Row[] _rows = new[] {
-        new Row {
+    private static readonly SystemRow[] _rows = new[] {
+        new SystemRow {
             Id = Guid.NewGuid(),
             Name = "Lairs & Lizards 3e",
         },
-        new Row {
+        new SystemRow {
             Id = Guid.NewGuid(),
             Name = "RoadScout",
         }

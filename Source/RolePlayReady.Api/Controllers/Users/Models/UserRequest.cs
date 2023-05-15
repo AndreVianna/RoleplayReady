@@ -12,9 +12,14 @@ public record UserRequest {
     [MinLength(Validation.Name.MinimumLength)]
     [MaxLength(Validation.Name.MaximumLength)]
     [SwaggerSchema("The name of the user.", ReadOnly = true)]
-    public string? Name { get; init; }
+    public string? FirstName { get; init; }
+
+    [MinLength(Validation.Name.MinimumLength)]
+    [MaxLength(Validation.Name.MaximumLength)]
+    [SwaggerSchema("The first name (given name) of the user.", ReadOnly = true)]
+    public string? LastName { get; init; }
 
     [DataType(DataType.Date)]
-    [SwaggerSchema("The name of the user.", ReadOnly = true)]
+    [SwaggerSchema("The last name (family name) of the user.", ReadOnly = true)]
     public DateOnly? Birthday { get; init; }
 }

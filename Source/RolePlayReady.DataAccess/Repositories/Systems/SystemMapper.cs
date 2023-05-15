@@ -13,7 +13,7 @@ public static class SystemMapper {
             Tags = input.Tags.ToArray(),
         };
 
-    public static Row ToRow(SystemData input)
+    public static SystemRow ToRow(SystemData input)
         => new() {
             Id = input.Id,
             Name = input.Name,

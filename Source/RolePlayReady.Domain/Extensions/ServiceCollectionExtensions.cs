@@ -1,7 +1,4 @@
-﻿using RolePlayReady.Handlers.Setting;
-using RolePlayReady.Handlers.System;
-
-namespace RolePlayReady.Extensions;
+﻿namespace RolePlayReady.Extensions;
 
 public static class ServiceCollectionExtensions {
     public static IServiceCollection AddDomainHandlers(this IServiceCollection services) {

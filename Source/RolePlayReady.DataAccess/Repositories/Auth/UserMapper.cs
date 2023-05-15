@@ -10,7 +10,8 @@ public static class UserMapper {
             SignInRetryCount = input.SignInRetryCount,
             IsBlocked = input.IsBlocked,
             Roles = input.Roles,
-            Name = input.Name,
+            FirstName = input.FirstName,
+            LastName = input.LastName,
             Birthday = input.Birthday,
         };
 
@@ -18,8 +19,11 @@ public static class UserMapper {
         => new() {
             Id = input.Id,
             Email = input.Email,
-            Name = input.Name ?? string.Empty,
+            Name = GetFullName(input),
         };
+
+    private static string GetFullName(UserData input) 
+        => $"{input.FirstName}{(input.FirstName is not null && input.LastName is not null ? " " : string.Empty)}{input.LastName}";
 
     public static User? ToModel(this UserData? input)
         => input is null
@@ -31,8 +35,9 @@ public static class UserMapper {
                 LockExpiration = input.LockExpiration,
                 SignInRetryCount = input.SignInRetryCount,
                 IsBlocked = input.IsBlocked,
-                Roles = input.Roles,
-                Name = input.Name,
+                Roles = input.Roles.ToHashSet(),
+                FirstName = input.FirstName,
+                LastName = input.LastName,
                 Birthday = input.Birthday,
             };
 }

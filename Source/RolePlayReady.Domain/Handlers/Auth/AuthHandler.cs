@@ -29,7 +29,7 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
             return Failure();
         }
 
-        var token = GenerateSignInToken();
+        var token = GenerateSignInToken(user);
         _logger.LogDebug("Login for '{email}' succeeded.", signIn.Email);
         return Success(token);
     }
@@ -43,7 +43,8 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
 
         var user = new User {
             Id = Guid.NewGuid(),
-            Name = signOn.Name,
+            FirstName = signOn.FirstName,
+            LastName = signOn.LastName,
             Email = signOn.Email,
             HashedPassword = _hasher.HashSecret(signOn.Password),
         };
@@ -55,27 +56,61 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
             : CrudResult.Success();
     }
 
-    private string GenerateSignInToken() {
-        var claims = new[] {
-            new Claim(ClaimTypes.NameIdentifier, _configuration["Security:DefaultUser:Id"]!),
-            new Claim(ClaimTypes.GivenName, _configuration["Security:DefaultUser:Name"]!),
-            new Claim(ClaimTypes.Name, _configuration["Security:DefaultUser:FolderName"]!),
-            new Claim(ClaimTypes.Email, _configuration["Security:DefaultUser:Email"]!)
-        };
+    public async Task<CrudResult> GrantRoleAsync(UserRole userRole, CancellationToken cancellation = default) {
+        var user = await Repository.GetByIdAsync(userRole.UserId, cancellation);
+        if (user is null) {
+            return CrudResult.NotFound();
+        }
 
-        var issuerSigningKey = Ensure.IsNotNullOrWhiteSpace(_configuration["Security:IssuerSigningKey"]);
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(issuerSigningKey));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        user.Roles.Add(userRole.Role);
+        await UpdateAsync(user, cancellation);
 
-        var tokenExpirationInHours = int.Parse(_configuration["Security:TokenExpirationInHours"]!);
+        return CrudResult.Success();
+    }
+
+    public async Task<CrudResult> RevokeRoleAsync(UserRole userRole, CancellationToken cancellation = default) {
+        var user = await Repository.GetByIdAsync(userRole.UserId, cancellation);
+        if (user is null) {
+            return CrudResult.NotFound();
+        }
+
+        user.Roles.Remove(userRole.Role);
+        await UpdateAsync(user, cancellation);
+
+        return CrudResult.Success();
+    }
+
+    private string GenerateSignInToken(User user) {
+        var claims = GenerateClaims(user);
+        var expirationInHours = int.Parse(_configuration["Security:TokenExpirationInHours"]!);
+        var credentials = GetCredentials();
+
         var tokenDescriptor = new SecurityTokenDescriptor {
             Subject = new ClaimsIdentity(claims),
-            Expires = _dateTime.Now.AddHours(tokenExpirationInHours),
+            Expires = _dateTime.Now.AddHours(expirationInHours),
             SigningCredentials = credentials
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+
+    private SigningCredentials GetCredentials() {
+        var issuerSigningKey = Ensure.IsNotNullOrWhiteSpace(_configuration["Security:IssuerSigningKey"]);
+        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(issuerSigningKey));
+        return new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+    }
+
+    private static IEnumerable<Claim> GenerateClaims(User user) {
+        var claims = new List<Claim> {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.UserData, user.FolderName),
+            new(ClaimTypes.Email, user.Email),
+        };
+        if (user.FirstName is not null)
+            claims.Add(new Claim(ClaimTypes.GivenName, user.FirstName));
+        claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.ToString())));
+        return claims;
     }
 }

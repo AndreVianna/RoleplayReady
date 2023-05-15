@@ -6,7 +6,8 @@ public class UserTests {
         var agent = new User {
             Id = Guid.NewGuid(),
             Email = "some.user@email.com",
-            Name = "Some User",
+            FirstName = "Some",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
 
@@ -18,7 +19,8 @@ public class UserTests {
         var testBase = new User {
             Id = Guid.NewGuid(),
             Email = "some.user@email.com",
-            Name = "Some User",
+            FirstName = "Some",
+            LastName = "User",
             Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
         };
 
