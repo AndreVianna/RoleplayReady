@@ -17,9 +17,9 @@ public class AuthController : ControllerBase {
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginRequest request, CancellationToken cancellation = default) {
+    public async Task<IActionResult> LoginAsync(LoginRequest request, CancellationToken ct = default) {
         var login = request.ToDomain();
-        var result = await _handler.SignInAsync(login, cancellation).ConfigureAwait(false);
+        var result = await _handler.SignInAsync(login, ct).ConfigureAwait(false);
         if (result.IsInvalid) {
             _logger.LogDebug("'{user}' fail to login (bad request).", request.Email);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
@@ -36,10 +36,10 @@ public class AuthController : ControllerBase {
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterAsync(RegisterRequest request, CancellationToken cancellation = default)
+    public async Task<IActionResult> RegisterAsync(RegisterRequest request, CancellationToken ct = default)
     {
         var registration = request.ToDomain();
-        var result = await _handler.RegisterAsync(registration, cancellation).ConfigureAwait(false);
+        var result = await _handler.RegisterAsync(registration, ct).ConfigureAwait(false);
         if (result.IsInvalid)
         {
             _logger.LogDebug("'{user}' failed to register (bad request).", request.Email);
@@ -58,9 +58,9 @@ public class AuthController : ControllerBase {
 
     [Authorize(Roles = "Administrator")]
     [HttpPost("users/{userId}/grant")]
-    public async Task<IActionResult> GrantRoleAsync([FromRoute] Guid userId, RoleRequest request, CancellationToken cancellation = default) {
+    public async Task<IActionResult> GrantRoleAsync([FromRoute] Guid userId, RoleRequest request, CancellationToken ct = default) {
         var model = request.ToDomain(userId);
-        var result = await _handler.GrantRoleAsync(model, cancellation).ConfigureAwait(false);
+        var result = await _handler.GrantRoleAsync(model, ct).ConfigureAwait(false);
         if (result.IsInvalid) {
             _logger.LogDebug("Failed to grant '{Role}' role to '{userId}' (bad request).", request.Role, userId);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
@@ -77,9 +77,9 @@ public class AuthController : ControllerBase {
 
     [Authorize(Roles = "Administrator")]
     [HttpPost("users/{userId}/revoke")]
-    public async Task<IActionResult> RevokeRoleAsync([FromRoute] Guid userId, RoleRequest request, CancellationToken cancellation = default) {
+    public async Task<IActionResult> RevokeRoleAsync([FromRoute] Guid userId, RoleRequest request, CancellationToken ct = default) {
         var model = request.ToDomain(userId);
-        var result = await _handler.RevokeRoleAsync(model, cancellation).ConfigureAwait(false);
+        var result = await _handler.RevokeRoleAsync(model, ct).ConfigureAwait(false);
         if (result.IsInvalid) {
             _logger.LogDebug("Failed to revoke '{Role}' role from '{userId}' (bad request).", request.Role, userId);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
