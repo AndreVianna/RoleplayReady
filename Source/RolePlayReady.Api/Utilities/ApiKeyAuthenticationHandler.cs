@@ -20,7 +20,11 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync() {
         try {
-            if (!RequiresAuth()) return Task.FromResult(NoResult());
+            var endpoint = Context.GetEndpoint();
+            if (endpoint is null)
+                return Task.FromResult(NoResult());
+
+            if (!RequiresAuth(endpoint)) return Task.FromResult(NoResult());
 
             if (!Request.Headers.TryGetValue(_authHeader, out var authorizationHeader)) {
                 _logger.LogDebug("Request missing '{header}' header.", _authHeader);
@@ -40,7 +44,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
                 return Task.FromResult(Fail($"'{NameIdentifier}' claim is missing."));
             }
 
-            if (!UserHasRequiredRoles(claims)) {
+            if (!UserHasRequiredRoles(endpoint, claims)) {
                 _logger.LogDebug("User {userId} does not have required role(s).", NameIdentifier);
                 return Task.FromResult(Fail("User does not have required role(s)."));
             }
@@ -55,9 +59,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
         }
     }
 
-    private bool RequiresAuth() {
-        var endpoint = Context.GetEndpoint();
-        if (endpoint is null) return false;
+    private bool RequiresAuth(Endpoint endpoint) {
         var anonAttribute = endpoint.Metadata.GetMetadata<AllowAnonymousAttribute>();
         if (anonAttribute is not null) return false;
         var authAttribute = endpoint.Metadata.GetMetadata<AuthorizeAttribute>();
@@ -70,12 +72,13 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
         Context.User = new ClaimsPrincipal(identity);
     }
 
-    private bool UserHasRequiredRoles(ClaimsPrincipal claims) {
+    private bool UserHasRequiredRoles(Endpoint endpoint, ClaimsPrincipal claims) {
+        var authAttribute = endpoint.Metadata.GetMetadata<AuthorizeAttribute>();
+        if (authAttribute is not { Roles: { } roles }) return true;
+        var requiredRoles = roles.Split(',').Select(r => r.Trim()).ToArray();
+
         var userRoles = claims.FindAll(ClaimTypes.Role).Select(i => i.Value).ToArray();
-        var authAttribute = Context.GetEndpoint()!.Metadata.GetMetadata<AuthorizeAttribute>();
-        if (authAttribute is not { Roles: { } roleList }) return true;
-        var roles = roleList.Split(',').Select(r => r.Trim()).ToArray();
-        return roles.Intersect(userRoles).Any();
+        return requiredRoles.Intersect(userRoles).Any();
     }
 
     private ClaimsPrincipal GetClaims(string token) {
