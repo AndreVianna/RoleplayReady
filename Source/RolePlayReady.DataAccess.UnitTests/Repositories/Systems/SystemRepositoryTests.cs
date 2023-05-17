@@ -98,13 +98,13 @@ public class SystemRepositoryTests {
     }
 
     [Fact]
-    public void Delete_RemovesSystem() {
+    public async Task RemoveAsync_RemovesDomain() {
         // Arrange
         var id = Guid.NewGuid();
         _storage.Delete(id).Returns(true);
 
         // Act
-        var result = _repository.Remove(id);
+        var result = await _repository.RemoveAsync(id);
 
         // Assert
         result.Should().BeTrue();

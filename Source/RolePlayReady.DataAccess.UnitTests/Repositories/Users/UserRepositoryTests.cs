@@ -8,7 +8,6 @@ public class UserRepositoryTests {
     private readonly UserRepository _repository;
 
     private readonly UserData _user1;
-    private readonly UserData _user3;
 
     public UserRepositoryTests() {
         var hasher = Substitute.For<IHasher>();
@@ -29,16 +28,16 @@ public class UserRepositoryTests {
             Id = Guid.Parse("57e48beb-8e3d-4996-bbea-885515591c3d"),
             Email = "other.user@email.com",
         };
-        _user3 = new() {
+        UserData user3 = new() {
             Id = Guid.Parse("16290ee9-70a6-4e34-a03c-b397bb97407e"),
             Email = "temp.user@email.com",
         };
 
         _storage = Substitute.For<IJsonFileStorage<UserData>>();
-        _storage.GetAllAsync(null, Arg.Any<CancellationToken>()).Returns(new [] { _user1, user2, _user3 });
+        _storage.GetAllAsync(null, Arg.Any<CancellationToken>()).Returns(new [] { _user1, user2, user3 });
         _storage.GetByIdAsync(_user1.Id, Arg.Any<CancellationToken>()).Returns(_user1);
         _storage.GetByIdAsync(user2.Id, Arg.Any<CancellationToken>()).Returns(user2);
-        _storage.GetByIdAsync(_user3.Id, Arg.Any<CancellationToken>()).Returns(_user3);
+        _storage.GetByIdAsync(user3.Id, Arg.Any<CancellationToken>()).Returns(user3);
 
         _repository = new(_storage, hasher);
     }
@@ -159,13 +158,13 @@ public class UserRepositoryTests {
     }
 
     [Fact]
-    public void Delete_RemovesUser() {
+    public async Task RemoveAsync_RemovesDomain() {
         // Arrange
-        var id = _user3.Id;
+        var id = _user1.Id;
         _storage.Delete(id).Returns(true);
 
         // Act
-        var result = _repository.Remove(id);
+        var result = await _repository.RemoveAsync(id);
 
         // Assert
         result.Should().BeTrue();

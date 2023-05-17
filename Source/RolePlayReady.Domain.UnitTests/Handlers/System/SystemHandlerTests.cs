@@ -42,7 +42,7 @@ public class SystemHandlerTests {
     public async Task GetByIdAsync_WithInvalidId_ReturnsNotFound() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(Handlers.System.System));
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(System));
 
         // Act
         var result = await _handler.GetByIdAsync(id);
@@ -70,7 +70,7 @@ public class SystemHandlerTests {
     public async Task AddAsync_ForExistingId_ReturnsConflict() {
         // Arrange
         var input = CreateInput();
-        _repository.AddAsync(input, Arg.Any<CancellationToken>()).Returns(default(Handlers.System.System));
+        _repository.AddAsync(input, Arg.Any<CancellationToken>()).Returns(default(System));
 
         // Act
         var result = await _handler.AddAsync(input);
@@ -100,6 +100,7 @@ public class SystemHandlerTests {
         // Arrange
         var id = Guid.NewGuid();
         var input = CreateInput(id);
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(input);
         _repository.UpdateAsync(input, Arg.Any<CancellationToken>()).Returns(input);
 
         // Act
@@ -114,7 +115,7 @@ public class SystemHandlerTests {
         // Arrange
         var id = Guid.NewGuid();
         var input = CreateInput(id);
-        _repository.UpdateAsync(input, Arg.Any<CancellationToken>()).Returns(default(Handlers.System.System));
+        _repository.UpdateAsync(input, Arg.Any<CancellationToken>()).Returns(default(System));
 
         // Act
         var result = await _handler.UpdateAsync(input);
@@ -140,26 +141,28 @@ public class SystemHandlerTests {
     }
 
     [Fact]
-    public void Remove_ReturnsTrue() {
+    public async Task Remove_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Remove(id).Returns(true);
+        var input = CreateInput(id);
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(input);
+        _repository.RemoveAsync(id, Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
-        var result = _handler.Remove(id);
+        var result = await _handler.RemoveAsync(id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
     }
 
     [Fact]
-    public void Remove_WithInvalidId_ReturnsTrue() {
+    public async Task Remove_WithInvalidId_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Remove(id).Returns(false);
+        _repository.RemoveAsync(id, Arg.Any<CancellationToken>()).Returns(false);
 
         // Act
-        var result = _handler.Remove(id);
+        var result = await _handler.RemoveAsync(id);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -171,7 +174,7 @@ public class SystemHandlerTests {
             Name = "Some Name",
         };
 
-    private static Handlers.System.System CreateInput(Guid? id = null)
+    private static System CreateInput(Guid? id = null)
         => new() {
             Id = id ?? Guid.NewGuid(),
             Name = "Some Name",

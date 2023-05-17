@@ -19,9 +19,9 @@ public class SystemsController : ControllerBase {
                       Description = "Retrieves a collection of game systems.",
                       OperationId = "GetGameSystemById")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SystemRowResponse[]))]
-    public async Task<IActionResult> GetMany(CancellationToken cancellationToken = default) {
+    public async Task<IActionResult> GetMany(CancellationToken ct = default) {
         _logger.LogDebug("Getting all game systems requested.");
-        var result = await _handler.GetManyAsync(cancellationToken);
+        var result = await _handler.GetManyAsync(ct);
         var response = result.Value!.ToResponse();
         _logger.LogDebug("{count} game systems retrieved successfully.", response.Length);
         return Ok(response);
@@ -37,14 +37,14 @@ public class SystemsController : ControllerBase {
         [FromRoute]
         [SwaggerParameter("The id of the game system.", Required = true)]
         string id,
-        CancellationToken cancellationToken = default) {
+        CancellationToken ct = default) {
         _logger.LogDebug("Getting game system '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
             return BadRequest(ModelState);
         }
 
-        var result = await _handler.GetByIdAsync(uuid, cancellationToken);
+        var result = await _handler.GetByIdAsync(uuid, ct);
         if (result.Value is null) {
             _logger.LogDebug("Fail to retrieve game system '{id}' (not found).", id);
             return NotFound();
@@ -65,10 +65,10 @@ public class SystemsController : ControllerBase {
         [FromBody]
         [SwaggerParameter("New game system data.", Required = true)]
         SystemRequest request,
-        CancellationToken cancellationToken = default) {
+        CancellationToken ct = default) {
         _logger.LogDebug("Create game system requested.");
         var model = request.ToDomain();
-        var result = await _handler.AddAsync(model, cancellationToken);
+        var result = await _handler.AddAsync(model, ct);
         if (result.IsInvalid) {
             _logger.LogDebug("Fail to create game system (bad request).");
             return BadRequest(result.Errors.UpdateModelState(ModelState));
@@ -98,7 +98,7 @@ public class SystemsController : ControllerBase {
         [FromBody]
         [SwaggerParameter("Updated game system data.", Required = true)]
         SystemRequest request,
-        CancellationToken cancellationToken = default) {
+        CancellationToken ct = default) {
         _logger.LogDebug("Update game system '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
@@ -106,7 +106,7 @@ public class SystemsController : ControllerBase {
         }
 
         var model = request.ToDomain(uuid);
-        var result = await _handler.UpdateAsync(model, cancellationToken);
+        var result = await _handler.UpdateAsync(model, ct);
         if (result.IsInvalid) {
             _logger.LogDebug("Fail to update game system '{id}' (bad request).", id);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
@@ -128,17 +128,18 @@ public class SystemsController : ControllerBase {
                       OperationId = "RemoveGameSystem")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult Remove(
+    public async Task<IActionResult> Remove(
         [FromRoute]
         [SwaggerParameter("The id of the game system.", Required = true)]
-        string id) {
+        string id,
+        CancellationToken ct = default) {
         _logger.LogDebug("Remove game system '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
             return BadRequest(ModelState);
         }
 
-        var result = _handler.Remove(uuid);
+        var result = await _handler.RemoveAsync(uuid, ct);
         if (result.IsNotFound) {
             _logger.LogDebug("Fail to remove game system '{id}' (not found).", id);
             return NotFound();

@@ -225,34 +225,34 @@ public class UsersControllerTests {
     }
 
     [Fact]
-    public void Remove_WithValidId_ReturnsUserResponse() {
+    public async Task Remove_WithValidId_ReturnsUserResponse() {
         // Arrange
         var base64Id = (Base64Guid)_sample.Id;
-        _handler.Remove(Arg.Any<Guid>()).Returns(Success);
+        _handler.RemoveAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(Success);
 
         // Act
-        var response = _controller.Remove(base64Id);
+        var response = await _controller.Remove(base64Id);
 
         // Assert
         response.Should().BeOfType<OkResult>();
     }
 
     [Fact]
-    public void Remove_WithInvalidId_ReturnsNotFound() {
+    public async Task Remove_WithInvalidId_ReturnsNotFound() {
         // Act
-        var response = _controller.Remove("invalid");
+        var response = await _controller.Remove("invalid");
 
         // Assert
         response.Should().BeOfType<BadRequestObjectResult>();
     }
 
     [Fact]
-    public void Remove_WithNonExistingId_ReturnsNotFound() {
+    public async Task Remove_WithNonExistingId_ReturnsNotFound() {
         var base64Id = (Base64Guid)Guid.NewGuid();
-        _handler.Remove(Arg.Any<Guid>()).Returns(NotFound("id"));
+        _handler.RemoveAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(NotFound("id"));
 
         // Act
-        var response = _controller.Remove(base64Id);
+        var response = await _controller.Remove(base64Id);
 
         // Assert
         response.Should().BeOfType<NotFoundResult>();

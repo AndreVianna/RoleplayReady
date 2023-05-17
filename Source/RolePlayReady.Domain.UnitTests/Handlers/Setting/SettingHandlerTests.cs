@@ -108,6 +108,7 @@ public class SettingHandlerTests {
         // Arrange
         var id = Guid.NewGuid();
         var input = CreateInput(id);
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(input);
         _repository.UpdateAsync(input, Arg.Any<CancellationToken>()).Returns(input);
 
         // Act
@@ -153,26 +154,29 @@ public class SettingHandlerTests {
     }
 
     [Fact]
-    public void Remove_ReturnsTrue() {
+    public async Task Remove_ReturnsTrue() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Remove(id).Returns(true);
+        var input = CreateInput(id);
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(input);
+        _repository.RemoveAsync(id, Arg.Any<CancellationToken>()).Returns(true);
 
         // Act
-        var result = _handler.Remove(id);
+        var result = await _handler.RemoveAsync(id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
     }
 
     [Fact]
-    public void Remove_WithInvalidId_ReturnsNotFound() {
+    public async Task Remove_WithInvalidId_ReturnsNotFound() {
         // Arrange
         var id = Guid.NewGuid();
-        _repository.Remove(id).Returns(false);
+        _repository.GetByIdAsync(id, Arg.Any<CancellationToken>()).Returns(default(Setting?));
+        _repository.RemoveAsync(id, Arg.Any<CancellationToken>()).Returns(false);
 
         // Act
-        var result = _handler.Remove(id);
+        var result = await _handler.RemoveAsync(id);
 
         // Assert
         result.IsSuccess.Should().BeFalse();

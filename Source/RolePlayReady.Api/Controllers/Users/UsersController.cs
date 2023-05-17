@@ -23,9 +23,9 @@ public class UsersController : ControllerBase {
                       Description = "Retrieves a collection of users.",
                       OperationId = "GetUserById")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserRowResponse[]))]
-    public async Task<IActionResult> GetMany(CancellationToken cancellationToken = default) {
+    public async Task<IActionResult> GetMany(CancellationToken ct = default) {
         _logger.LogDebug("Getting all users requested.");
-        var result = await _handler.GetManyAsync(cancellationToken);
+        var result = await _handler.GetManyAsync(ct);
         var response = result.Value!.ToResponse();
         _logger.LogDebug("{count} users retrieved successfully.", response.Length);
         return Ok(response);
@@ -41,14 +41,14 @@ public class UsersController : ControllerBase {
         [FromRoute]
         [SwaggerParameter("The id of the user.", Required = true)]
         string id,
-        CancellationToken cancellationToken = default) {
+        CancellationToken ct = default) {
         _logger.LogDebug("Getting user '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
             return BadRequest(ModelState);
         }
 
-        var result = await _handler.GetByIdAsync(uuid, cancellationToken);
+        var result = await _handler.GetByIdAsync(uuid, ct);
         if (result.Value is null) {
             _logger.LogDebug("Fail to retrieve user '{id}' (not found).", id);
             return NotFound();
@@ -69,10 +69,10 @@ public class UsersController : ControllerBase {
         [FromBody]
         [SwaggerParameter("New user data.", Required = true)]
         UserRequest request,
-        CancellationToken cancellationToken = default) {
+        CancellationToken ct = default) {
         _logger.LogDebug("Create user requested.");
         var model = request.ToDomain();
-        var result = await _handler.AddAsync(model, cancellationToken);
+        var result = await _handler.AddAsync(model, ct);
         if (result.IsInvalid) {
             _logger.LogDebug("Fail to create user (bad request).");
             return BadRequest(result.Errors.UpdateModelState(ModelState));
@@ -102,7 +102,7 @@ public class UsersController : ControllerBase {
         [FromBody]
         [SwaggerParameter("Updated user data.", Required = true)]
         UserRequest request,
-        CancellationToken cancellationToken = default) {
+        CancellationToken ct = default) {
         _logger.LogDebug("Update user '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
@@ -110,7 +110,7 @@ public class UsersController : ControllerBase {
         }
 
         var model = request.ToDomain(uuid);
-        var result = await _handler.UpdateAsync(model, cancellationToken);
+        var result = await _handler.UpdateAsync(model, ct);
         if (result.IsInvalid) {
             _logger.LogDebug("Fail to update user '{id}' (bad request).", id);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
@@ -132,17 +132,18 @@ public class UsersController : ControllerBase {
                       OperationId = "RemoveUser")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult Remove(
+    public async Task<IActionResult> Remove(
         [FromRoute]
         [SwaggerParameter("The id of the user.", Required = true)]
-        string id) {
+        string id,
+        CancellationToken ct = default) {
         _logger.LogDebug("Remove user '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
             return BadRequest(ModelState);
         }
 
-        var result = _handler.Remove(uuid);
+        var result = await _handler.RemoveAsync(uuid, ct);
         if (result.IsNotFound) {
             _logger.LogDebug("Fail to remove user '{id}' (not found).", id);
             return NotFound();
