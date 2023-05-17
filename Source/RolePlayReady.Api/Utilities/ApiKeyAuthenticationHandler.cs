@@ -56,9 +56,11 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
     }
 
     private bool RequiresAuth() {
-        var anonAttribute = Context.GetEndpoint()!.Metadata.GetMetadata<AllowAnonymousAttribute>();
+        var endpoint = Context.GetEndpoint();
+        if (endpoint is null) return false;
+        var anonAttribute = endpoint.Metadata.GetMetadata<AllowAnonymousAttribute>();
         if (anonAttribute is not null) return false;
-        var authAttribute = Context.GetEndpoint()!.Metadata.GetMetadata<AuthorizeAttribute>();
+        var authAttribute = endpoint.Metadata.GetMetadata<AuthorizeAttribute>();
         if (authAttribute is null) return false;
         return true;
     }
