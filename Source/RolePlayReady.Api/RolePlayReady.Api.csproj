@@ -43,6 +43,6 @@
     <Folder Include="Logs\" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties data_4users_4_x002B_bbf42f9a-9194-4419-995a-ae4d194084f0_320230515062544_1json__JsonSchema="https://appliedengdesign.github.io/cnccodes-json-schema/draft/2022-07/schema" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

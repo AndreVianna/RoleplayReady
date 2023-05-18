@@ -3,6 +3,7 @@
 public record User : IValidatable, IKey {
     public required Guid Id { get; init; }
     public required string Email { get; init; }
+    public bool IsEmailConfirmed { get; init; }
     public HashedSecret? HashedPassword { get; init; }
     public DateTime LockExpiration { get; init; } = DateTime.MinValue;
     public int SignInRetryCount { get; init; }

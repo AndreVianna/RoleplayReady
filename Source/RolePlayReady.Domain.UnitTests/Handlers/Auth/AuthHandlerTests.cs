@@ -3,8 +3,10 @@ namespace RolePlayReady.Handlers.Auth;
 public class AuthHandlerTests {
     private readonly AuthHandler _handler;
     private static readonly string _validEmail = "some.user@host.com";
+    private static readonly string _unconfirmedEmail = "unconfirmed@host.com";
     private static readonly string _validPassword = "Secret1234!";
     private static readonly string _invalidPassword = "Invalid";
+    private static readonly IEmailSender _emailSender = Substitute.For<IEmailSender>();
     private readonly IUserRepository _repository;
     private static readonly IHasher _hasher = Substitute.For<IHasher>();
     private static readonly HashedSecret _validSecret = new("Secret1234!"u8.ToArray(), "Secret1234!"u8.ToArray());
@@ -13,31 +15,40 @@ public class AuthHandlerTests {
         _hasher.HashSecret(Arg.Any<string>(), Arg.Any<byte[]>()).Returns(_validSecret);
 
         _repository = Substitute.For<IUserRepository>();
-        var validUser = new User() {
+        var validUser = new User {
             Id = Guid.NewGuid(),
             Email = _validEmail,
             HashedPassword = _validSecret,
-            FirstName = "Some User",
+            FirstName = "Some",
+            LastName = "User",
+            IsEmailConfirmed = true,
         };
         _repository.VerifyAsync(Arg.Is<SignIn>(i => i.Email == _validEmail && i.Password == _validPassword), Arg.Any<CancellationToken>()).Returns(validUser);
 
+        var unconfirmedUser = new User {
+            Id = Guid.NewGuid(),
+            Email = _unconfirmedEmail,
+            HashedPassword = _validSecret,
+            FirstName = "Unconfirmed",
+            LastName = "User",
+            IsEmailConfirmed = false,
+        };
+        _repository.VerifyAsync(Arg.Is<SignIn>(i => i.Email == _unconfirmedEmail && i.Password == _validPassword), Arg.Any<CancellationToken>()).Returns(unconfirmedUser);
+
         var configuration = Substitute.For<IConfiguration>();
-        configuration["Security:DefaultUser:Id"].Returns("a8788588-929a-4859-83d4-c106b30e3afd");
-        configuration["Security:DefaultUser:Name"].Returns("Some User");
-        configuration["Security:DefaultUser:FolderName"].Returns("SomeUser123");
-        configuration["Security:DefaultUser:Email"].Returns(_validEmail);
-        configuration["Security:DefaultUser:Password"].Returns(_validPassword);
+        configuration["Security:Requires2Factor"].Returns("false");
         configuration["Security:IssuerSigningKey"].Returns("12345678901234567890123456789012");
         configuration["Security:TokenExpirationInHours"].Returns("7");
         var dateTime = Substitute.For<IDateTime>();
         dateTime.Now.Returns(DateTime.UtcNow);
 
-        _handler = new AuthHandler(_repository, _hasher, configuration, dateTime, NullLogger<AuthHandler>.Instance);
+        _handler = new AuthHandler(_repository, _hasher, configuration, dateTime, _emailSender, NullLogger<AuthHandler>.Instance);
     }
 
     private class TestLoginData : TheoryData<SignIn, bool, string[]> {
         public TestLoginData() {
             Add(new() { Email = _validEmail, Password = _validPassword }, true, Array.Empty<string>());
+            Add(new() { Email = _unconfirmedEmail, Password = _validPassword }, false, Array.Empty<string>());
             Add(new() { Email = _validEmail, Password = _invalidPassword }, false, Array.Empty<string>());
             Add(new() { Email = "invalid.user@email.com", Password = _validPassword }, false, Array.Empty<string>());
             Add(new() { Email = null!, Password = null! }, false, new[] { "'Email' cannot be null.", "'Password' cannot be null." });
@@ -53,6 +64,29 @@ public class AuthHandlerTests {
         // Assert
         result.IsSuccess.Should().Be(isSuccess);
         result.Errors.Select(i => i.Message).Should().BeEquivalentTo(errors);
+    }
+
+    [Fact]
+    public async Task SignInAsync_WithTwoFactor_ReturnsRequiresTwoFactor() {
+        // Arrange
+        var configuration = Substitute.For<IConfiguration>();
+        configuration["Security:Requires2Factor"].Returns("true");
+        configuration["Security:IssuerSigningKey"].Returns("12345678901234567890123456789012");
+        configuration["Security:TokenExpirationInHours"].Returns("7");
+        var dateTime = Substitute.For<IDateTime>();
+        dateTime.Now.Returns(DateTime.UtcNow);
+
+        var handler = new AuthHandler(_repository, _hasher, configuration, dateTime, _emailSender, NullLogger<AuthHandler>.Instance);
+
+        var signIn = new SignIn { Email = _validEmail, Password = _validPassword };
+
+        // Act
+        var result = await handler.SignInAsync(signIn);
+
+        // Assert
+        result.IsSuccess.Should().Be(false);
+        result.RequiresTwoFactor.Should().Be(true);
+        result.Errors.Should().HaveCount(0);
     }
 
     private class TestRegisterData : TheoryData<SignOn, bool, string[]> {

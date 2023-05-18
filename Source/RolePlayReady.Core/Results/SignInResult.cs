@@ -11,20 +11,19 @@ public sealed record SignInResult : Result {
 
     public string? Token { get; }
     public SignInResultType Type { get; private set; }
+    public bool IsLocked => !IsInvalid && Type is SignInResultType.Locked;
+    public bool IsBlocked => !IsInvalid && Type is SignInResultType.Blocked;
+    public bool IsFailure => !IsInvalid && Type is SignInResultType.Failed;
+    public bool RequiresConfirmation => !IsInvalid && Type is SignInResultType.ConfirmationRequired;
     public bool RequiresTwoFactor => !IsInvalid && Type is SignInResultType.TwoFactorRequired;
-    public override bool IsSuccess => !IsInvalid && Type is SignInResultType.Success or SignInResultType.TwoFactorRequired;
-    public bool IsBlocked => !IsInvalid
-        ? Type is SignInResultType.Blocked
-        : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if user is blocked.");
-    public bool IsLocked => !IsInvalid
-        ? Type is SignInResultType.Locked
-        : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if user is locked.");
-    public bool IsFailure => !IsInvalid
-        ? Type is SignInResultType.Failed
-        : throw new InvalidOperationException("The sign in has validation errors. You must check for validation errors before checking if the sign in attempt failed.");
+    public override bool IsSuccess => !IsInvalid && Type is SignInResultType.Success;
 
-    public static SignInResult Success(string token, bool requires2Factor = false)
-        => new(requires2Factor ? SignInResultType.TwoFactorRequired : SignInResultType.Success, token);
+    public static SignInResult ConfirmationRequired(string token)
+        => new(SignInResultType.ConfirmationRequired, token);
+    public static SignInResult TwoFactorRequired(string token)
+        => new(SignInResultType.TwoFactorRequired, token);
+    public static SignInResult Success(string token)
+        => new(SignInResultType.Success, token);
     public static SignInResult Invalid(string message, string source, params object?[] args)
         => Invalid(new ValidationError(message, source, args));
     public static SignInResult Invalid(ValidationResult result)

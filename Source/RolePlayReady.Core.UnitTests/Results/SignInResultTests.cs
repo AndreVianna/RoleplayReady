@@ -3,16 +3,17 @@ using static System.Results.SignInResultType;
 namespace System.Results;
 
 public class SignInResultTests {
-    private static readonly SignInResult _success = SignInResult.Success("SomeToken");
-    private static readonly SignInResult _successWithSameToken = SignInResult.Success("SomeToken");
-    private static readonly SignInResult _successWithOtherToken = SignInResult.Success("OtherToken");
-    private static readonly SignInResult _requires2Factor = SignInResult.Success("SomeToken", true);
-    private static readonly SignInResult _failure = SignInResult.Failure();
-    private static readonly SignInResult _locked = SignInResult.Locked();
-    private static readonly SignInResult _blocked = SignInResult.Blocked();
     private static readonly SignInResult _invalid = new ValidationError("Some error.", "Source");
     private static readonly SignInResult _invalidWithSameError = new ValidationError("Some error.", "Source");
     private static readonly SignInResult _invalidWithOtherError = new ValidationError("Other error.", "Source");
+    private static readonly SignInResult _locked = SignInResult.Locked();
+    private static readonly SignInResult _blocked = SignInResult.Blocked();
+    private static readonly SignInResult _failure = SignInResult.Failure();
+    private static readonly SignInResult _requiresConfirmation = SignInResult.ConfirmationRequired("SomeToken");
+    private static readonly SignInResult _requires2Factor = SignInResult.TwoFactorRequired("SomeToken");
+    private static readonly SignInResult _success = SignInResult.Success("SomeToken");
+    private static readonly SignInResult _successWithSameToken = SignInResult.Success("SomeToken");
+    private static readonly SignInResult _successWithOtherToken = SignInResult.Success("OtherToken");
 
     [Fact]
     public void ImplicitConversion_FromValidationError_ReturnsFailure() {
@@ -95,33 +96,28 @@ public class SignInResultTests {
         action.Should().Throw<InvalidCastException>();
     }
 
-    private class TestDataForProperties : TheoryData<SignInResult, bool, bool, bool, bool, bool, bool> {
+    private class TestDataForProperties : TheoryData<SignInResult, bool, bool, bool, bool, bool, bool, bool> {
         public TestDataForProperties() {
-            Add(_invalid, true, false, false, false, false, false);
-            Add(_success, false, true, false, false, false, false);
-            Add(_failure, false, false, true, false, false, false);
-            Add(_locked, false, false, false, true, false, false);
-            Add(_blocked, false, false, false, false, true, false);
-            Add(_requires2Factor, false, false, false, false, false, true);
+            Add(_invalid,              true, false, false, false, false, false, false);
+            Add(_blocked,              false, true, false, false, false, false, false);
+            Add(_locked,               false, false, true, false, false, false, false);
+            Add(_failure,              false, false, false, true, false, false, false);
+            Add(_requiresConfirmation, false, false, false, false, true, false, false);
+            Add(_requires2Factor,      false, false, false, false, false, true, false);
+            Add(_success,              false, false, false, false, false, false, true);
         }
     }
     [Theory]
     [ClassData(typeof(TestDataForProperties))]
-    public void Properties_ShouldReturnAsExpected(SignInResult subject, bool isInvalid, bool isSuccess, bool isFailure, bool isLocked, bool isBlocked, bool twoFactorRequired) {
+    public void Properties_ShouldReturnAsExpected(SignInResult subject, bool isInvalid, bool isBlocked, bool isLocked, bool isFailure, bool confirmationRequired, bool twoFactorRequired, bool isSuccess) {
         // Assert
-        subject.RequiresTwoFactor.Should().Be(twoFactorRequired);
-        subject.IsSuccess.Should().Be(isSuccess || twoFactorRequired);
         subject.IsInvalid.Should().Be(isInvalid);
-        if (isInvalid) {
-            subject.Invoking(x => x.IsFailure).Should().Throw<InvalidOperationException>();
-            subject.Invoking(x => x.IsLocked).Should().Throw<InvalidOperationException>();
-            subject.Invoking(x => x.IsBlocked).Should().Throw<InvalidOperationException>();
-        }
-        else {
-            subject.IsFailure.Should().Be(isFailure);
-            subject.IsLocked.Should().Be(isLocked);
-            subject.IsBlocked.Should().Be(isBlocked);
-        }
+        subject.IsLocked.Should().Be(isLocked);
+        subject.IsBlocked.Should().Be(isBlocked);
+        subject.IsFailure.Should().Be(isFailure);
+        subject.RequiresConfirmation.Should().Be(confirmationRequired);
+        subject.RequiresTwoFactor.Should().Be(twoFactorRequired);
+        subject.IsSuccess.Should().Be(isSuccess);
     }
 
     private class TestDataForEquality : TheoryData<SignInResult, SignInResultType, bool> {
