@@ -21,7 +21,7 @@ public class AuthHandlerTests {
             HashedPassword = _validSecret,
             FirstName = "Some",
             LastName = "User",
-            IsEmailConfirmed = true,
+            IsConfirmed = true,
         };
         _repository.VerifyAsync(Arg.Is<SignIn>(i => i.Email == _validEmail && i.Password == _validPassword), Arg.Any<CancellationToken>()).Returns(validUser);
 
@@ -31,7 +31,7 @@ public class AuthHandlerTests {
             HashedPassword = _validSecret,
             FirstName = "Unconfirmed",
             LastName = "User",
-            IsEmailConfirmed = false,
+            IsConfirmed = false,
         };
         _repository.VerifyAsync(Arg.Is<SignIn>(i => i.Email == _unconfirmedEmail && i.Password == _validPassword), Arg.Any<CancellationToken>()).Returns(unconfirmedUser);
 

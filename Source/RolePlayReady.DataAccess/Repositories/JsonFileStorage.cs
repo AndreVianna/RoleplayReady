@@ -3,10 +3,10 @@
 namespace RolePlayReady.DataAccess.Repositories;
 
 public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
-    where TData : class, IKey {
+    where TData : Persisted {
     private readonly ILogger<JsonFileStorage<TData>> _logger;
     private readonly IFileSystem _io;
-    private readonly IDateTime _dateTimeProvider;
+    private readonly IDateTime _dateTime;
 
     private string _repositoryPath;
 
@@ -16,7 +16,7 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
     public JsonFileStorage(IConfiguration configuration, IFileSystem? io, IDateTime? dateTime, ILoggerFactory? loggerFactory) {
         _logger = loggerFactory?.CreateLogger<JsonFileStorage<TData>>() ?? NullLogger<JsonFileStorage<TData>>.Instance;
         _io = io ?? new DefaultFileSystem();
-        _dateTimeProvider = dateTime ?? new SystemDateTime();
+        _dateTime = dateTime ?? new SystemDateTime();
         _repositoryPath = Ensure.IsNotNullOrWhiteSpace(configuration[_baseFolderKey], $"{nameof(configuration)}[{_baseFolderKey}]").Trim();
         _io.CreateFolderIfNotExists(_repositoryPath);
     }
@@ -29,18 +29,16 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
     public async Task<IEnumerable<TData>> GetAllAsync(Func<TData, bool>? filter = null, CancellationToken cancellation = default) {
         try {
             _logger.LogDebug("Getting files from '{path}'...", _repositoryPath);
-            var files = _io.GetFilesFrom(_repositoryPath, "+*.json", SearchOption.TopDirectoryOnly);
+            var files = GetActiveFiles();
             var data = new List<TData>();
-            foreach (var filePathWithName in files) {
-                var result = await GetFileDataOrDefaultAsync(filePathWithName, cancellation).ConfigureAwait(false);
-                if (result is null)
-                    continue;
-                data.Add(result);
+            foreach (var file in files) {
+                var content = await GetFileDataOrDefaultAsync(file, cancellation).ConfigureAwait(false);
+                if (content is null) continue;
+                data.Add(content);
             }
 
-            if (filter is not null) {
+            if (filter is not null)
                 data = data.Where(filter).ToList();
-            }
 
             _logger.LogDebug("{fileCount} files retrieved from '{path}'.", data.Count, _repositoryPath);
             return data.ToArray();
@@ -54,13 +52,13 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
     public async Task<TData?> GetByIdAsync(Guid id, CancellationToken cancellation = default) {
         try {
             _logger.LogDebug("Getting latest data from '{path}/{id}'...", _repositoryPath, id);
-            var filePathWithName = GetActiveFile(id);
-            if (filePathWithName is null) {
+            var file = GetActiveFile(id);
+            if (file is null) {
                 _logger.LogDebug("File '{path}/{id}' not found.", _repositoryPath, id);
                 return default;
             }
 
-            return await GetFileDataOrDefaultAsync(filePathWithName, cancellation).ConfigureAwait(false);
+            return await GetFileDataOrDefaultAsync(file, cancellation).ConfigureAwait(false);
         }
         catch (Exception ex) {
             _logger.LogError(ex, "Failed to get data from file '{path}/{id}'!", _repositoryPath, id);
@@ -77,6 +75,7 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
                 return default;
             }
 
+            data = data with { ChangeStamp = _dateTime.Now };
             filePath = await WriteToFileAsync("added", data, cancellation).ConfigureAwait(false);
             return await GetFileDataAsync(filePath, cancellation).ConfigureAwait(false);
         }
@@ -95,9 +94,15 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
                 return default;
             }
 
+            if (!TryGetFileMetadata(filePath, out var dateTime) || dateTime != data.ChangeStamp) {
+                _logger.LogDebug("File '{path}/{id}' changed by another process.", _repositoryPath, data.Id);
+                return default;
+            }
+
             _io.MoveFile(filePath, filePath.Replace("+", ""));
+            data = data with { ChangeStamp = _dateTime.Now };
             await WriteToFileAsync("updated", data, cancellation).ConfigureAwait(false);
-            return await GetFileDataAsync(filePath, cancellation).ConfigureAwait(false);
+            return data;
         }
         catch (Exception ex) {
             _logger.LogError(ex, "Failed to add or update file '{path}/{id}'!", _repositoryPath, data.Id);
@@ -106,7 +111,7 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
     }
 
     private async Task<string> WriteToFileAsync(string operation,TData data, CancellationToken cancellation) {
-        var filePath = _io.CombinePath(_repositoryPath, $"+{data.Id}_{_dateTimeProvider.Now:yyyyMMddHHmmss}.json");
+        var filePath = _io.CombinePath(_repositoryPath, $"+{data.Id}_{_dateTime.Now:yyyyMMddHHmmss}.json");
         await using var stream = _io.CreateNewFileAndOpenForWriting(filePath);
         await SerializeAsync(stream, data, cancellationToken: cancellation);
         _logger.LogDebug("File '{filePath}' {operation}.", filePath, operation);
@@ -144,27 +149,32 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
     }
 
     private async Task<TData> GetFileDataAsync(string filePathWithName, CancellationToken cancellation) {
-        var fileName = _io.GetFileNameFrom(filePathWithName);
-        if (!IsFileNameValid(fileName)) {
+        if (!TryGetFileMetadata(filePathWithName, out var changeStamp))
             throw new InvalidOperationException($"File name '{filePathWithName}' is invalid.");
-        }
 
         await using var stream = _io.OpenFileForReading(filePathWithName);
         var content = await DeserializeAsync<TData>(stream, cancellationToken: cancellation);
+        content = content! with { ChangeStamp = changeStamp };
         _logger.LogDebug("Data from '{filePath}' retrieved.", filePathWithName);
-        return content!;
+        return content;
     }
 
-    private bool IsFileNameValid(string fileName) {
+    private bool TryGetFileMetadata(string filePathWithName, out DateTime dateTime) {
+        var fileName = _io.GetFileNameFrom(filePathWithName);
+        dateTime = _dateTime.Default;
         var match = FileNameMatcher().Match(fileName);
-        return match.Success && _dateTimeProvider
-           .TryParseExact(match.Groups["datetime"].Value, _timestampFormat, null, DateTimeStyles.None, out _);
+        if (!match.Success) return false;
+        if (!_dateTime.TryParseExact(match.Groups["datetime"].Value, _timestampFormat, null, DateTimeStyles.None, out dateTime)) return false;
+        return true;
     }
 
     private string? GetActiveFile(Guid id)
         => _io.GetFilesFrom(_repositoryPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
         .FirstOrDefault();
 
-    [GeneratedRegex("^\\+(?<id>[a-zA-Z0-9-]{36})_(?<datetime>\\d{14})\\.json$", RegexOptions.Compiled, "en-CA")]
+    private string[] GetActiveFiles()
+        => _io.GetFilesFrom(_repositoryPath, "+*.json", SearchOption.TopDirectoryOnly);
+
+    [GeneratedRegex(@"^\+(?<id>[a-zA-Z0-9-]{36})_(?<datetime>\d{14})\.json$", RegexOptions.Compiled, "en-CA")]
     private static partial Regex FileNameMatcher();
 }

@@ -4,7 +4,7 @@ namespace RolePlayReady.Handlers;
 
 public class CrudHandler<TModel, TRowModel, TRepository>
     : ICrudHandler<TModel, TRowModel>
-    where TModel : class, IKey, IValidatable
+    where TModel : class, IPersisted, IValidatable
     where TRowModel : Row
     where TRepository : IRepository<TModel, TRowModel> {
 

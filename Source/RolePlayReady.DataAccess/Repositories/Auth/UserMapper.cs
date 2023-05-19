@@ -4,6 +4,7 @@ public static class UserMapper {
     public static UserData ToData(this User input)
         => new() {
             Id = input.Id,
+
             Email = input.Email,
             HashedPassword = input.HashedPassword,
             LockExpiration = input.LockExpiration,
@@ -13,6 +14,8 @@ public static class UserMapper {
             FirstName = input.FirstName,
             LastName = input.LastName,
             Birthday = input.Birthday,
+
+            ChangeStamp = input.ChangeStamp,
         };
 
     public static UserRow ToRow(this UserData input)
@@ -30,6 +33,7 @@ public static class UserMapper {
             ? null
             : new() {
                 Id = input.Id,
+
                 Email = input.Email,
                 HashedPassword = input.HashedPassword,
                 LockExpiration = input.LockExpiration,
@@ -39,5 +43,7 @@ public static class UserMapper {
                 FirstName = input.FirstName,
                 LastName = input.LastName,
                 Birthday = input.Birthday,
+
+                ChangeStamp = input.ChangeStamp,
             };
 }

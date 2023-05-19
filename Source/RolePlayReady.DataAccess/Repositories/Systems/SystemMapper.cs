@@ -11,6 +11,8 @@ public static class SystemMapper {
             Name = input.Name,
             Description = input.Description,
             Tags = input.Tags.ToArray(),
+
+            ChangeStamp = input.ChangeStamp,
         };
 
     public static SystemRow ToRow(SystemData input)
@@ -29,5 +31,7 @@ public static class SystemMapper {
                 Name = input.Name,
                 Description = input.Description,
                 Tags = input.Tags,
+
+                ChangeStamp = input.ChangeStamp,
             };
 }

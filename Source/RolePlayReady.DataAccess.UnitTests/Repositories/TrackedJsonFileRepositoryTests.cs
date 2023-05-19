@@ -4,8 +4,10 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     private readonly IFileSystem _io;
     private readonly JsonFileStorage<TestData> _storage;
 
-    private record TestData : IKey {
-        public Guid Id { get; init; } = Guid.NewGuid();
+    private record TestData : Persisted {
+        public TestData() {
+            Id = Guid.NewGuid();
+        }
     }
 
     private const string _rootFolder = "testBaseFolder";
@@ -70,10 +72,16 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     private readonly TestData[] _expected = {
         new() {
             Id = _file1Id,
+            Name = "file1",
+            Description = "File 1.",
+            ChangeStamp = _dateTime1,
         },
         new() {
             Id = _file2Id,
-        }
+            Name = "file2",
+            Description = "File 2.",
+            ChangeStamp = _dateTime2,
+        },
     };
 
     public TrackedJsonFileRepositoryTests() {
@@ -123,7 +131,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         dateTime.TryParseExact(_timestamp5, Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
             .Returns(x => { x[4] = _dateTime5; return true; });
         dateTime.TryParseExact(_invalidTimestamp, Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<DateTimeStyles>(), out Arg.Any<DateTime>())
-            .Returns(x => { x[4] = null; return false; });
+            .Returns(x => { x[4] = DateTime.Parse("1900-01-01 00:00:00"); return false; });
 
         var configuration = Substitute.For<IConfiguration>();
         configuration[$"{nameof(JsonFileStorage<TestData>)}:BaseFolder"].Returns(_rootFolder);
@@ -140,7 +148,6 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public void Constructor_WithNulls_CreatesInstance() {
         // Arrange
-        var userAccessor = Substitute.For<IUserAccessor>();
         var configuration = Substitute.For<IConfiguration>();
         configuration[$"{nameof(JsonFileStorage<TestData>)}:BaseFolder"].Returns(_rootFolder);
 
@@ -154,7 +161,6 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     [Fact]
     public void Constructor_WithConfigurationMissing_Throws() {
         // Arrange
-        var userAccessor = Substitute.For<IUserAccessor>();
         var configuration = Substitute.For<IConfiguration>();
         configuration[$"{nameof(JsonFileStorage<TestData>)}:BaseFolder"].Returns(default(string));
 
@@ -250,6 +256,9 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         // Arrange
         var newFileData = new TestData {
             Id = _newFileId,
+            Name = "newFile",
+            Description = "New file.",
+            ChangeStamp = _now,
         };
 
         var buffer = new byte[1024];
@@ -273,6 +282,8 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         // Arrange
         var newFileData = new TestData {
             Id = _file2Id,
+            Name = "file2",
+            Description = "File 2.",
         };
 
         // Act
@@ -287,6 +298,9 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
         // Arrange
         var updatedData = new TestData {
             Id = _file1Id,
+            Name = "file1",
+            Description = "Updated File 1.",
+            ChangeStamp = _dateTime1,
         };
 
         var buffer = new byte[1024];
@@ -301,16 +315,51 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(updatedData);
+        result.Should().BeEquivalentTo(updatedData with { ChangeStamp = _now });
         _io.Received(1).MoveFile(_existingFiles[0], _existingFiles[0].Replace("+", ""));
         _io.Received(1).CreateNewFileAndOpenForWriting(_file1V4);
     }
 
     [Fact]
-    public async Task InsertAsync_WhenFileNotFound_ReturnsNull() {
+    public async Task UpdateAsync_WhenFileNotFound_ReturnsNull() {
         // Arrange
         var newFileData = new TestData {
             Id = _missingFileId,
+            Name = "missing",
+            Description = "Missing.",
+        };
+
+        // Act
+        var result = await _storage.UpdateAsync(newFileData);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithInvalidTimeStamp_ReturnsNull() {
+        // Arrange
+        var newFileData = new TestData {
+            Id = _invalidTimestampId,
+            Name = "something",
+            Description = "Something.",
+        };
+
+        // Act
+        var result = await _storage.UpdateAsync(newFileData);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithInvalidChangeStamp_ReturnsNull() {
+        // Arrange
+        var newFileData = new TestData {
+            Id = _file1Id,
+            Name = "file1",
+            Description = "Updated File 1.",
+            ChangeStamp = _now,
         };
 
         // Act

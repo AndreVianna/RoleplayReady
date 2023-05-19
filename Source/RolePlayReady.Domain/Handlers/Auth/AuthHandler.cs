@@ -39,7 +39,7 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
         }
 
         var token = GenerateSignInToken(user);
-        if (!user.IsEmailConfirmed) {
+        if (!user.IsConfirmed) {
             _logger.LogDebug("Login for '{email}' ok, but email is not confirmed.", signIn.Email);
             return ConfirmationRequired(token);
         }
@@ -79,9 +79,7 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
 
     public async Task<CrudResult> GrantRoleAsync(UserRole userRole, CancellationToken ct = default) {
         var user = await Repository.GetByIdAsync(userRole.UserId, ct);
-        if (user is null) {
-            return CrudResult.NotFound();
-        }
+        if (user is null) return CrudResult.NotFound();
 
         user.Roles.Add(userRole.Role);
         await UpdateAsync(user, ct);
@@ -91,9 +89,7 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
 
     public async Task<CrudResult> RevokeRoleAsync(UserRole userRole, CancellationToken ct = default) {
         var user = await Repository.GetByIdAsync(userRole.UserId, ct);
-        if (user is null) {
-            return CrudResult.NotFound();
-        }
+        if (user is null) return CrudResult.NotFound();
 
         user.Roles.Remove(userRole.Role);
         await UpdateAsync(user, ct);
@@ -120,7 +116,6 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
     private static IEnumerable<Claim> GenerateClaims(User user) {
         var claims = new List<Claim> {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.UserData, user.FolderName),
             new(ClaimTypes.Email, user.Email),
         };
         if (user.FirstName is not null)

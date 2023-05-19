@@ -18,7 +18,6 @@ internal static class UserMapper {
             IsLocked = model.LockExpiration > now,
             IsBlocked = model.IsBlocked,
             Roles = model.Roles.Select(x => x.ToString()).ToArray(),
-            FolderName = model.FolderName,
             FirstName = model.FirstName,
             LastName = model.LastName,
             Birthday = model.Birthday,

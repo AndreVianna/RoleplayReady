@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.Settings;
 
-public class SettingData : IKey {
+public class SettingData : IPersisted {
     public Guid Id { get; init; }
     public State State { get; init; }
     public string? ShortName { get; init; }
@@ -15,4 +15,6 @@ public class SettingData : IKey {
         public required string Description { get; init; }
         public required string DataType { get; init; }
     }
+
+    public DateTime ChangeStamp { get; init; }
 }

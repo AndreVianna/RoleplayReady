@@ -1,5 +1,5 @@
 ﻿namespace RolePlayReady.Models.Abstractions;
 
-public interface IKey {
+public interface IEntity {
     Guid Id { get; }
 }

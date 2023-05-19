@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories;
 
 public interface IJsonFileStorage<TData>
-    where TData : class, IKey {
+    where TData : class, IPersisted {
     void SetBasePath(string path);
     Task<IEnumerable<TData>> GetAllAsync(Func<TData, bool>? filter = null, CancellationToken ct = default);
     Task<TData?> GetByIdAsync(Guid id, CancellationToken ct = default);

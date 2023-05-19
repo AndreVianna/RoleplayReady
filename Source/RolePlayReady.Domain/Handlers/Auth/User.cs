@@ -1,9 +1,9 @@
 ﻿namespace RolePlayReady.Handlers.Auth;
 
-public record User : IValidatable, IKey {
+public record User : IValidatable, IPersisted {
     public required Guid Id { get; init; }
     public required string Email { get; init; }
-    public bool IsEmailConfirmed { get; init; }
+    public bool IsConfirmed { get; init; }
     public HashedSecret? HashedPassword { get; init; }
     public DateTime LockExpiration { get; init; } = DateTime.MinValue;
     public int SignInRetryCount { get; init; }
@@ -17,7 +17,7 @@ public record User : IValidatable, IKey {
     [PersonalInformation]
     public DateOnly? Birthday { get; init; }
 
-    public string FolderName => (Base64Guid)Id;
+    public DateTime ChangeStamp { get; init; }
 
     public ValidationResult Validate(IDictionary<string, object?>? context = null) {
         var result = ValidationResult.Success();

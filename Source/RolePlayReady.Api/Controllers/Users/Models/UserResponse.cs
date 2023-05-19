@@ -25,7 +25,4 @@ public record UserResponse {
 
     [SwaggerSchema("The name of the user.", ReadOnly = true)]
     public DateOnly? Birthday { get; init; }
-
-    [SwaggerSchema("The id of the area used to store user's data.", ReadOnly = true)]
-    public required string FolderName { get; init; }
 }

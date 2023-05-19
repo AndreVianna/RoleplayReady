@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.Auth;
 
-public record UserData : IKey {
+public record UserData : IPersisted {
     public Guid Id { get; init; }
     public required string Email { get; init; }
     public HashedSecret? HashedPassword { get; init; }
@@ -12,4 +12,6 @@ public record UserData : IKey {
     public string? FirstName { get; init; }
     public string? LastName { get; init; }
     public DateOnly? Birthday { get; init; }
+
+    public DateTime ChangeStamp { get; init; }
 }

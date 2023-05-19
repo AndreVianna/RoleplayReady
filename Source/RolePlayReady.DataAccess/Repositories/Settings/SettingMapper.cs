@@ -10,6 +10,8 @@ public static class SettingMapper {
             Description = input.Description,
             Tags = input.Tags.ToArray(),
             AttributeDefinitions = input.AttributeDefinitions.Select(ToData).ToArray(),
+
+            ChangeStamp = input.ChangeStamp,
         };
 
     public static SettingRow ToRow(this SettingData input)
@@ -29,6 +31,8 @@ public static class SettingMapper {
                 Description = input.Description,
                 Tags = input.Tags,
                 AttributeDefinitions = input.AttributeDefinitions.Select(ToModel).ToArray(),
+
+                ChangeStamp = input.ChangeStamp,
             };
 
     private static SettingData.AttributeDefinitionData ToData(IAttributeDefinition input)

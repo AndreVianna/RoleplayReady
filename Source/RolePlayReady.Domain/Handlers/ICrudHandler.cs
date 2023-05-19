@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.Handlers;
 
 public interface ICrudHandler<TModel, TRowModel>
-    where TModel : class, IKey, IValidatable
+    where TModel : class, IPersisted, IValidatable
     where TRowModel : Row {
     Task<CrudResult<IEnumerable<TRowModel>>> GetManyAsync(CancellationToken ct = default);
     Task<CrudResult<TModel>> GetByIdAsync(Guid id, CancellationToken ct = default);

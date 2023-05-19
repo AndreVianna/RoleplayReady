@@ -1,7 +1,7 @@
 ﻿namespace RolePlayReady.Repositories;
 
 public interface IRepository<TModel, TRowModel>
-    where TModel : class, IKey
+    where TModel : class, IPersisted
     where TRowModel : Row {
     Task<IEnumerable<TRowModel>> GetManyAsync(CancellationToken ct = default);
     Task<TModel?> GetByIdAsync(Guid id, CancellationToken ct = default);
