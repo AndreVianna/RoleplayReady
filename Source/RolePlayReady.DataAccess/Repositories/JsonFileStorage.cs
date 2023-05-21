@@ -127,7 +127,7 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
                 return false;
             }
 
-            _io.MoveFile(filePath, filePath.Replace("+", ""));
+            _io.MoveFile(filePath, filePath.Replace("+", "-"));
 
             _logger.LogDebug("File '{path}/{id}' deleted.", _repositoryPath, id);
             return true;
