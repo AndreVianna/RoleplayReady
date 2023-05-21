@@ -1,3 +1,5 @@
+using System.Security.Principal;
+
 using static System.Security.Claims.ClaimTypes;
 using static Microsoft.AspNetCore.Authentication.AuthenticateResult;
 
@@ -21,10 +23,10 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
     protected override Task<AuthenticateResult> HandleAuthenticateAsync() {
         try {
             var endpoint = Context.GetEndpoint();
-            if (endpoint is null)
+            if (endpoint is null || !EndpointRequiresAuth(endpoint)) {
+                _logger.LogDebug("No authentication needed.");
                 return Task.FromResult(NoResult());
-
-            if (!RequiresAuth(endpoint)) return Task.FromResult(NoResult());
+            }
 
             if (!Request.Headers.TryGetValue(_authHeader, out var authorizationHeader)) {
                 _logger.LogDebug("Request missing '{header}' header.", _authHeader);
@@ -44,7 +46,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
                 return Task.FromResult(Fail($"'{NameIdentifier}' claim is missing."));
             }
 
-            if (!UserHasRequiredRoles(endpoint, claims)) {
+            if (!UserHasAtLeastOneOfTheAllowedRoles(endpoint, claims)) {
                 _logger.LogDebug("User {userId} does not have required role(s).", NameIdentifier);
                 return Task.FromResult(Fail("User does not have required role(s)."));
             }
@@ -55,24 +57,24 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
             return Task.FromResult(Success(ticket));
         }
         catch (Exception ex) {
+            _logger.LogError(ex, "Internal error while authenticating request.");
             return Task.FromResult(Fail(ex.Message));
         }
     }
 
-    private bool RequiresAuth(Endpoint endpoint) {
+    private static bool EndpointRequiresAuth(Endpoint endpoint) {
         var anonAttribute = endpoint.Metadata.GetMetadata<AllowAnonymousAttribute>();
         if (anonAttribute is not null) return false;
         var authAttribute = endpoint.Metadata.GetMetadata<AuthorizeAttribute>();
-        if (authAttribute is null) return false;
-        return true;
+        return authAttribute is not null;
     }
 
-    private void SetAuthenticatedUser(ClaimsPrincipal claims) {
+    private void SetAuthenticatedUser(IPrincipal claims) {
         var identity = new ClaimsIdentity(claims.Identity);
         Context.User = new ClaimsPrincipal(identity);
     }
 
-    private bool UserHasRequiredRoles(Endpoint endpoint, ClaimsPrincipal claims) {
+    private static bool UserHasAtLeastOneOfTheAllowedRoles(Endpoint endpoint, ClaimsPrincipal claims) {
         var authAttribute = endpoint.Metadata.GetMetadata<AuthorizeAttribute>();
         if (authAttribute is not { Roles: { } roles }) return true;
         var requiredRoles = roles.Split(',').Select(r => r.Trim()).ToArray();
@@ -91,7 +93,6 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
             ValidateLifetime = false,
             ClockSkew = TimeSpan.Zero
         };
-        var principal = _tokenHandler.ValidateToken(apiKey, validationParameters, out _);
-        return principal;
+        return _tokenHandler.ValidateToken(apiKey, validationParameters, out _);
     }
 }

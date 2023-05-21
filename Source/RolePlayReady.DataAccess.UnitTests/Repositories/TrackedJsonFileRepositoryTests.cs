@@ -43,7 +43,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     private static readonly string _newFileName = $"+{_newFileId}_{_nowTimestamp}.json";
     private static readonly string _file1V4Name = $"+{_file1Id}_{_nowTimestamp}.json";
     private static readonly string _file1V3Name = $"+{_file1Id}_{_timestamp1}.json";
-    private static readonly string _file1V3DeletedName = $"{_file1Id}_{_timestamp1}.json";
+    private static readonly string _file1V3DeletedName = $"-{_file1Id}_{_timestamp1}.json";
     private static readonly string _file2V0Name = $"+{_file2Id}_{_timestamp2}.json";
     private static readonly string _invalidContentFileName = $"+{_invalidContentId}_{_timestamp5}.json";
     private static readonly string _invalidNameFileName = $"+{_invalidNameId}_invalid.json";
