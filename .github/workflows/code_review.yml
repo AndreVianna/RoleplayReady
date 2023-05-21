@@ -13,13 +13,14 @@ jobs:
     if: ${{ contains(github.event.*.labels.*.name, 'gpt review') }} # Optional; to run only when a label is attached
     runs-on: ubuntu-latest
     steps:
-      - uses: anc95/ChatGPT-CodeReview@main
-        env:
-          GITHUB_TOKEN: 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
-          OPENAI_API_KEY: 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
-          # Optional
-          LANGUAGE: English
-          OPENAI_API_ENDPOINT: https://api.openai.com/v1
-          MODEL: gpt-4
-          top_p: 1
-          temperature: 1
+      - bash: echo "labels are $(github.event.*.labels.*.name)"
+      #- uses: anc95/ChatGPT-CodeReview@main
+      #  env:
+      #    GITHUB_TOKEN: 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
+      #    OPENAI_API_KEY: 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
+      #    # Optional
+      #    LANGUAGE: English
+      #    OPENAI_API_ENDPOINT: https://api.openai.com/v1
+      #    MODEL: gpt-4
+      #    top_p: 1
+      #    temperature: 1
