@@ -1,7 +1,10 @@
 ﻿namespace RolePlayReady.Extensions;
 
 public static class ServiceCollectionExtensions {
-    public static IServiceCollection AddDomainHandlers(this IServiceCollection services) {
+    public static IServiceCollection AddDomainHandlers(this IServiceCollection services, IConfiguration configuration) {
+        services.Configure<AuthSettings>(configuration.GetSection("Security"));
+
+        services.AddScoped<ITokenGenerator, TokenGenerator>();
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IAuthHandler, AuthHandler>();
         services.AddScoped<ISystemHandler, SystemHandler>();

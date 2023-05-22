@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+
 namespace RolePlayReady.Handlers.Auth;
 
 public class AuthHandlerTests {
@@ -6,6 +8,7 @@ public class AuthHandlerTests {
     private static readonly string _unconfirmedEmail = "unconfirmed@host.com";
     private static readonly string _validPassword = "Secret1234!";
     private static readonly string _invalidPassword = "Invalid";
+    private static readonly ITokenGenerator _tokenGenerator = Substitute.For<ITokenGenerator>();
     private static readonly IEmailSender _emailSender = Substitute.For<IEmailSender>();
     private readonly IUserRepository _repository;
     private static readonly IHasher _hasher = Substitute.For<IHasher>();
@@ -35,14 +38,16 @@ public class AuthHandlerTests {
         };
         _repository.VerifyAsync(Arg.Is<SignIn>(i => i.Email == _unconfirmedEmail && i.Password == _validPassword), Arg.Any<CancellationToken>()).Returns(unconfirmedUser);
 
-        var configuration = Substitute.For<IConfiguration>();
-        configuration["Security:Requires2Factor"].Returns("false");
-        configuration["Security:IssuerSigningKey"].Returns("12345678901234567890123456789012");
-        configuration["Security:TokenExpirationInHours"].Returns("7");
-        var dateTime = Substitute.For<IDateTime>();
-        dateTime.Now.Returns(DateTime.UtcNow);
+        var authSettings = new AuthSettings {
+            Requires2Factor = false,
+            IssuerSigningKey = "12345678901234567890123456789012",
+            SignInTokenExpirationInHours = 7,
+            EmailTokenExpirationInMinutes = 7,
+        };
+        var options = Substitute.For<IOptions<AuthSettings>>();
+        options.Value.Returns(authSettings);
 
-        _handler = new AuthHandler(_repository, _hasher, configuration, dateTime, _emailSender, NullLogger<AuthHandler>.Instance);
+        _handler = new AuthHandler(_repository, _hasher, options, _emailSender, _tokenGenerator, NullLogger<AuthHandler>.Instance);
     }
 
     private class TestLoginData : TheoryData<SignIn, bool, string[]> {
@@ -69,15 +74,16 @@ public class AuthHandlerTests {
     [Fact]
     public async Task SignInAsync_WithTwoFactor_ReturnsRequiresTwoFactor() {
         // Arrange
-        var configuration = Substitute.For<IConfiguration>();
-        configuration["Security:Requires2Factor"].Returns("true");
-        configuration["Security:IssuerSigningKey"].Returns("12345678901234567890123456789012");
-        configuration["Security:TokenExpirationInHours"].Returns("7");
-        var dateTime = Substitute.For<IDateTime>();
-        dateTime.Now.Returns(DateTime.UtcNow);
+        var authSettings = new AuthSettings {
+            Requires2Factor = true,
+            IssuerSigningKey = "12345678901234567890123456789012",
+            SignInTokenExpirationInHours = 7,
+            EmailTokenExpirationInMinutes = 7,
+        };
+        var options = Substitute.For<IOptions<AuthSettings>>();
+        options.Value.Returns(authSettings);
 
-        var handler = new AuthHandler(_repository, _hasher, configuration, dateTime, _emailSender, NullLogger<AuthHandler>.Instance);
-
+        var handler = new AuthHandler(_repository, _hasher, options, _emailSender, _tokenGenerator, NullLogger<AuthHandler>.Instance);
         var signIn = new SignIn { Email = _validEmail, Password = _validPassword };
 
         // Act
