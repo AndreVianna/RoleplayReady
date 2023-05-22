@@ -10,7 +10,7 @@ public class TokenGenerator : ITokenGenerator {
     }
 
     public string GenerateSignInToken(User user) {
-        var claims = GenerateSigInClaims(user);
+        var claims = GenerateSignInClaims(user);
         var expiration = _dateTime.Now.AddHours(_authSettings.SignInTokenExpirationInHours);
         return GenerateToken(claims, expiration);
     }
@@ -23,7 +23,7 @@ public class TokenGenerator : ITokenGenerator {
         return GenerateToken(claims, expiration);
     }
 
-    private static IEnumerable<Claim> GenerateSigInClaims(User user) {
+    private static IEnumerable<Claim> GenerateSignInClaims(User user) {
         var claims = new List<Claim> {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Email, user.Email),
@@ -50,7 +50,7 @@ public class TokenGenerator : ITokenGenerator {
 
     private SigningCredentials GetCredentials() {
         var issuerSigningKey = Ensure.IsNotNullOrWhiteSpace(_authSettings.IssuerSigningKey);
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(issuerSigningKey));
-        return new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey));
+        return new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
     }
 }

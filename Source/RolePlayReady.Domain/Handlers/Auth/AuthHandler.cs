@@ -43,7 +43,7 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
         }
 
         if (_authSettings.Requires2Factor) {
-            _logger.LogDebug("Login for '{email}' ok, but email is not confirmed.", signIn.Email);
+            _logger.LogDebug("Login for '{email}' ok, but requires two-factor.", signIn.Email);
             return TwoFactorRequired(token);
         }
 

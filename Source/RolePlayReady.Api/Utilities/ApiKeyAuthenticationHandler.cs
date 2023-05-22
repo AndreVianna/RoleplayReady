@@ -1,5 +1,3 @@
-using System.Security.Principal;
-
 using static System.Security.Claims.ClaimTypes;
 using static Microsoft.AspNetCore.Authentication.AuthenticateResult;
 
