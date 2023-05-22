@@ -34,7 +34,7 @@ builder.Services.AddDefaultSystemProviders();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUserAccessor, ApiUserAccessor>();
 builder.Services.AddScoped<IHasher, Hasher>();
-builder.Services.AddDomainHandlers();
+builder.Services.AddDomainHandlers(builder.Configuration);
 builder.Services.AddRepositories();
 builder.Services.AddScoped(sp => new CustomExceptionFilter(sp.GetRequiredService<ILoggerFactory>(), env));
 

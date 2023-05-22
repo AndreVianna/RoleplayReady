@@ -3,25 +3,23 @@
 namespace RolePlayReady.Handlers.Auth;
 
 public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHandler {
+    private readonly AuthSettings _authSettings;
     private readonly IHasher _hasher;
-    private readonly IConfiguration _configuration;
-    private readonly bool _twoFactorIsRequired;
-    private readonly IDateTime _dateTime;
-    private readonly ILogger<AuthHandler> _logger;
     private readonly IEmailSender _emailSender;
+    private readonly ITokenGenerator _tokenGenerator;
+    private readonly ILogger<AuthHandler> _logger;
 
     public AuthHandler(IUserRepository repository,
                        IHasher hasher,
-                       IConfiguration configuration,
-                       IDateTime dateTime,
+                       IOptions<AuthSettings> authSettings,
                        IEmailSender emailSender,
+                       ITokenGenerator tokenGenerator,
                        ILogger<AuthHandler> logger)
         : base(repository) {
         _hasher = hasher;
-        _configuration = configuration;
-        _twoFactorIsRequired = bool.TryParse(_configuration["Security:Requires2Factor"], out var required) && required;
-        _dateTime = dateTime;
+        _authSettings = authSettings.Value;
         _emailSender = emailSender;
+        _tokenGenerator = tokenGenerator;
         _logger = logger;
     }
 
@@ -38,13 +36,13 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
             return Failure();
         }
 
-        var token = GenerateSignInToken(user);
+        var token = _tokenGenerator.GenerateSignInToken(user);
         if (!user.IsConfirmed) {
             _logger.LogDebug("Login for '{email}' ok, but email is not confirmed.", signIn.Email);
             return ConfirmationRequired(token);
         }
 
-        if (_twoFactorIsRequired) {
+        if (_authSettings.Requires2Factor) {
             _logger.LogDebug("Login for '{email}' ok, but email is not confirmed.", signIn.Email);
             return TwoFactorRequired(token);
         }
@@ -95,38 +93,5 @@ public class AuthHandler : CrudHandler<User, UserRow, IUserRepository>, IAuthHan
         await UpdateAsync(user, ct);
 
         return CrudResult.Success();
-    }
-
-    private string GenerateSignInToken(User user) {
-        var claims = GenerateClaims(user);
-        var expirationInHours = int.Parse(_configuration["Security:TokenExpirationInHours"]!);
-        var credentials = GetCredentials();
-
-        var tokenDescriptor = new SecurityTokenDescriptor {
-            Subject = new ClaimsIdentity(claims),
-            Expires = _dateTime.Now.AddHours(expirationInHours),
-            SigningCredentials = credentials
-        };
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-    }
-
-    private static IEnumerable<Claim> GenerateClaims(User user) {
-        var claims = new List<Claim> {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Email, user.Email),
-        };
-        if (user.FirstName is not null)
-            claims.Add(new Claim(ClaimTypes.GivenName, user.FirstName));
-        claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.ToString())));
-        return claims;
-    }
-
-    private SigningCredentials GetCredentials() {
-        var issuerSigningKey = Ensure.IsNotNullOrWhiteSpace(_configuration["Security:IssuerSigningKey"]);
-        var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(issuerSigningKey));
-        return new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
     }
 }
