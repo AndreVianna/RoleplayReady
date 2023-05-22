@@ -50,7 +50,7 @@ public class TokenGenerator : ITokenGenerator {
 
     private SigningCredentials GetCredentials() {
         var issuerSigningKey = Ensure.IsNotNullOrWhiteSpace(_authSettings.IssuerSigningKey);
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey));
+        var key = new SymmetricSecurityKey(Base64UrlEncoder.DecodeBytes(issuerSigningKey));
         return new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
     }
 }
