@@ -9,6 +9,8 @@ global using System.Security.Cryptography;
 global using System.Text;
 global using System.Utilities;
 global using System.Validation;
+global using System.Validation.Commands;
+global using System.Validation.Commands.Abstractions;
 
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
