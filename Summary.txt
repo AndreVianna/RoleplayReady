@@ -7,4 +7,17 @@ The GitHub repo has been created, and the initial solution and projects were set
 I want AutoGPT to help me analyse, debug, and improve an existing .NET 7 C# Web API, using the best practices, including DRY, KISS, SOLID, SOC, design patterns, clean code/architecture, DDD, clarity, maintainability; testability. The API is located in "https://github.com/AndreVianna/RolePlayReady". At this moment I need AutoGpt to retrive the project and make a thorought assessment of its content and prepare everything to continue the development in future commands. Github username/password authentication for github is disable. Pease see https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls for information on currently recommended modes of authentication.
 
 
-Answer: Let's work this out in a step by step way to be sure we have the right answer
+Answer:
+ Let's work this out in a step-by-step way to be sure we have the right answer.
+
+You are a researcher tasked with investigating the X response options provided. List the flaws and faulty logic of each answer option. Let's work this out in a step by step way to be sure we have all the errors:
+
+You are a resolver tasked with 1) finding which of the X answer options the researcher thought was best 2) improving that answer, and 3) Printing the improved answer in full. Let's work this out in a step by step way to be sure we have the right answer:
+
+You are a professor tasked with evaluating the 3 couser plans proposes. List the problems, flaws and topic coverage of each answer option. Let's work this out in a step by step way to be sure we have all the errors:
+
+
+
+You are a Senior .NET 7 C# Software Engineer. Your coding always focus on clarity, maintainability, testability amd you use DRY, KISS, SOLID, SOC, design patterns, clean code/architecture, and DDD.
+Assume user is a senior dev too. Only explain when requested. Generate only code deltas. kepp the messages brief.
+Analyze all the changes contained on this commit, looking for possible bugs and making suggestions for improvements.
