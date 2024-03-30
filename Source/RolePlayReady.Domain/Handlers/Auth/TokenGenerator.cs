@@ -1,17 +1,11 @@
 ﻿namespace RolePlayReady.Handlers.Auth;
 
-public class TokenGenerator : ITokenGenerator {
-    private readonly IDateTime _dateTime;
-    private readonly AuthSettings _authSettings;
-
-    public TokenGenerator(IOptions<AuthSettings> authSettings, IDateTime dateTime) {
-        _dateTime = dateTime;
-        _authSettings = authSettings.Value;
-    }
+public class TokenGenerator(IOptions<AuthSettings> authSettings, IDateTime dateTime) : ITokenGenerator {
+    private readonly AuthSettings _authSettings = authSettings.Value;
 
     public string GenerateSignInToken(User user) {
         var claims = GenerateSignInClaims(user);
-        var expiration = _dateTime.Now.AddHours(_authSettings.SignInTokenExpirationInHours);
+        var expiration = dateTime.Now.AddHours(_authSettings.SignInTokenExpirationInHours);
         return GenerateToken(claims, expiration);
     }
 
@@ -19,11 +13,11 @@ public class TokenGenerator : ITokenGenerator {
         var claims = new List<Claim> {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
         };
-        var expiration = _dateTime.Now.AddMinutes(_authSettings.EmailTokenExpirationInMinutes);
+        var expiration = dateTime.Now.AddMinutes(_authSettings.EmailTokenExpirationInMinutes);
         return GenerateToken(claims, expiration);
     }
 
-    private static IEnumerable<Claim> GenerateSignInClaims(User user) {
+    private static List<Claim> GenerateSignInClaims(User user) {
         var claims = new List<Claim> {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Email, user.Email),

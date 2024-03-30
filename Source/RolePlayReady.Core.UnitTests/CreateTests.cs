@@ -3,7 +3,7 @@ using System.Utilities;
 namespace System;
 
 public class CreateTests {
-    private class TestClass { }
+    private class TestClass;
 
     [Fact]
     public void Instance_NoArgs_CreatesObjectOfType() {
@@ -15,12 +15,8 @@ public class CreateTests {
         instance.Should().BeOfType<TestClass>();
     }
 
-    private class TestClassWithArgs {
-        public string Value { get; }
-
-        public TestClassWithArgs(string value) {
-            Value = value;
-        }
+    private class TestClassWithArgs(string value) {
+        public string Value { get; } = value;
     }
 
     [Fact]

@@ -52,11 +52,11 @@ public class AuthHandlerTests {
 
     private class TestLoginData : TheoryData<SignIn, bool, string[]> {
         public TestLoginData() {
-            Add(new() { Email = _validEmail, Password = _validPassword }, true, Array.Empty<string>());
-            Add(new() { Email = _unconfirmedEmail, Password = _validPassword }, false, Array.Empty<string>());
-            Add(new() { Email = _validEmail, Password = _invalidPassword }, false, Array.Empty<string>());
-            Add(new() { Email = "invalid.user@email.com", Password = _validPassword }, false, Array.Empty<string>());
-            Add(new() { Email = null!, Password = null! }, false, new[] { "'Email' cannot be null.", "'Password' cannot be null." });
+            Add(new() { Email = _validEmail, Password = _validPassword }, true, []);
+            Add(new() { Email = _unconfirmedEmail, Password = _validPassword }, false, []);
+            Add(new() { Email = _validEmail, Password = _invalidPassword }, false, []);
+            Add(new() { Email = "invalid.user@email.com", Password = _validPassword }, false, []);
+            Add(new() { Email = null!, Password = null! }, false, ["'Email' cannot be null.", "'Password' cannot be null."]);
         }
     }
 
@@ -97,9 +97,9 @@ public class AuthHandlerTests {
 
     private class TestRegisterData : TheoryData<SignOn, bool, string[]> {
         public TestRegisterData() {
-            Add(new() { Email = _validEmail, Password = _validPassword, FirstName = "Some", LastName = "Name" }, true, Array.Empty<string>());
-            Add(new() { Email = "duplicated.user@email.com", Password = _validPassword }, false, Array.Empty<string>());
-            Add(new() { Email = null!, Password = null! }, false, new[] { "'Email' cannot be null.", "'Password' cannot be null." });
+            Add(new() { Email = _validEmail, Password = _validPassword, FirstName = "Some", LastName = "Name" }, true, []);
+            Add(new() { Email = "duplicated.user@email.com", Password = _validPassword }, false, []);
+            Add(new() { Email = null!, Password = null! }, false, ["'Email' cannot be null.", "'Password' cannot be null."]);
         }
     }
 
@@ -371,18 +371,16 @@ public class AuthHandlerTests {
         result.IsNotFound.Should().BeTrue();
     }
 
-    private static UserRow CreateRow(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            Name = "Some User",
-            Email = "some.user@email.com",
-        };
+    private static UserRow CreateRow(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        Name = "Some User",
+        Email = "some.user@email.com",
+    };
 
-    private static User CreateInput(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            Email = "some.user@email.com",
-            FirstName = "Some User",
-            Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
-        };
+    private static User CreateInput(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        Email = "some.user@email.com",
+        FirstName = "Some User",
+        Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
+    };
 }

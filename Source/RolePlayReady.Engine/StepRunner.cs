@@ -20,14 +20,13 @@ public abstract class StepRunner<TContext, TOptions> : IRunner<TContext, TOption
 
     public TOptions Options { get; }
 
-    protected virtual Task<TContext> OnStartAsync(TContext context, CancellationToken cancellation = default)
-        => Task.FromResult(context);
-    protected virtual Task<Type?> OnSelectStepAsync(TContext context, CancellationToken cancellation = default)
-        => Task.FromResult<Type?>(default);
-    protected virtual Task<TContext> OnFinishAsync(TContext context, CancellationToken cancellation = default)
-        => Task.FromResult(context);
-    protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default)
-        => Task.CompletedTask;
+    protected virtual Task<TContext> OnStartAsync(TContext context, CancellationToken cancellation = default) => Task.FromResult(context);
+
+    protected virtual Task<Type?> OnSelectStepAsync(TContext context, CancellationToken cancellation = default) => Task.FromResult<Type?>(default);
+
+    protected virtual Task<TContext> OnFinishAsync(TContext context, CancellationToken cancellation = default) => Task.FromResult(context);
+
+    protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default) => Task.CompletedTask;
 
     public async Task<TContext> RunAsync(TContext context, CancellationToken cancellation = default) {
         try {

@@ -11,7 +11,9 @@ public sealed class NullContext : IContext {
 
     public void Block() { }
     public Task InitializeAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
     public Task UpdateAsync(IStep currentStep, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
     public void Release() { }
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;

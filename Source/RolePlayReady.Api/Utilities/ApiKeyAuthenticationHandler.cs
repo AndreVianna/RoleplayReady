@@ -1,24 +1,15 @@
-using System.Security.Principal;
-
 using static System.Security.Claims.ClaimTypes;
 using static Microsoft.AspNetCore.Authentication.AuthenticateResult;
 
 namespace RolePlayReady.Api.Utilities;
 
 [ExcludeFromCodeCoverage]
-internal class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions> {
-    private readonly ILogger<ApiKeyAuthenticationHandler> _logger;
-    private readonly byte[] _issuerSigningKey;
-    private readonly JwtSecurityTokenHandler _tokenHandler;
+internal class ApiKeyAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, IConfiguration configuration, ILoggerFactory loggerFactory, UrlEncoder encoder) : AuthenticationHandler<AuthenticationSchemeOptions>(options, loggerFactory, encoder) {
+    private readonly ILogger<ApiKeyAuthenticationHandler> _logger = loggerFactory.CreateLogger<ApiKeyAuthenticationHandler>();
+    private readonly byte[] _issuerSigningKey = Encoding.ASCII.GetBytes(Ensure.IsNotNullOrWhiteSpace(configuration["Security:IssuerSigningKey"], "Configuration[Security:IssuerSigningKey]"));
+    private readonly JwtSecurityTokenHandler _tokenHandler = new();
     private const string _authHeader = "Authorization";
     private const string _tokenPrefix = "Bearer ";
-
-    public ApiKeyAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, IConfiguration configuration, ILoggerFactory loggerFactory, UrlEncoder encoder, ISystemClock clock)
-        : base(options, loggerFactory, encoder, clock) {
-        _logger = loggerFactory.CreateLogger<ApiKeyAuthenticationHandler>();
-        _issuerSigningKey = Encoding.ASCII.GetBytes(Ensure.IsNotNullOrWhiteSpace(configuration["Security:IssuerSigningKey"], "Configuration[Security:IssuerSigningKey]"));
-        _tokenHandler = new JwtSecurityTokenHandler();
-    }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync() {
         try {
@@ -64,7 +55,8 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
 
     private static bool EndpointRequiresAuth(Endpoint endpoint) {
         var anonAttribute = endpoint.Metadata.GetMetadata<AllowAnonymousAttribute>();
-        if (anonAttribute is not null) return false;
+        if (anonAttribute is not null)
+            return false;
         var authAttribute = endpoint.Metadata.GetMetadata<AuthorizeAttribute>();
         return authAttribute is not null;
     }
@@ -76,7 +68,8 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
 
     private static bool UserHasAtLeastOneOfTheAllowedRoles(Endpoint endpoint, ClaimsPrincipal claims) {
         var authAttribute = endpoint.Metadata.GetMetadata<AuthorizeAttribute>();
-        if (authAttribute is not { Roles: { } roles }) return true;
+        if (authAttribute is not { Roles: { } roles })
+            return true;
         var requiredRoles = roles.Split(',').Select(r => r.Trim()).ToArray();
 
         var userRoles = claims.FindAll(ClaimTypes.Role).Select(i => i.Value).ToArray();

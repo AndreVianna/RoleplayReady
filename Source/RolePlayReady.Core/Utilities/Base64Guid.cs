@@ -23,18 +23,18 @@ public partial record struct Base64Guid(Guid Value) {
         }
     }
 
-    private static string ToBase64(Guid guid)
-        => guid == Guid.Empty
-            ? string.Empty
-            : Convert.ToBase64String(guid.ToByteArray())
-                     .TrimEnd('=')
-                     .Replace('+', '-')
-                     .Replace('/', '.');
+    private static string ToBase64(Guid guid) => guid == Guid.Empty
+                                                          ? string.Empty
+                                                          : Convert.ToBase64String(guid.ToByteArray())
+                                                                   .TrimEnd('=')
+                                                                   .Replace('+', '-')
+                                                                   .Replace('/', '.');
 
     private static readonly Regex _base64CGuidFormat = Base64GuidFormat();
 
     private static Guid ToGuid(string? input) {
-        if (input is null) return Guid.Empty;
+        if (input is null)
+            return Guid.Empty;
         var text = Ensure.IsNotNullOrWhiteSpace(input).Trim();
         if (!_base64CGuidFormat.IsMatch(text))
             return new Guid(input);

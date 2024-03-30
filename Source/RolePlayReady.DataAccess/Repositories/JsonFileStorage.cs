@@ -33,7 +33,8 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
             var data = new List<TData>();
             foreach (var file in files) {
                 var content = await GetFileDataOrDefaultAsync(file, cancellation).ConfigureAwait(false);
-                if (content is null) continue;
+                if (content is null)
+                    continue;
                 data.Add(content);
             }
 
@@ -41,7 +42,7 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
                 data = data.Where(filter).ToList();
 
             _logger.LogDebug("{fileCount} files retrieved from '{path}'.", data.Count, _repositoryPath);
-            return data.ToArray();
+            return [.. data];
         }
         catch (Exception ex) {
             _logger.LogError(ex, "Failed to get files from '{path}'!", _repositoryPath);
@@ -110,7 +111,7 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
         }
     }
 
-    private async Task<string> WriteToFileAsync(string operation,TData data, CancellationToken cancellation) {
+    private async Task<string> WriteToFileAsync(string operation, TData data, CancellationToken cancellation) {
         var filePath = _io.CombinePath(_repositoryPath, $"+{data.Id}_{_dateTime.Now:yyyyMMddHHmmss}.json");
         await using var stream = _io.CreateNewFileAndOpenForWriting(filePath);
         await SerializeAsync(stream, data, cancellationToken: cancellation);
@@ -163,17 +164,13 @@ public partial class JsonFileStorage<TData> : IJsonFileStorage<TData>
         var fileName = _io.GetFileNameFrom(filePathWithName);
         dateTime = _dateTime.Default;
         var match = FileNameMatcher().Match(fileName);
-        if (!match.Success) return false;
-        if (!_dateTime.TryParseExact(match.Groups["datetime"].Value, _timestampFormat, null, DateTimeStyles.None, out dateTime)) return false;
-        return true;
+        return match.Success && _dateTime.TryParseExact(match.Groups["datetime"].Value, _timestampFormat, null, DateTimeStyles.None, out dateTime);
     }
 
-    private string? GetActiveFile(Guid id)
-        => _io.GetFilesFrom(_repositoryPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
-        .FirstOrDefault();
+    private string? GetActiveFile(Guid id) => _io.GetFilesFrom(_repositoryPath, $"+{id}*.json", SearchOption.TopDirectoryOnly)
+                                                   .FirstOrDefault();
 
-    private string[] GetActiveFiles()
-        => _io.GetFilesFrom(_repositoryPath, "+*.json", SearchOption.TopDirectoryOnly);
+    private string[] GetActiveFiles() => _io.GetFilesFrom(_repositoryPath, "+*.json", SearchOption.TopDirectoryOnly);
 
     [GeneratedRegex(@"^\+(?<id>[a-zA-Z0-9-]{36})_(?<datetime>\d{14})\.json$", RegexOptions.Compiled, "en-CA")]
     private static partial Regex FileNameMatcher();

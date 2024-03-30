@@ -76,20 +76,14 @@ public class StepTests {
         // No exception should be thrown, and the test should pass.
     }
 
-    private class TestEndStep : EndStep<NullContext> {
-        public TestEndStep() : base(NullStepFactory.Instance, NullLoggerFactory.Instance) { }
+    private class TestEndStep() : EndStep<NullContext>(NullStepFactory.Instance, NullLoggerFactory.Instance) {
+        public Task<NullContext> TestOnStartAsync(CancellationToken cancellation = default) => OnStartAsync(NullContext.Instance, cancellation);
 
-        public Task<NullContext> TestOnStartAsync(CancellationToken cancellation = default)
-            => OnStartAsync(NullContext.Instance, cancellation);
+        public Task<Type?> TestOnSelectNextAsync(CancellationToken cancellation = default) => OnSelectNextAsync(NullContext.Instance, cancellation);
 
-        public Task<Type?> TestOnSelectNextAsync(CancellationToken cancellation = default)
-            => OnSelectNextAsync(NullContext.Instance, cancellation);
+        public Task TestOnFinishAsync(CancellationToken cancellation = default) => OnFinishAsync(NullContext.Instance, cancellation);
 
-        public Task TestOnFinishAsync(CancellationToken cancellation = default)
-            => OnFinishAsync(NullContext.Instance, cancellation);
-
-        public Task TestOnErrorAsync(Exception ex, CancellationToken cancellation = default)
-            => OnErrorAsync(ex, NullContext.Instance, cancellation);
+        public Task TestOnErrorAsync(Exception ex, CancellationToken cancellation = default) => OnErrorAsync(ex, NullContext.Instance, cancellation);
     }
 
     [Fact]

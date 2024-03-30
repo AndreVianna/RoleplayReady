@@ -14,19 +14,18 @@ public abstract class Step<TContext> : IStep<TContext>
         _stepFactory = stepFactory;
     }
 
-    protected virtual Task<TContext> OnStartAsync(TContext context, CancellationToken cancellation = default)
-        => Task.FromResult(context);
-    protected virtual Task<Type?> OnSelectNextAsync(TContext context, CancellationToken cancellation = default)
-        => Task.FromResult<Type?>(default);
-    protected virtual Task<TContext> OnFinishAsync(TContext context, CancellationToken cancellation = default)
-        => Task.FromResult(context);
-    protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default)
-        => Task.CompletedTask;
+    protected virtual Task<TContext> OnStartAsync(TContext context, CancellationToken cancellation = default) => Task.FromResult(context);
 
-    async Task<IContext> IStep.RunAsync(IContext context, CancellationToken cancellation)
-        => await RunAsync(
-            Ensure.IsNotNull(context as TContext, $"Context must be of type '{typeof(TContext).Name}'."),
-            cancellation);
+    protected virtual Task<Type?> OnSelectNextAsync(TContext context, CancellationToken cancellation = default) => Task.FromResult<Type?>(default);
+
+    protected virtual Task<TContext> OnFinishAsync(TContext context, CancellationToken cancellation = default) => Task.FromResult(context);
+
+    protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default) => Task.CompletedTask;
+
+    async Task<IContext> IStep.RunAsync(IContext context, CancellationToken cancellation) => await RunAsync(
+                                                                                                      Ensure.IsNotNull(context as TContext, $"Context must be of type '{typeof(TContext).Name}'."),
+                                                                                                      cancellation);
+
     public async Task<TContext> RunAsync(TContext context, CancellationToken cancellation = default) {
         try {
             Ensure.IsNotNull(context);

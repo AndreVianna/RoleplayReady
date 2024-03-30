@@ -1,6 +1,6 @@
 ﻿namespace RolePlayReady.DataAccess.Repositories.Systems;
 
-public record SystemData : IPersisted  {
+public record SystemData : IPersisted {
     public Guid Id { get; init; }
     public State State { get; init; }
     public string? ShortName { get; init; }

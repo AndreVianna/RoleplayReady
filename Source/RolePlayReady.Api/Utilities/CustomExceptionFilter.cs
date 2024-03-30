@@ -1,15 +1,10 @@
 namespace RolePlayReady.Api.Utilities;
 
 [ExcludeFromCodeCoverage]
-internal class CustomExceptionFilter : IExceptionFilter {
-    private readonly IWebHostEnvironment _env;
-    private readonly ILogger _logger;
+internal class CustomExceptionFilter(ILoggerFactory loggerFactory, IWebHostEnvironment env) : IExceptionFilter {
+    private readonly IWebHostEnvironment _env = env;
+    private readonly ILogger _logger = loggerFactory.CreateLogger<CustomExceptionFilter>();
     private const string _errorMessage = "An unhandled exception occurred.";
-
-    public CustomExceptionFilter(ILoggerFactory loggerFactory, IWebHostEnvironment env) {
-        _env = env;
-        _logger = loggerFactory.CreateLogger<CustomExceptionFilter>();
-    }
 
     public void OnException(ExceptionContext context) {
         var exception = context.Exception;

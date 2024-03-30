@@ -9,7 +9,7 @@ namespace RolePlayReady.Api.Controllers;
 public class SystemsControllerTests {
     private readonly ISystemHandler _handler = Substitute.For<ISystemHandler>();
     private static readonly ILogger<SystemsController> _logger = Substitute.For<ILogger<SystemsController>>();
-    private static readonly SystemRow[] _rows = new[] {
+    private static readonly SystemRow[] _rows = [
         new SystemRow {
             Id = Guid.NewGuid(),
             Name = "Lairs & Lizards 3e",
@@ -18,13 +18,13 @@ public class SystemsControllerTests {
             Id = Guid.NewGuid(),
             Name = "RoadScout",
         }
-    };
+    ];
     private static readonly Handlers.System.System _sample = new() {
         Id = Guid.NewGuid(),
         Name = "Lairs & Lizards 3e",
         Description = "A very nice role playing game.",
         ShortName = "LnL3e",
-        Tags = new[] { "Fantasy", "Adventure" },
+        Tags = ["Fantasy", "Adventure"],
     };
 
     private readonly SystemsController _controller;
@@ -67,7 +67,7 @@ public class SystemsControllerTests {
 
     [Fact]
     public async Task GetById_WithInvalidId_ReturnsNotFound() {
-       // Act
+        // Act
         var response = await _controller.GetById("invalid");
 
         // Assert
@@ -94,7 +94,7 @@ public class SystemsControllerTests {
             Name = "Lairs & Lizards 3e",
             Description = "A very nice role playing game.",
             ShortName = "LnL3e",
-            Tags = new[] { "Fantasy", "Adventure" },
+            Tags = ["Fantasy", "Adventure"],
         };
         var expected = _sample.ToResponse();
         _handler.AddAsync(Arg.Any<Handlers.System.System>(), Arg.Any<CancellationToken>())
@@ -116,7 +116,7 @@ public class SystemsControllerTests {
             Name = "Lairs & Lizards 3e",
             Description = "A very nice role playing game.",
             ShortName = "LnL3e",
-            Tags = new[] { "Fantasy", "Adventure" },
+            Tags = ["Fantasy", "Adventure"],
         };
         var expected = request.ToDomain();
         _handler.AddAsync(Arg.Any<Handlers.System.System>(), Arg.Any<CancellationToken>())
@@ -156,7 +156,7 @@ public class SystemsControllerTests {
             Name = "Lairs & Lizards 3e",
             Description = "A very nice role playing game.",
             ShortName = "LnL3e",
-            Tags = new[] { "Fantasy", "Adventure" },
+            Tags = ["Fantasy", "Adventure"],
         };
         var expected = _sample.ToResponse();
         _handler.UpdateAsync(Arg.Any<Handlers.System.System>(), Arg.Any<CancellationToken>())
@@ -178,7 +178,7 @@ public class SystemsControllerTests {
             Name = "Lairs & Lizards 3e",
             Description = "A very nice role playing game.",
             ShortName = "LnL3e",
-            Tags = new[] { "Fantasy", "Adventure" },
+            Tags = ["Fantasy", "Adventure"],
         };
 
         // Act
@@ -195,7 +195,7 @@ public class SystemsControllerTests {
             Name = "Lairs & Lizards 3e",
             Description = "A very nice role playing game.",
             ShortName = "LnL3e",
-            Tags = new[] { "Fantasy", "Adventure" },
+            Tags = ["Fantasy", "Adventure"],
         };
         var input = request.ToDomain();
         _handler.UpdateAsync(Arg.Any<Handlers.System.System>(), Arg.Any<CancellationToken>())

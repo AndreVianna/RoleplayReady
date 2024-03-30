@@ -63,7 +63,7 @@ builder.Services.AddSwaggerGen(c => {
     });
 
     c.DocInclusionPredicate((name, api) => true);
-    c.TagActionsBy(api => new[] { api.GroupName });
+    c.TagActionsBy(api => [api.GroupName]);
     c.EnableAnnotations();
 });
 

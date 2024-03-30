@@ -13,7 +13,7 @@ public class ListAttributeTests {
 
         _attribute = new() {
             Definition = _definition,
-            Value = new() { "TestValue1", "TestValue2", "TestValue3" }
+            Value = ["TestValue1", "TestValue2", "TestValue3"]
         };
     }
 
@@ -26,14 +26,14 @@ public class ListAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("Has", new object[] { 3 }, true);
-            Add("Has", new object[] { 13 }, false);
-            Add("HasAtLeast", new object[] { 1 }, true);
-            Add("HasAtLeast", new object[] { 99 }, false);
-            Add("HasAtMost", new object[] { 99 }, true);
-            Add("HasAtMost", new object[] { 1 }, false);
-            Add("Contains", new object[] { "TestValue2" }, true);
-            Add("Contains", new object[] { "TestValue13" }, false);
+            Add("Has", [3], true);
+            Add("Has", [13], false);
+            Add("HasAtLeast", [1], true);
+            Add("HasAtLeast", [99], false);
+            Add("HasAtMost", [99], true);
+            Add("HasAtMost", [1], false);
+            Add("Contains", ["TestValue2"], true);
+            Add("Contains", ["TestValue13"], false);
         }
     }
 

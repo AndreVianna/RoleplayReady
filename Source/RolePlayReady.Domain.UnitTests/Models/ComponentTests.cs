@@ -11,11 +11,11 @@ public class ComponentTests {
             Name = "TestPersisted",
             Description = "Test persisted.",
 
-            Tags = new[] {
+            Tags = [
                 "Test",
                 "Persisted",
-            },
-            Attributes = new[] {
+            ],
+            Attributes = [
                 new TextAttribute {
                     Definition = new AttributeDefinition {
                         DataType = typeof(string),
@@ -24,7 +24,7 @@ public class ComponentTests {
                     },
                     Value = "Hello",
                 }
-            }
+            ]
         };
 
         subject.Attributes.Should().HaveCount(1);

@@ -12,7 +12,8 @@ public class AuthResponsesOperationFilter : IOperationFilter {
 
         var showLock = actionRequiresAuthorization || (parentRequiresAuthorization && !actionAllowAnonymous);
 
-        if (!showLock) return;
+        if (!showLock)
+            return;
         var securityRequirement = new OpenApiSecurityRequirement { {
             new OpenApiSecurityScheme {
                 Description = "Please enter a valid JWT token.",
@@ -28,7 +29,7 @@ public class AuthResponsesOperationFilter : IOperationFilter {
             },
             new List<string>()
         }};
-        operation.Security = new List<OpenApiSecurityRequirement> { securityRequirement };
+        operation.Security = [securityRequirement];
         operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
     }
 }

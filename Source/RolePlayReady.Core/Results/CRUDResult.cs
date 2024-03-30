@@ -18,17 +18,25 @@ public record CrudResult : Result {
         : throw new InvalidOperationException("The result has validation errors. You must check for errors before checking if result has conflicts.");
 
     public static CrudResult Success() => new(CRUDResultType.Success);
+
     public static CrudResult NotFound() => new(CRUDResultType.NotFound);
+
     public static CrudResult Conflict() => new(CRUDResultType.Conflict);
 
     public static CrudResult Invalid(string message, string source, params object?[] args) => Invalid(new ValidationError(message, source, args));
+
     public static CrudResult Invalid(ValidationResult result) => new(CRUDResultType.Invalid, result.Errors);
 
     public static CrudResult<TValue> Success<TValue>(TValue value) => new(CRUDResultType.Success, value);
+
     public static CrudResult<TValue> NotFound<TValue>(TValue? value = default) => new(CRUDResultType.NotFound, value);
+
     public static CrudResult<TValue> Conflict<TValue>(TValue value) => new(CRUDResultType.Conflict, value);
+
     public static CrudResult<TValue> Invalid<TValue>(TValue value, string message, string source) => Invalid(value, new ValidationError(message, source));
-    public static CrudResult<TValue> Invalid<TValue>(TValue value, ValidationError error) => Invalid(value, new[] { error });
+
+    public static CrudResult<TValue> Invalid<TValue>(TValue value, ValidationError error) => Invalid(value, [error]);
+
     public static CrudResult<TValue> Invalid<TValue>(TValue value, IEnumerable<ValidationError> errors) => new(CRUDResultType.Invalid, value, IsNotNullAndDoesNotHaveNull(errors));
 
     public static implicit operator CrudResult(List<ValidationError> errors) => new(CRUDResultType.Invalid, IsNotNullAndDoesNotHaveNull(errors));
@@ -58,6 +66,5 @@ public record CrudResult<TResult> : CrudResult {
         return left;
     }
 
-    public CrudResult<TOutput> MapTo<TOutput>(Func<TResult?, TOutput?> map)
-        => new(Type, map(Value), Errors);
+    public CrudResult<TOutput> MapTo<TOutput>(Func<TResult?, TOutput?> map) => new(Type, map(Value), Errors);
 }

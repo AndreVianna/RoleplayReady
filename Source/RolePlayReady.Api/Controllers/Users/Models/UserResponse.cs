@@ -15,7 +15,7 @@ public record UserResponse {
     public bool IsBlocked { get; init; }
 
     [SwaggerSchema("The indicates the list of roles assigned to the user.", ReadOnly = true)]
-    public string[] Roles { get; init; } = Array.Empty<string>();
+    public string[] Roles { get; init; } = [];
 
     [SwaggerSchema("The first name of the user.", ReadOnly = true)]
     public string? FirstName { get; init; }

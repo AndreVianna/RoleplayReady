@@ -7,27 +7,17 @@ namespace RolePlayReady.Api.Controllers.Users;
 [Route("api/v{version:apiVersion}/users", Order = 99)]
 [ApiExplorerSettings(GroupName = "Users")]
 [Produces("application/json")]
-public class UsersController : ControllerBase {
-    private readonly IAuthHandler _handler;
-    private readonly IDateTime _dateTime;
-    private readonly ILogger<UsersController> _logger;
-
-    public UsersController(IAuthHandler handler, IDateTime dateTime, ILogger<UsersController> logger) {
-        _handler = handler;
-        _dateTime = dateTime;
-        _logger = logger;
-    }
-
+public class UsersController(IAuthHandler handler, IDateTime dateTime, ILogger<UsersController> logger) : ControllerBase {
     [HttpGet]
     [SwaggerOperation(Summary = "Get all users",
                       Description = "Retrieves a collection of users.",
                       OperationId = "GetUserById")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserRowResponse[]))]
     public async Task<IActionResult> GetMany(CancellationToken ct = default) {
-        _logger.LogDebug("Getting all users requested.");
-        var result = await _handler.GetManyAsync(ct);
+        logger.LogDebug("Getting all users requested.");
+        var result = await handler.GetManyAsync(ct);
         var response = result.Value!.ToResponse();
-        _logger.LogDebug("{count} users retrieved successfully.", response.Length);
+        logger.LogDebug("{count} users retrieved successfully.", response.Length);
         return Ok(response);
     }
 
@@ -42,20 +32,20 @@ public class UsersController : ControllerBase {
         [SwaggerParameter("The id of the user.", Required = true)]
         string id,
         CancellationToken ct = default) {
-        _logger.LogDebug("Getting user '{id}' requested.", id);
+        logger.LogDebug("Getting user '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
             return BadRequest(ModelState);
         }
 
-        var result = await _handler.GetByIdAsync(uuid, ct);
+        var result = await handler.GetByIdAsync(uuid, ct);
         if (result.Value is null) {
-            _logger.LogDebug("Fail to retrieve user '{id}' (not found).", id);
+            logger.LogDebug("Fail to retrieve user '{id}' (not found).", id);
             return NotFound();
         }
 
-        var response = result.Value!.ToResponse(_dateTime.Now);
-        _logger.LogDebug("Game system '{id}' retrieved successfully.", id);
+        var response = result.Value!.ToResponse(dateTime.Now);
+        logger.LogDebug("Game system '{id}' retrieved successfully.", id);
         return Ok(response);
     }
 
@@ -70,21 +60,21 @@ public class UsersController : ControllerBase {
         [SwaggerParameter("New user data.", Required = true)]
         UserRequest request,
         CancellationToken ct = default) {
-        _logger.LogDebug("Create user requested.");
+        logger.LogDebug("Create user requested.");
         var model = request.ToDomain();
-        var result = await _handler.AddAsync(model, ct);
+        var result = await handler.AddAsync(model, ct);
         if (result.IsInvalid) {
-            _logger.LogDebug("Fail to create user (bad request).");
+            logger.LogDebug("Fail to create user (bad request).");
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
 
         if (result.IsConflict) {
-            _logger.LogDebug("Fail to create user (conflict).");
+            logger.LogDebug("Fail to create user (conflict).");
             return Conflict("A user with same email already exists.");
         }
 
-        var response = result.Value!.ToResponse(_dateTime.Now);
-        _logger.LogDebug("Game system '{id}' created successfully.", response.Id);
+        var response = result.Value!.ToResponse(dateTime.Now);
+        logger.LogDebug("Game system '{id}' created successfully.", response.Id);
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
@@ -103,26 +93,26 @@ public class UsersController : ControllerBase {
         [SwaggerParameter("Updated user data.", Required = true)]
         UserRequest request,
         CancellationToken ct = default) {
-        _logger.LogDebug("Update user '{id}' requested.", id);
+        logger.LogDebug("Update user '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
             return BadRequest(ModelState);
         }
 
         var model = request.ToDomain(uuid);
-        var result = await _handler.UpdateAsync(model, ct);
+        var result = await handler.UpdateAsync(model, ct);
         if (result.IsInvalid) {
-            _logger.LogDebug("Fail to update user '{id}' (bad request).", id);
+            logger.LogDebug("Fail to update user '{id}' (bad request).", id);
             return BadRequest(result.Errors.UpdateModelState(ModelState));
         }
 
         if (result.IsNotFound) {
-            _logger.LogDebug("Fail to update user '{id}' (not found).", id);
+            logger.LogDebug("Fail to update user '{id}' (not found).", id);
             return NotFound();
         }
 
-        var response = result.Value!.ToResponse(_dateTime.Now);
-        _logger.LogDebug("Game system '{id}' updated successfully.", id);
+        var response = result.Value!.ToResponse(dateTime.Now);
+        logger.LogDebug("Game system '{id}' updated successfully.", id);
         return Ok(response);
     }
 
@@ -137,19 +127,19 @@ public class UsersController : ControllerBase {
         [SwaggerParameter("The id of the user.", Required = true)]
         string id,
         CancellationToken ct = default) {
-        _logger.LogDebug("Remove user '{id}' requested.", id);
+        logger.LogDebug("Remove user '{id}' requested.", id);
         if (!Base64Guid.TryParse(id, out var uuid)) {
             ModelState.AddModelError("id", "Not a valid base64 uuid.");
             return BadRequest(ModelState);
         }
 
-        var result = await _handler.RemoveAsync(uuid, ct);
+        var result = await handler.RemoveAsync(uuid, ct);
         if (result.IsNotFound) {
-            _logger.LogDebug("Fail to remove user '{id}' (not found).", id);
+            logger.LogDebug("Fail to remove user '{id}' (not found).", id);
             return NotFound();
         }
 
-        _logger.LogDebug("Game system '{id}' removed successfully.", id);
+        logger.LogDebug("Game system '{id}' removed successfully.", id);
         return Ok();
     }
 }

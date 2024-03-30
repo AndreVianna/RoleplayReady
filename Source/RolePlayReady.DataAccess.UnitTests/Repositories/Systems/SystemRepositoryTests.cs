@@ -110,29 +110,26 @@ public class SystemRepositoryTests {
         result.Should().BeTrue();
     }
 
-    private static SystemData[] GenerateList()
-        => new[] { GenerateData() };
+    private static SystemData[] GenerateList() => [GenerateData()];
 
-    private static SystemData GenerateData(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            State = State.New,
-            ShortName = "SomeId",
-            Name = "Some Id",
-            Description = "Some Description",
-            Tags = new[] { "SomeTag" },
-        };
+    private static SystemData GenerateData(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        State = State.New,
+        ShortName = "SomeId",
+        Name = "Some Id",
+        Description = "Some Description",
+        Tags = ["SomeTag"],
+    };
 
-    private static GameSystem GenerateInput(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            State = State.New,
-            ShortName = "SomeId",
-            Name = "Some Id",
-            Description = "Some Description",
-            Tags = new[] { "SomeTag" },
-            Domains = new[] {
-                new Base {
+    private static GameSystem GenerateInput(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        State = State.New,
+        ShortName = "SomeId",
+        Name = "Some Id",
+        Description = "Some Description",
+        Tags = ["SomeTag"],
+        Domains = [
+                                                                             new Base {
                     Name = "Dom1",
                     Description = "SomeDescription",
                 },
@@ -141,6 +138,6 @@ public class SystemRepositoryTests {
                     ShortName = "Dom2",
                     Description = "SomeDescription",
                 }
-            },
-        };
+                                                                         ],
+    };
 }

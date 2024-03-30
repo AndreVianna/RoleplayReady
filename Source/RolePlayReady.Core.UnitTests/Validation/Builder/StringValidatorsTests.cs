@@ -7,7 +7,8 @@ public class StringValidatorsTests {
         public TestObject() {
             _fakePolicy.Enforce(Arg.Any<string>()).Returns(x => {
                 var result = ValidationResult.Success();
-                if (x[0] is not "Invalid") return result;
+                if (x[0] is not "Invalid")
+                    return result;
 
                 result += new ValidationError("Some error.", "Password");
                 result += new ValidationError("Some other error.", "Password");

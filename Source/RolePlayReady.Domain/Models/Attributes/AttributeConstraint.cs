@@ -8,8 +8,7 @@ public sealed record AttributeConstraint : IAttributeConstraint {
     public string ValidatorName { get; }
     public ICollection<object> Arguments { get; }
 
-    public IValidationCommand Create<TValue>(string definitionName)
-        => ValidationCommandFactory
-          .For(typeof(TValue), definitionName)
-          .Create(ValidatorName, Arguments.ToArray());
+    public IValidationCommand Create<TValue>(string definitionName) => ValidationCommandFactory
+                                                                              .For(typeof(TValue), definitionName)
+                                                                              .Create(ValidatorName, [.. Arguments]);
 }

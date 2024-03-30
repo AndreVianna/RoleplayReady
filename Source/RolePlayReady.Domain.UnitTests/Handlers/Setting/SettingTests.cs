@@ -43,7 +43,7 @@ public class SettingTests {
             Name = "TestName",
             Description = "TestDescription",
             ShortName = "GSS",
-            Tags = new[] { "Tag1", "Tag2" },
+            Tags = ["Tag1", "Tag2"],
             AttributeDefinitions = attributeDefinitions,
             Components = components,
         };
@@ -77,7 +77,7 @@ public class SettingTests {
             Name = "TestName",
             Description = "TestDescription",
             ShortName = "GSS",
-            Tags = new[] { "Tag1", "Tag2" },
+            Tags = ["Tag1", "Tag2"],
             AttributeDefinitions = attributeDefinitions,
             Components = components,
         };

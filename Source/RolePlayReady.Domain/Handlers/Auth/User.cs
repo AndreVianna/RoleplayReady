@@ -8,7 +8,7 @@ public record User : IValidatable, IPersisted {
     public DateTime LockExpiration { get; init; } = DateTime.MinValue;
     public int SignInRetryCount { get; init; }
     public bool IsBlocked { get; init; }
-    public ICollection<Role> Roles { get; init; } = new HashSet<Role>();
+    public ICollection<Role> Roles { get; init; } = [];
 
     [PersonalInformation]
     public string? FirstName { get; init; }

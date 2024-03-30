@@ -6,12 +6,12 @@ public class SystemTests {
         var system = new Handlers.System.System {
             Name = "TestName",
             Description = "TestDescription",
-            Domains = new List<Base> {
+            Domains = [
                 new() {
                     Name = "TestDomainName",
                     Description = "TestDomainDescription",
                 }
-            },
+            ],
         };
 
         system.Should().NotBeNull();

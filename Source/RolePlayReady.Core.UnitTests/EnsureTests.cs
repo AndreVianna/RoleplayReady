@@ -194,7 +194,7 @@ public class EnsureTests {
 
     [Fact]
     public void NotNullOrEmptyOrHasNullOrWhiteSpace_WhenHasNull_ThrowsArgumentException() {
-        string[] input = { default! };
+        string[] input = [default!];
         var action = () => IsNotNullOrEmptyAndDoesNotHaveNullOrWhiteSpace(input);
         action.Should().Throw<ArgumentException>().WithMessage("'input' cannot contain null or whitespace string(s). (Parameter 'input')");
     }
@@ -314,6 +314,6 @@ public class EnsureTests {
         const string method = "MethodName";
         var arguments = new object?[] { null, 1, 2, 3 };
         var value = ArgumentsAreAllOfTypeOrDefault<int>(method, arguments);
-        value.Should().BeOfType<int[]>().Subject.Should().BeEquivalentTo(new [] { 0, 1, 2, 3 });
+        value.Should().BeOfType<int[]>().Subject.Should().BeEquivalentTo(new[] { 0, 1, 2, 3 });
     }
 }

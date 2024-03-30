@@ -98,7 +98,7 @@ public class Base64GuidTests {
     [Fact]
     public void FromInvalid_Throws() {
         // Arrange
-        var input = "invalid";
+        const string input = "invalid";
 
         // Act
         var action = () => {

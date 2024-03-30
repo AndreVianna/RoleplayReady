@@ -26,14 +26,14 @@ public class TextAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("LengthIsAtMost", new object[] { 20 }, true);
-            Add("LengthIsAtMost", new object[] { 2 }, false);
-            Add("LengthIsAtLeast", new object[] { 2 }, true);
-            Add("LengthIsAtLeast", new object[] { 20 }, false);
-            Add("LengthIs", new object[] { 9 }, true);
-            Add("LengthIs", new object[] { 20 }, false);
-            Add("IsIn", new object[] { "One", "TestValue", "Three" }, true);
-            Add("IsIn", new object[] { "One", "Two", "Three" }, false);
+            Add("LengthIsAtMost", [20], true);
+            Add("LengthIsAtMost", [2], false);
+            Add("LengthIsAtLeast", [2], true);
+            Add("LengthIsAtLeast", [20], false);
+            Add("LengthIs", [9], true);
+            Add("LengthIs", [20], false);
+            Add("IsIn", ["One", "TestValue", "Three"], true);
+            Add("IsIn", ["One", "Two", "Three"], false);
         }
     }
 

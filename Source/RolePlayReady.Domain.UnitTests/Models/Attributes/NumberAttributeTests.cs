@@ -26,12 +26,12 @@ public class NumberAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("IsLessThan", new object[] { 99 }, true);
-            Add("IsLessThan", new object[] { 2 }, false);
-            Add("IsGreaterThan", new object[] { 2 }, true);
-            Add("IsGreaterThan", new object[] { 99 }, false);
-            Add("IsEqualTo", new object[] { 42 }, true);
-            Add("IsEqualTo", new object[] { 13 }, false);
+            Add("IsLessThan", [99], true);
+            Add("IsLessThan", [2], false);
+            Add("IsGreaterThan", [2], true);
+            Add("IsGreaterThan", [99], false);
+            Add("IsEqualTo", [42], true);
+            Add("IsEqualTo", [13], false);
         }
     }
 

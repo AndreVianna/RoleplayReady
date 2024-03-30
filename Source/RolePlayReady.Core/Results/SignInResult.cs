@@ -18,19 +18,20 @@ public sealed record SignInResult : Result {
     public bool RequiresTwoFactor => !IsInvalid && Type is SignInResultType.TwoFactorRequired;
     public override bool IsSuccess => !IsInvalid && Type is SignInResultType.Success;
 
-    public static SignInResult ConfirmationRequired(string token)
-        => new(SignInResultType.ConfirmationRequired, token);
-    public static SignInResult TwoFactorRequired(string token)
-        => new(SignInResultType.TwoFactorRequired, token);
-    public static SignInResult Success(string token)
-        => new(SignInResultType.Success, token);
-    public static SignInResult Invalid(string message, string source, params object?[] args)
-        => Invalid(new ValidationError(message, source, args));
-    public static SignInResult Invalid(ValidationResult result)
-        => new(SignInResultType.Invalid, null, result.Errors);
+    public static SignInResult ConfirmationRequired(string token) => new(SignInResultType.ConfirmationRequired, token);
+
+    public static SignInResult TwoFactorRequired(string token) => new(SignInResultType.TwoFactorRequired, token);
+
+    public static SignInResult Success(string token) => new(SignInResultType.Success, token);
+
+    public static SignInResult Invalid(string message, string source, params object?[] args) => Invalid(new ValidationError(message, source, args));
+
+    public static SignInResult Invalid(ValidationResult result) => new(SignInResultType.Invalid, null, result.Errors);
 
     public static SignInResult Blocked() => new(SignInResultType.Blocked);
+
     public static SignInResult Locked() => new(SignInResultType.Locked);
+
     public static SignInResult Failure() => new(SignInResultType.Failed);
 
     public static implicit operator SignInResult(List<ValidationError> errors) => new(SignInResultType.Invalid, null, IsNotNullAndDoesNotHaveNull(errors));

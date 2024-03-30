@@ -111,35 +111,32 @@ public class SettingRepositoryTests {
         result.Should().BeTrue();
     }
 
-    private static SettingData[] GenerateList()
-        => new[] { GenerateData() };
+    private static SettingData[] GenerateList() => [GenerateData()];
 
-    private static SettingData GenerateData(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            State = State.New,
-            Name = "Some Id",
-            Description = "Some Description",
-            Tags = new[] { "SomeTag" },
-            AttributeDefinitions = new[] {
-                new SettingData.AttributeDefinitionData {
+    private static SettingData GenerateData(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        State = State.New,
+        Name = "Some Id",
+        Description = "Some Description",
+        Tags = ["SomeTag"],
+        AttributeDefinitions = [
+                                                                             new SettingData.AttributeDefinitionData {
                     Name = "Some Id",
                     Description = "Some Description",
                     DataType = typeof(int).GetName()
                 },
-            }
-        };
+            ]
+    };
 
-    private static Setting GenerateInput(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            State = State.New,
-            ShortName = "SomeId",
-            Name = "Some Id",
-            Description = "Some Description",
-            Tags = new[] { "SomeTag" },
-            Components = new Base[] {
-                new() {
+    private static Setting GenerateInput(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        State = State.New,
+        ShortName = "SomeId",
+        Name = "Some Id",
+        Description = "Some Description",
+        Tags = ["SomeTag"],
+        Components = [
+                                                                          new() {
                     Name = "Comp1",
                     Description = "Some Description",
                 },
@@ -148,13 +145,13 @@ public class SettingRepositoryTests {
                     ShortName = "Comp2",
                     Description = "Some Description",
                 },
-            },
-            AttributeDefinitions = new AttributeDefinition[] {
-                new() {
+            ],
+        AttributeDefinitions = [
+                                                                          new() {
                     Name = "Some Id",
                     Description = "Some Description",
                     DataType = typeof(int)
                 },
-            }
-        };
+            ]
+    };
 }

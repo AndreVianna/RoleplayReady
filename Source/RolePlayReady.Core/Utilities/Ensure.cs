@@ -4,16 +4,14 @@ namespace System.Utilities;
 
 public static class Ensure {
     [return: NotNull]
-    public static TArgument IsNotNull<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
-        => argument is null
-            ? throw new ArgumentNullException(paramName, GetInvertedErrorMessage(MustBeNull, paramName))
-            : argument;
+    public static TArgument IsNotNull<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) => argument is null
+                                                                                                                                                         ? throw new ArgumentNullException(paramName, GetInvertedErrorMessage(MustBeNull, paramName))
+                                                                                                                                                         : argument;
 
     [return: NotNull]
-    public static TArgument IsOfType<TArgument>(object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
-        => IsNotNull(argument, paramName) is not TArgument result
-            ? throw new ArgumentException(string.Format(MustBeOfType, paramName, typeof(TArgument).Name, argument!.GetType().Name), paramName)
-            : result;
+    public static TArgument IsOfType<TArgument>(object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null) => IsNotNull(argument, paramName) is not TArgument result
+                                                                                                                                                     ? throw new ArgumentException(string.Format(MustBeOfType, paramName, typeof(TArgument).Name, argument!.GetType().Name), paramName)
+                                                                                                                                                     : result;
 
     [return: NotNull]
     public static TArgument IsNotNullOrEmpty<TArgument>(TArgument? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
@@ -107,12 +105,11 @@ public static class Ensure {
     }
 
     [return: NotNull]
-    public static TItem ArgumentExistsAndIsOfType<TItem>(string methodName, IReadOnlyList<object?> arguments, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))] string? paramName = null)
-        => argumentIndex >= arguments.Count
-            ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", paramName)
-            : arguments[(int)argumentIndex] is TItem value
-                    ? value
-                    : throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]");
+    public static TItem ArgumentExistsAndIsOfType<TItem>(string methodName, IReadOnlyList<object?> arguments, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) => argumentIndex >= arguments.Count
+                                                                                                                                                                                                                      ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", paramName)
+                                                                                                                                                                                                                      : arguments[(int)argumentIndex] is TItem value
+                                                                                                                                                                                                                              ? value
+                                                                                                                                                                                                                              : throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]");
 
     public static TItem[] ArgumentsAreAllOfType<TItem>(string methodName, IReadOnlyList<object?> arguments, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {
         var list = IsNotNullOrEmptyAndDoesNotHaveNull(arguments, paramName);
@@ -122,15 +119,14 @@ public static class Ensure {
         return list.Cast<TItem>().ToArray();
     }
 
-    public static TItem? ArgumentExistsAndIsOfTypeOrDefault<TItem>(string methodName, IReadOnlyList<object?> arguments, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))] string? paramName = null)
-        => argumentIndex >= arguments.Count
-            ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", paramName)
-            : arguments[(int)argumentIndex] switch {
-                null => default,
-                TItem value => value,
-                _
-                => throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]")
-            };
+    public static TItem? ArgumentExistsAndIsOfTypeOrDefault<TItem>(string methodName, IReadOnlyList<object?> arguments, uint argumentIndex, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) => argumentIndex >= arguments.Count
+                                                                                                                                                                                                                                ? throw new ArgumentException($"Invalid number of arguments for '{methodName}'. Missing argument {argumentIndex}.", paramName)
+                                                                                                                                                                                                                                : arguments[(int)argumentIndex] switch {
+                                                                                                                                                                                                                                    null => default,
+                                                                                                                                                                                                                                    TItem value => value,
+                                                                                                                                                                                                                                    _
+                                                                                                                                                                                                                                    => throw new ArgumentException($"Invalid type of {paramName}[{argumentIndex}] of '{methodName}'. Expected: {typeof(TItem).GetName()}. Found: {arguments[(int)argumentIndex]!.GetType().GetName()}.", $"{paramName}[{argumentIndex}]")
+                                                                                                                                                                                                                                };
 
     public static TItem?[] ArgumentsAreAllOfTypeOrDefault<TItem>(string methodName, IReadOnlyList<object?> arguments, [CallerArgumentExpression(nameof(arguments))] string? paramName = null) {
         var list = IsNotNullOrEmpty(arguments, paramName);

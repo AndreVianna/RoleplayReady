@@ -5,7 +5,6 @@ namespace RolePlayReady.Engine;
 public abstract class SimpleRunner<TContext, TOptions> : IRunner<TContext, TOptions>
     where TContext : class, IContext
     where TOptions : class, IRunnerOptions<TOptions> {
-    private readonly IStepFactory _stepFactory;
     private readonly ILogger _logger;
 
     [SetsRequiredMembers]
@@ -14,16 +13,15 @@ public abstract class SimpleRunner<TContext, TOptions> : IRunner<TContext, TOpti
 
         var options = Activator.CreateInstance<TOptions>();
         configuration.GetSection(options.Name).Bind(options);
-        _stepFactory = Ensure.IsNotNull(stepFactory);
+        Ensure.IsNotNull(stepFactory);
         Options = options;
     }
 
     public TOptions Options { get; }
 
-    protected virtual Task<TContext> OnRunAsync(TContext context, CancellationToken cancellation = default)
-        => Task.FromResult(context);
-    protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default)
-        => Task.CompletedTask;
+    protected virtual Task<TContext> OnRunAsync(TContext context, CancellationToken cancellation = default) => Task.FromResult(context);
+
+    protected virtual Task OnErrorAsync(Exception ex, TContext context, CancellationToken cancellation = default) => Task.CompletedTask;
 
     public async Task<TContext> RunAsync(TContext context, CancellationToken cancellation = default) {
         try {

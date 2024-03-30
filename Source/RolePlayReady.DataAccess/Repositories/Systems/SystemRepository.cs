@@ -32,6 +32,5 @@ public class SystemRepository : ISystemRepository {
         return SystemMapper.ToModel(file);
     }
 
-    public Task<bool> RemoveAsync(Guid id, CancellationToken ct = default)
-        => Task.Run(() => _files.Delete(id), ct);
+    public Task<bool> RemoveAsync(Guid id, CancellationToken ct = default) => Task.Run(() => _files.Delete(id), ct);
 }

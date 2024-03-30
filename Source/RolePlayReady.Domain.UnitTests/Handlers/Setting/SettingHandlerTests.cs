@@ -183,18 +183,16 @@ public class SettingHandlerTests {
         result.IsNotFound.Should().BeTrue();
     }
 
-    private static SettingRow CreateRow(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            Name = "Some Name",
-        };
+    private static SettingRow CreateRow(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        Name = "Some Name",
+    };
 
-    private static Handlers.Setting.Setting CreateInput(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            ShortName = "SM",
-            Name = "Some Name",
-            Description = "Some description.",
-            AttributeDefinitions = Array.Empty<AttributeDefinition>(),
-        };
+    private static Handlers.Setting.Setting CreateInput(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        ShortName = "SM",
+        Name = "Some Name",
+        Description = "Some description.",
+        AttributeDefinitions = Array.Empty<AttributeDefinition>(),
+    };
 }

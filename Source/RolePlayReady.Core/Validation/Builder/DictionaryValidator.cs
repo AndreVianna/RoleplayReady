@@ -61,7 +61,8 @@ public class DictionaryValidator<TKey, TValue>
     }
 
     public IConnector<DictionaryValidator<TKey, TValue>> Each(Func<TValue?, ITerminator> validateUsing) {
-        if (Subject is null) return Connector;
+        if (Subject is null)
+            return Connector;
         foreach (var key in Subject.Keys)
             AddItemErrors(validateUsing(Subject[key]).Result.Errors, $"{Source}[{key}]");
         return Connector;

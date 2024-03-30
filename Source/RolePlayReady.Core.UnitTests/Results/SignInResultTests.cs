@@ -98,13 +98,13 @@ public class SignInResultTests {
 
     private class TestDataForProperties : TheoryData<SignInResult, bool, bool, bool, bool, bool, bool, bool> {
         public TestDataForProperties() {
-            Add(_invalid,              true, false, false, false, false, false, false);
-            Add(_blocked,              false, true, false, false, false, false, false);
-            Add(_locked,               false, false, true, false, false, false, false);
-            Add(_failure,              false, false, false, true, false, false, false);
+            Add(_invalid, true, false, false, false, false, false, false);
+            Add(_blocked, false, true, false, false, false, false, false);
+            Add(_locked, false, false, true, false, false, false, false);
+            Add(_failure, false, false, false, true, false, false, false);
             Add(_requiresConfirmation, false, false, false, false, true, false, false);
-            Add(_requires2Factor,      false, false, false, false, false, true, false);
-            Add(_success,              false, false, false, false, false, false, true);
+            Add(_requires2Factor, false, false, false, false, false, true, false);
+            Add(_success, false, false, false, false, false, false, true);
         }
     }
     [Theory]

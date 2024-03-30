@@ -9,7 +9,7 @@ public class ConnectorTests {
     public void And_AccumulatesErrors(string value, int expectedErrorCount) {
         // Arrange
         var validator = CreateValidatorFor(value);
-        
+
         // Act
         var result = validator.LengthIs(5).And().Contains("val").Result;
 
@@ -129,6 +129,5 @@ public class ConnectorTests {
         result.Errors.Should().HaveCount(expectedErrorCount);
     }
 
-    private static StringValidator CreateValidatorFor(string value, ValidatorMode mode = ValidatorMode.And)
-        => new (value, "Source", mode);
+    private static StringValidator CreateValidatorFor(string value, ValidatorMode mode = ValidatorMode.And) => new(value, "Source", mode);
 }

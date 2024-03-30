@@ -58,18 +58,18 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
     private static readonly string _invalidNameFile = $"{_finalFolder}/{_invalidNameFileName}";
     private static readonly string _invalidTimestampFile = $"{_finalFolder}/{_invalidTimestampFileName}";
 
-    private static readonly string[] _existingFiles = new[] {
+    private static readonly string[] _existingFiles = [
         _file1V3,
         _file2V0,
         _invalidContentFile,
         _invalidNameFile,
         _invalidTimestampFile,
-    };
+    ];
     private readonly MemoryStream _file1Content;
     private readonly MemoryStream _file2Content;
     private readonly MemoryStream _invalidFileContent;
 
-    private readonly TestData[] _expected = {
+    private readonly TestData[] _expected = [
         new() {
             Id = _file1Id,
             Name = "file1",
@@ -82,7 +82,7 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
             Description = "File 2.",
             ChangeStamp = _dateTime2,
         },
-    };
+    ];
 
     public TrackedJsonFileRepositoryTests() {
         _io = Substitute.For<IFileSystem>();
@@ -93,12 +93,12 @@ public sealed class TrackedJsonFileRepositoryTests : IDisposable {
 
         _io.GetFilesFrom(_finalFolder, "+*.json", SearchOption.TopDirectoryOnly).Returns(_existingFiles);
 
-        _io.GetFilesFrom(_finalFolder, $"+{_missingFileId}*.json", SearchOption.TopDirectoryOnly).Returns(Array.Empty<string>());
-        _io.GetFilesFrom(_finalFolder, $"+{_file1Id}*.json", SearchOption.TopDirectoryOnly).Returns(new[] { _file1V3 });
-        _io.GetFilesFrom(_finalFolder, $"+{_file2Id}*.json", SearchOption.TopDirectoryOnly).Returns(new[] { _file2V0 });
-        _io.GetFilesFrom(_finalFolder, $"+{_invalidNameId}*.json", SearchOption.TopDirectoryOnly).Returns(new[] { _invalidNameFile });
-        _io.GetFilesFrom(_finalFolder, $"+{_invalidTimestampId}*.json", SearchOption.TopDirectoryOnly).Returns(new[] { _invalidTimestampFile });
-        _io.GetFilesFrom(_finalFolder, $"+{_invalidContentId}*.json", SearchOption.TopDirectoryOnly).Returns(new[] { _invalidContentFile });
+        _io.GetFilesFrom(_finalFolder, $"+{_missingFileId}*.json", SearchOption.TopDirectoryOnly).Returns([]);
+        _io.GetFilesFrom(_finalFolder, $"+{_file1Id}*.json", SearchOption.TopDirectoryOnly).Returns([_file1V3]);
+        _io.GetFilesFrom(_finalFolder, $"+{_file2Id}*.json", SearchOption.TopDirectoryOnly).Returns([_file2V0]);
+        _io.GetFilesFrom(_finalFolder, $"+{_invalidNameId}*.json", SearchOption.TopDirectoryOnly).Returns([_invalidNameFile]);
+        _io.GetFilesFrom(_finalFolder, $"+{_invalidTimestampId}*.json", SearchOption.TopDirectoryOnly).Returns([_invalidTimestampFile]);
+        _io.GetFilesFrom(_finalFolder, $"+{_invalidContentId}*.json", SearchOption.TopDirectoryOnly).Returns([_invalidContentFile]);
 
         _file1Content = new MemoryStream(Encoding.UTF8.GetBytes(Serialize(_expected[0])));
         _io.OpenFileForReading(_file1V3).Returns(_file1Content);

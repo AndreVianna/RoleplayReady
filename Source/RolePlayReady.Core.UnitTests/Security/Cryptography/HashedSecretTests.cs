@@ -8,8 +8,8 @@ public class HashedSecretTests {
         subject.Should().NotBeNull();
         subject.Hash.Should().Be("SomeHash");
         subject.Salt.Should().Be("SomeSalt");
-        subject.HashBytes.Should().BeEquivalentTo(new byte[] { 0x4A, 0x89, 0x9E, 0x1D, 0xAB, 0x21});
-        subject.SaltBytes.Should().BeEquivalentTo(new byte[] { 0x4A, 0x89, 0x9E, 0x49, 0xA9, 0x6D});
+        subject.HashBytes.Should().BeEquivalentTo(new byte[] { 0x4A, 0x89, 0x9E, 0x1D, 0xAB, 0x21 });
+        subject.SaltBytes.Should().BeEquivalentTo(new byte[] { 0x4A, 0x89, 0x9E, 0x49, 0xA9, 0x6D });
     }
 
     [Fact]

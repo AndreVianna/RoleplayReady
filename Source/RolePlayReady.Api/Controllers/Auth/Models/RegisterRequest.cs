@@ -2,8 +2,7 @@ using DataType = System.ComponentModel.DataAnnotations.DataType;
 
 namespace RolePlayReady.Api.Controllers.Auth.Models;
 
-public record RegisterRequest
-{
+public record RegisterRequest {
     [Required]
     [EmailAddress]
     [SwaggerSchema("The email of the user.")]

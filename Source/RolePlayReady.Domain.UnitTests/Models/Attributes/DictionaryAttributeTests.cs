@@ -26,12 +26,12 @@ public class DictionaryAttributeTests {
 
     private class TestData : TheoryData<string, object[], bool> {
         public TestData() {
-            Add("Has", new object[] { 3 }, true);
-            Add("Has", new object[] { 13 }, false);
-            Add("HasAtLeast", new object[] { 1 }, true);
-            Add("HasAtLeast", new object[] { 99 }, false);
-            Add("HasAtMost", new object[] { 99 }, true);
-            Add("HasAtMost", new object[] { 1 }, false);
+            Add("Has", [3], true);
+            Add("Has", [13], false);
+            Add("HasAtLeast", [1], true);
+            Add("HasAtLeast", [99], false);
+            Add("HasAtMost", [99], true);
+            Add("HasAtMost", [1], false);
         }
     }
 

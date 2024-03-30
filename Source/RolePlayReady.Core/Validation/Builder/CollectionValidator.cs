@@ -59,7 +59,8 @@ public sealed class CollectionValidator<TItem>
     }
 
     public IConnector<CollectionValidator<TItem>> Each(Func<TItem?, ITerminator> validate) {
-        if (Subject is null) return Connector;
+        if (Subject is null)
+            return Connector;
         var index = 0;
         foreach (var item in Subject)
             AddItemErrors(validate(item).Result.Errors, $"{Source}[{index++}]");

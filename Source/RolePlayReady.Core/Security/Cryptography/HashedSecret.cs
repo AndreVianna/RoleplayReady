@@ -23,8 +23,8 @@ public sealed record HashedSecret {
     public string Hash { get; init; } = string.Empty;
     public string Salt { get; init; } = string.Empty;
 
-    public byte[] HashBytes { get; init; } = Array.Empty<byte>();
-    public byte[] SaltBytes { get; init; } = Array.Empty<byte>();
+    public byte[] HashBytes { get; init; } = [];
+    public byte[] SaltBytes { get; init; } = [];
 
     public bool Verify(string secret, IHasher hasher) {
         var hashedSecret = hasher.HashSecret(secret, SaltBytes);

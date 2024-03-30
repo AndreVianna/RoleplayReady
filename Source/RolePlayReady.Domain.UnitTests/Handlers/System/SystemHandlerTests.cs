@@ -62,7 +62,7 @@ public class SystemHandlerTests {
 
         // Assert
         result.IsInvalid.Should().BeFalse();
-         result.IsConflict.Should().BeFalse();
+        result.IsConflict.Should().BeFalse();
         result.Value.Should().NotBeNull();
     }
 
@@ -168,17 +168,15 @@ public class SystemHandlerTests {
         result.IsSuccess.Should().BeFalse();
     }
 
-    private static SystemRow CreateRow(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            Name = "Some Name",
-        };
+    private static SystemRow CreateRow(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        Name = "Some Name",
+    };
 
-    private static System CreateInput(Guid? id = null)
-        => new() {
-            Id = id ?? Guid.NewGuid(),
-            Name = "Some Name",
-            ShortName = "SM",
-            Description = "Some description."
-        };
+    private static System CreateInput(Guid? id = null) => new() {
+        Id = id ?? Guid.NewGuid(),
+        Name = "Some Name",
+        ShortName = "SM",
+        Description = "Some description."
+    };
 }

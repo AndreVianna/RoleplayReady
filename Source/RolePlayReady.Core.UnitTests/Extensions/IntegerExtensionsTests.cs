@@ -4,7 +4,7 @@ public class IntegerExtensionsTests {
     [Fact]
     public void IsRequired_ReturnsConnector() {
         // Arrange
-        var subject = 42;
+        const int subject = 42;
 
         // Act
         var result = subject.Is();

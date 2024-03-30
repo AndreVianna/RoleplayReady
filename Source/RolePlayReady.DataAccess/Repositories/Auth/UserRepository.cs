@@ -2,7 +2,7 @@
 
 public class UserRepository : IUserRepository {
     private static bool _emailIndexLoaded;
-    private static IDictionary<string, Guid> _emailIndex = null!;
+    private static Dictionary<string, Guid> _emailIndex = null!;
 
     private readonly IJsonFileStorage<UserData> _users;
     private readonly IHasher _hasher;
@@ -15,7 +15,8 @@ public class UserRepository : IUserRepository {
     }
 
     private void LoadEmailIndex() {
-        if (_emailIndexLoaded) return;
+        if (_emailIndexLoaded)
+            return;
         var users = _users.GetAllAsync().Result;
         _emailIndex = users.ToDictionary(i => i.Email, i => i.Id);
         _emailIndexLoaded = true;
@@ -36,9 +37,11 @@ public class UserRepository : IUserRepository {
     }
 
     public async Task<User?> AddAsync(User input, CancellationToken ct = default) {
-        if (_emailIndex.ContainsKey(input.Email.ToUpperInvariant())) return default; 
+        if (_emailIndex.ContainsKey(input.Email.ToUpperInvariant()))
+            return default;
         var userData = await _users.CreateAsync(input.ToData(), ct).ConfigureAwait(false);
-        if (userData is not null) _emailIndex[userData.Email.ToUpperInvariant()] = userData.Id;
+        if (userData is not null)
+            _emailIndex[userData.Email.ToUpperInvariant()] = userData.Id;
         return userData.ToModel();
     }
 
@@ -47,12 +50,12 @@ public class UserRepository : IUserRepository {
         return userData.ToModel();
     }
 
-    public Task<bool> RemoveAsync(Guid id, CancellationToken ct = default)
-        => Task.Run(() => {
-                var isDeleted = _users.Delete(id);
-                if (isDeleted) _emailIndex.Remove(_emailIndex.First(i => i.Value == id).Key);
-                return isDeleted;
-            }, ct);
+    public Task<bool> RemoveAsync(Guid id, CancellationToken ct = default) => Task.Run(() => {
+        var isDeleted = _users.Delete(id);
+        if (isDeleted)
+            _emailIndex.Remove(_emailIndex.First(i => i.Value == id).Key);
+        return isDeleted;
+    }, ct);
 
     public async Task<User?> VerifyAsync(SignIn signIn, CancellationToken ct) {
         var user = await GetByEmailAsync(signIn.Email, ct).ConfigureAwait(false);
@@ -61,8 +64,7 @@ public class UserRepository : IUserRepository {
             : default;
     }
 
-    private async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
-        => _emailIndex.ContainsKey(email)
-            ? await GetByIdAsync(_emailIndex[email], ct)
-            : default;
+    private async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default) => _emailIndex.ContainsKey(email)
+                                                                                                        ? await GetByIdAsync(_emailIndex[email], ct)
+                                                                                                        : default;
 }

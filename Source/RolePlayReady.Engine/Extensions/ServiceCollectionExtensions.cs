@@ -1,12 +1,10 @@
 ﻿namespace RolePlayReady.Engine.Extensions;
 public static class ServiceCollectionExtensions {
-    public static IServiceCollection AddStepEngine(this IServiceCollection services)
-        => services
-            .AddSingleton<IStepFactory, StepFactory>()
-            .RegisterAllStepsWith<StepFactory>();
+    public static IServiceCollection AddStepEngine(this IServiceCollection services) => services
+                                                                                                 .AddSingleton<IStepFactory, StepFactory>()
+                                                                                                 .RegisterAllStepsWith<StepFactory>();
 
-    public static IServiceCollection RegisterAllStepsWith<TMarker>(this IServiceCollection services)
-        => services.RegisterAllStepsIn(typeof(TMarker).Assembly);
+    public static IServiceCollection RegisterAllStepsWith<TMarker>(this IServiceCollection services) => services.RegisterAllStepsIn(typeof(TMarker).Assembly);
 
     public static IServiceCollection RegisterAllStepsIn(this IServiceCollection services, Assembly assembly) {
         assembly.GetTypes()

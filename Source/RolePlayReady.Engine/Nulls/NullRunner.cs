@@ -10,5 +10,6 @@ public sealed class NullRunner : IRunner<IContext, RunnerOptions> {
     public RunnerOptions Options => new();
 
     public Task<IContext> RunAsync(IContext context, CancellationToken cancellation = default) => Task.FromResult(context);
+
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }

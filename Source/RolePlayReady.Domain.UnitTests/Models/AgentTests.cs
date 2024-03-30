@@ -6,8 +6,8 @@ public class AgentTests {
         var agent = new Agent {
             Name = "TestName",
             Description = "TestDescription",
-            Inventory = new List<InventoryEntry>(),
-            Journal = new List<JournalEntry>(),
+            Inventory = [],
+            Journal = [],
         };
 
         agent.Should().NotBeNull();

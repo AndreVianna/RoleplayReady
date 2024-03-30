@@ -5,7 +5,7 @@ namespace RolePlayReady.Api.Controllers;
 public class UsersControllerTests {
     private readonly IAuthHandler _handler = Substitute.For<IAuthHandler>();
     private static readonly ILogger<UsersController> _logger = Substitute.For<ILogger<UsersController>>();
-    private static readonly UserRow[] _rows = new[] {
+    private static readonly UserRow[] _rows = [
         new UserRow {
             Id = Guid.NewGuid(),
             Name = "Some User",
@@ -16,14 +16,14 @@ public class UsersControllerTests {
             Name = "Other User",
             Email = "other.user@email.com",
         }
-    };
+    ];
     private static readonly User _sample = new() {
         Id = Guid.NewGuid(),
         Email = "some.user@email.com",
         FirstName = "Some",
         LastName = "User",
         Birthday = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
-        Roles = new[] { Role.User },
+        Roles = [Role.User],
     };
 
     private readonly UsersController _controller;

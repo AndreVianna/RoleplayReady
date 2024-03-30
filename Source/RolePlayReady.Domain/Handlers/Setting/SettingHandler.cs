@@ -2,10 +2,7 @@
 
 namespace RolePlayReady.Handlers.Setting;
 
-public class SettingHandler
-    : CrudHandler<Setting, SettingRow, ISettingRepository>,
+public class SettingHandler(ISettingRepository repository)
+        : CrudHandler<Setting, SettingRow, ISettingRepository>(repository),
       ISettingHandler {
-    public SettingHandler(ISettingRepository repository)
-        : base(repository) {
-    }
 }

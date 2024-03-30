@@ -33,7 +33,6 @@ global using RolePlayReady.DataAccess.Identity;
 global using RolePlayReady.Extensions;
 global using RolePlayReady.Handlers.Auth;
 global using RolePlayReady.Handlers.System;
-global using RolePlayReady.Models;
 
 global using Serilog;
 

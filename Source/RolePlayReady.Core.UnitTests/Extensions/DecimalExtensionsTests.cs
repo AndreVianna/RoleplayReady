@@ -4,7 +4,7 @@ public class DecimalExtensionsTests {
     [Fact]
     public void IsRequired_ReturnsConnector() {
         // Arrange
-        var subject = 42.0m;
+        const decimal subject = 42.0m;
 
         // Act
         var result = subject.Is();

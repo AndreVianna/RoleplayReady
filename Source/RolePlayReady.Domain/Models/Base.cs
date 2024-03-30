@@ -5,7 +5,7 @@ public record Base : IBase, IValidatable {
     public required string Description { get; init; }
     public string? ShortName { get; init; }
 
-    public ICollection<string> Tags { get; init; } = new List<string>();
+    public ICollection<string> Tags { get; init; } = [];
 
     public virtual ValidationResult Validate(IDictionary<string, object?>? context = null) {
         var result = ValidationResult.Success();

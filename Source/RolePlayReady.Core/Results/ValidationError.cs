@@ -10,11 +10,9 @@ public sealed record ValidationError {
     public object?[] Arguments { get; }
     public string Message => GetErrorMessage(MessageTemplate, Arguments);
 
-    public bool Equals(ValidationError? other)
-        => other is not null
-           && MessageTemplate == other.MessageTemplate
-           && Arguments.SequenceEqual(other.Arguments);
+    public bool Equals(ValidationError? other) => other is not null
+                                                          && MessageTemplate == other.MessageTemplate
+                                                          && Arguments.SequenceEqual(other.Arguments);
 
-    public override int GetHashCode()
-        => Arguments.Aggregate(MessageTemplate.GetHashCode(), HashCode.Combine);
+    public override int GetHashCode() => Arguments.Aggregate(MessageTemplate.GetHashCode(), HashCode.Combine);
 }

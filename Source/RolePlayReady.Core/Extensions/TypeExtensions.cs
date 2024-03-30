@@ -1,8 +1,7 @@
 ﻿namespace System.Extensions;
 
 public static class TypeExtensions {
-    public static IConnector<TypeValidator> Is(this Type? subject, [CallerArgumentExpression(nameof(subject))] string? source = null)
-        => Create(subject, source!);
+    public static IConnector<TypeValidator> Is(this Type? subject, [CallerArgumentExpression(nameof(subject))] string? source = null) => Create(subject, source!);
 
     public static string GetName(this Type type) {
         if (type is { IsGenericType: false, IsArray: false })
@@ -18,11 +17,10 @@ public static class TypeExtensions {
         };
     }
 
-    private static string GetNonGenericTypeName(string name)
-        => name switch {
-            "Int32" => "Integer",
-            "String" => "String",
-            "Decimal" => "Decimal",
-            _ => name
-        };
+    private static string GetNonGenericTypeName(string name) => name switch {
+        "Int32" => "Integer",
+        "String" => "String",
+        "Decimal" => "Decimal",
+        _ => name
+    };
 }

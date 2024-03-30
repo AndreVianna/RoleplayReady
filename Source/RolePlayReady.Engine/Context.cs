@@ -1,11 +1,7 @@
 ﻿namespace RolePlayReady.Engine;
 
-public class Context : IContext {
-    public Context(IServiceProvider services) {
-        Services = services;
-    }
-
-    public IServiceProvider Services { get; }
+public class Context(IServiceProvider services) : IContext {
+    public IServiceProvider Services { get; } = services;
 
     public bool IsBlocked { get; private set; }
     public int CurrentStepNumber { get; private set; }
